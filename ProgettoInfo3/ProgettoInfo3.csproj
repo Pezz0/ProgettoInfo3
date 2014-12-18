@@ -47,6 +47,11 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Code\Engine\Enumerativi\EnRole.cs" />
+    <Compile Include="Code\Engine\Enumerativi\EnSemi.cs" />
+    <Compile Include="Code\Engine\Board.cs" />
+    <Compile Include="Code\Engine\Card.cs" />
+    <Compile Include="Code\Engine\Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -59,4 +64,9 @@
     <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Code\" />
+    <Folder Include="Code\Engine\" />
+    <Folder Include="Code\Engine\Enumerativi\" />
+  </ItemGroup>
 </Project>
