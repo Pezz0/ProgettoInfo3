@@ -26,13 +26,9 @@ namespace ProgettoInfo3
 			Button button = FindViewById<Button> ( Resource.Id.myButton ) ;
 			
 			button.Click += delegate {
-<<<<<<< Upstream, based on origin/master
-				button.Text = string.Format ("{0} clicks!", count+3);
-			};
-=======
-				button.Text = string.Format ( "{0} clicks!" , count + 505 ) ;
+				button.Text = string.Format ( "{0} clicks!" , count + 6 ) ;
 			} ;
->>>>>>> 0199d69 Tenetevi gli spazi osti
+
 		}
 	}
 }
