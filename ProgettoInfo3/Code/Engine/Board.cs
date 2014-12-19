@@ -13,12 +13,19 @@ namespace Engine
 {
 	public class Board
 	{
+		private Card [,] _cardGrid;
+
 		private int _turn = 0;
 
 		public int CurrentTurn { get { return _turn; } }
 
 		public Board ()
 		{
+			_cardGrid = new Card[Enum.GetValues (typeof (EnSemi)).GetLength (0), Enum.GetValues (typeof (EnNumbers)).GetLength (0)];
+			for (int i = 0; i < Enum.GetValues (typeof (EnSemi)).GetLength (0); i++)
+				for (int j = 0; i < Enum.GetValues (typeof (EnNumbers)).GetLength (0); j++)
+					_cardGrid [i, j] = new Card (this, (EnNumbers) j, (EnSemi) i, new Player ("pippo", EnRole.CHIAMANTE));
+
 		}
 	}
 }
