@@ -30,6 +30,8 @@ namespace Engine
 
 		public int TurnoGiocata { get { return _gTurno; } }
 
+		public bool isPlayable{ get { return _gTurno == -1; } }
+
 		public Card (Board board, EnNumbers number, EnSemi seme, Player iniziale)
 		{
 			if (board.CurrentTurn != -1)
