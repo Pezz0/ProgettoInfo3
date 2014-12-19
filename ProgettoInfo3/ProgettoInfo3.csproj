@@ -50,10 +50,10 @@
     <Compile Include="Code\Engine\Board.cs" />
     <Compile Include="Code\Engine\Card.cs" />
     <Compile Include="Code\Engine\Player.cs" />
-    <Compile Include="Code\Engine\Enumeration\EnRole.cs" />
-    <Compile Include="Code\Engine\Enumeration\EnSemi.cs" />
     <Compile Include="Code\Engine\Random\NormalRandom.cs" />
     <Compile Include="Code\Engine\Random\RandomGenerator.cs" />
+    <Compile Include="Code\Engine\Enumeration\EnRole.cs" />
+    <Compile Include="Code\Engine\Enumeration\EnSemi.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
