@@ -13,51 +13,40 @@ namespace Engine
 {
 	public class Card
 	{
+		/// <summary>
+		/// The board used by this card.
+		/// </summary>
 		private Board _board;
-		private EnSemi _seme;
-		private EnNumbers _number;
-		private Player _plIni;
-		private Player _plFin;
-		private int _gTurno;
 
+		#region Card's information
+
+		/// <summary>
+		/// The card's seme.
+		/// </summary>
+		private EnSemi _seme;
+
+		/// <summary>
+		/// The card's number.
+		/// </summary>
+		private EnNumbers _number;
+
+		/// <summary>
+		/// Gets the card's seme.
+		/// </summary>
+		/// <value>The card's seme.</value>
 		public EnSemi Seme { get { return _seme; } }
 
+		/// <summary>
+		/// Gets card's number.
+		/// </summary>
+		/// <value>The card's number.</value>
 		public EnNumbers Number { get { return _number; } }
 
-		public Player PlayerIniziale { get { return _plIni; } }
-
-		public Player PlayerFinale { get { return _plFin; } }
-
-		public int TurnoGiocata { get { return _gTurno; } }
-
-		public bool isPlayable{ get { return _gTurno == -1; } }
-
-		public Card (Board board, EnNumbers number, EnSemi seme, Player iniziale)
-		{
-			if (board.CurrentTurn != -1)
-				throw new Exception ("Le carte si possono creare solo prima dell'inizio della partita");
-
-			_board = board;
-			_seme = seme;
-			_number = number;
-			_plIni = iniziale;
-
-			_plIni = null;
-			_gTurno = -1;
-		}
-
-		public void giocaCarta (int turno)
-		{
-			_gTurno = turno;
-		}
-
-		public void raccogliCarta (Player raccoglitore)
-		{
-
-			_plFin = raccoglitore;
-		}
-
-		public int getPunti ()
+		/// <summary>
+		/// Gets the value in point of this card.
+		/// </summary>
+		/// <returns>the value in point.</returns>
+		public int getPoint ()
 		{
 			if (_number == EnNumbers.ASSE)
 				return 11;
@@ -74,6 +63,74 @@ namespace Engine
 			else
 				return 0;
 		}
+
+		#endregion
+
+		#region Owner's information
+
+		/// <summary>
+		/// The player that have this card in his hand at the start of the game.
+		/// </summary>
+		private Player _plIni;
+
+		/// <summary>
+		/// The player that have this card in his pocket at the end of the game.
+		/// </summary>
+		private Player _plFin;
+
+		/// <summary>
+		/// The time in whith this card is played.
+		/// </summary>
+		private int _playingTime;
+
+		/// <summary>
+		/// Gets the player that have this card in his hand at the start of the game.
+		/// </summary>
+		/// <value>The initial player.</value>
+		public Player InitialPlayer { get { return _plIni; } }
+
+		/// <summary>
+		/// Gets the player that have this card in his pocket at the end of the game.
+		/// </summary>
+		/// <value>The final player.</value>
+		public Player FinalPlayer { get { return _plFin; } }
+
+		/// <summary>
+		/// Gets the time in whith this card is played.
+		/// </summary>
+		/// <value>The playing time.</value>
+		public int PlayingTime { get { return _playingTime; } }
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Engine.Card"/> is playable.
+		/// </summary>
+		/// <value><c>true</c> if is playable; otherwise, <c>false</c>.</value>
+		public bool isPlayable{ get { return _playingTime == -1; } }
+
+		#endregion
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Engine.Card"/> class.
+		/// </summary>
+		/// <param name="board">The board used by this card.</param>
+		/// <param name="number">The card's number.</param>
+		/// <param name="seme">The card's seme.</param>
+		/// <param name="iniziale">Initial player.</param>
+		public Card (Board board, EnNumbers number, EnSemi seme, Player initial)
+		{
+			if (!_board.isCreationTime)
+				throw new Exception ("A player must be instantiated during the creation time");
+
+			_board = board;	//set the board
+			_seme = seme;	//set the seme
+			_number = number;	//set the number
+			_plIni = initial;	//set the initial player
+
+			_plFin = null;		//the card is playable, so there isn't any final player yet.
+			_playingTime = -1;
+		}
+
+
 	}
 }
 

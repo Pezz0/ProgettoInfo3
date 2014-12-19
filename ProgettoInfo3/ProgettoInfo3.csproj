@@ -47,11 +47,13 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Code\Engine\Enumerativi\EnRole.cs" />
-    <Compile Include="Code\Engine\Enumerativi\EnSemi.cs" />
     <Compile Include="Code\Engine\Board.cs" />
     <Compile Include="Code\Engine\Card.cs" />
     <Compile Include="Code\Engine\Player.cs" />
+    <Compile Include="Code\Engine\Enumeration\EnRole.cs" />
+    <Compile Include="Code\Engine\Enumeration\EnSemi.cs" />
+    <Compile Include="Code\Engine\Random\NormalRandom.cs" />
+    <Compile Include="Code\Engine\Random\RandomGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -67,6 +69,7 @@
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Code\Engine\" />
-    <Folder Include="Code\Engine\Enumerativi\" />
+    <Folder Include="Code\Engine\Random\" />
+    <Folder Include="Code\Engine\Enumeration\" />
   </ItemGroup>
 </Project>

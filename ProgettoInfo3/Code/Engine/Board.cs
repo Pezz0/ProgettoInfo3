@@ -8,24 +8,241 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
+using myRandom;
 
 namespace Engine
 {
 	public class Board
 	{
+		public const int PLAYER_NUMBER = 5;
+
+		#region Time management
+
+		/// <summary>
+		/// Variable that rappresent the current discrete time
+		/// 	-2 = creation time
+		/// 	-1 = auction time
+		/// 	 0 = first play
+		/// 	...
+		///  	 4 = last play of the first turn
+		/// 	 5 = first play of the second turn
+		/// 	...
+		/// 	 39 = last play
+		/// 	 40 = point counting e conclusion
+		/// </summary>
+		private int _t;
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
+		/// </summary>
+		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
+		public bool isCreationTime{ get { return _t == -2; } }
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
+		/// </summary>
+		/// <value><c>true</c> ifis the time for the auction; otherwise, <c>false</c>.</value>
+		public bool isAuctionTime{ get { return _t == -1; } }
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="Engine.Board"/> is play time.
+		/// </summary>
+		/// <value><c>true</c> if is play time; otherwise, <c>false</c>.</value>
+		public bool isPlayTime{ get { return _t >= 0; } }
+
+		/// <summary>
+		/// Gets the current turn.
+		/// </summary>
+		/// <value>The current turn.</value>
+		public int Turn {
+			get {
+				if (!isPlayTime)
+					throw new Exception ("Non si è ancora iniziato a giocare"); 
+				return _t / PLAYER_NUMBER;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current discrete time.
+		/// </summary>
+		/// <value>The time.</value>
+		public int Time { get { return _t; } }
+
+		#endregion
+
+		#region Card management
+
+		/// <summary>
+		/// The card grid.
+		/// </summary>
 		private Card [,] _cardGrid;
 
-		private int _turn = 0;
-
-		public int CurrentTurn { get { return _turn; } }
-
-		public Board ()
+		/// <summary>
+		/// Gets the card.
+		/// </summary>
+		/// <returns>The card.</returns>
+		/// <param name="seme">Seme.</param>
+		/// <param name="number">Number.</param>
+		public Card getCard (EnSemi seme, EnNumbers number)
 		{
-			_cardGrid = new Card[Enum.GetValues (typeof (EnSemi)).GetLength (0), Enum.GetValues (typeof (EnNumbers)).GetLength (0)];
-			for (int i = 0; i < Enum.GetValues (typeof (EnSemi)).GetLength (0); i++)
-				for (int j = 0; i < Enum.GetValues (typeof (EnNumbers)).GetLength (0); j++)
-					_cardGrid [i, j] = new Card (this, (EnNumbers) j, (EnSemi) i, new Player ("pippo", EnRole.CHIAMANTE));
+			return _cardGrid [(int) seme, (int) number];
+		}
 
+		/// <summary>
+		/// Gets the hand of a player.
+		/// </summary>
+		/// <returns>The hand.</returns>
+		/// <param name="player">Player.</param>
+		public List<Card> getPlayerCard (Player player)
+		{
+			List<Card> cl = new List<Card> ();
+			foreach (Card c in _cardGrid)
+				if (c.InitialPlayer == player && c.isPlayable)
+					cl.Add (c);
+
+			return cl;
+		}
+
+		/// <summary>
+		/// Gets current chiamante's point count.
+		/// </summary>
+		/// <returns>The current chiamante's point count.</returns>
+		public int GetChiamantePointCount ()
+		{
+			int count = 0;
+			foreach (Card c in _cardGrid)
+				if (( c.FinalPlayer.Role == EnRole.CHIAMANTE || c.FinalPlayer.Role == EnRole.SOCIO ) && !c.isPlayable)
+					count = count + c.getPoint ();
+
+			return count;
+		}
+
+		/// <summary>
+		/// Gets current altri's point count.
+		/// </summary>
+		/// <returns>The current chiamante's point count.</returns>
+		public int GetAltriPointCount ()
+		{
+			int count = 0;
+			foreach (Card c in _cardGrid)
+				if (c.FinalPlayer.Role == EnRole.ALTRO && !c.isPlayable)
+					count = count + c.getPoint ();
+
+			return count;
+		}
+
+		#endregion
+
+		#region Players management giocatori
+
+		/// <summary>
+		/// The array of players.
+		/// </summary>
+		private Player [] _players;
+
+		/// <summary>
+		/// The index of the player who won the last turn.
+		/// </summary>
+		private int _lastWinner;
+
+		/// <summary>
+		/// Gets the last winner.
+		/// </summary>
+		/// <value>The last winner.</value>
+		public Player LastWinner{ get { return _players [_lastWinner]; } }
+
+		/// <summary>
+		/// Gets the player that have to play.
+		/// </summary>
+		/// <value>The player that have to play.</value>
+		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % 5]; } }
+
+		#endregion
+
+		#region Auction management
+
+		/// <summary>
+		/// The number of the best bet.
+		/// </summary>
+		private int _bestBidNumber;
+
+		/// <summary>
+		/// The point of the best bet.
+		/// </summary>
+		private int _bestBidPoint;
+
+		/// <summary>
+		/// The player who have done the best bid.
+		/// </summary>
+		private int _winningPlayer;
+
+		/// <summary>
+		/// The player who have to place a bid.
+		/// </summary>
+		private int _currentBidder;
+
+		/// <summary>
+		/// Gets the number of the best bet.
+		/// </summary>
+		/// <value>The number of the best bet.</value>
+		public int BestBidNumber { get { return _bestBidNumber; } }
+
+		/// <summary>
+		/// Gets The point of the best bet.
+		/// </summary>
+		/// <value>The point of the best bet.</value>
+		public int BestBidPoint { get { return _bestBidPoint; } }
+
+
+		#endregion
+
+		#region Playtime management
+
+		#endregion
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Engine.Board"/> class.
+		/// </summary>
+		/// <param name="playerName">An array that contains the name of the five player.</param>
+		/// <param name="indexDealer">Index of the dealer in the name's array.</param>
+		public Board (string [] playerName, int indexDealer)
+		{
+			//mazziere=dealer? cercato in google traslate
+			_t = -2;	//set the time
+
+			if (playerName.GetLength (0) != PLAYER_NUMBER)
+				throw new Exception ("The number of player must be " + PLAYER_NUMBER);
+
+			_players = new Player[PLAYER_NUMBER];	//set the players array
+			for (int i = 0; i < PLAYER_NUMBER; i++)
+				_players [i] = new Player (this, playerName [i]);
+
+			_lastWinner = indexDealer;	//the last winner is the player that have to play first in the next turn
+
+			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
+			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
+			int nCard = nSemi * nNumbers;	//the numbers of card
+			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
+
+			_cardGrid = new Card[nSemi, nNumbers];	//set the card grid
+			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
+			RandomGenerator rand = new NormalRandom ();	//instantiate the random generator
+
+			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
+				for (int j = 0; i < nNumbers; j++) {
+					int assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
+					while (cardAssign [assignedPlayer] >= nCardForPlayer)
+						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
+
+					_cardGrid [i, j] = new Card (this, (EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
+				}
+
+			_t = -1;	//start the auction
+			_bestBidNumber = -1;	//starting value for the auction
+			_bestBidPoint = 61;
+			_winningPlayer = indexDealer;
+			_currentBidder = ( indexDealer + 1 ) % PLAYER_NUMBER;
 		}
 	}
 }
