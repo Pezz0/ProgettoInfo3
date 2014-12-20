@@ -1,34 +1,37 @@
 using System;
-
-using Android.App;
-using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using CocosSharp;
+using Android.Content.PM;
+using Microsoft.Xna.Framework;
+using Android.App;
+
+
 
 namespace ProgettoInfo3
 {
-	[Activity (Label = "ProgettoInfo3", MainLauncher = true, Icon = "@drawable/icon")]
-	public class MainActivity : Activity
+	[Activity(
+		Label = "ProgettoInfo3",
+		AlwaysRetainTaskState = true,
+		Icon = "@drawable/icon",
+		Theme = "@android:style/Theme.NoTitleBar",
+		LaunchMode = LaunchMode.SingleInstance,
+		ScreenOrientation = ScreenOrientation.Portrait,
+		MainLauncher = true,
+		ConfigurationChanges =  ConfigChanges.Keyboard | 
+		ConfigChanges.KeyboardHidden)
+	]
+	public class MainActivity : AndroidGameActivity
 	{
-		int count = 1;
-
 		protected override void OnCreate (Bundle bundle)
 		{
-			base.OnCreate (bundle);
+			base.OnCreate(bundle);
 
-			// Set our view from the "main" layout resource
-			SetContentView (Resource.Layout.Main);
+			var application = new CCApplication();
 
-			// Get our button from the layout resource,
-			// and attach an event to it
-			Button button = FindViewById<Button> (Resource.Id.myButton);
-			
-			button.Click += delegate {
-				button.Text = string.Format ("{0} clicks!", count + 6);
-			};
 
+			application.ApplicationDelegate = new GameAppDelegate();
+			SetContentView(application.AndroidContentView);
+			application.StartGame();
 		}
 	}
 }
