@@ -94,5 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\Jimbe.jpg" />
+    <AndroidAsset Include="Assets\Content\AsseBastoni.png" />
   </ItemGroup>
 </Project>
