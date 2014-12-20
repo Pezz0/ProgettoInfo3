@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace myRandom
+namespace MyRandom
 {
-	public interface RandomGenerator
+	public interface IRandomGenerator
 	{
 		/// <summary>
 		/// Return a random integer number lesser or equal to MaxValue

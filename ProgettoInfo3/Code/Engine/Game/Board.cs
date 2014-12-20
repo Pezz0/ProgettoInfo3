@@ -9,10 +9,13 @@
 //------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using myRandom;
+using MyRandom;
 
 namespace Engine
 {
+	/// <summary>
+	/// This class rapresent the board used for this game
+	/// </summary>
 	public class Board
 	{
 		public const int PLAYER_NUMBER = 5;
@@ -37,13 +40,13 @@ namespace Engine
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
-		public bool isCreationTime{ get { return _t == -2; } }
+		public bool isCreationPhase{ get { return _t == -2; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
 		/// </summary>
 		/// <value><c>true</c> ifis the time for the auction; otherwise, <c>false</c>.</value>
-		public bool isAuctionTime{ get { return _t == -1; } }
+		public bool isAuctionPhase{ get { return _t == -1; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is play time.
@@ -134,7 +137,7 @@ namespace Engine
 
 		#endregion
 
-		#region Players management giocatori
+		#region Players management
 
 		/// <summary>
 		/// The array of players.
@@ -163,37 +166,137 @@ namespace Engine
 		#region Auction management
 
 		/// <summary>
-		/// The number of the best bet.
+		/// The bid list.
 		/// </summary>
-		private int _bestBidNumber;
+		private List<IBid> _bidList;
+
+		#region Status control
 
 		/// <summary>
-		/// The point of the best bet.
+		/// Control if a player have passed in the auction phase
 		/// </summary>
-		private int _bestBidPoint;
+		/// <returns><c>true</c>, if the player passed, <c>false</c> otherwise.</returns>
+		/// <param name="p">the player.</param>
+		public bool isPlayerPassed (Player player)
+		{
+			if (!isAuctionPhase)
+				throw new Exception ("We aren't in the auction phase");
+
+			return _bidList.Exists (delegate(IBid bid) {
+				return  bid is Pass && bid.Bidder == player;
+			});
+		}
 
 		/// <summary>
-		/// The player who have done the best bid.
+		/// Gets the current auction winning bid.
 		/// </summary>
-		private int _winningPlayer;
+		/// <value>The current auction winning bid. If null all the player have passed for now</value>
+		public NormalBid currentAuctionWinningBid {
+			get {
+				if (!isAuctionPhase)
+					throw new Exception ("We aren't in the auction phase");
+
+				return _bidList.FindLast (delegate(IBid bid) {
+					return bid is NormalBid;
+				}) as NormalBid;
+			}
+		}
+
 
 		/// <summary>
-		/// The player who have to place a bid.
+		/// Gets a value indicating whether the auction is closed.
 		/// </summary>
-		private int _currentBidder;
+		/// <value><c>true</c> if is auction closed; otherwise, <c>false</c>.</value>
+		public bool isAuctionClosed {
+			get {
+				if (!isAuctionPhase)
+					throw new Exception ("We aren't in the auction phase");
+					
+				List<IBid> passedBid = _bidList.FindAll (delegate(IBid bid) {
+					return !( bid is Pass );
+				});
+
+				//if PLAYER_NUMBER - 1(4) players have passed then someone win e the auction is closed
+				return passedBid.Count == PLAYER_NUMBER - 1;
+			}
+		}
 
 		/// <summary>
-		/// Gets the number of the best bet.
+		/// Gets the player that have to do a bid or pass.
 		/// </summary>
-		/// <value>The number of the best bet.</value>
-		public int BestBidNumber { get { return _bestBidNumber; } }
+		/// <value>The the player that have to do a bid or pass.</value>
+		public Player ActiveAuctionPlayer {
+			get {
+				if (!isAuctionPhase)
+					throw new Exception ("We aren't in the auction phase");
+
+				if (_bidList.Count == 0)
+					return _players [_lastWinner + 1];
+
+				if (isAuctionClosed)
+					throw new Exception ("The auction is close");
+					
+				int active = currentAuctionWinningBid.Bidder.Order + 1;
+
+				while (isPlayerPassed (_players [active]))
+					active = ( active + 1 ) & PLAYER_NUMBER;
+
+				return _players [active];
+
+			}
+
+		}
+
+		#endregion
+
+		#region Changing status
 
 		/// <summary>
-		/// Gets The point of the best bet.
+		/// Method for passing during the auction
 		/// </summary>
-		/// <value>The point of the best bet.</value>
-		public int BestBidPoint { get { return _bestBidPoint; } }
+		/// <param name="player">Player who want to pass.</param>
+		public void auctionPass (Player player)
+		{
+			if (!isAuctionPhase)
+				throw new Exception ("We aren't in the auction phase");
 
+			if (isAuctionClosed)
+				throw new Exception ("The auction is closed");
+
+			if (ActiveAuctionPlayer != player)
+				throw new Exception ("This player cannot put a bid now");
+
+			_bidList.Add (new Pass (player));
+		}
+
+		/// <summary>
+		/// Puts A bid.
+		/// </summary>
+		/// <param name="bidder">Bidder.</param>
+		/// <param name="number">Number.</param>
+		/// <param name="point">Point.</param>
+		public void putABid (Player bidder, EnNumbers number, int point)
+		{
+			if (!isAuctionPhase)
+				throw new Exception ("We aren't in the auction phase");
+
+			if (isAuctionClosed)
+				throw new Exception ("The auction is closed");
+
+			if (ActiveAuctionPlayer != bidder)
+				throw new Exception ("This player cannot put a bid now");
+
+			NormalBid nb = new NormalBid (bidder, number, point);
+
+			if (currentAuctionWinningBid > nb)
+				throw new Exception ("The new bid is not enough to beat the winning one");
+
+			_bidList.Add (nb);
+		}
+
+
+
+		#endregion
 
 		#endregion
 
@@ -216,7 +319,7 @@ namespace Engine
 
 			_players = new Player[PLAYER_NUMBER];	//set the players array
 			for (int i = 0; i < PLAYER_NUMBER; i++)
-				_players [i] = new Player (this, playerName [i]);
+				_players [i] = new Player (this, playerName [i], i);
 
 			_lastWinner = indexDealer;	//the last winner is the player that have to play first in the next turn
 
@@ -227,7 +330,7 @@ namespace Engine
 
 			_cardGrid = new Card[nSemi, nNumbers];	//set the card grid
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
-			RandomGenerator rand = new NormalRandom ();	//instantiate the random generator
+			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
 				for (int j = 0; i < nNumbers; j++) {
@@ -239,10 +342,7 @@ namespace Engine
 				}
 
 			_t = -1;	//start the auction
-			_bestBidNumber = -1;	//starting value for the auction
-			_bestBidPoint = 61;
-			_winningPlayer = indexDealer;
-			_currentBidder = ( indexDealer + 1 ) % PLAYER_NUMBER;
+			_bidList = new List<IBid> ();
 		}
 	}
 }

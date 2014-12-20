@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace myRandom
+namespace MyRandom
 {
-	public class NormalRandom:RandomGenerator
+	public class NormalRandom:IRandomGenerator
 	{
 		private Random _rnd;
 
