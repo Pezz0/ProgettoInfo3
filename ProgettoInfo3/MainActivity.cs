@@ -4,6 +4,7 @@ using CocosSharp;
 using Android.Content.PM;
 using Microsoft.Xna.Framework;
 using Android.App;
+using Core;
 
 
 

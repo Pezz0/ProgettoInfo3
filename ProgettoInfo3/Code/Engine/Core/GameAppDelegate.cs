@@ -2,7 +2,7 @@
 using CocosSharp;
 
 
-namespace ProgettoInfo3
+namespace Core
 {
 
 	public class GameAppDelegate : CCApplicationDelegate

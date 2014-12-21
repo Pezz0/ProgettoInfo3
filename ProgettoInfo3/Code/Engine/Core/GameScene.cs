@@ -1,13 +1,15 @@
 ﻿using System;
 using CocosSharp;
 
-namespace ProgettoInfo3
+namespace Core
 {
 	public class GameScene : CCScene
 	{
 		CCLayer mainLayer;
 		CCSprite [] carte;
 		CCEventListenerTouchAllAtOnce touchListener;
+		bool touched;
+		int selected;
 
 		// TODO : Sistemare questa winsize, non riesco a trovare un'altro modo per prenderla
 		CCSize winSize;
@@ -53,7 +55,9 @@ namespace ProgettoInfo3
 			//Instancing the touch listener
 			touchListener = new CCEventListenerTouchAllAtOnce ();
 			//Instancing the event for the movement
+			touchListener.OnTouchesBegan = touchBegan;
 			touchListener.OnTouchesMoved = touchMoved; 
+
 			AddEventListener (touchListener, this);
 		}
 
@@ -77,23 +81,33 @@ namespace ProgettoInfo3
 			//Moving the sprite following exactly the touch
 			CCPoint pos = touches [0].LocationOnScreen;
 
+
+			if (touched) {
+				//Inverting Y cuz the image is referred to the bottom-left corner and the touch is referred to the top-left corner
+				carte [selected].Position = new CCPoint (pos.X, winSize.Height - pos.Y);
+			}
+
+
+		}
+
+		void touchBegan(System.Collections.Generic.List<CCTouch> touches, CCEvent touchEvent){
+
+
+			CCPoint pos = touches [0].LocationOnScreen;
+			CCPoint posToParent = new CCPoint (pos.X, winSize.Height - pos.Y);
+
 			//Checking on wich card the touch is positioned
 			//I'm doing this in reverse because the 7th card is the one in the foreground and the 0th card is the one in the background
 			int i;
-			bool touched = false;
+			touched = false;
 			for (i = 7; i >= 0; i--) {
-				if (carte [i].BoundingBoxTransformedToParent.ContainsPoint (pos)) {
+				if (carte [i].BoundingBoxTransformedToParent.ContainsPoint (posToParent)) {
 					touched = true;
+					selected = i;
 					break;
 				}
-					
-			}
-			if (touched) {
-				//Inverting Y cuz the image is referred to the bottom-left corner and the touch is referred to the top-left corner
-				carte [i].Position = new CCPoint (pos.X, winSize.Height - pos.Y);
-			}
 
-
+			}
 		}
 	}
 }
