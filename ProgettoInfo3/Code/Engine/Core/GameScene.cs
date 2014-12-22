@@ -5,14 +5,21 @@ namespace Core
 {
 	public class GameScene : CCScene
 	{
-		CCLayer mainLayer;
-		CCSprite [] carte;
-		CCEventListenerTouchAllAtOnce touchListener;
-		bool touched;
-		int selected;
+		//Core variables
+		private CCLayer mainLayer;
+
+		//Sprites and position variables
+		private CCSprite [] carte;
+		private CCPoint3 [] posBase;
+		//Using a 3D point to store the rotation, too
+
+		//Touch helper variables
+		private CCEventListenerTouchAllAtOnce touchListener;
+		private int selected;
+		private CCRect dropField;
 
 		// TODO : Sistemare questa winsize, non riesco a trovare un'altro modo per prenderla
-		CCSize winSize;
+		private CCSize winSize;
 
 
 		/// <summary>
@@ -28,23 +35,29 @@ namespace Core
 
 			//Instancing the array of cards that will become childs of the mainLayer
 			carte = new CCSprite[8];
+			posBase = new CCPoint3[8];
+
+			//Setting the area when cards can be dropped
+			dropField = new CCRect (127, 454, 300, 400);
 
 			//Getting the window size
 			winSize = mainWindow.WindowSizeInPixels;
 
 			//Test card sprites creation
 			for (int i = 0; i < 8; i++) {
-				carte [i] = new CCSprite ("AsseBastoni");
-				carte [i].Rotation = -90 - 4 * (i > 3 ? 4 - i - 1 : 4 - i);
-				carte [i].Scale = 0.3f;
+
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
-				if (i == 0) {
-					carte [i].PositionX = (int) (winSize.Width) - 100 + 3 * (i * i - 7 * i + 12);
-					carte [i].PositionY = (int) (winSize.Height / 4);
-				} else {
-					carte [i].PositionX = (int) (winSize.Width) - 100 + 3 * (i * i - 7 * i + 12);
-					carte [i].PositionY = carte [i - 1].PositionY + 50;
-				}
+				posBase [i].X = winSize.Width - 100 + 3 * (i * i - 7 * i + 12);
+				posBase [i].Y = i == 0 ? winSize.Height / 4 : posBase [i - 1].Y + 50;
+				posBase [i].Z = -90 - 4 * (i > 3 ? 4 - i - 1 : 4 - i);
+
+				carte [i] = new CCSprite ("AsseBastoni");
+				carte [i].PositionX = posBase [i].X;
+				carte [i].PositionY = posBase [i].Y;
+				carte [i].Rotation = posBase [i].Z;
+				carte [i].Scale = 0.3f;
+
+
 				mainLayer.AddChild (carte [i]);
 			}
 
@@ -57,6 +70,7 @@ namespace Core
 			//Instancing the event for the movement
 			touchListener.OnTouchesBegan = touchBegan;
 			touchListener.OnTouchesMoved = touchMoved; 
+			touchListener.OnTouchesEnded = touchEnded;
 
 			AddEventListener (touchListener, this);
 		}
@@ -68,11 +82,24 @@ namespace Core
 		/// <param name="frameTimeInSeconds">Frame time in seconds</param>
 		void RunGameLogic (float frameTimeInSeconds)
 		{
+//			float dx;
+//			int[] t= new int[8];
+//			CCPoint [] posIniz;
+//			for (int i = 0; i < 8; i++)
+//				t [i] = 0;
+//			for (int i = 0; i < 8; i++) {
+//				if (i!=selected && !posBase [i].Equals (new CCPoint3 (carte [i].Position, carte [i].Rotation))) {
+//					if (t [i] == 0)
+//						posIniz [i] = carte [i].Position;
+//					t[i]=t[i]+
+//					carte[i].Position=new CCPoint(carte[i].PositionX+((posBase[i].X-posIniz[i].x)*)
+//				}
+//			}
 
 		}
 
 		/// <summary>
-		/// Function executed for the touch movement
+		/// Function executed on the touch movement
 		/// </summary>
 		/// <param name="touches">List of touches</param>
 		/// <param name="touchEvent">Touch event</param>
@@ -82,7 +109,7 @@ namespace Core
 			CCPoint pos = touches [0].LocationOnScreen;
 
 
-			if (touched) {
+			if (selected >= 0) {
 				//Inverting Y cuz the image is referred to the bottom-left corner and the touch is referred to the top-left corner
 				carte [selected].Position = new CCPoint (pos.X, winSize.Height - pos.Y);
 			}
@@ -90,7 +117,14 @@ namespace Core
 
 		}
 
-		void touchBegan(System.Collections.Generic.List<CCTouch> touches, CCEvent touchEvent){
+
+		/// <summary>
+		/// Function executed on the starting touch
+		/// </summary>
+		/// <param name="touches">List of touches</param>
+		/// <param name="touchEvent">Touch event</param>
+		void touchBegan (System.Collections.Generic.List<CCTouch> touches, CCEvent touchEvent)
+		{
 
 
 			CCPoint pos = touches [0].LocationOnScreen;
@@ -99,15 +133,37 @@ namespace Core
 			//Checking on wich card the touch is positioned
 			//I'm doing this in reverse because the 7th card is the one in the foreground and the 0th card is the one in the background
 			int i;
-			touched = false;
+			selected = -1;
 			for (i = 7; i >= 0; i--) {
 				if (carte [i].BoundingBoxTransformedToParent.ContainsPoint (posToParent)) {
-					touched = true;
+
 					selected = i;
 					break;
 				}
 
 			}
 		}
+
+
+		/// <summary>
+		/// Function executed when the touch is released
+		/// </summary>
+		/// <param name="touches">List of touches</param>
+		/// <param name="touchEvent">Touch event</param>
+		void touchEnded (System.Collections.Generic.List<CCTouch> touches, CCEvent touchEvent)
+		{
+			CCPoint pos = touches [0].LocationOnScreen;
+
+			if (dropField.ContainsPoint (pos)) {
+				posBase [selected] = new CCPoint3 (dropField.Center.X, winSize.Height -dropField.Center.Y,posBase [selected].Z);
+				CCMoveTo c = new CCMoveTo (0.3f, new CCPoint (posBase [selected].X, posBase [selected].Y));
+				carte [selected].RunAction (c);
+			}
+			selected = -1;
+
+
+		}
 	}
+
+
 }
