@@ -109,7 +109,7 @@ namespace Engine
 		/// <param name="iniziale">Initial player.</param>
 		public Card (Board board, EnNumbers number, EnSemi seme, Player initial)
 		{
-			if (!_board.isCreationPhase)
+			if (!board.isCreationPhase)
 				throw new Exception ("A player must be instantiated during the creation time");
 
 			_board = board;	//set the board

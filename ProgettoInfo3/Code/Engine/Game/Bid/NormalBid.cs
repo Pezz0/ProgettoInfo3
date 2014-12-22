@@ -34,7 +34,7 @@ namespace Engine
 
 		public int CompareTo (NormalBid other)
 		{
-			if (other == null)
+			if (( (object) other ) == null)
 				return 1;	//everything is greater than null (at least I think so)
 
 			if (this.Number != other.Number)	//the number is more important
@@ -61,23 +61,23 @@ namespace Engine
 
 		public static bool operator == (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but null is equals only with an other null
-				return bid2 == null;
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but null is equals only with an other null
+				return ( (object) bid2 ) == null;
 
 			return bid1.CompareTo (bid2) == 0;
 		}
 
 		public static bool operator != (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but null is equals only with an other null
-				return !( bid2 == null );
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but null is equals only with an other null
+				return !( ( (object) bid2 ) == null );
 
 			return bid1.CompareTo (bid2) != 0;
 		}
 
 		public static bool operator > (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but everything is greater than null, bid1=null -> bid2 > bid1
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but everything is greater than null, bid1=null -> bid2 > bid1
 				return false;
 
 			return bid1.CompareTo (bid2) > 0;
@@ -85,23 +85,23 @@ namespace Engine
 
 		public static bool operator < (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but everything except null is greater than null
-				return !( bid2 == null );
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but everything except null is greater than null
+				return !( ( (object) bid2 ) == null );
 
 			return bid1.CompareTo (bid2) < 0;
 		}
 
 		public static bool operator >= (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but everything except null is greater than null
-				return  bid2 == null;
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but everything except null is greater than null
+				return  ( (object) bid2 ) == null;
 
 			return bid1.CompareTo (bid2) >= 0;
 		}
 
 		public static bool operator <= (NormalBid bid1, NormalBid bid2)
 		{
-			if (bid1 == null)	//if bid1 is null we cannot invoke the compareTo but everything is greater than null, bid1=null -> bid1 <= bid2
+			if (( (object) bid1 ) == null)	//if bid1 is null we cannot invoke the compareTo but everything is greater than null, bid1=null -> bid1 <= bid2
 				return true;
 
 			return bid1.CompareTo (bid2) <= 0;

@@ -82,17 +82,6 @@ namespace Engine
 		private Card [,] _cardGrid;
 
 		/// <summary>
-		/// The called card.
-		/// </summary>
-		private Card _calledCard;
-
-		/// <summary>
-		/// Gets the called card.
-		/// </summary>
-		/// <value>The called card.</value>
-		public Card CalledCard { get { return _calledCard; } }
-
-		/// <summary>
 		/// Gets the card.
 		/// </summary>
 		/// <returns>The card.</returns>
@@ -167,10 +156,61 @@ namespace Engine
 		public Player LastWinner{ get { return _players [_lastWinner]; } }
 
 		/// <summary>
-		/// Gets the player that have to play.
+		/// Gets the players.
 		/// </summary>
-		/// <value>The player that have to play.</value>
-		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % 5]; } }
+		/// <value>The players.</value>
+		public List<Player> Players { get { return  new List<Player> (_players); } }
+
+		/// <summary>
+		/// Gets the player chiamante.
+		/// </summary>
+		/// <value>The player chiamante.</value>
+		public Player PlayerChiamante {
+			get {
+				if (!isPlayTime)
+					throw new Exception ("Role not assigned yet");
+
+				foreach (Player p in _players)
+					if (p.Role == EnRole.CHIAMANTE)
+						return p;
+				throw new Exception ("Some error occur, this path shoudn't be executed");
+			}
+		}
+
+		/// <summary>
+		/// Gets the player socio.
+		/// </summary>
+		/// <value>The player socio.</value>
+		public Player PlayerSocio {
+			get {
+				if (!isPlayTime)
+					throw new Exception ("Role not assigned yet");
+
+				foreach (Player p in _players)
+					if (p.Role == EnRole.SOCIO)
+						return p;
+				throw new Exception ("Some error occur, this path shoudn't be executed");
+			}
+		}
+
+		/// <summary>
+		/// Gets the player altri.
+		/// </summary>
+		/// <value>The player altri.</value>
+		public List<Player> PlayerAltri {
+			get {
+				if (!isPlayTime)
+					throw new Exception ("Role not assigned yet");
+
+				List<Player> pl = new List<Player> ();
+
+				foreach (Player p in _players)
+					if (p.Role == EnRole.ALTRO)
+						pl.Add (p);
+
+				return pl;
+			}
+		}
 
 		#endregion
 
@@ -228,7 +268,7 @@ namespace Engine
 				});
 
 				//if PLAYER_NUMBER - 1(4) players have passed then someone win e the auction is closed
-				return passedBid.Count == PLAYER_NUMBER - 1;
+				return passedBid.Count == PLAYER_NUMBER - 1 && _bidList.Count > PLAYER_NUMBER - 1;
 			}
 		}
 
@@ -247,10 +287,14 @@ namespace Engine
 				if (isAuctionClosed)
 					throw new Exception ("The auction is close");
 					
-				int active = currentAuctionWinningBid.Bidder.Order + 1;
+				NormalBid wb = currentAuctionWinningBid;
+				if (wb == null)
+					return _players [( _lastWinner + 1 + _bidList.Count ) % PLAYER_NUMBER];
+
+				int active = ( wb.Bidder.Order + 1 ) % PLAYER_NUMBER;
 
 				while (isPlayerPassed (_players [active]))
-					active = ( active + 1 ) & PLAYER_NUMBER;
+					active = ( active + 1 ) % PLAYER_NUMBER;
 
 				return _players [active];
 
@@ -286,7 +330,7 @@ namespace Engine
 		/// <param name="bidder">Bidder.</param>
 		/// <param name="number">Number.</param>
 		/// <param name="point">Point.</param>
-		public void putABid (Player bidder, EnNumbers number, int point)
+		public void auctionPutABid (NormalBid nb)
 		{
 			if (!isAuctionPhase)
 				throw new Exception ("We aren't in the auction phase");
@@ -294,16 +338,33 @@ namespace Engine
 			if (isAuctionClosed)
 				throw new Exception ("The auction is closed");
 
-			if (ActiveAuctionPlayer != bidder)
+			if (ActiveAuctionPlayer != nb.Bidder)
 				throw new Exception ("This player cannot put a bid now");
 
-			NormalBid nb = new NormalBid (bidder, number, point);
-
-			if (currentAuctionWinningBid > nb)
+			if (!isBidBetter (nb))
 				throw new Exception ("The new bid is not enough to beat the winning one");
 
 			_bidList.Add (nb);
 		}
+
+
+		/// <summary>
+		/// Return a value that indicate if the passed bid is bettere than the last one
+		/// </summary>
+		/// <returns><c>true</c>, if bid is better, <c>false</c> otherwise.</returns>
+		/// <param name="nb">Nb.</param>
+		public bool isBidBetter (IBid nb)
+		{
+			IBid wb = currentAuctionWinningBid;
+
+			if (wb == null)
+				return true;
+			else if (nb is Pass)
+				return false;
+			else
+				return (NormalBid) ( nb ) > currentAuctionWinningBid;
+		}
+
 
 		/// <summary>
 		/// Finalize the auction, set the called card, the players roles and start the playtime
@@ -314,8 +375,15 @@ namespace Engine
 			if (!isAuctionClosed)
 				throw new Exception ("The auction must be closed");
 
+			NormalBid wb = currentAuctionWinningBid;
+
+			if (wb == null)
+				throw new Exception ("Partita a monte, da vedere bene come fare");
+
 			//set del colled card
-			_calledCard = getCard (seme, currentAuctionWinningBid.Number);
+			_calledCard = getCard (seme, wb.Number);
+
+			_point = wb.Point;
 
 			//set the roles
 			currentAuctionWinningBid.Bidder.Role = EnRole.CHIAMANTE;
@@ -332,6 +400,38 @@ namespace Engine
 
 		#region Playtime management
 
+		#region win condition
+
+		/// <summary>
+		/// The necessary point to win.
+		/// </summary>
+		private int _point;
+
+		/// <summary>
+		/// Gets the winning point.
+		/// </summary>
+		/// <value>The winning point.</value>
+		public int WinningPoint { get { return _point; } }
+
+		/// <summary>
+		/// The called card.
+		/// </summary>
+		private Card _calledCard;
+
+		/// <summary>
+		/// Gets the called card.
+		/// </summary>
+		/// <value>The called card.</value>
+		public Card CalledCard { get { return _calledCard; } }
+
+		#endregion
+
+		/// <summary>
+		/// Gets the player that have to play.
+		/// </summary>
+		/// <value>The player that have to play.</value>
+		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % 5]; } }
+
 		#endregion
 
 		/// <summary>
@@ -339,11 +439,15 @@ namespace Engine
 		/// </summary>
 		/// <param name="playerName">An array that contains the name of the five player.</param>
 		/// <param name="indexDealer">Index of the dealer in the name's array.</param>
-		public Board (string [] playerName, int indexDealer)
+		public Board ()
 		{
 			//mazziere=dealer? cercato in google traslate
 			_t = -2;	//set the time
 
+		}
+
+		public void initialize (string [] playerName, int indexDealer)
+		{
 			if (playerName.GetLength (0) != PLAYER_NUMBER)
 				throw new Exception ("The number of player must be " + PLAYER_NUMBER);
 
@@ -363,12 +467,14 @@ namespace Engine
 			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
-				for (int j = 0; i < nNumbers; j++) {
+				for (int j = 0; j < nNumbers; j++) {
 					int assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
-					while (cardAssign [assignedPlayer] >= nCardForPlayer)
-						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
+					while (cardAssign [assignedPlayer] == nCardForPlayer)
+						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
+					//assignedPlayer = ( assignedPlayer + 1 ) % PLAYER_NUMBER;	//continue to change the assigned player until isn't a full player
 
 					_cardGrid [i, j] = new Card (this, (EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
+					cardAssign [assignedPlayer]++;
 				}
 
 			_t = -1;	//start the auction

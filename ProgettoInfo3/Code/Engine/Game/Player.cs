@@ -69,7 +69,7 @@ namespace Engine
 		/// <param name="order">The player's order </param>
 		public Player (Board board, string name, int order)
 		{
-			if (!_board.isCreationPhase)
+			if (!board.isCreationPhase)
 				throw new Exception ("A player must be instantiated during the creation time");
 
 			_role = EnRole.ALTRO;
