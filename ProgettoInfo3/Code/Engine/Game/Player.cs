@@ -9,21 +9,6 @@ namespace Engine
 		/// </summary>
 		private Board _board;
 
-		#region order management
-
-		/// <summary>
-		/// The order.
-		/// </summary>
-		private int _order;
-
-		/// <summary>
-		/// Gets the order.
-		/// </summary>
-		/// <value>The order.</value>
-		public int Order { get { return _order; } }
-
-		#endregion
-
 		#region Name management
 
 		/// <summary>
@@ -61,6 +46,21 @@ namespace Engine
 
 		#endregion
 
+		#region order management
+
+		/// <summary>
+		/// The order.
+		/// </summary>
+		private int _order;
+
+		/// <summary>
+		/// Gets the order.
+		/// </summary>
+		/// <value>The order.</value>
+		public int Order { get { return _order; } }
+
+		#endregion
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.Player"/> class.
 		/// </summary>
@@ -71,6 +71,8 @@ namespace Engine
 		{
 			if (!_board.isCreationPhase)
 				throw new Exception ("A player must be instantiated during the creation time");
+
+			_role = EnRole.ALTRO;
 			_board = board;
 			_name = name;
 			_order = order;
@@ -78,7 +80,7 @@ namespace Engine
 
 		public override string ToString ()
 		{
-			return string.Format ("[Player: Order={0}, Name={1}, Role={2}]", Order, Name, Role);
+			return string.Format ("[Player: Name={0}, Role={1}, Order={2}]", Name, Role, Order);
 		}
 	}
 }

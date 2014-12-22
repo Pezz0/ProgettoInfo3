@@ -82,6 +82,17 @@ namespace Engine
 		private Card [,] _cardGrid;
 
 		/// <summary>
+		/// The called card.
+		/// </summary>
+		private Card _calledCard;
+
+		/// <summary>
+		/// Gets the called card.
+		/// </summary>
+		/// <value>The called card.</value>
+		public Card CalledCard { get { return _calledCard; } }
+
+		/// <summary>
 		/// Gets the card.
 		/// </summary>
 		/// <returns>The card.</returns>
@@ -213,7 +224,7 @@ namespace Engine
 					throw new Exception ("We aren't in the auction phase");
 					
 				List<IBid> passedBid = _bidList.FindAll (delegate(IBid bid) {
-					return !( bid is Pass );
+					return  bid is Pass;
 				});
 
 				//if PLAYER_NUMBER - 1(4) players have passed then someone win e the auction is closed
@@ -294,6 +305,25 @@ namespace Engine
 			_bidList.Add (nb);
 		}
 
+		/// <summary>
+		/// Finalize the auction, set the called card, the players roles and start the playtime
+		/// </summary>
+		/// <param name="seme">Seme.</param>
+		public void finalizeAuction (EnSemi seme)
+		{
+			if (!isAuctionClosed)
+				throw new Exception ("The auction must be closed");
+
+			//set del colled card
+			_calledCard = getCard (seme, currentAuctionWinningBid.Number);
+
+			//set the roles
+			currentAuctionWinningBid.Bidder.Role = EnRole.CHIAMANTE;
+			_calledCard.InitialPlayer.Role = EnRole.SOCIO;
+
+			//time for the first turn
+			_t = 0;
+		}
 
 
 		#endregion
