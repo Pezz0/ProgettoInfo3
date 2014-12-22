@@ -82,19 +82,6 @@ namespace Core
 		/// <param name="frameTimeInSeconds">Frame time in seconds</param>
 		void RunGameLogic (float frameTimeInSeconds)
 		{
-//			float dx;
-//			int[] t= new int[8];
-//			CCPoint [] posIniz;
-//			for (int i = 0; i < 8; i++)
-//				t [i] = 0;
-//			for (int i = 0; i < 8; i++) {
-//				if (i!=selected && !posBase [i].Equals (new CCPoint3 (carte [i].Position, carte [i].Rotation))) {
-//					if (t [i] == 0)
-//						posIniz [i] = carte [i].Position;
-//					t[i]=t[i]+
-//					carte[i].Position=new CCPoint(carte[i].PositionX+((posBase[i].X-posIniz[i].x)*)
-//				}
-//			}
 
 		}
 
