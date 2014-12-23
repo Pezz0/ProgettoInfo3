@@ -62,18 +62,8 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Code\Engine\Random\NormalRandom.cs" />
-    <Compile Include="Code\Engine\Random\RandomGenerator.cs" />
-    <Compile Include="Code\Engine\Enumeration\EnRole.cs" />
-    <Compile Include="Code\Engine\Enumeration\EnSemi.cs" />
     <Compile Include="Code\Engine\Core\GameAppDelegate.cs" />
     <Compile Include="Code\Engine\Core\GameScene.cs" />
-    <Compile Include="Code\Engine\Game\Bid\IBid.cs" />
-    <Compile Include="Code\Engine\Game\Board.cs" />
-    <Compile Include="Code\Engine\Game\Player.cs" />
-    <Compile Include="Code\Engine\Game\Card.cs" />
-    <Compile Include="Code\Engine\Game\Bid\Pass.cs" />
-    <Compile Include="Code\Engine\Game\Bid\NormalBid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -90,8 +80,6 @@
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Code\Engine\" />
-    <Folder Include="Code\Engine\Random\" />
-    <Folder Include="Code\Engine\Enumeration\" />
     <Folder Include="Code\Engine\Core\" />
     <Folder Include="Assets\Content\" />
   </ItemGroup>
