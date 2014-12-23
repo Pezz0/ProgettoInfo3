@@ -1,5 +1,6 @@
 ﻿using System;
 using CocosSharp;
+using System.Collections.Generic;
 
 namespace Core
 {
@@ -9,7 +10,8 @@ namespace Core
 		private CCLayer mainLayer;
 
 		//Sprites and position variables
-		private cardData [] carte;
+		private List<cardData> carte;
+		private List<cardData> droppedCards;
 
 
 		//Touch helper variables
@@ -17,6 +19,7 @@ namespace Core
 		private int selected;
 		private CCRect dropField;
 		private CCRect cardField;
+		private int inHand;
 
 		// TODO : Sistemare questa winsize, non riesco a trovare un'altro modo per prenderla
 		private CCSize winSize;
@@ -34,20 +37,19 @@ namespace Core
 			AddChild (mainLayer);
 
 			//Instancing the array of cards that will become childs of the mainLayer
-			carte = new cardData[8];
+			carte = new List<cardData>(8);
+			droppedCards = new List<cardData> ();
 
 			//Getting the window size
 			winSize = mainWindow.WindowSizeInPixels;
 
 			//Setting the area when cards can be dropped
-			//dropField = new CCRect (127, 454, 300, 400);
 			dropField = new CCRect (0, (int)(winSize.Height/4), (int)(winSize.Width/2), (int)(winSize.Height/2));
 
 			//Setting the area where the cards can be re-arranged
-			//cardField = new CCRect (600, 350, 200, 650);
 			cardField = new CCRect ((int)(winSize.Width*4/5),(int)(winSize.Height/5), (int)(winSize.Width/5), (int)(winSize.Height*3/5));
 
-
+			inHand = 8;
 
 
 			#region Sprites creation and positioning
@@ -64,7 +66,7 @@ namespace Core
 					posBase=new CCPoint (winSize.Width - 100 + 3 * (i * i - 7 * i + 12),carte [i - 1].posBase.Y + 50);
 				}
 				rotation=-90 - 4 * (i > 3 ? 4 - i - 1 : 4 - i);
-				carte[i]= new cardData(new CCSprite ("AsseBastoni"), posBase, rotation);
+				carte.Add(new cardData(new CCSprite ("AsseBastoni"), posBase, rotation));
 					
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
 				carte [i].sprite.Position = carte [i].posBase;
@@ -118,7 +120,7 @@ namespace Core
 			//I'm doing this in reverse because the 7th card is the one in the foreground and the 0th card is the one in the background
 			int i;
 			selected = -1;
-			for (i = 7; i >= 0; i--) {
+			for (i = inHand-1; i >= 0; i--) {
 				if (carte [i].sprite.BoundingBoxTransformedToParent.ContainsPoint (posToParent)) {
 					selected = i;
 					break;
@@ -151,65 +153,128 @@ namespace Core
 				//3 - If card has not moved yet, make it move
 				//4 - Swap depth
 				//5 - Swap cardData elements
-				if (cardField.ContainsPoint (pos)) {
+				if (cardField.ContainsPoint (pos)&&inHand>1) {
 					if (selected == 0) {
 						if ((winSize.Height - pos.Y) > carte [1].posBase.Y + 8) {
-							//Switch base position and move the sprite
+							//Swap base position
 							CCPoint tempP = carte [1].posBase;
 							carte [1].posBase = carte [0].posBase;
 							carte [0].posBase = tempP;
-							if(!carte[1].posBase.Equals(carte[1].sprite.Position))
-								moveSprite (carte [1].posBase, carte [1].sprite);
+
+							//Swap base rotation
+							float tempR=carte[1].rotation;
+							carte[1].rotation=carte[0].rotation;
+							carte[0].rotation=tempR;
+
+							//Move and rotate sprite
+							if(!carte[1].posBase.Equals(carte[1].sprite.Position)){
+								moveSprite(carte[0].sprite,carte[0].rotation);
+								moveSprite (carte [1].posBase, carte [1].sprite,0.3f,carte[1].rotation);
+							}
+								
+
+							//Swap zOrder
 							carte[0].sprite.ZOrder=1;
 							carte[1].sprite.ZOrder=0;
+
+							//Swap cardData entry
 							cardData tempC =carte[1];
 							carte[1]=carte[0];
 							carte[0]=tempC;
+
+							//Now the selected card is in another position
 							selected=1;
 						}
-					} else if (selected == 7) {
+					} else if (selected == inHand-1) {
 						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
-							//Switch base position and move the sprite
-							CCPoint tempP = carte [6].posBase;
-							carte [6].posBase = carte [7].posBase;
-							carte [7].posBase = tempP;
-							if(!carte[6].posBase.Equals(carte[6].sprite.Position))
-								moveSprite (carte [6].posBase, carte [6].sprite);
-							carte[7].sprite.ZOrder=6;
-							carte[6].sprite.ZOrder=7;
-							cardData tempC =carte[6];
-							carte[6]=carte[7];
-							carte[7]=tempC;
-							selected=6;
+							//Swap base position
+							CCPoint tempP = carte [inHand-2].posBase;
+							carte [inHand-2].posBase = carte [inHand-1].posBase;
+							carte [inHand-1].posBase = tempP;
+
+							//Swap base rotation
+							float tempR=carte[inHand-2].rotation;
+							carte[inHand-2].rotation=carte[inHand-1].rotation;
+							carte[inHand-1].rotation=tempR;
+
+							//Move and rotate sprite
+							if(!carte[inHand-2].posBase.Equals(carte[inHand-2].sprite.Position)){
+								moveSprite(carte[inHand-1].sprite,carte[inHand-1].rotation);
+								moveSprite (carte [inHand-2].posBase, carte [inHand-2].sprite,0.3f,carte[inHand-2].rotation);
+							}
+								
+
+							//Swap zOrder
+							carte[inHand-1].sprite.ZOrder=inHand-2;
+							carte[inHand-2].sprite.ZOrder=inHand-1;
+
+							//Swap cardData entry
+							cardData tempC =carte[inHand-2];
+							carte[inHand-2]=carte[inHand-1];
+							carte[inHand-1]=tempC;
+
+							//Now the selected card is in another position
+							selected=inHand-2;
 						}
 					}else {
 						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
-							//Switch base position and move the sprite
-							CCPoint temp = carte [selected - 1].posBase;
+							//Swap base position
+							CCPoint tempP = carte [selected - 1].posBase;
 							carte [selected - 1].posBase = carte [selected].posBase;
-							carte [selected].posBase = temp;
-							if(!carte[selected-1].posBase.Equals(carte[selected-1].sprite.Position))
-								moveSprite (carte [selected - 1].posBase, carte [selected - 1].sprite);
+							carte [selected].posBase = tempP;
+
+							//Swap base rotation
+							float tempR=carte[selected - 1].rotation;
+							carte[selected - 1].rotation=carte[selected].rotation;
+							carte[selected].rotation=tempR;
+
+							//Move and rotate sprite
+							if(!carte[selected-1].posBase.Equals(carte[selected-1].sprite.Position)){
+								moveSprite(carte[selected].sprite,carte[selected].rotation);
+								moveSprite (carte [selected - 1].posBase, carte [selected - 1].sprite,0.3f,carte[selected-1].rotation);
+							}
+
+							//Swap zOrder
 							carte[selected].sprite.ZOrder=selected-1;
 							carte[selected-1].sprite.ZOrder=selected;
+
+							//Swap cardData entry
 							cardData tempC =carte[selected-1];
 							carte[selected-1]=carte[selected];
 							carte[selected]=tempC;
+
+							//Now the selected card is in another position
 							selected=selected-1;
 						}
 
 						if ((winSize.Height - pos.Y) > carte [selected + 1].posBase.Y + 8) {
-							//Switch base position and move the sprite
-							CCPoint temp = carte [selected + 1].posBase;
+							//Swap base position
+							CCPoint tempP = carte [selected + 1].posBase;
 							carte [selected + 1].posBase = carte [selected].posBase;
-							carte [selected].posBase = temp;
-							if(!carte[selected+1].posBase.Equals(carte[selected+1].sprite.Position))
-								moveSprite (carte [selected + 1].posBase, carte [selected + 1].sprite);
+							carte [selected].posBase = tempP;
+
+							//Swap base rotation
+							float tempR=carte[selected + 1].rotation;
+							carte[selected + 1].rotation=carte[selected].rotation;
+							carte[selected].rotation=tempR;
+
+							//Move and rotate sprite
+							if(!carte[selected+1].posBase.Equals(carte[selected+1].sprite.Position)){
+								moveSprite(carte[selected].sprite,carte[selected].rotation);
+								moveSprite (carte [selected + 1].posBase, carte [selected + 1].sprite,0.3f,carte[selected+1].rotation);
+							}
+								
+
+							//Swap zOrder
 							carte[selected+1].sprite.ZOrder=selected;
 							carte[selected].sprite.ZOrder=selected+1;
+
+							//Swap cardData entry
 							cardData tempC =carte[selected+1];
 							carte[selected+1]=carte[selected];
 							carte[selected]=tempC;
+
+							//Now the selected card is in another position
 							selected=selected+1;
 						}
 					}
@@ -219,6 +284,7 @@ namespace Core
 
 
 		}
+
 
 
 		/// <summary>
@@ -233,6 +299,10 @@ namespace Core
 				if (dropField.ContainsPoint (pos)) {
 					carte [selected].posBase = new CCPoint (dropField.Center.X, winSize.Height - dropField.Center.Y);
 					moveSprite (new CCPoint (carte [selected].posBase.X, carte [selected].posBase.Y), carte [selected].sprite);
+					droppedCards.Add (carte [selected]);
+					carte.RemoveAt (selected);
+					inHand--;
+
 				} else {
 					moveSprite (new CCPoint (carte [selected].posBase.X, carte [selected].posBase.Y), carte [selected].sprite);
 				}
@@ -244,18 +314,46 @@ namespace Core
 		}
 
 
+		#region Move and rotate methods
+		/// <summary>
+		/// Auxiliary method to move and rotate a sprite
+		/// </summary>
+		/// <param name="destination">Point of destination</param>
+		/// <param name="sprite">The sprite to be moved and rotated</param>
+		/// <param name="time">Animation time</param>
+		/// <param name="rotation">Rotation of the sprite</param>
+		private void moveSprite (CCPoint destination, CCSprite sprite, float time, float rotation)
+		{
+
+			CCRotateTo rotate = new CCRotateTo (time, rotation);
+			CCMoveTo move = new CCMoveTo (time, new CCPoint (destination.X, destination.Y));
+			CCSpawn actions = new CCSpawn(move,rotate);
+			sprite.RunAction (actions);
+		}
 
 		/// <summary>
-		/// Auxiliary method to move a sprite
+		/// Auxiliary method to only move a sprite
 		/// </summary>
 		/// <param name="destination">Point of destination</param>
 		/// <param name="sprite">The sprite to be moved</param>
-		/// <param name="rotation">Rotation of the sprite</param>
-		private void moveSprite (CCPoint destination, CCSprite sprite, float time = 0.3f, float rotation = 0)
-		{
-			CCMoveTo c = new CCMoveTo (time, new CCPoint (destination.X, destination.Y));
-			sprite.RunAction (c);
+		/// <param name="time">Animation time</param>
+		private void moveSprite(CCPoint destination, CCSprite sprite,float time =0.3f){
+			CCMoveTo move = new CCMoveTo (time, new CCPoint (destination.X, destination.Y));
+			sprite.RunAction (move);
 		}
+
+		/// <summary>
+		/// Auxiliary method to only rotate a sprite
+		/// </summary>
+		/// <param name="sprite">The sprite to be rotated.</param>
+		/// <param name="Rotation">Rotation of the sprite</param>
+		/// <param name="time">Animation time</param>
+		private void moveSprite(CCSprite sprite, float rotation, float time =0.3f){
+			CCRotateTo rotate = new CCRotateTo (time, rotation);
+			sprite.RunAction (rotate);
+		}
+
+		#endregion
 	}
 
 	class cardData
