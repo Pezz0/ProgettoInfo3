@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engine
+namespace ChiamataLibrary
 {
 	public class Player
 	{
@@ -38,8 +38,9 @@ namespace Engine
 		public EnRole Role {
 			get { return _role; }
 			set {
-				if (_board.isPlayTime)
-					throw new Exception ("The role can't be change during the play time");
+				if (!_board.isAuctionPhase && _board.isAuctionClosed)
+					throw new WrongPhaseException ("The role is assigned at the end of the auction", "Auction closed");
+					
 				_role = value;
 			}
 		}
@@ -70,7 +71,7 @@ namespace Engine
 		public Player (Board board, string name, int order)
 		{
 			if (!board.isCreationPhase)
-				throw new Exception ("A player must be instantiated during the creation time");
+				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
 
 			_role = EnRole.ALTRO;
 			_board = board;

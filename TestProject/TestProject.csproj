@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuctionSystemTest.cs" />
+    <Compile Include="IBidTest.cs" />
   </ItemGroup>
   <Import Project="..\Library\Library.projitems" Label="Shared" Condition="Exists('..\Library\Library.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

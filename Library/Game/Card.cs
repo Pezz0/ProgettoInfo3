@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engine
+namespace ChiamataLibrary
 {
 	public class Card
 	{
@@ -110,7 +110,7 @@ namespace Engine
 		public Card (Board board, EnNumbers number, EnSemi seme, Player initial)
 		{
 			if (!board.isCreationPhase)
-				throw new Exception ("A player must be instantiated during the creation time");
+				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
 
 			_board = board;	//set the board
 			_seme = seme;	//set the seme

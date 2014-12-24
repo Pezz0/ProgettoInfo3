@@ -1,5 +1,5 @@
 ﻿using System;
-using Engine;
+using ChiamataLibrary;
 using System.Collections.Generic;
 
 namespace ConsolePerDebug
@@ -14,13 +14,13 @@ namespace ConsolePerDebug
 
 			board.Players.ForEach (delegate(Player p) {
 				Console.WriteLine (p.ToString () + " possiede:");
-				board.getPlayerCard (p).ForEach (delegate(Card c) {
+				board.getPlayerHand (p).ForEach (delegate(Card c) {
 					Console.WriteLine (c.ToString ());
 				});
 			});
 
 
-			NormalBid wb = null;
+			IBid wb = null;
 
 			while (!board.isAuctionClosed) {
 
@@ -41,7 +41,7 @@ namespace ConsolePerDebug
 					int p = int.Parse (Console.ReadLine ());
 					NormalBid nb = new NormalBid (board.ActiveAuctionPlayer, n, p);
 					if (board.isBidBetter (nb))
-						board.auctionPutABid (nb);
+						board.auctionPlaceABid (nb);
 				}
 
 				wb = board.currentAuctionWinningBid;
@@ -54,6 +54,12 @@ namespace ConsolePerDebug
 			Console.WriteLine (wb.Bidder + " ha vinto l'asta e deve scegliere il seme");
 			board.finalizeAuction ((EnSemi) int.Parse (Console.ReadLine ()));
 
+			Console.WriteLine ("tipo partita: " + board.GameType.ToString ());
+			Console.WriteLine ("Chiamante: " + board.PlayerChiamante.ToString ());
+			Console.WriteLine ("Socio: " + board.PlayerChiamante.ToString ());
+
+			foreach (Player p in board.PlayerAltri)
+				Console.WriteLine ("Altro: " + p.ToString ());
 
 
 		}
