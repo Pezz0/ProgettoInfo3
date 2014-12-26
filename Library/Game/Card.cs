@@ -118,12 +118,13 @@ namespace ChiamataLibrary
 			if (this.seme == other.seme)
 				return (int) this.number - (int) other.number;
 
-			if (this.seme == _board.CalledCard.seme)
-				return 1;
+			if (_board.GameType != EnGameType.CARICHI) {
+				if (this.seme == _board.CalledCard.seme)
+					return 1;
 
-			if (other.seme == _board.CalledCard.seme)
-				return -1;
-
+				if (other.seme == _board.CalledCard.seme)
+					return -1;
+			}
 			return 0;
 		}
 
