@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ChiamataLibrary
 {
@@ -7,24 +8,17 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The board used by this player.
 		/// </summary>
-		private Board _board;
-
-		#region Name management
+		private readonly Board _board;
 
 		/// <summary>
 		/// The player's name.
 		/// </summary>
-		private string _name;
+		public readonly string name;
 
 		/// <summary>
-		/// Gets the player's name.
+		/// The player's order.
 		/// </summary>
-		/// <value>The name.</value>
-		public string Name { get { return _name; } }
-
-		#endregion
-
-		#region Role management
+		public readonly int order;
 
 		/// <summary>
 		/// The player's role.
@@ -45,22 +39,11 @@ namespace ChiamataLibrary
 			}
 		}
 
-		#endregion
-
-		#region order management
-
 		/// <summary>
-		/// The order.
+		/// Gets the player's hand.
 		/// </summary>
-		private int _order;
-
-		/// <summary>
-		/// Gets the order.
-		/// </summary>
-		/// <value>The order.</value>
-		public int Order { get { return _order; } }
-
-		#endregion
+		/// <value>The player's hand.</value>
+		public List<Card> Hand { get { return _board.getPlayerHand (this); } }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.Player"/> class.
@@ -73,15 +56,15 @@ namespace ChiamataLibrary
 			if (!board.isCreationPhase)
 				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
 
-			_role = EnRole.ALTRO;
-			_board = board;
-			_name = name;
-			_order = order;
+			this._role = EnRole.ALTRO;
+			this._board = board;
+			this.name = name;
+			this.order = order;
 		}
 
 		public override string ToString ()
 		{
-			return string.Format ("[Player: Name={0}, Role={1}, Order={2}]", Name, Role, Order);
+			return string.Format ("[Player: Name={0}, Role={1}, Order={2}]", name, Role, order);
 		}
 	}
 }

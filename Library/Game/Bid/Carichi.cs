@@ -23,6 +23,11 @@ namespace ChiamataLibrary
 		{
 			_point = point;
 		}
+
+		public override string ToString ()
+		{
+			return string.Format ("[BidCarichi:Player:{0}, Point={1}]", Bidder, Point);
+		}
 	}
 }
 

@@ -2,36 +2,24 @@
 
 namespace ChiamataLibrary
 {
-	public class Card
+	public class Card:IComparable<Card>
 	{
 		/// <summary>
 		/// The board used by this card.
 		/// </summary>
-		private Board _board;
+		private readonly Board _board;
 
 		#region Card's information
 
 		/// <summary>
-		/// The card's seme.
+		/// The seme.
 		/// </summary>
-		private EnSemi _seme;
+		public readonly EnSemi seme;
 
 		/// <summary>
-		/// The card's number.
+		/// The number.
 		/// </summary>
-		private EnNumbers _number;
-
-		/// <summary>
-		/// Gets the card's seme.
-		/// </summary>
-		/// <value>The card's seme.</value>
-		public EnSemi Seme { get { return _seme; } }
-
-		/// <summary>
-		/// Gets card's number.
-		/// </summary>
-		/// <value>The card's number.</value>
-		public EnNumbers Number { get { return _number; } }
+		public readonly EnNumbers number;
 
 		/// <summary>
 		/// Gets the value in point of this card.
@@ -39,17 +27,17 @@ namespace ChiamataLibrary
 		/// <returns>the value in point.</returns>
 		public int getPoint ()
 		{
-			if (_number == EnNumbers.ASSE)
+			if (number == EnNumbers.ASSE)
 				return 11;
-			else if (_number == EnNumbers.TRE)
+			else if (number == EnNumbers.TRE)
 				return 10;
-			else if (_number == EnNumbers.RE)
+			else if (number == EnNumbers.RE)
 				return 4;
-			else if (_number == EnNumbers.CAVALLO)
+			else if (number == EnNumbers.CAVALLO)
 				return 3;
-			else if (_number == EnNumbers.FANTE)
+			else if (number == EnNumbers.FANTE)
 				return 2;
-			else if (_number == EnNumbers.SETTE && _seme == EnSemi.ORI)
+			else if (number == EnNumbers.SETTE && seme == EnSemi.ORI)
 				return 1;
 			else
 				return 0;
@@ -60,43 +48,147 @@ namespace ChiamataLibrary
 		#region Owner's information
 
 		/// <summary>
-		/// The player that have this card in his hand at the start of the game.
+		/// The player who have this card at the start of the game.
 		/// </summary>
-		private Player _plIni;
+		public readonly Player initialPlayer;
 
 		/// <summary>
-		/// The player that have this card in his pocket at the end of the game.
+		/// The playing time.
 		/// </summary>
-		private Player _plFin;
+		private int _playingTime = -1;
 
 		/// <summary>
-		/// The time in whith this card is played.
-		/// </summary>
-		private int _playingTime;
-
-		/// <summary>
-		/// Gets the player that have this card in his hand at the start of the game.
-		/// </summary>
-		/// <value>The initial player.</value>
-		public Player InitialPlayer { get { return _plIni; } }
-
-		/// <summary>
-		/// Gets the player that have this card in his pocket at the end of the game.
-		/// </summary>
-		/// <value>The final player.</value>
-		public Player FinalPlayer { get { return _plFin; } }
-
-		/// <summary>
-		/// Gets the time in whith this card is played.
+		/// Gets or sets the playing time.
 		/// </summary>
 		/// <value>The playing time.</value>
-		public int PlayingTime { get { return _playingTime; } }
+		public int PlayingTime {
+			get { return _playingTime; }
+			set {
+				if (!isPlayable)
+					throw new Exception ("The card can't be played twice.");
+
+				_playingTime = value;
+			}
+		}
+
+		/// <summary>
+		/// The player who have this card at the end of the game.
+		/// </summary>
+		private Player _finalPlayer = null;
+
+		/// <summary>
+		/// The value that indicate if the final player is decided.
+		/// </summary>
+		private bool _finalPlayerAssigned = false;
+
+		/// <summary>
+		/// Gets or sets the player who have this card at the end of the game.
+		/// </summary>
+		/// <value>The player who have this card at the end of the game.</value>
+		public Player FinalPlayer {
+			get { return _finalPlayer; }
+			set {
+				if (_finalPlayerAssigned)
+					throw new Exception ("The card can't be played twice.");
+
+				if (isPlayable)
+					throw new Exception ("The must be played to assign the final player");
+
+				_finalPlayer = value;
+			}
+		}
+
+
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Card"/> is playable.
 		/// </summary>
 		/// <value><c>true</c> if is playable; otherwise, <c>false</c>.</value>
 		public bool isPlayable{ get { return _playingTime == -1; } }
+
+		#endregion
+
+		#region Comparison
+
+		public int CompareTo (Card other)
+		{
+			if (( (object) other ) == null)	 //null=null everything > null
+				return 1;
+
+			if (this.seme == other.seme)
+				return (int) this.number - (int) other.number;
+
+			if (this.seme == _board.CalledCard.seme)
+				return 1;
+
+			if (other.seme == _board.CalledCard.seme)
+				return -1;
+
+			return 0;
+		}
+
+		public bool Equals (Card other)
+		{
+			return this.CompareTo (other) == 0;
+		}
+
+		public override bool Equals (object other)
+		{
+			if (!( other is Card ))
+				return false;
+
+			return Equals ((Card) other);
+		}
+
+		public static bool operator == (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)
+				return ( (object) c2 ) == null;
+
+			return c1.CompareTo (c2) == 0;
+		}
+
+		public static bool operator != (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)
+				return ( (object) c2 ) != null;
+
+			return c1.CompareTo (c2) != 0;
+		}
+
+		public static bool operator >= (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)	//null>=null  null < not null
+				return  ( (object) c2 ) == null;
+
+			return c1.CompareTo (c2) >= 0;
+		}
+
+		public static bool operator <= (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)	//null <= everything
+				return true;
+
+			return c1.CompareTo (c2) <= 0;
+		}
+
+		public static bool operator > (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)	//null > nothing
+				return false;
+
+			return c1.CompareTo (c2) > 0;
+		}
+
+		public static bool operator < (Card c1, Card c2)
+		{
+			if (( (object) c1 ) == null)	//null < not null
+				return  !( ( (object) c2 ) == null );
+
+			return c1.CompareTo (c2) < 0;
+		}
+
+
 
 		#endregion
 
@@ -112,19 +204,22 @@ namespace ChiamataLibrary
 			if (!board.isCreationPhase)
 				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
 
-			_board = board;	//set the board
-			_seme = seme;	//set the seme
-			_number = number;	//set the number
-			_plIni = initial;	//set the initial player
-
-			_plFin = null;		//the card is playable, so there isn't any final player yet.
-			_playingTime = -1;
+			this._board = board;	//set the board
+			this.seme = seme;	//set the seme
+			this.number = number;	//set the number
+			this.initialPlayer = initial;	//set the initial player
 		}
 
 		public override string ToString ()
 		{
-			return string.Format ("[Card: Seme={0}, Number={1}]", Seme, Number);
+			return string.Format ("[Card: Seme={0}, Number={1}]", seme, number);
 		}
+
+		public override int GetHashCode ()
+		{//TODO: but is not necessary
+			return base.GetHashCode ();
+		}
+
 
 
 	}

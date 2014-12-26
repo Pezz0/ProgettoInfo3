@@ -38,7 +38,7 @@ namespace ChiamataLibrary
 
 		public override string ToString ()
 		{
-			return string.Format ("[NormalBid: Number={0}, Point={1}]", Number, Point);
+			return string.Format ("[NormalBid: Player:{0}, Number={1}, Point={2}]", Bidder, Number, Point);
 		}
 
 	}

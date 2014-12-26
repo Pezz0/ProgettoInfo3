@@ -71,7 +71,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The card grid.
 		/// </summary>
-		private Card [,] _cardGrid;
+		private readonly Card [,] _cardGrid;
 
 		/// <summary>
 		/// Gets the card.
@@ -93,7 +93,7 @@ namespace ChiamataLibrary
 		{
 			List<Card> cl = new List<Card> ();
 			foreach (Card c in _cardGrid)
-				if (c.InitialPlayer == player && c.isPlayable)
+				if (c.initialPlayer == player && c.isPlayable)
 					cl.Add (c);
 
 			return cl;
@@ -103,7 +103,7 @@ namespace ChiamataLibrary
 		/// Gets current chiamante's point count.
 		/// </summary>
 		/// <returns>The current chiamante's point count.</returns>
-		public int GetChiamantePointCount ()
+		public int getChiamantePointCount ()
 		{
 			int count = 0;
 			foreach (Card c in _cardGrid)
@@ -117,7 +117,7 @@ namespace ChiamataLibrary
 		/// Gets current altri's point count.
 		/// </summary>
 		/// <returns>The current chiamante's point count.</returns>
-		public int GetAltriPointCount ()
+		public int getAltriPointCount ()
 		{
 			int count = 0;
 			foreach (Card c in _cardGrid)
@@ -134,24 +134,13 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The array of players.
 		/// </summary>
-		private Player [] _players;
+		private readonly Player [] _players;
 
 		/// <summary>
-		/// The index of the player who won the last turn.
+		/// Gets all players.
 		/// </summary>
-		private int _lastWinner;
-
-		/// <summary>
-		/// Gets the last winner.
-		/// </summary>
-		/// <value>The last winner.</value>
-		public Player LastWinner{ get { return _players [_lastWinner]; } }
-
-		/// <summary>
-		/// Gets the players.
-		/// </summary>
-		/// <value>The players.</value>
-		public List<Player> Players { get { return  new List<Player> (_players); } }
+		/// <value>All players.</value>
+		public List<Player> AllPlayers{ get { return new List<Player> (_players); } }
 
 		/// <summary>
 		/// Gets the player chiamante.
@@ -281,7 +270,7 @@ namespace ChiamataLibrary
 				if (wb == null)
 					return _players [( _lastWinner + 1 + _bidList.Count ) % PLAYER_NUMBER];
 
-				int active = ( wb.Bidder.Order + 1 ) % PLAYER_NUMBER;
+				int active = ( wb.Bidder.order + 1 ) % PLAYER_NUMBER;
 
 				while (isPlayerPassed (_players [active]))
 					active = ( active + 1 ) % PLAYER_NUMBER;
@@ -300,13 +289,13 @@ namespace ChiamataLibrary
 		/// Method for placing a bid in the auction.
 		/// </summary>
 		/// <param name="bid">The bid</param>
-		private void auctionPlaceABid (IBid bid)
+		public void auctionPlaceABid (IBid bid)
 		{
 			if (!isAuctionPhase || isAuctionClosed)
-				throw new WrongPhaseException ("A player can pass only during the auction phase, when is open", "Auction open");
+				throw new WrongPhaseException ("A player can place a bid only during the auction phase, when is open", "Auction open");
 
 			if (ActiveAuctionPlayer != bid.Bidder)
-				throw new WrongBiddingPlayerException ("This player cannot put a bid now", bid.Bidder);
+				throw new WrongBiddingPlayerException ("This player cannot place a bid now", bid.Bidder);
 
 			if (bid is PassBid)
 				_bidList.Add (bid);
@@ -327,24 +316,6 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Method for placign a normal bid.
-		/// </summary>
-		/// <param name="nb">The normal bid.</param>
-		public void auctionPlaceABid (NormalBid nb)
-		{
-			auctionPlaceABid ((IBid) nb);
-		}
-
-		/// <summary>
-		///  Method for placign a carichi bid.
-		/// </summary>
-		/// <param name="bc">the carichi bid.</param>
-		public void auctionPlaceABid (BidCarichi bc)
-		{
-			auctionPlaceABid ((IBid) bc);
-		}
-
-		/// <summary>
 		/// Return a value that indicate if the passed bid is bettere than the last one
 		/// </summary>
 		/// <returns><c>true</c>, if bid is better, <c>false</c> otherwise.</returns>
@@ -354,12 +325,11 @@ namespace ChiamataLibrary
 			return nb > currentAuctionWinningBid;
 		}
 
-
 		/// <summary>
-		/// Finalize the auction, set the called card, the players roles and start the playtime
+		///  Finalize the auction, set the called card, the players roles and start the playtime
 		/// </summary>
-		/// <param name="seme">Seme.</param>
-		public void finalizeAuction (EnSemi seme)
+		/// <param name="seme">Seme, if "chiamata a carichi" o "monte" thi parameter is avoidable.</param>
+		public void finalizeAuction (EnSemi seme = EnSemi.COPE)
 		{
 			if (!isAuctionPhase && !isAuctionClosed)
 				throw new WrongPhaseException ("The auction can be finalized only when the auction is close", "Auction closed");
@@ -382,7 +352,7 @@ namespace ChiamataLibrary
 				_point = ( (NormalBid) wb ).Point;
 
 				//set the roles
-				_calledCard.InitialPlayer.Role = EnRole.SOCIO;
+				_calledCard.initialPlayer.Role = EnRole.SOCIO;
 				currentAuctionWinningBid.Bidder.Role = EnRole.CHIAMANTE;
 			}
 				
@@ -432,13 +402,106 @@ namespace ChiamataLibrary
 		/// <value>The called card.</value>
 		public Card CalledCard { get { return _calledCard; } }
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is a chiamata in mano.
+		/// </summary>
+		/// <value><c>true</c> if is a chiamata in mano; otherwise, <c>false</c>.</value>
+		public bool isChiamataInMano{ get { return _gameType == EnGameType.STANDARD && _calledCard.initialPlayer == PlayerChiamante; } }
+
+
 		#endregion
+
+		/// <summary>
+		/// The index of the player who won the last turn.
+		/// </summary>
+		private int _lastWinner;
+
+		/// <summary>
+		/// Gets the last winner.
+		/// </summary>
+		/// <value>The last winner.</value>
+		public Player LastWinner{ get { return _players [_lastWinner]; } }
 
 		/// <summary>
 		/// Gets the player that have to play.
 		/// </summary>
 		/// <value>The player that have to play.</value>
 		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % 5]; } }
+
+		private List<Card> _lastCycle = new List<Card> ();
+
+		/// <summary>
+		/// Gets the card on the board.
+		/// </summary>
+		/// <value>The card on the board.</value>
+		public  List<Card> CardOnTheBoard { get { return _lastCycle; } }
+
+		/// <summary>
+		/// A method that allow a player to play a card.
+		/// </summary>
+		/// <param name="player">Player.</param>
+		/// <param name="card">Card.</param>
+		public void PlayACard (Player player, Card card)
+		{
+			if (!isPlayTime)
+				throw new WrongPhaseException ("A player can play a card if and only if during the playtime", "Playtime");
+
+			if (ActivePlayer != player)
+				throw new WrongPlayerException ("This player cannot play now", player);
+
+			if (!card.isPlayable || card.initialPlayer != player)
+				throw new WrongCardException ("This player cannot play this card", card);
+
+
+			card.PlayingTime = _t;
+			_lastCycle.Add (card);
+
+			if (numberOfCardOnBoard == PLAYER_NUMBER - 1) {
+				Card max = _lastCycle [0];
+				for (int i = 1; i < PLAYER_NUMBER; i++)
+					if (_lastCycle [i] > max)
+						max = _lastCycle [i];
+
+				_lastWinner = max.initialPlayer.order;
+
+				_lastCycle.ForEach (delegate(Card c) {
+					c.FinalPlayer = max.initialPlayer;
+				});
+
+				_lastCycle = new List<Card> ();
+			}
+			_t++;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> game is ended.
+		/// </summary>
+		/// <value><c>true</c> if this game is ended; otherwise, <c>false</c>.</value>
+		public bool isGameFinish{ get { return _t == Enum.GetValues (typeof (EnSemi)).GetLength (0) * Enum.GetValues (typeof (EnNumbers)).GetLength (0); } }
+
+		/// <summary>
+		/// Gets the number of card on board.
+		/// </summary>
+		/// <value>The number of card on board.</value>
+		public int numberOfCardOnBoard{ get { return _t % PLAYER_NUMBER; } }
+
+		/// <summary>
+		/// Gets the winner.
+		/// </summary>
+		/// <value>The winner.</value>
+		public List<Player> Winner {
+			get {
+				List<Player> w = new List<Player> ();
+				if (getChiamantePointCount () >= WinningPoint) {
+					w.Add (PlayerChiamante);
+					if (!isChiamataInMano)
+						w.Add (PlayerSocio);
+				} else
+					w = PlayerAltri;
+
+				return w;
+			}
+		}
 
 		#endregion
 
@@ -450,15 +513,21 @@ namespace ChiamataLibrary
 		public Board ()
 		{
 			_t = -2;	//set the time
-
+			_players = new Player[PLAYER_NUMBER];	//set the players array
+			_cardGrid = new Card[Enum.GetValues (typeof (EnSemi)).GetLength (0), Enum.GetValues (typeof (EnNumbers)).GetLength (0)];	//set the card grid
 		}
 
+		/// <summary>
+		/// Initialize with the specified name's players e dealer.
+		/// </summary>
+		/// <param name="playerName">Player's name.</param>
+		/// <param name="indexDealer">Index's dealer.</param>
 		public void initialize (string [] playerName, int indexDealer)
 		{
 			if (playerName.GetLength (0) != PLAYER_NUMBER)
 				throw new Exception ("The number of player must be " + PLAYER_NUMBER);
 
-			_players = new Player[PLAYER_NUMBER];	//set the players array
+	
 			for (int i = 0; i < PLAYER_NUMBER; i++)
 				_players [i] = new Player (this, playerName [i], i);
 
@@ -469,7 +538,7 @@ namespace ChiamataLibrary
 			int nCard = nSemi * nNumbers;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
 
-			_cardGrid = new Card[nSemi, nNumbers];	//set the card grid
+		
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
 			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 

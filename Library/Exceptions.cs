@@ -220,5 +220,149 @@ namespace ChiamataLibrary
 
 	#endregion
 
+	#region WrongPlayerException
+
+	[Serializable ()]
+	public class WrongPlayerException:Exception
+	{
+		/// <summary>
+		/// The player.
+		/// </summary>
+		private Player _player;
+
+		/// <summary>
+		/// Gets the player.
+		/// </summary>
+		/// <value>The player.</value>
+		public Player Player { get { return _player; } }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="player">The player who play in the wrong turn</param>
+		public WrongPlayerException (Player player) : base ()
+		{
+			_player = player;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="message">Exception description</param>
+		/// <param name="player">The player who play in the wrong turn</param>
+		public WrongPlayerException (string message, Player player) : base (message)
+		{
+			_player = player;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="message">Exception description</param>
+		/// <param name="inner">Exception inner cause</param>
+		/// <param name="player">The player who play in the wrong turn</param>
+		public WrongPlayerException (string message, Exception inner, Player player) : base (message, inner)
+		{
+			_player = player;
+		}
+
+		/// <summary>
+		/// Create the exception from serialized data.
+		/// Usual scenario is when exception is occured somewhere on the remote workstation
+		/// and we have to re-create/re-throw the exception on the local machine
+		/// </summary>
+		/// <param name="info">Serialization info</param>
+		/// <param name="context">Serialization context</param>
+		/// <param name="player">The player who play in the wrong turn</param>
+		protected WrongPlayerException (SerializationInfo info, StreamingContext context, Player player)
+			: base (info, context)
+		{
+			_player = player;
+		}
+
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongPlayerException"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongPlayerException"/>.</returns>
+		public override string ToString ()
+		{
+			return string.Format ("[WrongPlayerException: Player={0}]", Player);
+		}
+
+	}
+
+	#endregion
+
+	#region WrongCardException
+
+	[Serializable ()]
+	public class WrongCardException:Exception
+	{
+		/// <summary>
+		/// The wrong card.
+		/// </summary>
+		private Card _card;
+
+		/// <summary>
+		/// Gets the wrong card.
+		/// </summary>
+		/// <value>The card.</value>
+		public Card Card { get { return _card; } }
+
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="card">The wrong card</param>
+		public WrongCardException (Card card) : base ()
+		{
+			_card = card;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="message">Exception description</param>
+		/// <param name="card">The wrong card</param>
+		public WrongCardException (string message, Card card) : base (message)
+		{
+			_card = card;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// </summary>
+		/// <param name="message">Exception description</param>
+		/// <param name="inner">Exception inner cause</param>
+		/// <param name="card">The wrong card</param>
+		public WrongCardException (string message, Exception inner, Card card) : base (message, inner)
+		{
+			_card = card;
+		}
+
+		/// <summary>
+		/// Create the exception from serialized data.
+		/// Usual scenario is when exception is occured somewhere on the remote workstation
+		/// and we have to re-create/re-throw the exception on the local machine
+		/// </summary>
+		/// <param name="info">Serialization info</param>
+		/// <param name="context">Serialization context</param>
+		/// <param name="card">The wrong card</param>
+		protected WrongCardException (SerializationInfo info, StreamingContext context, Card card)
+			: base (info, context)
+		{
+			_card = card;
+		}
+
+		public override string ToString ()
+		{
+			return string.Format ("[WrongCardException: Card={0}]", Card);
+		}
+
+
+	}
+
+	#endregion
+
 }
 

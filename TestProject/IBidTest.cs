@@ -35,17 +35,17 @@ namespace TestProject
 			_null2 = null;
 
 
-			_pass1 = new PassBid (b.Players [0]);
-			_pass2 = new PassBid (b.Players [1]);
+			_pass1 = new PassBid (b.AllPlayers [0]);
+			_pass2 = new PassBid (b.AllPlayers [1]);
 
-			_normalBid1 = new NormalBid (b.Players [0], EnNumbers.ASSE, 70);
-			_normalBid2 = new NormalBid (b.Players [1], EnNumbers.DUE, 61);
-			_normalBid3 = new NormalBid (b.Players [2], EnNumbers.DUE, 70);
-			_normalBid4 = new NormalBid (b.Players [2], EnNumbers.DUE, 70);
+			_normalBid1 = new NormalBid (b.AllPlayers [0], EnNumbers.ASSE, 70);
+			_normalBid2 = new NormalBid (b.AllPlayers [1], EnNumbers.DUE, 61);
+			_normalBid3 = new NormalBid (b.AllPlayers [2], EnNumbers.DUE, 70);
+			_normalBid4 = new NormalBid (b.AllPlayers [2], EnNumbers.DUE, 70);
 
-			_carichi1 = new BidCarichi (b.Players [0], 61);
-			_carichi2 = new BidCarichi (b.Players [0], 70);
-			_carichi3 = new BidCarichi (b.Players [0], 70);
+			_carichi1 = new BidCarichi (b.AllPlayers [0], 61);
+			_carichi2 = new BidCarichi (b.AllPlayers [0], 70);
+			_carichi3 = new BidCarichi (b.AllPlayers [0], 70);
 
 		}
 

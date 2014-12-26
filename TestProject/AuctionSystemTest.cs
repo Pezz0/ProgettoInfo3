@@ -17,7 +17,7 @@ namespace TestProject
 			_board = new Board ();
 
 			_board.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
-			_players = _board.Players;
+			_players = _board.AllPlayers;
 		}
 
 		[Test ()]
@@ -58,7 +58,6 @@ namespace TestProject
 		
 			Assert.AreEqual (EnGameType.STANDARD, _board.GameType);
 			Assert.AreSame (_players [3], _board.PlayerChiamante);
-			Assert.True (_board.getCard (EnSemi.COPE, EnNumbers.CAVALLO).InitialPlayer.Role == EnRole.SOCIO);
 		}
 
 		[Test ()]
@@ -123,7 +122,6 @@ namespace TestProject
 
 			Assert.AreEqual (EnGameType.STANDARD, _board.GameType);
 			Assert.AreSame (_players [3], _board.PlayerChiamante);
-			Assert.True (_board.getCard (EnSemi.COPE, EnNumbers.DUE).InitialPlayer.Role == EnRole.SOCIO);
 		}
 
 		[Test ()]
