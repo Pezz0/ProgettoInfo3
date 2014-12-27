@@ -62,8 +62,10 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Code\Engine\Core\GameAppDelegate.cs" />
-    <Compile Include="Code\Engine\Core\GameScene.cs" />
+    <Compile Include="Code\Core\GameAppDelegate.cs" />
+    <Compile Include="Code\Core\GameScene.cs" />
+    <Compile Include="Code\Support\Button.cs" />
+    <Compile Include="Code\Support\touchList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -76,15 +78,25 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
+  <Import Project="..\Library\Library.projitems" Label="Shared" Condition="Exists('..\Library\Library.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Code\" />
-    <Folder Include="Code\Engine\" />
-    <Folder Include="Code\Engine\Core\" />
     <Folder Include="Assets\Content\" />
+    <Folder Include="Code\Support\" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\Jimbe.jpg" />
     <AndroidAsset Include="Assets\Content\AsseBastoni.png" />
+    <AndroidAsset Include="Assets\Content\btnAsse.png" />
+    <AndroidAsset Include="Assets\Content\btnCinque.png" />
+    <AndroidAsset Include="Assets\Content\btnDieci.png" />
+    <AndroidAsset Include="Assets\Content\btnDue.png" />
+    <AndroidAsset Include="Assets\Content\btnLascio.png" />
+    <AndroidAsset Include="Assets\Content\btnNove.png" />
+    <AndroidAsset Include="Assets\Content\btnOtto.png" />
+    <AndroidAsset Include="Assets\Content\btnQuattro.png" />
+    <AndroidAsset Include="Assets\Content\btnSei.png" />
+    <AndroidAsset Include="Assets\Content\btnSette.png" />
+    <AndroidAsset Include="Assets\Content\btnTre.png" />
   </ItemGroup>
 </Project>
