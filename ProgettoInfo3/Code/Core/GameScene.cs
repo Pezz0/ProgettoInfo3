@@ -711,6 +711,7 @@ namespace Core
 			switch(_gameState){
 				case 0:
 					turn.Text = "Vincitore: " + _board.currentAuctionWinningBid.Bidder.ToString ();
+					mainLayer.RemoveChild (passed);
 					touch.eventTouchBegan -= touchBeganAsta;
 					touch.eventTouchMoved -= touchMovedAsta;
 					touch.eventTouchEnded -= touchEndedAsta;
