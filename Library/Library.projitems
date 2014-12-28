@@ -17,13 +17,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game\Card.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\NormalRandom.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Random\RandomGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnGameType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Bid\Carichi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bluetooth\IBTSendable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Move.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Random\IRandomGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Bluetooth\" />

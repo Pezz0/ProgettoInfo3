@@ -8,12 +8,20 @@ using Java.Util;
 using Java.Lang;
 using System.Runtime.CompilerServices;
 using System.IO;
+using ChiamataLibrary;
 
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	public class BluetoothPlayService: IConnectable, IFindable
 	{
+		//TODO: rinominare tutte le classi come BT...
+		//TODO: BTPlayService è un singleton(vedi board per copiare)
+		//TODO: aggiungere invia a tutti tranne a 1(solo da un master)
+		//TODO: interfaccia menu
+		//TODO: controllare i readonly
+
+
 		private Activity _activity;
 		private Handler _handler;
 		private int _MAXPLAYER;
@@ -366,24 +374,23 @@ namespace ProvaConnessioneBT
 		/// <param name='out'>
 		/// The String to write.
 		/// </param>
-		public void WriteToMaster (Java.Lang.String @out)
+		public void WriteToMaster<T> (IBTSendable<T> bts)
 		{
-			if (@out.Length () > 0) {
-				byte [] msg = @out.GetBytes ();
 
-				// Create temporary ConnectedThread
-				ConnectedThread r;
-				// Synchronize a copy of the ConnectedThread
-				lock (this) {
-					if (_state != ConnectionState.STATE_CONNECTED_SLAVE) {
-						return;
-					}
-					r = connectedSlaveThread;
+			byte [] msg = bts.toByteArray();
 
-				}
-				// Perform the write unsynchronized
-				r.Write (msg);
+			// Create temporary ConnectedThread
+			ConnectedThread r;
+			// Synchronize a copy of the ConnectedThread
+			lock (this) {
+				if (_state != ConnectionState.STATE_CONNECTED_SLAVE) 
+					return;
+
+				r = connectedSlaveThread;
 			}
+			// Perform the write unsynchronized
+			r.Write (msg);
+
 		}
 
 		/// <summary>
@@ -395,10 +402,9 @@ namespace ProvaConnessioneBT
 		/// <param name="player">
 		/// The slave we want to write
 		/// </param>
-		public void WriteToSlave (Java.Lang.String @out, int player)
+		public void WriteToSlave<T> (IBTSendable<T> bts, int player)
 		{
-			if (@out.Length () > 0) {
-				byte [] msg = @out.GetBytes ();
+			byte [] msg = bts.toByteArray();
 				// Create temporary ConnectedThread
 				ConnectedThread r;
 				// Synchronize a copy of the ConnectedThread
@@ -412,7 +418,6 @@ namespace ProvaConnessioneBT
 				}
 				// Perform the write unsynchronized
 				r.Write (msg);
-			}
 		}
 
 		/// <summary>

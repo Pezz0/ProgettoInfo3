@@ -4,7 +4,7 @@ using Android.Bluetooth;
 using Java.Util;
 
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	public class ListenThread:Thread
 	{

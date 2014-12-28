@@ -27,6 +27,11 @@ namespace ProgettoInfo3
 		{
 			base.OnCreate(bundle);
 
+			starGame ();
+		}
+
+		protected void starGame()
+		{
 			var application = new CCApplication();
 
 

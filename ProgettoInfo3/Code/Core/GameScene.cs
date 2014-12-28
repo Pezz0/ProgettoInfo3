@@ -7,6 +7,13 @@ namespace Core
 {
 	public class GameScene : CCScene
 	{
+		//TODO: iscriversi ai vbellissimi eventi di scandi
+		//TODO: fare arrivare le carte dal nulla
+		//TODO: indicatore di a chi tocca
+		//TODO: carte visibili sulla board
+		//TODO: tasti su due righe e aggiungere carichi
+		//TODO: controllare i readonly
+
 		//Core variables
 		private CCLayer mainLayer;
 
@@ -44,11 +51,11 @@ namespace Core
 			"btnLascioPressed"
 		};
 
-		Button [] buttons;
+		private Button [] buttons;
 
 
 
-		List<TouchList.eventHandlerTouch> actButtons;
+		private List<TouchList.eventHandlerTouch> actButtons;
 
 
 		//Touch helper variables
@@ -71,10 +78,14 @@ namespace Core
 
 
 		//Debug
-		CCLabel turn;
-		CCLabel passed;
+		private CCLabel turn;
+		private CCLabel passed;
+
+		#region Bluetooth
 
 
+
+		#endregion
 
 		/// <summary>
 		/// Gamescene constructor, initializes sprites to their default position

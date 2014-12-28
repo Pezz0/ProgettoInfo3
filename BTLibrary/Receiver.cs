@@ -3,7 +3,7 @@ using Android.OS;
 using Android.Content;
 using Android.Bluetooth;
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	public class Receiver : BroadcastReceiver
 	{

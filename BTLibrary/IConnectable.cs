@@ -1,7 +1,7 @@
 ﻿using System;
 using Android.Bluetooth;
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	public interface IConnectable
 	{

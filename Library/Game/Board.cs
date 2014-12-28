@@ -9,6 +9,9 @@ namespace ChiamataLibrary
 	/// </summary>
 	public sealed class Board
 	{
+		//TODO: visitor su carta e player(adress di bono)
+		//TODO: controllare i readonly
+
 		public const int PLAYER_NUMBER = 5;
 
 		#region Singleton implementation
@@ -365,6 +368,8 @@ namespace ChiamataLibrary
 			else
 				_bidList.Add (bid);
 
+			//TODO: evento
+
 		}
 
 		/// <summary>
@@ -373,8 +378,7 @@ namespace ChiamataLibrary
 		/// <param name="bytes">The Bytes' array that rappresent a bid.</param>
 		public void auctionPlaceABid (byte [] bytes)
 		{
-			IBid b = new PassBid (_players [0]);
-			auctionPlaceABid (b.ricreateFromByteArray (bytes));
+			auctionPlaceABid (new PassBid (_players [0]).ricreateFromByteArray (bytes));
 		}
 
 		/// <summary>
@@ -541,6 +545,9 @@ namespace ChiamataLibrary
 				_lastCycle = new List<Card> ();
 			}
 			_t++;
+
+			//evento
+			//invio a tutti
 		}
 
 		/// <summary>

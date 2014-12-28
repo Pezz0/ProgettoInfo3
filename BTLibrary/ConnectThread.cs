@@ -3,7 +3,7 @@ using Java.Lang;
 using Android.Bluetooth;
 using Java.Util;
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	/// <summary>
 	/// Connect thread class.

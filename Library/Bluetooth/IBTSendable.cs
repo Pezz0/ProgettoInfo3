@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BTLibrary
+namespace ChiamataLibrary
 {
 	public interface IBTSendable<T>
 	{

@@ -1,5 +1,4 @@
 ﻿using System;
-using BTLibrary;
 
 namespace ChiamataLibrary
 {
@@ -22,15 +21,15 @@ namespace ChiamataLibrary
 		public byte[] toByteArray ()
 		{
 			Byte [] b = new Byte[2];
-			b [0] = card.toByteArray () [0];
-			b [1] = player.toByteArray () [0];
+			b [0] = player.toByteArray () [0];
+			b [1] = card.toByteArray () [0];
 
 			return b;
 		}
 
 		public Move ricreateFromByteArray (byte [] bytes)
 		{
-			return new Move (Board.Instance.getCard (bytes [0]), Board.Instance.getPlayer (bytes [1]));
+			return new Move (Board.Instance.getCard (bytes [1]), Board.Instance.getPlayer (bytes [0]));
 		}
 
 		#endregion

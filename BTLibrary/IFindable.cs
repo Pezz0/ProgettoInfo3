@@ -3,7 +3,7 @@ using Android.Bluetooth;
 using System.Collections.Generic;
 
 
-namespace ProvaConnessioneBT
+namespace BTLibrary
 {
 	public interface IFindable
 	{
