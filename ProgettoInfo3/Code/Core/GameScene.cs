@@ -28,7 +28,25 @@ namespace Core
 			"btnAsse",
 			"btnLascio"
 		};
+<<<<<<< HEAD
 		Button [] buttons;
+=======
+
+		private static String [] pathButtonsPressed = {
+			"btnDuePressed",
+			"btnQuattroPressed",
+			"btnCinquePressed",
+			"btnSeiPressed",
+			"btnSettePressed",
+			"btnOttoPressed",
+			"btnNovePressed",
+			"btnDieciPressed",
+			"btnTrePressed",
+			"btnAssePressed",
+			"btnLascioPressed"
+		};
+		Button[] buttons;
+>>>>>>> Stash
 		List<touchList.eventHandlerTouch> actButtons;
 
 
@@ -116,8 +134,13 @@ namespace Core
 			actButtons.Add (actAsse);
 			actButtons.Add (actLascio);
 
+<<<<<<< HEAD
 			for (int i = 0; i < 11; i++) {
 				buttons [i] = new Button (mainLayer, touch, actButtons [i], new CCSprite (pathButtons [i]), new CCPoint (winSize.Width / 7, winSize.Height * ( 11 - i ) / 12), winSize);
+=======
+			for (int i=0;i<11;i++){
+				buttons[i]= new Button(mainLayer,touch,actButtons[i],pathButtons[i],pathButtonsPressed[i],new CCPoint(winSize.Width/7,winSize.Height*(11-i)/12),winSize);
+>>>>>>> Stash
 			}
 
 			#endregion

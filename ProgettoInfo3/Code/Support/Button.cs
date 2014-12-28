@@ -7,7 +7,8 @@ namespace Core
 	public class Button
 	{
 		private bool pressed;
-		private CCSprite sprite;
+		private CCSprite spriteNorm;
+		private CCSprite spritePressed;
 		private CCSize winSize;
 		private touchList.eventHandlerTouch onButtonPressed;
 		private touchList touch;
@@ -21,24 +22,33 @@ namespace Core
 					//TODO : aggiungere la texture di disabled
 					touch.eventTouchBegan += touchBegan;
 					touch.eventTouchEnded += touchEnded;
+					_Enabled = true;
 				}
 				else {
 					//TODO : aggiungere la texture di disabled
 					touch.eventTouchBegan -= touchBegan;
 					touch.eventTouchEnded -= touchEnded;
+					_Enabled = false;
 				}
 			}
 		}
 
-		public Button (CCLayer mainLayer,touchList tl, touchList.eventHandlerTouch method, CCSprite sprite, CCPoint position,CCSize winSize, float rot=-90,float scale=0.55f)
+		public Button (CCLayer mainLayer,touchList tl, touchList.eventHandlerTouch method, string textureDefault,string texturePressed, CCPoint position,CCSize winSize, float rot=-90,float scale=0.55f)
 		{
 
 			//Defining the sprite
-			this.sprite = sprite;
-			sprite.Position = position;
-			sprite.Rotation = rot;
-			sprite.Scale = scale;
-			mainLayer.AddChild (sprite);
+			spriteNorm = new CCSprite (textureDefault);
+			spriteNorm.Position = position;
+			spriteNorm.Rotation = rot;
+			spriteNorm.Scale = scale;
+			mainLayer.AddChild (spriteNorm);
+
+			spritePressed = new CCSprite (texturePressed);
+			spritePressed.Position = position;
+			spritePressed.Rotation = rot;
+			spritePressed.Scale = scale;
+			mainLayer.AddChild (spritePressed);
+			spritePressed.Visible = false;
 
 			this.winSize = winSize;
 			this.mainLayer = mainLayer;
@@ -53,14 +63,21 @@ namespace Core
 
 		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			if (sprite.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y)))
+			if (spriteNorm.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))){
 				pressed = true;
+				spritePressed.Visible = true;
+				spriteNorm.Visible = false;
+			}
+				
 		}
 
 		private void touchEnded(List<CCTouch> touches, CCEvent touchEvent){
-			if (sprite.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y)) && pressed == true) {
+			spriteNorm.Visible = true;
+			spritePressed.Visible = false;
+			if (spriteNorm.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y)) && pressed == true) {
 				onButtonPressed(touches, touchEvent);
 				pressed = false;
+
 			}
 
 		}
@@ -69,7 +86,8 @@ namespace Core
 		public void remove(){
 			touch.eventTouchBegan -= touchBegan;
 			touch.eventTouchEnded -= touchEnded;
-			mainLayer.RemoveChild (sprite);
+			mainLayer.RemoveChild (spriteNorm);
+			mainLayer.RemoveChild (spritePressed);
 
 		}
 	}

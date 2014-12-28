@@ -98,5 +98,16 @@
     <AndroidAsset Include="Assets\Content\btnSei.png" />
     <AndroidAsset Include="Assets\Content\btnSette.png" />
     <AndroidAsset Include="Assets\Content\btnTre.png" />
+    <AndroidAsset Include="Assets\Content\btnAssePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnCinquePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnDieciPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnDuePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnLascioPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnNovePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnOttoPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnQuattroPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnSeiPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnSettePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnTrePressed.png" />
   </ItemGroup>
 </Project>
