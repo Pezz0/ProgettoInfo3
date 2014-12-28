@@ -1,0 +1,464 @@
+﻿using Android.Bluetooth;
+using Android.App;
+using Android.Content;
+using Android.Widget;
+using Android.OS;
+using System.Collections.Generic;
+using Java.Util;
+using Java.Lang;
+using System.Runtime.CompilerServices;
+using System.IO;
+
+
+namespace ProvaConnessioneBT
+{
+	public class BluetoothPlayService: IConnectable, IFindable
+	{
+		private Activity _activity;
+		private Handler _handler;
+		private int _MAXPLAYER;
+
+		//Fields for finding devices
+		private BluetoothAdapter _btAdapter;
+		private List<string> _pairedDevicesList;
+		private Receiver _receiver;
+
+		//Fields to perform connection
+		private ListenThread listenThread;
+		public ConnectThread connectThread;
+		private ConnectedThread connectedSlaveThread;
+		private ConnectedThread [] connectedMasterThread;
+		private int counter = 0;
+
+		public static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+		public const string NAME = "Play";
+		private ConnectionState _state;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BluetoothPlayService"/> class.
+		/// </summary>
+		/// <param name="activity">Activity to create messages.</param>
+		/// <param name="handler">Handler to send messages.</param>
+		/// <param name="maxplayer">max number of player.</param>
+		public BluetoothPlayService (Activity activity, Handler handler, int maxplayer)
+		{
+			// Initialize the list of device that are already paired  
+			_pairedDevicesList = new List<string> ();
+
+			//handler to communicate the new discovered devices
+			_handler = handler;
+
+			//max number of player in the network
+			_MAXPLAYER = maxplayer;
+
+			//activity to register the receiver
+			_activity = activity;
+
+			// Register for broadcasts when a device is discovered
+			_receiver = new Receiver (_handler);
+			var filter = new IntentFilter (BluetoothDevice.ActionFound);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+
+			// Register for broadcasts when discovery has finished
+			filter = new IntentFilter (BluetoothAdapter.ActionDiscoveryFinished);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+
+			// Get the local Bluetooth adapter
+			_btAdapter = BluetoothAdapter.DefaultAdapter;
+
+			//sets the state to STATE_NONE
+			_state = ConnectionState.STATE_NONE;
+
+			//creates an arry of connectedThread with _MAXPLAYER elements
+			connectedMasterThread = new ConnectedThread[_MAXPLAYER];
+		}
+
+		/// <summary>
+		/// Indicate if the bluetooth exists one this device .
+		/// </summary>
+		/// <returns><c>true</c>, if bluetooth existe, <c>false</c> otherwise.</returns>
+		public bool existBluetooth ()
+		{
+			return _btAdapter != null;
+		}
+
+		/// <summary>
+		/// Indicate if device is discovering for new device.
+		/// </summary>
+		/// <returns><c>true</c>, if is discovering, <c>false</c> otherwise.</returns>
+		public bool isDiscovering ()
+		{
+			return _btAdapter.IsDiscovering;
+		}
+
+		/// <summary>
+		/// Abort unwanted discovery.
+		/// </summary>
+		public void CancelDiscovery ()
+		{
+			_btAdapter.CancelDiscovery ();
+		}
+
+		/// <summary>
+		/// Unregisters the reciever.
+		/// </summary>
+		public void UnregisterReciever ()
+		{
+			_activity.ApplicationContext.UnregisterReceiver (_receiver);
+		}
+
+		/// <summary>
+		/// Indicate if the Bluetooth is enabled.
+		/// </summary>
+		/// <returns><c>true</c>, if Bluetooth is enabled, <c>false</c> otherwise.</returns>
+		public bool isBTEnabled ()
+		{
+			return _btAdapter.IsEnabled;
+		}
+
+		/// <summary>
+		/// Gets the remote device which as the address specified in the parameter .
+		/// </summary>
+		/// <returns>The remote device.</returns>
+		/// <param name="address">Address of the device.</param>
+		public BluetoothDevice getRemoteDevice (string address)
+		{
+			if (address == null)
+				return null;
+			return _btAdapter.GetRemoteDevice (address);
+		}
+
+		/// <summary>
+		/// Gets the paired device.
+		/// </summary>
+		/// <returns>A list of address of paired device.</returns>
+		public List<string> GetPaired ()
+		{
+			// Get a set of currently paired devices
+			var pairedDevices = _btAdapter.BondedDevices;
+
+			// If there are paired devices, add each address to the List
+			if (pairedDevices.Count > 0)
+				foreach (var device in pairedDevices) {
+					_pairedDevicesList.Add (( (BluetoothDevice) device ).Address);
+				}
+
+			return _pairedDevicesList;
+		}
+
+		/// <summary>
+		/// Perfroms the discovery for new devices
+		/// </summary>
+		public void Discovery ()
+		{
+			// If we're already discovering, stop it
+			if (_btAdapter.IsDiscovering) {
+				CancelDiscovery ();
+			}
+			// Request discover from BluetoothAdapter
+			_btAdapter.StartDiscovery ();
+
+		}
+
+		/// <summary>
+		/// Makes the Bluetooth visible.
+		/// </summary>
+		/// <param name="amount">amount of time to make the bluetooth visible.</param>
+		public void makeVisible (int amount)
+		{
+			//creates an Intent with action ActionRequestDiscoverable
+			Intent visibleIntent = new Intent (BluetoothAdapter.ActionRequestDiscoverable);
+			//insert in the intent the duration of visibility
+			visibleIntent.PutExtra (BluetoothAdapter.ExtraDiscoverableDuration, amount);
+			//Start the VisibilityRequest activity
+			_activity.StartActivityForResult (visibleIntent, (int) ActivityResultCode.VISIBILITY_REQUEST);
+		}
+
+		/// <summary>
+		/// Enables the bluetooth.
+		/// </summary>
+		public void enableBluetooth ()
+		{
+			//if bluetooth is already enabled returns
+			if (_btAdapter.IsEnabled)
+				return;
+			//else creates an Intent with action ActionRequestEnable
+			Intent enableIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
+			//Starts the EnableRequest activity
+			_activity.StartActivityForResult (enableIntent, (int) ActivityResultCode.REQUEST_ENABLE_BT);
+		}
+
+		/// <summary>
+		/// Indicate if is Slave in the network.
+		/// </summary>
+		/// <returns><c>true</c>, if is client <c>false</c> otherwise.</returns>
+		public bool isSlave ()
+		{
+			//if state is Connected_Client the caller is a client
+			if (_state == ConnectionState.STATE_CONNECTED_SLAVE)
+				return true;
+			else
+				return false;
+		}
+
+		/// <summary>
+		/// Sets the state.
+		/// </summary>
+		/// <param name="state">State.</param>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		private void SetState (ConnectionState state)
+		{
+			//sets the state
+			_state = state;
+			// Give the new state to the Handler so the UI Activity can update
+			_handler.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
+		}
+
+		/// <summary>
+		/// Gets the state.
+		/// </summary>
+		/// <returns>The state.</returns>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public ConnectionState GetState ()
+		{
+			return _state;
+		}
+
+		/// <summary>
+		/// Connects as master in the network.
+		/// </summary>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void ConnectAsMaster ()
+		{	
+			//stops all existing thread
+			Stop ();
+
+			// Start the thread to listen on a BluetoothServerSocket
+			listenThread = new ListenThread (this, NAME, MY_UUID);
+			listenThread.Start ();
+
+			//sets the state on STATE_LISTEN
+			SetState (ConnectionState.STATE_LISTEN);
+		}
+
+		/// <summary>
+		/// Connects as client to the server specified in the parameter.
+		/// </summary>
+		/// <param name="device">Master to connect.</param>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void ConnectAsSlave (BluetoothDevice device)
+		{	
+			//if the device we want to connect is a slave connected to this device the connection is not performed
+			for (int i = 0; i < counter; i++) {
+				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
+					var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
+					_handler.SendMessage (msg);
+
+					return;
+				}
+
+			}
+			//stops all existing thread
+			Stop ();
+			// Start the thread to connect with the given device
+			connectThread = new ConnectThread (device, this, MY_UUID);
+			connectThread.Start ();
+
+			//sets the state to CONNECTING
+			SetState (ConnectionState.STATE_CONNECTING);
+		}
+
+		/// <summary>
+		/// Connecteds to Master.
+		/// </summary>
+		/// <param name="socket">Socket.</param>
+		/// <param name="device">Device.</param>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
+		{
+			//stops all existing thread
+			Stop ();
+
+			// Start the thread to manage the connection and perform transmissions
+			connectedSlaveThread = new ConnectedThread (socket, this);
+			connectedSlaveThread.Start ();
+
+			// Send the name of the connected device back to the Activity
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
+			_handler.SendMessage (msg);
+
+			//sets the state to CONNECTED_SLAVE
+			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
+		}
+
+		/// <summary>
+		/// Connecteds to slave.
+		/// </summary>
+		/// <param name="socket">Socket.</param>
+		/// <param name="device">Device.</param>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
+		{	
+			// Cancel the thread that completed the connection
+			if (connectThread != null) {
+				connectThread.Cancel ();
+				connectThread = null;
+			}
+				
+			// Cancel the listen thread because we only want to connect to _MAXPLAYER device
+			if (listenThread != null && counter >= _MAXPLAYER - 1) {
+				listenThread.Cancel ();
+				listenThread = null;
+			}
+
+			// Start the thread to manage the connection and perform transmissions
+			if (counter < _MAXPLAYER) {
+				connectedMasterThread [counter] = new ConnectedThread (socket, this);
+				connectedMasterThread [counter].Start ();
+				counter++;
+
+				//sends a message to the activity indicates the connection to a device
+				var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
+				_handler.SendMessage (msg);
+
+
+				//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN
+				if (counter == _MAXPLAYER)
+					SetState (ConnectionState.STATE_CONNECTED_MASTER);
+				else
+					SetState (ConnectionState.STATE_LISTEN);
+			} else {
+				ConnectionFailed ();
+			}
+		}
+
+		/// <summary>
+		/// Stop all threads.
+		/// </summary>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void Stop ()
+		{
+			if (connectThread != null) {
+				connectThread.Cancel ();
+				connectThread = null;
+			}
+
+			if (connectedSlaveThread != null) {
+				connectedSlaveThread.Cancel ();
+				connectedSlaveThread = null;
+			}
+
+			for (int i = 0; i < counter; i++) {
+				connectedMasterThread [i].Cancel ();
+				connectedMasterThread [i] = null;
+			}
+			counter = 0;
+
+			if (listenThread != null) {
+				listenThread.Cancel ();
+				listenThread = null;
+			}
+		}
+
+		/// <summary>
+		/// Write to the Master in an unsynchronized manner
+		/// </summary>
+		/// <param name='out'>
+		/// The String to write.
+		/// </param>
+		public void WriteToMaster (Java.Lang.String @out)
+		{
+			if (@out.Length () > 0) {
+				byte [] msg = @out.GetBytes ();
+
+				// Create temporary ConnectedThread
+				ConnectedThread r;
+				// Synchronize a copy of the ConnectedThread
+				lock (this) {
+					if (_state != ConnectionState.STATE_CONNECTED_SLAVE) {
+						return;
+					}
+					r = connectedSlaveThread;
+
+				}
+				// Perform the write unsynchronized
+				r.Write (msg);
+			}
+		}
+
+		/// <summary>
+		/// Write to the Slave in an unsynchronized manner
+		/// </summary>
+		/// <param name='out'>
+		/// The String to write.
+		/// </param>
+		/// <param name="player">
+		/// The slave we want to write
+		/// </param>
+		public void WriteToSlave (Java.Lang.String @out, int player)
+		{
+			if (@out.Length () > 0) {
+				byte [] msg = @out.GetBytes ();
+				// Create temporary ConnectedThread
+				ConnectedThread r;
+				// Synchronize a copy of the ConnectedThread
+				lock (this) {
+
+					if (connectedMasterThread [player] == null) {
+						Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
+						return;
+					}
+					r = connectedMasterThread [player];
+				}
+				// Perform the write unsynchronized
+				r.Write (msg);
+			}
+		}
+
+		/// <summary>
+		/// Indicate that the connection attempt failed and notify the Activity.
+		/// </summary>
+		public void ConnectionFailed ()
+		{	
+			// Send a failure message back to the Activity
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
+			_handler.SendMessage (msg);
+			SetState (ConnectionState.STATE_LISTEN);
+			ConnectAsMaster ();
+		}
+
+		/// <summary>
+		/// Indicate that the connection was lost and notify the UI Activity.
+		/// </summary>
+		public void ConnectionLost ()
+		{	
+			// Send a failure message back to the Activity
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost");
+			_handler.SendMessage (msg);
+
+			if (connectThread == null) {
+				SetState (ConnectionState.STATE_LISTEN);
+				ConnectAsMaster ();
+			}
+		}
+
+		public BluetoothAdapter getBTAdapter ()
+		{
+			return _btAdapter;
+		}
+
+		public Handler getHandler ()
+		{
+			return _handler;
+		}
+		/// <summary>
+		/// Receiver class.
+		/// </summary>
+
+
+		/// <summary>
+		/// Listen thread calss.
+		/// </summary>
+
+	}
+}
