@@ -28,9 +28,7 @@ namespace Core
 			"btnAsse",
 			"btnLascio"
 		};
-<<<<<<< HEAD
-		Button [] buttons;
-=======
+
 
 		private static String [] pathButtonsPressed = {
 			"btnDuePressed",
@@ -45,13 +43,16 @@ namespace Core
 			"btnAssePressed",
 			"btnLascioPressed"
 		};
-		Button[] buttons;
->>>>>>> Stash
-		List<touchList.eventHandlerTouch> actButtons;
+
+		Button [] buttons;
+
+
+
+		List<TouchList.eventHandlerTouch> actButtons;
 
 
 		//Touch helper variables
-		private touchList touch;
+		private TouchList touch;
 		private int selected;
 		private CCRect dropField;
 		private CCRect cardField;
@@ -96,7 +97,7 @@ namespace Core
 
 
 			//Instancing the touch listener
-			touch = new touchList (this);
+			touch = new TouchList (this);
 			touch.eventTouchBegan += touchBeganAsta;
 			touch.eventTouchMoved += touchMovedAsta;
 			touch.eventTouchEnded += touchEndedAsta;
@@ -120,7 +121,7 @@ namespace Core
 
 			#region Auction buttons initialization
 			buttons = new Button[11];
-			actButtons = new List<touchList.eventHandlerTouch> ();
+			actButtons = new List<TouchList.eventHandlerTouch> ();
 
 			actButtons.Add (actDue);
 			actButtons.Add (actQuattro);
@@ -134,13 +135,12 @@ namespace Core
 			actButtons.Add (actAsse);
 			actButtons.Add (actLascio);
 
-<<<<<<< HEAD
+
 			for (int i = 0; i < 11; i++) {
-				buttons [i] = new Button (mainLayer, touch, actButtons [i], new CCSprite (pathButtons [i]), new CCPoint (winSize.Width / 7, winSize.Height * ( 11 - i ) / 12), winSize);
-=======
-			for (int i=0;i<11;i++){
+			
+
 				buttons[i]= new Button(mainLayer,touch,actButtons[i],pathButtons[i],pathButtonsPressed[i],new CCPoint(winSize.Width/7,winSize.Height*(11-i)/12),winSize);
->>>>>>> Stash
+
 			}
 
 			#endregion
@@ -153,10 +153,10 @@ namespace Core
 
 
 				if (i == 0) {
-					posBase = new CCPoint (winSize.Width - 100 + 3 * ( i * i - 7 * i + 12 ), winSize.Height / 4);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), winSize.Height / 4);
 
 				} else {
-					posBase = new CCPoint (winSize.Width - 100 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
 				}
 				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
 				carte.Add (new cardData (new CCSprite ("AsseBastoni"), posBase, rotation));

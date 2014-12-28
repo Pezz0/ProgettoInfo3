@@ -23,7 +23,7 @@ namespace ChiamataLibrary
 		{
 			Byte [] b = new Byte[2];
 			b [0] = card.toByteArray () [0];
-			b [1] = player.toByteArray () [1];
+			b [1] = player.toByteArray () [0];
 
 			return b;
 		}

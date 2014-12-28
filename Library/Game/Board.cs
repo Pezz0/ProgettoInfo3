@@ -497,7 +497,7 @@ namespace ChiamataLibrary
 		/// Gets the player that have to play.
 		/// </summary>
 		/// <value>The player that have to play.</value>
-		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % 5]; } }
+		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % PLAYER_NUMBER]; } }
 
 		private List<Card> _lastCycle = new List<Card> ();
 

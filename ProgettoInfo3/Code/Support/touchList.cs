@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Core
 {
-	public class touchList
+	public class TouchList
 	{
 
 		private CCEventListenerTouchAllAtOnce touchListener;
@@ -14,7 +14,7 @@ namespace Core
 		public event eventHandlerTouch eventTouchMoved;
 		public event eventHandlerTouch eventTouchEnded;
 
-		public touchList (CCScene gScene)
+		public TouchList (CCScene gScene)
 		{
 			touchListener = new CCEventListenerTouchAllAtOnce ();
 			touchListener.OnTouchesBegan = touchBegan;

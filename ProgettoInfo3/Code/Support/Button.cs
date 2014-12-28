@@ -10,8 +10,8 @@ namespace Core
 		private CCSprite spriteNorm;
 		private CCSprite spritePressed;
 		private CCSize winSize;
-		private touchList.eventHandlerTouch onButtonPressed;
-		private touchList touch;
+		private TouchList.eventHandlerTouch onButtonPressed;
+		private TouchList touch;
 		private CCLayer mainLayer;
 
 		private bool _Enabled;
@@ -33,7 +33,7 @@ namespace Core
 			}
 		}
 
-		public Button (CCLayer mainLayer,touchList tl, touchList.eventHandlerTouch method, string textureDefault,string texturePressed, CCPoint position,CCSize winSize, float rot=-90,float scale=0.55f)
+		public Button (CCLayer mainLayer,TouchList tl, TouchList.eventHandlerTouch method, string textureDefault,string texturePressed, CCPoint position,CCSize winSize, float rot=-90,float scale=0.55f)
 		{
 
 			//Defining the sprite
