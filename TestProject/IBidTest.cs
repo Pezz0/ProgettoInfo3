@@ -27,25 +27,24 @@ namespace TestProject
 		[SetUp ()]
 		public void setup ()
 		{
-			Board b = new Board ();
-
-			b.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.reset ();
+			Board.Instance.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 
 			_null1 = null;
 			_null2 = null;
 
 
-			_pass1 = new PassBid (b.AllPlayers [0]);
-			_pass2 = new PassBid (b.AllPlayers [1]);
+			_pass1 = new PassBid (Board.Instance.AllPlayers [0]);
+			_pass2 = new PassBid (Board.Instance.AllPlayers [1]);
 
-			_normalBid1 = new NormalBid (b.AllPlayers [0], EnNumbers.ASSE, 70);
-			_normalBid2 = new NormalBid (b.AllPlayers [1], EnNumbers.DUE, 61);
-			_normalBid3 = new NormalBid (b.AllPlayers [2], EnNumbers.DUE, 70);
-			_normalBid4 = new NormalBid (b.AllPlayers [2], EnNumbers.DUE, 70);
+			_normalBid1 = new NormalBid (Board.Instance.AllPlayers [0], EnNumbers.ASSE, 70);
+			_normalBid2 = new NormalBid (Board.Instance.AllPlayers [1], EnNumbers.DUE, 61);
+			_normalBid3 = new NormalBid (Board.Instance.AllPlayers [2], EnNumbers.DUE, 70);
+			_normalBid4 = new NormalBid (Board.Instance.AllPlayers [2], EnNumbers.DUE, 70);
 
-			_carichi1 = new BidCarichi (b.AllPlayers [0], 61);
-			_carichi2 = new BidCarichi (b.AllPlayers [0], 70);
-			_carichi3 = new BidCarichi (b.AllPlayers [0], 70);
+			_carichi1 = new BidCarichi (Board.Instance.AllPlayers [0], 61);
+			_carichi2 = new BidCarichi (Board.Instance.AllPlayers [0], 70);
+			_carichi3 = new BidCarichi (Board.Instance.AllPlayers [0], 70);
 
 		}
 

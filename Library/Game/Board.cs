@@ -7,9 +7,25 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// This class rapresent the board used for this game
 	/// </summary>
-	public class Board
+	public sealed class Board
 	{
 		public const int PLAYER_NUMBER = 5;
+
+		#region Singleton implementation
+
+		private static readonly Board _instance = new Board ();
+
+		public static Board Instance{ get { return _instance; } }
+
+		static Board ()
+		{
+		}
+
+		private Board ()
+		{
+		}
+
+		#endregion
 
 		#region Time management
 
@@ -25,7 +41,7 @@ namespace ChiamataLibrary
 		/// 	 39 = last play
 		/// 	 40 = point counting e conclusion
 		/// </summary>
-		private int _t;
+		private int _t = -2;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
@@ -71,7 +87,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The card grid.
 		/// </summary>
-		private readonly Card [,] _cardGrid;
+		private readonly Card [,] _cardGrid = new Card[Enum.GetValues (typeof (EnSemi)).GetLength (0), Enum.GetValues (typeof (EnNumbers)).GetLength (0)];
 
 		/// <summary>
 		/// Gets the card.
@@ -82,6 +98,26 @@ namespace ChiamataLibrary
 		public Card getCard (EnSemi seme, EnNumbers number)
 		{
 			return _cardGrid [(int) seme, (int) number];
+		}
+
+		/// <summary>
+		/// Gets the card.
+		/// </summary>
+		/// <returns>The card.</returns>
+		/// <param name="bytes">the bytes array that rapresent the class.</param>
+		public Card getCard (byte [] bytes)
+		{
+			return _cardGrid [0, 0].ricreateFromByteArray (bytes);
+		}
+
+		/// <summary>
+		/// Gets the card from a byte.
+		/// </summary>
+		/// <returns>The card.</returns>
+		/// <param name="bytes">Bytes.</param>
+		public Card getCard (byte bytes)
+		{
+			return getCard (new Byte[1]{ bytes });
 		}
 
 		/// <summary>
@@ -134,13 +170,38 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The array of players.
 		/// </summary>
-		private readonly Player [] _players;
+		private readonly Player [] _players = new Player[PLAYER_NUMBER];
 
 		/// <summary>
 		/// Gets all players.
 		/// </summary>
 		/// <value>All players.</value>
 		public List<Player> AllPlayers{ get { return new List<Player> (_players); } }
+
+		public Player getPlayer (int order)
+		{
+			return _players [order];
+		}
+
+		/// <summary>
+		/// Gets the player from a byte array.
+		/// </summary>
+		/// <returns>The player.</returns>
+		/// <param name="bytes">The Bytes' array.</param>
+		public Player getPlayer (Byte [] bytes)
+		{
+			return _players [0].ricreateFromByteArray (bytes);
+		}
+
+		/// <summary>
+		/// Gets the player from a byte.
+		/// </summary>
+		/// <returns>The player.</returns>
+		/// <param name="bytes">Bytes.</param>
+		public Player getPlayer (Byte  bytes)
+		{
+			return getPlayer (new Byte[1]{ bytes });
+		}
 
 		/// <summary>
 		/// Gets the player chiamante.
@@ -307,6 +368,16 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
+		/// Method for placing a bid in the auction.
+		/// </summary>
+		/// <param name="bytes">The Bytes' array that rappresent a bid.</param>
+		public void auctionPlaceABid (byte [] bytes)
+		{
+			IBid b = new PassBid (_players [0]);
+			auctionPlaceABid (b.ricreateFromByteArray (bytes));
+		}
+
+		/// <summary>
 		/// Method for passing during the auction
 		/// </summary>
 		/// <param name="player">Player who want to pass.</param>
@@ -439,22 +510,21 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// A method that allow a player to play a card.
 		/// </summary>
-		/// <param name="player">Player.</param>
-		/// <param name="card">Card.</param>
-		public void PlayACard (Player player, Card card)
+		/// <param name="move">The move.</param>
+		public void PlayACard (Move move)
 		{
 			if (!isPlayTime)
 				throw new WrongPhaseException ("A player can play a card if and only if during the playtime", "Playtime");
 
-			if (ActivePlayer != player)
-				throw new WrongPlayerException ("This player cannot play now", player);
+			if (ActivePlayer != move.player)
+				throw new WrongPlayerException ("This player cannot play now", move.player);
 
-			if (!card.isPlayable || card.initialPlayer != player)
-				throw new WrongCardException ("This player cannot play this card", card);
+			if (!move.card.isPlayable || move.card.initialPlayer != move.player)
+				throw new WrongCardException ("This player cannot play this card", move.card);
 
 
-			card.PlayingTime = _t;
-			_lastCycle.Add (card);
+			move.card.PlayingTime = _t;
+			_lastCycle.Add (move.card);
 
 			if (numberOfCardOnBoard == PLAYER_NUMBER - 1) {
 				Card max = _lastCycle [0];
@@ -471,6 +541,25 @@ namespace ChiamataLibrary
 				_lastCycle = new List<Card> ();
 			}
 			_t++;
+		}
+
+		/// <summary>
+		/// A method that allow a player to play a card.
+		/// </summary>
+		/// <param name="player">Player.</param>
+		/// <param name="card">Card.</param>
+		public void PlayACard (Player player, Card card)
+		{
+			PlayACard (new Move (card, player));
+		}
+
+		/// <summary>
+		/// A method that allow a player to play a card.
+		/// </summary>
+		/// <param name="bytes">Bytes.</param>
+		public void PlayACard (Byte [] bytes)
+		{
+			PlayACard (new Move ().ricreateFromByteArray (bytes));
 		}
 
 		/// <summary>
@@ -506,18 +595,6 @@ namespace ChiamataLibrary
 		#endregion
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Engine.Board"/> class.
-		/// </summary>
-		/// <param name="playerName">An array that contains the name of the five player.</param>
-		/// <param name="indexDealer">Index of the dealer in the name's array.</param>
-		public Board ()
-		{
-			_t = -2;	//set the time
-			_players = new Player[PLAYER_NUMBER];	//set the players array
-			_cardGrid = new Card[Enum.GetValues (typeof (EnSemi)).GetLength (0), Enum.GetValues (typeof (EnNumbers)).GetLength (0)];	//set the card grid
-		}
-
-		/// <summary>
 		/// Initialize with the specified name's players e dealer.
 		/// </summary>
 		/// <param name="playerName">Player's name.</param>
@@ -529,7 +606,7 @@ namespace ChiamataLibrary
 
 	
 			for (int i = 0; i < PLAYER_NUMBER; i++)
-				_players [i] = new Player (this, playerName [i], i);
+				_players [i] = new Player (playerName [i], i);
 
 			_lastWinner = indexDealer;	//the last winner is the player that have to play first in the next turn
 
@@ -549,13 +626,19 @@ namespace ChiamataLibrary
 						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
 					//assignedPlayer = ( assignedPlayer + 1 ) % PLAYER_NUMBER;	//continue to change the assigned player until isn't a full player
 
-					_cardGrid [i, j] = new Card (this, (EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
+					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					cardAssign [assignedPlayer]++;
 				}
 
 			_t = -1;	//start the auction
 			_bidList = new List<IBid> ();
 		}
+
+		public void reset ()
+		{
+			_t = -2;
+		}
+	
 	}
 }
 

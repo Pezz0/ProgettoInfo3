@@ -1,8 +1,9 @@
 ﻿using System;
+using BTLibrary;
 
 namespace ChiamataLibrary
 {
-	public abstract class IBid: IComparable<IBid>
+	public abstract class IBid: IComparable<IBid>,IEquatable<IBid>,IBTSendable<IBid>
 	{
 		/// <summary>
 		/// The bidder.
@@ -14,6 +15,25 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <value>The bidder.</value>
 		public Player Bidder { get { return _bidder; } }
+
+		#region Bluetooth
+
+		public  int ByteArrayLenght { get { return 3; } }
+
+		public abstract byte[] toByteArray ();
+
+		public IBid ricreateFromByteArray (byte [] bytes)
+		{
+			if (bytes [1] == 255)
+				return new PassBid (Board.Instance.getPlayer (bytes [0]));
+
+			if (bytes [2] == 255)
+				return new BidCarichi (Board.Instance.getPlayer (bytes [0]), (int) bytes [1]);
+
+			return new NormalBid (Board.Instance.getPlayer (bytes [0]), (EnNumbers) bytes [2], (int) bytes [1]);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.IBid"/> class.

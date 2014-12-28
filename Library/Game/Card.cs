@@ -1,13 +1,10 @@
 ﻿using System;
+using BTLibrary;
 
 namespace ChiamataLibrary
 {
-	public class Card:IComparable<Card>
+	public class Card:IComparable<Card>,IEquatable<Card>,IBTSendable<Card>
 	{
-		/// <summary>
-		/// The board used by this card.
-		/// </summary>
-		private readonly Board _board;
 
 		#region Card's information
 
@@ -118,11 +115,11 @@ namespace ChiamataLibrary
 			if (this.seme == other.seme)
 				return (int) this.number - (int) other.number;
 
-			if (_board.GameType != EnGameType.CARICHI) {
-				if (this.seme == _board.CalledCard.seme)
+			if (Board.Instance.GameType != EnGameType.CARICHI) {
+				if (this.seme == Board.Instance.CalledCard.seme)
 					return 1;
 
-				if (other.seme == _board.CalledCard.seme)
+				if (other.seme == Board.Instance.CalledCard.seme)
 					return -1;
 			}
 			return 0;
@@ -193,24 +190,45 @@ namespace ChiamataLibrary
 
 		#endregion
 
+		#region Bluetooth
+
+		public int ByteArrayLenght { get { return 1; } }
+
+		public byte[] toByteArray ()
+		{
+			return BitConverter.GetBytes (( (int) seme ) * Enum.GetValues (typeof (EnNumbers)).GetLength (0) + ( (int) number ));
+		}
+
+		public Card ricreateFromByteArray (byte [] bytes)
+		{
+			EnSemi s = (EnSemi) ( BitConverter.ToChar (bytes, 0) / 10 );
+			EnNumbers n = (EnNumbers) ( BitConverter.ToChar (bytes, 0) % 10 );
+
+			return Board.Instance.getCard (s, n);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.Card"/> class.
 		/// </summary>
-		/// <param name="board">The board used by this card.</param>
 		/// <param name="number">The card's number.</param>
 		/// <param name="seme">The card's seme.</param>
 		/// <param name="iniziale">Initial player.</param>
-		public Card (Board board, EnNumbers number, EnSemi seme, Player initial)
+		public Card (EnNumbers number, EnSemi seme, Player initial)
 		{
-			if (!board.isCreationPhase)
+			if (!Board.Instance.isCreationPhase)
 				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
-
-			this._board = board;	//set the board
+				
 			this.seme = seme;	//set the seme
 			this.number = number;	//set the number
 			this.initialPlayer = initial;	//set the initial player
 		}
 
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.Card"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.Card"/>.</returns>
 		public override string ToString ()
 		{
 			return string.Format ("[Card: Seme={0}, Number={1}]", seme, number);

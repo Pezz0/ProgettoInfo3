@@ -17,25 +17,25 @@ namespace TestProject
 		[SetUp ()]
 		public void setup ()
 		{
-			Board b = new Board ();
 
-			b.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.reset ();
+			Board.Instance.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 
-			NormalBid nb = new NormalBid (b.AllPlayers [3], EnNumbers.CAVALLO, 70);
+			NormalBid nb = new NormalBid (Board.Instance.AllPlayers [3], EnNumbers.CAVALLO, 70);
 
-			b.auctionPlaceABid (nb);
-			b.auctionPass (b.AllPlayers [4]);
-			b.auctionPass (b.AllPlayers [0]);
-			b.auctionPass (b.AllPlayers [1]);
-			b.auctionPass (b.AllPlayers [2]);
+			Board.Instance.auctionPlaceABid (nb);
+			Board.Instance.auctionPass (Board.Instance.AllPlayers [4]);
+			Board.Instance.auctionPass (Board.Instance.AllPlayers [0]);
+			Board.Instance.auctionPass (Board.Instance.AllPlayers [1]);
+			Board.Instance.auctionPass (Board.Instance.AllPlayers [2]);
 
-			b.finalizeAuction (EnSemi.COPE);
+			Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			_null = null;
-			_noBrisc1 = b.getCard (EnSemi.BASTONI, EnNumbers.ASSE);
-			_noBrisc2 = b.getCard (EnSemi.BASTONI, EnNumbers.CAVALLO);
-			_noBrisc3 = b.getCard (EnSemi.SPADE, EnNumbers.TRE);
-			_brisc = b.getCard (EnSemi.COPE, EnNumbers.SETTE);
+			_noBrisc1 = Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.ASSE);
+			_noBrisc2 = Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CAVALLO);
+			_noBrisc3 = Board.Instance.getCard (EnSemi.SPADE, EnNumbers.TRE);
+			_brisc = Board.Instance.getCard (EnSemi.COPE, EnNumbers.SETTE);
 		}
 
 		#region compareTo test

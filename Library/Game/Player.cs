@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using BTLibrary;
 
 namespace ChiamataLibrary
 {
-	public class Player
+	public class Player:IBTSendable<Player>
 	{
-		/// <summary>
-		/// The board used by this player.
-		/// </summary>
-		private readonly Board _board;
-
 		/// <summary>
 		/// The player's name.
 		/// </summary>
@@ -32,7 +28,7 @@ namespace ChiamataLibrary
 		public EnRole Role {
 			get { return _role; }
 			set {
-				if (!_board.isAuctionPhase && _board.isAuctionClosed)
+				if (!Board.Instance.isAuctionPhase && Board.Instance.isAuctionClosed)
 					throw new WrongPhaseException ("The role is assigned at the end of the auction", "Auction closed");
 					
 				_role = value;
@@ -43,21 +39,35 @@ namespace ChiamataLibrary
 		/// Gets the player's hand.
 		/// </summary>
 		/// <value>The player's hand.</value>
-		public List<Card> Hand { get { return _board.getPlayerHand (this); } }
+		public List<Card> Hand { get { return Board.Instance.getPlayerHand (this); } }
+
+		#region Bluetooth
+
+		public byte[] toByteArray ()
+		{
+			return BitConverter.GetBytes (order);
+		}
+
+		public Player ricreateFromByteArray (byte [] bytes)
+		{
+			return Board.Instance.AllPlayers [(int) bytes [0]];
+		}
+
+		public int ByteArrayLenght { get { return 1; } }
+
+		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.Player"/> class.
 		/// </summary>
-		/// <param name="board">The board used by this player.</param>
 		/// <param name="name">The player's name.</param>
 		/// <param name="order">The player's order </param>
-		public Player (Board board, string name, int order)
+		public Player (string name, int order)
 		{
-			if (!board.isCreationPhase)
+			if (!Board.Instance.isCreationPhase)
 				throw new WrongPhaseException ("A player must be instantiated during the creation time", "Creation");
 
 			this._role = EnRole.ALTRO;
-			this._board = board;
 			this.name = name;
 			this.order = order;
 		}
