@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>BTLibrary</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,17 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="BluetoothPlayService.cs" />
-    <Compile Include="ConnectedThread.cs" />
-    <Compile Include="ConnectThread.cs" />
     <Compile Include="IConnectable.cs" />
     <Compile Include="IFindable.cs" />
-    <Compile Include="ListenThread.cs" />
-    <Compile Include="Receiver.cs" />
     <Compile Include="Enumeration\ActivityResultCode.cs" />
     <Compile Include="Enumeration\ConnectionState.cs" />
     <Compile Include="Enumeration\MessageType.cs" />
     <Compile Include="BTHandler.cs" />
+    <Compile Include="BTPlayService.cs" />
+    <Compile Include="BTConnectedThread.cs" />
+    <Compile Include="BTConnectThread.cs" />
+    <Compile Include="BTListenThread.cs" />
+    <Compile Include="BTReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

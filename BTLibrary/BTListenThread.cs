@@ -6,7 +6,7 @@ using Java.Util;
 
 namespace BTLibrary
 {
-	public class ListenThread:Thread
+	public class BTListenThread:Thread
 	{
 		/// <summary>
 		/// The BluetoothServerSocket.
@@ -16,9 +16,9 @@ namespace BTLibrary
 		/// <summary>
 		/// The BluetoothPlayService.
 		/// </summary>
-		private BluetoothPlayService _PlayService;
+		private BTPlayService _PlayService;
 
-		public ListenThread (BluetoothPlayService playService, string NAME, UUID MY_UUID)
+		public BTListenThread (BTPlayService playService, string NAME, UUID MY_UUID)
 		{
 			_PlayService = playService;
 			BluetoothServerSocket tmp = null;

@@ -5,7 +5,7 @@ using Android.Bluetooth;
 
 namespace BTLibrary
 {
-	public class Receiver : BroadcastReceiver
+	public class BTReceiver : BroadcastReceiver
 	{
 		/// <summary>
 		/// The handler to communicate to activity the result of a receiving Intent.
@@ -17,7 +17,7 @@ namespace BTLibrary
 		/// </summary>
 		private static int cont = 0;
 
-		public Receiver (Handler handler)
+		public BTReceiver (Handler handler)
 		{
 			_handler = handler;
 		}

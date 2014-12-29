@@ -8,7 +8,7 @@ namespace BTLibrary
 	/// <summary>
 	/// Connect thread class.
 	/// </summary>
-	public class ConnectThread : Thread
+	public class BTConnectThread : Thread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -23,9 +23,9 @@ namespace BTLibrary
 		/// <summary>
 		/// The BluetoothPlayService
 		/// </summary>
-		private BluetoothPlayService _PlayService;
+		private BTPlayService _PlayService;
 
-		public ConnectThread (BluetoothDevice device, BluetoothPlayService playService, UUID MY_UUID)
+		public BTConnectThread (BluetoothDevice device, BTPlayService playService, UUID MY_UUID)
 		{
 			_device = device;
 			_PlayService = playService;

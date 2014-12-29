@@ -13,11 +13,11 @@ using ChiamataLibrary;
 
 namespace BTLibrary
 {
-	public class BluetoothPlayService: IConnectable, IFindable
+	public class BTPlayService: IConnectable, IFindable
 	{
-		//TODO: rinominare tutte le classi come BT...
-		//TODO: BTPlayService è un singleton(vedi board per copiare)
-		//TODO: aggiungere invia a tutti tranne a 1(solo da un master)
+		//TODO: rinominare tutte le classi come BT...  DONE
+		//TODO: BTPlayService è un singleton(vedi board per copiare) DONE
+		//TODO: aggiungere invia a tutti tranne a 1(solo da un master) TO TEST
 		//TODO: interfaccia menu
 		//TODO: controllare i readonly
 
@@ -29,26 +29,36 @@ namespace BTLibrary
 		//Fields for finding devices
 		private BluetoothAdapter _btAdapter;
 		private List<string> _pairedDevicesList;
-		private Receiver _receiver;
+		private BTReceiver _receiver;
 
 		//Fields to perform connection
-		private ListenThread listenThread;
-		public ConnectThread connectThread;
-		private ConnectedThread connectedSlaveThread;
-		private ConnectedThread [] connectedMasterThread;
+		private BTListenThread listenThread;
+		public BTConnectThread connectThread;
+		private BTConnectedThread connectedSlaveThread;
+		private BTConnectedThread [] connectedMasterThread;
 		private int counter = 0;
 
 		public static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
 		public const string NAME = "Play";
 		private ConnectionState _state;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="BluetoothPlayService"/> class.
-		/// </summary>
-		/// <param name="activity">Activity to create messages.</param>
-		/// <param name="handler">Handler to send messages.</param>
-		/// <param name="maxplayer">max number of player.</param>
-		public BluetoothPlayService (Activity activity, Handler handler, int maxplayer)
+		#region singleton implementation
+
+		private static readonly BTPlayService _instance = new BTPlayService ();
+
+		public static BTPlayService Instance{ get { return _instance; } }
+
+		static BTPlayService ()
+		{
+		}
+
+		private BTPlayService ()
+		{
+		}
+
+		#endregion
+
+		public void Initialize (Activity activity, Handler handler, int maxplayer)
 		{
 			// Initialize the list of device that are already paired  
 			_pairedDevicesList = new List<string> ();
@@ -63,7 +73,7 @@ namespace BTLibrary
 			_activity = activity;
 
 			// Register for broadcasts when a device is discovered
-			_receiver = new Receiver (_handler);
+			_receiver = new BTReceiver (_handler);
 			var filter = new IntentFilter (BluetoothDevice.ActionFound);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 
@@ -78,7 +88,7 @@ namespace BTLibrary
 			_state = ConnectionState.STATE_NONE;
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new ConnectedThread[_MAXPLAYER];
+			connectedMasterThread = new BTConnectedThread[_MAXPLAYER];
 		}
 
 		/// <summary>
@@ -242,7 +252,7 @@ namespace BTLibrary
 			Stop ();
 
 			// Start the thread to listen on a BluetoothServerSocket
-			listenThread = new ListenThread (this, NAME, MY_UUID);
+			listenThread = new BTListenThread (this, NAME, MY_UUID);
 			listenThread.Start ();
 
 			//sets the state on STATE_LISTEN
@@ -269,7 +279,7 @@ namespace BTLibrary
 			//stops all existing thread
 			Stop ();
 			// Start the thread to connect with the given device
-			connectThread = new ConnectThread (device, this, MY_UUID);
+			connectThread = new BTConnectThread (device, this, MY_UUID);
 			connectThread.Start ();
 
 			//sets the state to CONNECTING
@@ -288,7 +298,7 @@ namespace BTLibrary
 			Stop ();
 
 			// Start the thread to manage the connection and perform transmissions
-			connectedSlaveThread = new ConnectedThread (socket, this);
+			connectedSlaveThread = new BTConnectedThread (socket, this);
 			connectedSlaveThread.Start ();
 
 			// Send the name of the connected device back to the Activity
@@ -321,7 +331,7 @@ namespace BTLibrary
 
 			// Start the thread to manage the connection and perform transmissions
 			if (counter < _MAXPLAYER) {
-				connectedMasterThread [counter] = new ConnectedThread (socket, this);
+				connectedMasterThread [counter] = new BTConnectedThread (socket, this);
 				connectedMasterThread [counter].Start ();
 				counter++;
 
@@ -377,19 +387,19 @@ namespace BTLibrary
 		public void WriteToMaster<T> (IBTSendable<T> bts)
 		{
 
-			byte [] msg = bts.toByteArray();
+			byte [] msg = bts.toByteArray ();
 
 			// Create temporary ConnectedThread
-			ConnectedThread r;
+			BTConnectedThread tmp;
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
-				if (_state != ConnectionState.STATE_CONNECTED_SLAVE) 
+				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
 
-				r = connectedSlaveThread;
+				tmp = connectedSlaveThread;
 			}
 			// Perform the write unsynchronized
-			r.Write (msg);
+			tmp.Write (msg);
 
 		}
 
@@ -404,20 +414,38 @@ namespace BTLibrary
 		/// </param>
 		public void WriteToSlave<T> (IBTSendable<T> bts, int player)
 		{
-			byte [] msg = bts.toByteArray();
-				// Create temporary ConnectedThread
-				ConnectedThread r;
-				// Synchronize a copy of the ConnectedThread
-				lock (this) {
+			byte [] msg = bts.toByteArray ();
+			// Create temporary ConnectedThread
+			BTConnectedThread tmp;
+			// Synchronize a copy of the ConnectedThread
+			lock (this) {
 
-					if (connectedMasterThread [player] == null) {
-						Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
-						return;
-					}
-					r = connectedMasterThread [player];
+				if (connectedMasterThread [player] == null) {
+					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
+					return;
 				}
-				// Perform the write unsynchronized
-				r.Write (msg);
+				tmp = connectedMasterThread [player];
+			}
+			// Perform the write unsynchronized
+			tmp.Write (msg);
+		}
+
+		/// <summary>
+		/// Writes to all slave except the one specified in the address.
+		/// </summary>
+		/// <param name="address">Address.</param>
+		public void WriteToAllSlaveExceptOne<T> (IBTSendable<T> bts, string address)
+		{
+			byte [] msg = bts.toByteArray ();
+			BTConnectedThread tmp;
+			for (int i = 0; i < counter; i++) {
+				lock (this) {
+					if (connectedMasterThread [i]._Socket.RemoteDevice.Address == address || connectedMasterThread [i] == null)
+						return;
+					tmp = connectedMasterThread [i];
+				}
+				tmp.Write (msg);
+			}
 		}
 
 		/// <summary>

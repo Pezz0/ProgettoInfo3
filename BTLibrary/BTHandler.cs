@@ -6,9 +6,9 @@ namespace BTLibrary
 {
 	public class BTHandler:Handler
 	{
-		private BluetoothPlayService _btps;
+		private BTPlayService _btps;
 
-		public BTHandler (BluetoothPlayService btps)
+		public BTHandler (BTPlayService btps)
 		{
 			this._btps = btps;
 
@@ -37,5 +37,6 @@ namespace BTLibrary
 			}
 		}
 
-	}}
+	}
+}
 
