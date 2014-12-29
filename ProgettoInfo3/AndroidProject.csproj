@@ -14,7 +14,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>ProgettoInfo3</AssemblyName>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -66,6 +66,8 @@
     <Compile Include="Code\Core\GameScene.cs" />
     <Compile Include="Code\Support\Button.cs" />
     <Compile Include="Code\Support\touchList.cs" />
+    <Compile Include="Code\Support\cardData.cs" />
+    <Compile Include="Code\Support\Slider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -109,5 +111,9 @@
     <AndroidAsset Include="Assets\Content\btnSeiPressed.png" />
     <AndroidAsset Include="Assets\Content\btnSettePressed.png" />
     <AndroidAsset Include="Assets\Content\btnTrePressed.png" />
+    <AndroidAsset Include="Assets\Content\btnCarichi.png" />
+    <AndroidAsset Include="Assets\Content\btnCarichiPressed.png" />
+    <AndroidAsset Include="Assets\Content\sliderBall.png" />
+    <AndroidAsset Include="Assets\Content\sliderBar.png" />
   </ItemGroup>
 </Project>
