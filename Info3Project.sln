@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTLibrary", "BTLibrary\BTLibrary.csproj", "{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{98658592-C645-4934-8989-C43503D9844E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentazione", "Documentazione", "{98658592-C645-4934-8989-C43503D9844E}"
 	ProjectSection(SolutionItems) = preProject
 		Documentazione.lyx = Documentazione.lyx
 		Documentazione.pdf = Documentazione.pdf
