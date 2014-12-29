@@ -7,11 +7,10 @@ namespace Core
 {
 	public class GameScene : CCScene
 	{
-		//TODO: iscriversi ai vbellissimi eventi di scandi
+		//TODO: iscriversi ai bellissimi eventi di scandi
 		//TODO: fare arrivare le carte dal nulla
 		//TODO: indicatore di a chi tocca
 		//TODO: carte visibili sulla board
-		//TODO: tasti su due righe e aggiungere carichi
 		//TODO: controllare i readonly
 
 		//Core variables
@@ -21,6 +20,9 @@ namespace Core
 		private List<CardData> carte;
 		private List<CardData> droppedCards;
 		private CCSize winSize;
+
+		//Light
+		private List<CCSprite> turnLights;
 
 		#region Buttons
 
@@ -610,7 +612,6 @@ namespace Core
 		/// <param name="mainWindow">Main window.</param>
 		public GameScene (CCWindow mainWindow) : base (mainWindow)
 		{
-
 			#region Game setup
 			_gameState = 0;
 
@@ -709,13 +710,53 @@ namespace Core
 			}
 			#endregion
 
+			#region Light initialization
+			turnLights= new List<CCSprite>(5);
+			turnLights.Add(new CCSprite("turnLight"));
+			turnLights[0].Position= new CCPoint(winSize.Width-turnLights[0].ContentSize.Height/2,winSize.Height/2);
+			turnLights[0].BlendFunc=CCBlendFunc.Additive;
+			turnLights[0].Rotation=-90;
+			turnLights[0].Color=CCColor3B.Green;
+			turnLights[0].ScaleX=0.8f;
+			mainLayer.AddChild(turnLights[0]);
+			turnLights[0].ZOrder=20;
 
+			turnLights.Add(new CCSprite("turnLight"));
+			turnLights[1].Position= new CCPoint(winSize.Width/2,winSize.Height+5-turnLights[1].ContentSize.Height/2);
+			turnLights[1].BlendFunc=CCBlendFunc.Additive;
+			turnLights[1].Rotation=180;
+			turnLights[1].Color=CCColor3B.Red;
+			turnLights[1].ScaleX=0.8f;
+			mainLayer.AddChild(turnLights[1]);
+			turnLights[1].ZOrder=20;
 
+			turnLights.Add(new CCSprite("turnLight"));
+			turnLights[2].Position= new CCPoint(turnLights[2].ContentSize.Height/2,winSize.Height*3/4);
+			turnLights[2].BlendFunc=CCBlendFunc.Additive;
+			turnLights[2].Rotation=90;
+			turnLights[2].Color=CCColor3B.Yellow;
+			turnLights[2].ScaleX=0.8f;
+			mainLayer.AddChild(turnLights[2]);
+			turnLights[2].ZOrder=20;
 
+			turnLights.Add(new CCSprite("turnLight"));
+			turnLights[3].Position= new CCPoint(turnLights[3].ContentSize.Height/2,winSize.Height/4);
+			turnLights[3].BlendFunc=CCBlendFunc.Additive;
+			turnLights[3].Rotation=90;
+			turnLights[3].Color=CCColor3B.Blue;
+			turnLights[3].ScaleX=0.8f;
+			mainLayer.AddChild(turnLights[3]);
+			turnLights[3].ZOrder=20;
 
+			turnLights.Add(new CCSprite("turnLight"));
+			turnLights[4].Position= new CCPoint(winSize.Width/2,-5+turnLights[1].ContentSize.Height/2);
+			turnLights[4].BlendFunc=CCBlendFunc.Additive;
+			turnLights[4].Color=CCColor3B.Orange;
+			turnLights[4].ScaleX=0.8f;
+			mainLayer.AddChild(turnLights[4]);
+			turnLights[4].ZOrder=20;
+			#endregion
 
-
-	
 		}
 
 
@@ -798,6 +839,9 @@ namespace Core
 
 		#endregion
 
+		#region Let there be light
+		private void turnLight(int playerIndex){}
+		#endregion
 	}
 
 
