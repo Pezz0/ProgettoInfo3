@@ -9,7 +9,7 @@ namespace ChiamataLibrary
 		public override byte[] toByteArray ()
 		{
 			byte [] b = new Byte[3];
-			b [0] = Bidder.toByteArray () [0];
+			b [0] = this.bidder.toByteArray () [0];
 			b [1] = 255;	//default value
 			b [2] = 255;	//default value
 
@@ -29,7 +29,7 @@ namespace ChiamataLibrary
 
 		public override string ToString ()
 		{
-			return string.Format ("[PassBid: Player:{0}", Bidder);
+			return string.Format ("[PassBid: Player:{0}", bidder);
 		}
 	}
 }

@@ -7,12 +7,10 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// This class rapresent the board used for this game
 	/// </summary>
-	public sealed class Board
+	public sealed class Board:IBTSendable<Board>
 	{
-		//TODO: visitor su carta e player(adress di bono)
-		//TODO: controllare i readonly
-
 		public const int PLAYER_NUMBER = 5;
+		public const int MAX_NAME_LENGHT = 10;
 
 		#region Singleton implementation
 
@@ -176,11 +174,27 @@ namespace ChiamataLibrary
 		private readonly Player [] _players = new Player[PLAYER_NUMBER];
 
 		/// <summary>
+		/// That order of the player on this device.
+		/// </summary>
+		private int _me;
+
+		/// <summary>
+		/// Gets the player on this device.
+		/// </summary>
+		/// <value>Me.</value>
+		public Player Me{ get { return _players [_me]; } }
+
+		/// <summary>
 		/// Gets all players.
 		/// </summary>
 		/// <value>All players.</value>
 		public List<Player> AllPlayers{ get { return new List<Player> (_players); } }
 
+		/// <summary>
+		/// Gets the player from his order.
+		/// </summary>
+		/// <returns>The player.</returns>
+		/// <param name="order">Order.</param>
 		public Player getPlayer (int order)
 		{
 			return _players [order];
@@ -280,7 +294,7 @@ namespace ChiamataLibrary
 				throw new WrongPhaseException ("This information isn't relevant outside the open auction", "Open auction");
 
 			return _bidList.Exists (delegate(IBid bid) {
-				return  bid is PassBid && bid.Bidder == player;
+				return  bid is PassBid && bid.bidder == player;
 			});
 		}
 
@@ -334,7 +348,7 @@ namespace ChiamataLibrary
 				if (wb == null)
 					return _players [( _lastWinner + 1 + _bidList.Count ) % PLAYER_NUMBER];
 
-				int active = ( wb.Bidder.order + 1 ) % PLAYER_NUMBER;
+				int active = ( wb.bidder.order + 1 ) % PLAYER_NUMBER;
 
 				while (isPlayerPassed (_players [active]))
 					active = ( active + 1 ) % PLAYER_NUMBER;
@@ -350,6 +364,21 @@ namespace ChiamataLibrary
 		#region Changing status
 
 		/// <summary>
+		/// Event handler place A bid.
+		/// </summary>
+		public delegate void eventHandlerPlaceABid (IBid bid);
+
+		/// <summary>
+		/// Occurs when event I place A bid.
+		/// </summary>
+		public event eventHandlerPlaceABid eventIPlaceABid;
+
+		/// <summary>
+		/// Occurs when event someone place A bid.
+		/// </summary>
+		public event eventHandlerPlaceABid eventSomeonePlaceABid;
+
+		/// <summary>
 		/// Method for placing a bid in the auction.
 		/// </summary>
 		/// <param name="bid">The bid</param>
@@ -358,8 +387,8 @@ namespace ChiamataLibrary
 			if (!isAuctionPhase || isAuctionClosed)
 				throw new WrongPhaseException ("A player can place a bid only during the auction phase, when is open", "Auction open");
 
-			if (ActiveAuctionPlayer != bid.Bidder)
-				throw new WrongBiddingPlayerException ("This player cannot place a bid now", bid.Bidder);
+			if (ActiveAuctionPlayer != bid.bidder)
+				throw new WrongBiddingPlayerException ("This player cannot place a bid now", bid.bidder);
 
 			if (bid is PassBid)
 				_bidList.Add (bid);
@@ -368,7 +397,11 @@ namespace ChiamataLibrary
 			else
 				_bidList.Add (bid);
 
-			//TODO: evento
+			if (eventIPlaceABid != null && bid.bidder == Me)
+				eventIPlaceABid (bid);
+				
+			if (eventSomeonePlaceABid != null && bid.bidder != Me)
+				eventSomeonePlaceABid (bid);
 
 		}
 
@@ -416,19 +449,19 @@ namespace ChiamataLibrary
 			else if (wb is BidCarichi) {	//carichi
 				_gameType = EnGameType.CARICHI;
 
-				wb.Bidder.Role = EnRole.CHIAMANTE;
+				wb.bidder.Role = EnRole.CHIAMANTE;
 
-				_point = ( (BidCarichi) wb ).Point;
+				_point = ( (BidCarichi) wb ).point;
 			} else if (wb is NormalBid) {	//standard
 				_gameType = EnGameType.STANDARD;
 
-				_calledCard = getCard (seme, ( (NormalBid) wb ).Number);
+				_calledCard = getCard (seme, ( (NormalBid) wb ).number);
 
-				_point = ( (NormalBid) wb ).Point;
+				_point = ( (NormalBid) wb ).point;
 
 				//set the roles
 				_calledCard.initialPlayer.Role = EnRole.SOCIO;
-				currentAuctionWinningBid.Bidder.Role = EnRole.CHIAMANTE;
+				currentAuctionWinningBid.bidder.Role = EnRole.CHIAMANTE;
 			}
 				
 			//time for the first turn
@@ -512,6 +545,22 @@ namespace ChiamataLibrary
 		public  List<Card> CardOnTheBoard { get { return _lastCycle; } }
 
 		/// <summary>
+		/// Event handler play A card.
+		/// </summary>
+		public delegate void eventHandlerPlayACard (Move move);
+
+		/// <summary>
+		/// Occurs when event I play A card.
+		/// </summary>
+		public event eventHandlerPlayACard eventIPlayACard;
+
+		/// <summary>
+		/// Occurs when event someone play A card.
+		/// </summary>
+		public event eventHandlerPlayACard eventSomeonePlayACard;
+
+
+		/// <summary>
 		/// A method that allow a player to play a card.
 		/// </summary>
 		/// <param name="move">The move.</param>
@@ -546,8 +595,12 @@ namespace ChiamataLibrary
 			}
 			_t++;
 
-			//evento
-			//invio a tutti
+			if (eventIPlayACard != null && move.player == Me)
+				eventIPlayACard (move);
+
+			if (eventSomeonePlaceABid != null && move.player != Me)
+				eventSomeonePlayACard (move);
+
 		}
 
 		/// <summary>
@@ -606,22 +659,35 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="playerName">Player's name.</param>
 		/// <param name="indexDealer">Index's dealer.</param>
-		public void initialize (string [] playerName, int indexDealer)
+		public void initializeMaster (string [] playerName, int indexDealer)
 		{
+			if (!isCreationPhase)
+				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
+
 			if (playerName.GetLength (0) != PLAYER_NUMBER)
 				throw new Exception ("The number of player must be " + PLAYER_NUMBER);
 
-	
-			for (int i = 0; i < PLAYER_NUMBER; i++)
+			_me = 0;	
+
+			for (int i = 0; i < PLAYER_NUMBER; i++) {
 				_players [i] = new Player (playerName [i], i);
 
+				//add the player's name at the bytes array
+				char [] n = playerName [i].ToCharArray ();
+				for (int j = 0; i < MAX_NAME_LENGHT; i++)
+					if (j < n.Length)
+						_bytes.AddRange (BitConverter.GetBytes (n [i]));
+					else
+						_bytes.Add (0);
+			}
+
 			_lastWinner = indexDealer;	//the last winner is the player that have to play first in the next turn
+			_bytes.Add (BitConverter.GetBytes (indexDealer) [0]);	//add the dealer at the bytes array
 
 			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
 			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
 			int nCard = nSemi * nNumbers;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
-
 		
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
 			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
@@ -630,22 +696,85 @@ namespace ChiamataLibrary
 				for (int j = 0; j < nNumbers; j++) {
 					int assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
 					while (cardAssign [assignedPlayer] == nCardForPlayer)
-						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
-					//assignedPlayer = ( assignedPlayer + 1 ) % PLAYER_NUMBER;	//continue to change the assigned player until isn't a full player
+						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
 
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					cardAssign [assignedPlayer]++;
+
+					//add the assigned player to the bytes array
+					_bytes.Add (BitConverter.GetBytes (assignedPlayer) [0]);
 				}
 
 			_t = -1;	//start the auction
 			_bidList = new List<IBid> ();
 		}
 
+		#region Bluetooth
+
+		private  List<Byte> _bytes = new List<byte> ();
+
+		public byte[] toByteArray ()
+		{
+			return _bytes.ToArray ();
+		}
+
+		public Board ricreateFromByteArray (byte [] bytes)
+		{
+			if (!isCreationPhase)
+				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
+		
+			reset ();
+			_bytes = new List<Byte> (bytes);
+			int index = 0;
+
+			for (int i = 0; i < PLAYER_NUMBER; i++) {
+				char [] c = new char[MAX_NAME_LENGHT];
+				for (int j = 0; j < MAX_NAME_LENGHT; j++) {
+					c [j] = BitConverter.ToChar (new byte[]{ bytes [index] }, 0);
+					index++;
+				}
+				_players [i] = new Player (new string (c), i);
+			}
+
+			_lastWinner = _bytes [index];	//the last winner is the player that have to play first in the next turn
+			index++;
+	
+			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
+			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
+
+			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
+				for (int j = 0; j < nNumbers; j++) {
+
+					int assignedPlayer = BitConverter.ToInt16 (new Byte[] { bytes [index], 0 }, 0);
+
+					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
+					index++;
+				}
+
+			_t = -1;	//start the auction
+			_bidList = new List<IBid> ();
+
+			return this;
+		}
+
+		public int ByteArrayLenght { get { return _bytes.Count; } }
+
+		public void initializeSlave (string me)
+		{
+			foreach (Player p in _players)
+				if (p.name == me) {
+					_me = p.order;
+					return;
+				}
+		}
+
+		#endregion
+
 		public void reset ()
 		{
 			_t = -2;
+			//_instance = new Board ();
 		}
-	
 	}
 }
 

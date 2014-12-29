@@ -19,7 +19,7 @@ namespace TestProject
 		{
 
 			Board.Instance.reset ();
-			Board.Instance.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 
 			NormalBid nb = new NormalBid (Board.Instance.AllPlayers [3], EnNumbers.CAVALLO, 70);
 

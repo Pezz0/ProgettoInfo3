@@ -4,16 +4,8 @@ namespace ChiamataLibrary
 {
 	public abstract class IBid: IComparable<IBid>,IEquatable<IBid>,IBTSendable<IBid>
 	{
-		/// <summary>
-		/// The bidder.
-		/// </summary>
-		private Player _bidder;
 
-		/// <summary>
-		/// Gets the bidder.
-		/// </summary>
-		/// <value>The bidder.</value>
-		public Player Bidder { get { return _bidder; } }
+		public readonly Player bidder;
 
 		#region Bluetooth
 
@@ -40,7 +32,7 @@ namespace ChiamataLibrary
 		/// <param name="bidder">Bidder.</param>
 		public IBid (Player bidder)
 		{
-			_bidder = bidder;
+			this.bidder = bidder;
 		}
 
 		#region Comparison
@@ -60,37 +52,37 @@ namespace ChiamataLibrary
 				NormalBid b1 = (NormalBid) this;
 				NormalBid b2 = (NormalBid) other;
 
-				if (b1.Number != b2.Number)	//the number is more important
-					return b2.Number - b1.Number;	//the greater bid is the bid with the lesser number
+				if (b1.number != b2.number)	//the number is more important
+					return b2.number - b1.number;	//the greater bid is the bid with the lesser number
 				else
-					return b1.Point - b2.Point;	//the greater bid is the with the greater amount of point
+					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
 			if (this is NormalBid && other is BidCarichi) {
 				NormalBid b1 = (NormalBid) this;
 				BidCarichi b2 = (BidCarichi) other;
 
-				if (b1.Number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
+				if (b1.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
 					return -1;
 				else
-					return b1.Point - b2.Point;	//the greater bid is the with the greater amount of point
+					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
 			if (this is BidCarichi && other is NormalBid) {
 				BidCarichi b1 = (BidCarichi) this;
 				NormalBid b2 = (NormalBid) other;
 
-				if (b2.Number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
+				if (b2.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
 					return 1;
 				else
-					return b1.Point - b2.Point;	//the greater bid is the with the greater amount of point
+					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
 			if (this is BidCarichi && other is BidCarichi) {
 				BidCarichi b1 = (BidCarichi) this;
 				BidCarichi b2 = (BidCarichi) other;
 
-				return b1.Point - b2.Point;	//the greater bid is the with the greater amount of point
+				return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
 			throw new Exception ("Some error occur, this path shoudn't be executed");

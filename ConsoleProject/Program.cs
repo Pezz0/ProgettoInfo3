@@ -8,26 +8,17 @@ namespace ConsolePerDebug
 	{
 		public static void Main (string [] args)
 		{
+			Console.Write ("Scegliere la modalità[0=normale,1=BT]: ");
+			if (Console.ReadLine () == "0")
+				mainStandard ();
+			else if (Console.ReadLine () == "1")
+				mainBT ();
+		}
 
-		
-			Board.Instance.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
-//
-//			Console.WriteLine ("Numero[0=due,...,8=tre,9=asse]:");
-//			EnNumbers nu = (EnNumbers) int.Parse (Console.ReadLine ());
-//			Console.WriteLine ("seme[0=ori ,1=cope 2=bastoni , 3=spade]\"");
-//			EnSemi s = (EnSemi) int.Parse (Console.ReadLine ());
-//
-//			Byte [] b = Board.Instance.getCard (s, nu).toByteArray ();
-//
-//			Console.WriteLine (Board.Instance.getCard (s, n).ToString () + "->");
-//			for (int i = 0; i < Board.Instance.getCard (s, n).ByteArrayLenght; i++)
-//				Console.WriteLine (b [i].ToString ());
-//
-//			Console.WriteLine (Board.Instance.getCard (b).ToString ());
-//
-//			Console.WriteLine ("");
-//			Console.WriteLine ("**************");
-//			Console.WriteLine ("");
+	
+		private static void mainStandard ()
+		{
+			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 
 			Board.Instance.AllPlayers.ForEach (delegate(Player p) {
 				Console.WriteLine (p.ToString () + " possiede:");
@@ -55,12 +46,12 @@ namespace ConsolePerDebug
 				if (a == "p")
 					Board.Instance.auctionPass (Board.Instance.ActiveAuctionPlayer);
 				else if (a == "c") {
-					Console.WriteLine ("Punti:");
+					Console.Write ("Punti: ");
 					bid = new BidCarichi (Board.Instance.ActiveAuctionPlayer, int.Parse (Console.ReadLine ()));
 				} else {
-					Console.WriteLine ("Numero[0=due,...,8=tre,9=asse]:");
+					Console.Write ("Numero[0=due,...,8=tre,9=asse]: ");
 					EnNumbers n = (EnNumbers) int.Parse (Console.ReadLine ());
-					Console.WriteLine ("Punti:");
+					Console.Write ("Punti: ");
 					int p = int.Parse (Console.ReadLine ());
 					bid = new NormalBid (Board.Instance.ActiveAuctionPlayer, n, p);
 				}
@@ -75,7 +66,7 @@ namespace ConsolePerDebug
 			if (wb == null)
 				Board.Instance.finalizeAuction (EnSemi.COPE);
 			else {
-				Console.WriteLine (wb.Bidder + " ha vinto l'asta e deve scegliere il seme[0=ori ,1=cope 2=bastoni , 3=spade]");
+				Console.WriteLine (wb.bidder + " ha vinto l'asta e deve scegliere il seme[0=ori ,1=cope 2=bastoni , 3=spade]");
 				Board.Instance.finalizeAuction ((EnSemi) int.Parse (Console.ReadLine ()));
 			}
 
@@ -132,5 +123,12 @@ namespace ConsolePerDebug
 			});
 
 		}
+
+		private static void mainBT ()
+		{
+			/*if(BTPl)*/
+
+		}
+
 	}
 }

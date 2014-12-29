@@ -23,6 +23,7 @@ namespace Core
 		private CCSize winSize;
 
 		#region Buttons
+
 		private static String [] pathButtons = {
 			"btnDue",
 			"btnQuattro",
@@ -72,8 +73,9 @@ namespace Core
 				switchState ();
 		}
 
-		private void actCarichi(List<CCTouch> touches, CCEvent touchEvent){
-			BidCarichi cb = new BidCarichi (Board.Instance.ActiveAuctionPlayer,slider.currentValue);
+		private void actCarichi (List<CCTouch> touches, CCEvent touchEvent)
+		{
+			BidCarichi cb = new BidCarichi (Board.Instance.ActiveAuctionPlayer, slider.currentValue);
 			Board.Instance.auctionPlaceABid (cb);
 		}
 
@@ -138,9 +140,11 @@ namespace Core
 		}
 
 		#endregion
+
 		#endregion
 
 		#region Touch
+
 		//Touch Listener
 		private TouchList touch;
 		//Index of the selected card
@@ -591,6 +595,7 @@ namespace Core
 		//10 : Game
 		//20 : Punteggi
 		private int _gameState;
+
 		public int gameState{ get { return _gameState; } set { _gameState = value; } }
 
 		#region Bluetooth
@@ -610,7 +615,7 @@ namespace Core
 			_gameState = 0;
 
 			//TODO : Passare un parametor alla gamescene per permettergli scegliere il mazziere
-			Board.Instance.initialize (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 			#endregion
 
 
@@ -659,22 +664,22 @@ namespace Core
 			actButtons.Add (actLascio);
 			actButtons.Add (actCarichi);
 
-			int textWidth =new CCTexture2D("btnLascio").PixelsWide;
+			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
 
-			float scale =((winSize.Height/2)-orzSpace*4)/(4*textWidth);
+			float scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
 
 			//FIXME : controllare le posizioni dei bottoni nel caso si cambiassero le textures
 			for (int i = 4; i > -1; i--) {
-				buttons[i]= new Button(mainLayer,touch,actButtons[i],pathButtons[i],pathButtonsPressed[i],new CCPoint(3*vertSpace+3*58*scale,winSize.Height/4+(textWidth*scale+orzSpace)*((i-4)*-1)),winSize,-90,scale);
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 4 ) * -1 )), winSize, -90, scale);
 			}
-			for (int i = 9; i>4; i--) {
-				buttons[i]= new Button(mainLayer,touch,actButtons[i],pathButtons[i],pathButtonsPressed[i],new CCPoint(2*vertSpace+2*58*scale,winSize.Height/4+(textWidth*scale+orzSpace)*((i-9)*-1)),winSize,-90,scale);
+			for (int i = 9; i > 4; i--) {
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (2 * vertSpace + 2 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 9 ) * -1 )), winSize, -90, scale);
 			}
 
-			buttons[10]= new Button(mainLayer,touch,actButtons[10],pathButtons[10],pathButtonsPressed[10],new CCPoint(vertSpace+58*scale,winSize.Height/2-orzSpace/2-(textWidth*scale)/2),winSize,-90,scale);
-			buttons[11]= new Button(mainLayer,touch,actButtons[11],pathButtons[11],pathButtonsPressed[11],new CCPoint(vertSpace+58*scale,winSize.Height/2+orzSpace/2+(textWidth*scale)/2),winSize,-90,scale);
+			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - ( textWidth * scale ) / 2), winSize, -90, scale);
+			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + ( textWidth * scale ) / 2), winSize, -90, scale);
 
-			slider = new Slider(mainLayer,touch,"sliderBar","sliderBall",new CCPoint(5*vertSpace+4*58*scale,winSize.Height/4-115*scale),winSize,61,120);
+			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120);
 
 
 			#endregion
@@ -790,6 +795,7 @@ namespace Core
 		}
 
 		#region Debug
+
 		#endregion
 
 	}

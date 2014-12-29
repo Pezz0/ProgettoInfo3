@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>BTLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,17 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="IConnectable.cs" />
-    <Compile Include="IFindable.cs" />
-    <Compile Include="Enumeration\ActivityResultCode.cs" />
-    <Compile Include="Enumeration\ConnectionState.cs" />
-    <Compile Include="Enumeration\MessageType.cs" />
-    <Compile Include="BTHandler.cs" />
-    <Compile Include="BTPlayService.cs" />
-    <Compile Include="BTConnectedThread.cs" />
-    <Compile Include="BTConnectThread.cs" />
-    <Compile Include="BTListenThread.cs" />
-    <Compile Include="BTReceiver.cs" />
+    <Compile Include="Code\Enumeration\ActivityResultCode.cs" />
+    <Compile Include="Code\Enumeration\ConnectionState.cs" />
+    <Compile Include="Code\Enumeration\MessageType.cs" />
+    <Compile Include="Code\Thread\BTConnectedThread.cs" />
+    <Compile Include="Code\Thread\BTConnectThread.cs" />
+    <Compile Include="Code\Thread\BTListenThread.cs" />
+    <Compile Include="Code\BTPlayService.cs" />
+    <Compile Include="Code\BTReceiver.cs" />
+    <Compile Include="Code\IConnectable.cs" />
+    <Compile Include="Code\IFindable.cs" />
+    <Compile Include="Code\Handler\BTGameHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -63,4 +63,9 @@
   </ItemGroup>
   <Import Project="..\Library\Library.projitems" Label="Shared" Condition="Exists('..\Library\Library.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Code\" />
+    <Folder Include="Code\Thread\" />
+    <Folder Include="Code\Handler\" />
+  </ItemGroup>
 </Project>

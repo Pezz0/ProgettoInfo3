@@ -6,16 +6,7 @@ namespace ChiamataLibrary
 	{
 		#region Information
 
-		/// <summary>
-		/// The bid's point.
-		/// </summary>
-		private int _point;
-
-		/// <summary>
-		/// Gets the bid's point.
-		/// </summary>
-		/// <value>The point.</value>
-		public int Point { get { return _point; } }
+		public readonly int point;
 
 		#endregion
 
@@ -24,8 +15,8 @@ namespace ChiamataLibrary
 		public override byte[] toByteArray ()
 		{
 			byte [] b = new Byte[3];
-			b [0] = Bidder.toByteArray () [0];
-			b [1] = BitConverter.GetBytes (_point) [0];
+			b [0] = bidder.toByteArray () [0];
+			b [1] = BitConverter.GetBytes (point) [0];
 			b [2] = 255;	//default value
 
 			return b;
@@ -35,12 +26,12 @@ namespace ChiamataLibrary
 
 		public BidCarichi (Player bidder, int point) : base (bidder)
 		{
-			_point = point;
+			this.point = point;
 		}
 
 		public override string ToString ()
 		{
-			return string.Format ("[BidCarichi:Player:{0}, Point={1}]", Bidder, Point);
+			return string.Format ("[BidCarichi:Player:{0}, Point={1}]", bidder, point);
 		}
 	}
 }
