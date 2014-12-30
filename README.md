@@ -10,18 +10,18 @@ Inizializzazione
 Nella Board ho inserito i metodi per renderla IBTSendable e scrivo qua la procedura per ottenere le board nello stesso stato su tutti i device.
 Questi metodi si basano sul fatto che il BT sia safe(non ho messo ack o cose cosi)
 
-  Dal master:
-    requisiti:
+  - Dal master:
+    - requisiti:
       - i nomi dei 5 player
       - chi è il mazziere
-    procedura
+    - procedura
       - si chiama Board.Instance.InitializeMaster passando i due parametri
       - si estrae la sequenza di byte da Board.Instance.toBytesArray()
       - inviare a tutti gli slave la sequenza di byte
-Dallo slave:
-    requisiti:
+  - Dallo slave:
+    - requisiti:
       - il tuo nome
-    procedura
+    - procedura
       - si invia il proprio nome al master(cosi lui può fare il primo punto della sua procedura)
       - si aspetta di ricevere l'array inviato dal master nell'ultimo punto della sua procedura
       -	si chiama il metodo Board.Instance.ricreateFromByteArray (o quello che è) passando l'array preso al passo prima
@@ -41,9 +41,9 @@ I due metodi però hanno già degli eventi attaccati per l'animazione di pezzo q
 anche un metodo che invia i messaggi agli altri.
 
 questi metodi che inviano dovrebbero fare una cosa molto semplice:
-  Dal master:
+  - Dal master:
     - si invia a tutti gli slave (se la mossa la fa il master va inviata a tutti)
-  Dallo slave:
+  - Dallo slave:
     - si invia al master(pota può inviare solo a lui)
 
 dato che quando il master riceve un messaggio da uno slave lo inoltra agli altri slave tutto dovrebbe funzionare.
