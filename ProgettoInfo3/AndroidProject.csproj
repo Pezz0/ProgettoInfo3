@@ -116,5 +116,6 @@
     <AndroidAsset Include="Assets\Content\sliderBall.png" />
     <AndroidAsset Include="Assets\Content\sliderBar.png" />
     <AndroidAsset Include="Assets\Content\turnLight.png" />
+    <AndroidAsset Include="Assets\Content\turnLight2.png" />
   </ItemGroup>
 </Project>

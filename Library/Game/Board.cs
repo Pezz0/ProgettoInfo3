@@ -674,9 +674,9 @@ namespace ChiamataLibrary
 
 				//add the player's name at the bytes array
 				char [] n = playerName [i].ToCharArray ();
-				for (int j = 0; i < MAX_NAME_LENGHT; i++)
+				for (int j = 0; j < MAX_NAME_LENGHT; j++)
 					if (j < n.Length)
-						_bytes.AddRange (BitConverter.GetBytes (n [i]));
+						_bytes.AddRange (BitConverter.GetBytes (n [j]));
 					else
 						_bytes.Add (0);
 			}
