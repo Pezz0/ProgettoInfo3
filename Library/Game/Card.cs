@@ -200,8 +200,8 @@ namespace ChiamataLibrary
 
 		public Card ricreateFromByteArray (byte [] bytes)
 		{
-			EnSemi s = (EnSemi) ( BitConverter.ToChar (bytes, 0) / 10 );
-			EnNumbers n = (EnNumbers) ( BitConverter.ToChar (bytes, 0) % 10 );
+			EnSemi s = (EnSemi) ( BitConverter.ToChar (bytes, 0) / Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
+			EnNumbers n = (EnNumbers) ( BitConverter.ToChar (bytes, 0) % Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
 
 			return Board.Instance.getCard (s, n);
 		}

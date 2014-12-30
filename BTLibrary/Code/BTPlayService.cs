@@ -19,7 +19,7 @@ namespace BTLibrary
 		//TODO: BTPlayService è un singleton(vedi board per copiare) DONE
 		//TODO: aggiungere invia a tutti tranne a 1(solo da un master) TO TEST
 		//TODO: interfaccia menu
-		//TODO: controllare i readonly e pulizia della classe(serve ancora tutto?)
+		//TODO: controllare i readonly
 
 
 		private Activity _activity;
