@@ -601,7 +601,7 @@ namespace ChiamataLibrary
 					c.FinalPlayer = max.initialPlayer;
 				});
 
-				if (eventPickTheBoard != null)
+				if (eventPickTheBoard != null)	//the event
 					eventPickTheBoard (_players [_lastWinner], _lastCycle);
 
 				_lastCycle = new List<Card> ();
