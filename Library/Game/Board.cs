@@ -554,10 +554,20 @@ namespace ChiamataLibrary
 		/// </summary>
 		public event eventHandlerPlayACard eventIPlayACard;
 
-		/// <summary>
+		/// <summary
 		/// Occurs when event someone play A card.
 		/// </summary>
 		public event eventHandlerPlayACard eventSomeonePlayACard;
+
+		/// <summary>
+		/// Event handler pick the board.
+		/// </summary>
+		public delegate void eventHandlerPickTheBoard (Player player, List<Card> board);
+
+		/// <summary>
+		/// Occurs when event pick the board.
+		/// </summary>
+		public event eventHandlerPickTheBoard eventPickTheBoard;
 
 
 		/// <summary>
@@ -590,6 +600,9 @@ namespace ChiamataLibrary
 				_lastCycle.ForEach (delegate(Card c) {
 					c.FinalPlayer = max.initialPlayer;
 				});
+
+				if (eventPickTheBoard != null)
+					eventPickTheBoard (_players [_lastWinner], _lastCycle);
 
 				_lastCycle = new List<Card> ();
 			}
