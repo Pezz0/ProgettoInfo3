@@ -61,5 +61,9 @@ questa soluzione comporta alcuni vantaggi:
   - A pezzo non gliene frega nulla, infatti in questo modo a pezzo non interessa da dove viene il comando
     (da una IA, dal bluetooth o da un cinese che ha hackerato la nostra app)
   - quando pezzo da un comando chiama gli eventi in automatico e invia a tutti gli altri  
+  - non serve associare i player al loro indirizzo perchè va tutto da solo
 
 se avete commenti modificate pure sto readme aggiungendo roba e almeno confermate che vi quadri tutto.
+
+per i visitor mi potete scrivere esattamente che info servono? perchè tipo associare l'indirizzo al player non serve più.
+
