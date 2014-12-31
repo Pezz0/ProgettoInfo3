@@ -133,10 +133,10 @@ namespace ConsolePerDebug
 			Board.Instance.eventSomeonePlayACard += mssMove;
 			Board.Instance.eventPickTheBoard += mssPick;
 
-			IAIPlayer ia1 = new StupidAI (1);
-			IAIPlayer ia2 = new StupidAI (2);
-			IAIPlayer ia3 = new StupidAI (3);
-			IAIPlayer ia4 = new StupidAI (4);
+//			IAIPlayer ia1 = new StupidAI (1);
+//			IAIPlayer ia2 = new StupidAI (2);
+//			IAIPlayer ia3 = new StupidAI (3);
+//			IAIPlayer ia4 = new StupidAI (4);
 
 			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 	
