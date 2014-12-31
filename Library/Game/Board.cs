@@ -281,6 +281,17 @@ namespace ChiamataLibrary
 		/// </summary>
 		private List<IBid> _bidList;
 
+		/// <summary>
+		/// The default bid.
+		/// </summary>
+		private IBid _defBid;
+
+		/// <summary>
+		/// Gets the default bid.
+		/// </summary>
+		/// <value>The def bid.</value>
+		public IBid DefBid { get { return _defBid; } }
+
 		#region Status control
 
 		/// <summary>
@@ -364,21 +375,6 @@ namespace ChiamataLibrary
 		#region Changing status
 
 		/// <summary>
-		/// Event handler place A bid.
-		/// </summary>
-		public delegate void eventHandlerPlaceABid (IBid bid);
-
-		/// <summary>
-		/// Occurs when event I place A bid.
-		/// </summary>
-		public event eventHandlerPlaceABid eventIPlaceABid;
-
-		/// <summary>
-		/// Occurs when event someone place A bid.
-		/// </summary>
-		public event eventHandlerPlaceABid eventSomeonePlaceABid;
-
-		/// <summary>
 		/// Method for placing a bid in the auction.
 		/// </summary>
 		/// <param name="bid">The bid</param>
@@ -403,6 +399,9 @@ namespace ChiamataLibrary
 			if (eventSomeonePlaceABid != null && bid.bidder != Me)
 				eventSomeonePlaceABid (bid);
 
+			if (eventAuctionEnded != null && isAuctionClosed)
+				eventAuctionEnded ();
+
 		}
 
 		/// <summary>
@@ -411,7 +410,7 @@ namespace ChiamataLibrary
 		/// <param name="bytes">The Bytes' array that rappresent a bid.</param>
 		public void auctionPlaceABid (byte [] bytes)
 		{
-			auctionPlaceABid (new PassBid (_players [0]).ricreateFromByteArray (bytes));
+			auctionPlaceABid (DefBid.ricreateFromByteArray (bytes));
 		}
 
 		/// <summary>
@@ -466,7 +465,45 @@ namespace ChiamataLibrary
 				
 			//time for the first turn
 			_t = 0;
+
+			if (eventGameStarted != null)
+				eventGameStarted ();
 		}
+
+
+		#endregion
+
+		#region events
+
+		/// <summary>
+		/// Event handler place A bid.
+		/// </summary>
+		public delegate void eventHandlerPlaceABid (IBid bid);
+
+		/// <summary>
+		/// Occurs when event I place A bid.
+		/// </summary>
+		public event eventHandlerPlaceABid eventIPlaceABid;
+
+		/// <summary>
+		/// Occurs when event someone place A bid.
+		/// </summary>
+		public event eventHandlerPlaceABid eventSomeonePlaceABid;
+
+		/// <summary>
+		/// Event handler auction ended.
+		/// </summary>
+		public delegate void eventHandlerChangePhase ();
+
+		/// <summary>
+		/// Occurs when auction started.
+		/// </summary>
+		public event eventHandlerChangePhase eventAuctionStarted;
+
+		/// <summary>
+		/// Occurs when auction ended.
+		/// </summary>
+		public event eventHandlerChangePhase eventAuctionEnded;
 
 
 		#endregion
@@ -519,30 +556,7 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		/// <summary>
-		/// The index of the player who won the last turn.
-		/// </summary>
-		private int _lastWinner;
-
-		/// <summary>
-		/// Gets the last winner.
-		/// </summary>
-		/// <value>The last winner.</value>
-		public Player LastWinner{ get { return _players [_lastWinner]; } }
-
-		/// <summary>
-		/// Gets the player that have to play.
-		/// </summary>
-		/// <value>The player that have to play.</value>
-		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % PLAYER_NUMBER]; } }
-
-		private List<Card> _lastCycle = new List<Card> ();
-
-		/// <summary>
-		/// Gets the card on the board.
-		/// </summary>
-		/// <value>The card on the board.</value>
-		public  List<Card> CardOnTheBoard { get { return _lastCycle; } }
+		#region events
 
 		/// <summary>
 		/// Event handler play A card.
@@ -569,6 +583,56 @@ namespace ChiamataLibrary
 		/// </summary>
 		public event eventHandlerPickTheBoard eventPickTheBoard;
 
+		/// <summary>
+		/// Occurs when game start.
+		/// </summary>
+		public event eventHandlerChangePhase eventGameStarted;
+
+		/// <summary>
+		/// Occurs when game end.
+		/// </summary>
+		public event eventHandlerChangePhase eventGameEnded;
+
+		#endregion
+
+		/// <summary>
+		/// The default move.
+		/// </summary>
+		private Move _defMove;
+
+		/// <summary>
+		/// Gets the default move.
+		/// </summary>
+		/// <value>The def move.</value>
+		public Move DefMove { get { return _defMove; } }
+
+		/// <summary>
+		/// The index of the player who won the last turn.
+		/// </summary>
+		private int _lastWinner;
+
+		/// <summary>
+		/// Gets the last winner.
+		/// </summary>
+		/// <value>The last winner.</value>
+		public Player LastWinner{ get { return _players [_lastWinner]; } }
+
+		/// <summary>
+		/// Gets the player that have to play.
+		/// </summary>
+		/// <value>The player that have to play.</value>
+		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % PLAYER_NUMBER]; } }
+
+		/// <summary>
+		/// The last cycle.
+		/// </summary>
+		private List<Card> _lastCycle = new List<Card> ();
+
+		/// <summary>
+		/// Gets the card on the board.
+		/// </summary>
+		/// <value>The card on the board.</value>
+		public  List<Card> CardOnTheBoard { get { return _lastCycle; } }
 
 		/// <summary>
 		/// A method that allow a player to play a card.
@@ -614,6 +678,9 @@ namespace ChiamataLibrary
 			if (eventSomeonePlaceABid != null && move.player != Me)
 				eventSomeonePlayACard (move);
 
+			if (isGameFinish && eventGameEnded != null)
+				eventGameEnded ();
+
 		}
 
 		/// <summary>
@@ -632,7 +699,7 @@ namespace ChiamataLibrary
 		/// <param name="bytes">Bytes.</param>
 		public void PlayACard (Byte [] bytes)
 		{
-			PlayACard (new Move ().ricreateFromByteArray (bytes));
+			PlayACard (_defMove.ricreateFromByteArray (bytes));
 		}
 
 		/// <summary>
@@ -667,6 +734,8 @@ namespace ChiamataLibrary
 
 		#endregion
 
+		#region Init
+
 		/// <summary>
 		/// Initialize with the specified name's players e dealer.
 		/// </summary>
@@ -697,11 +766,14 @@ namespace ChiamataLibrary
 			_lastWinner = indexDealer;	//the last winner is the player that have to play first in the next turn
 			_bytes.Add (BitConverter.GetBytes (indexDealer) [0]);	//add the dealer at the bytes array
 
+			_defBid = new PassBid (_players [0]);
+			_defMove = new Move ();
+
 			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
 			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
 			int nCard = nSemi * nNumbers;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
-		
+
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
 			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 
@@ -720,7 +792,29 @@ namespace ChiamataLibrary
 
 			_t = -1;	//start the auction
 			_bidList = new List<IBid> ();
+
+			if (eventAuctionStarted != null)
+				eventAuctionStarted ();
+
 		}
+
+		public void initializeSlave (string me)
+		{
+			foreach (Player p in _players)
+				if (p.name == me) {
+					_me = p.order;
+					return;
+				}
+
+			_defBid = new PassBid (_players [0]);
+			_defMove = new Move ();
+
+			if (eventAuctionStarted != null)
+				eventAuctionStarted ();
+		}
+
+
+		#endregion
 
 		#region Bluetooth
 
@@ -772,21 +866,11 @@ namespace ChiamataLibrary
 
 		public int ByteArrayLenght { get { return _bytes.Count; } }
 
-		public void initializeSlave (string me)
-		{
-			foreach (Player p in _players)
-				if (p.name == me) {
-					_me = p.order;
-					return;
-				}
-		}
-
 		#endregion
 
 		public void reset ()
 		{
 			_t = -2;
-			//_instance = new Board ();
 		}
 	}
 }

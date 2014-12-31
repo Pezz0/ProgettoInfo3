@@ -45,6 +45,15 @@ namespace ChiamataLibrary
 			this.card = null;
 			this.player = null;
 		}
+
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.Move"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.Move"/>.</returns>
+		public override string ToString ()
+		{
+			return string.Format ("[Move: ByteArrayLenght={0}]", ByteArrayLenght);
+		}
 	}
 }
 

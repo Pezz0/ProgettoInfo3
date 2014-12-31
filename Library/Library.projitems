@@ -24,8 +24,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bluetooth\IBTSendable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Move.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\IRandomGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\IAIPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\StupidAI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Bluetooth\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\" />
   </ItemGroup>
 </Project>
