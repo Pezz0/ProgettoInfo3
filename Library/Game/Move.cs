@@ -52,7 +52,8 @@ namespace ChiamataLibrary
 		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.Move"/>.</returns>
 		public override string ToString ()
 		{
-			return string.Format ("[Move: ByteArrayLenght={0}]", ByteArrayLenght);
+			return string.Format ("[Move: Card={0}, Player={1}]", card, player);
+
 		}
 	}
 }

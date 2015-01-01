@@ -2,7 +2,7 @@
 
 namespace ChiamataLibrary
 {
-	public class NormalBid:IBid
+	public class NormalBid:NotPassBid
 	{
 		#region Information
 
@@ -10,12 +10,6 @@ namespace ChiamataLibrary
 		/// The bid's number.
 		/// </summary>
 		public readonly EnNumbers number;
-
-		/// <summary>
-		/// The bid's point.
-		/// </summary>
-		public readonly int point;
-
 
 		#endregion
 
@@ -33,10 +27,23 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		public NormalBid (Player bidder, EnNumbers number, int point) : base (bidder)
+
+		public override IBid changeBidder (Player newBidder)
+		{
+			return new NormalBid (newBidder, this.number, this.point);
+		}
+
+		public override NotPassBid getNext ()
+		{
+			if (this.number == 0)
+				return new NormalBid (bidder, 0, this.point + 1);
+			else
+				return new NormalBid (bidder, this.number - 1, 61);
+		}
+
+		public NormalBid (Player bidder, EnNumbers number, int point) : base (bidder, point)
 		{
 			this.number = number;
-			this.point = point;
 		}
 
 		public override string ToString ()

@@ -2,13 +2,17 @@
 
 namespace ChiamataLibrary
 {
-	public class BidCarichi:IBid
+	public class CarichiBid:NotPassBid
 	{
-		#region Information
+		public override NotPassBid getNext ()
+		{
+			return new CarichiBid (bidder, point + 1);
+		}
 
-		public readonly int point;
-
-		#endregion
+		public override IBid changeBidder (Player newBidder)
+		{
+			return new CarichiBid (newBidder, this.point);
+		}
 
 		#region Bluetooth
 
@@ -24,9 +28,8 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		public BidCarichi (Player bidder, int point) : base (bidder)
+		public CarichiBid (Player bidder, int point) : base (bidder, point)
 		{
-			this.point = point;
 		}
 
 		public override string ToString ()

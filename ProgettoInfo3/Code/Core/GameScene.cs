@@ -77,7 +77,7 @@ namespace Core
 
 		private void actCarichi (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			BidCarichi cb = new BidCarichi (Board.Instance.ActiveAuctionPlayer, slider.currentValue);
+			CarichiBid cb = new CarichiBid (Board.Instance.ActiveAuctionPlayer, slider.currentValue);
 			Board.Instance.auctionPlaceABid (cb);
 		}
 

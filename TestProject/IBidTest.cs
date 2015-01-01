@@ -19,9 +19,9 @@ namespace TestProject
 		private NormalBid _normalBid3;
 		private NormalBid _normalBid4;
 
-		private BidCarichi _carichi1;
-		private BidCarichi _carichi2;
-		private BidCarichi _carichi3;
+		private CarichiBid _carichi1;
+		private CarichiBid _carichi2;
+		private CarichiBid _carichi3;
 
 
 		[SetUp ()]
@@ -42,9 +42,9 @@ namespace TestProject
 			_normalBid3 = new NormalBid (Board.Instance.AllPlayers [2], EnNumbers.DUE, 70);
 			_normalBid4 = new NormalBid (Board.Instance.AllPlayers [2], EnNumbers.DUE, 70);
 
-			_carichi1 = new BidCarichi (Board.Instance.AllPlayers [0], 61);
-			_carichi2 = new BidCarichi (Board.Instance.AllPlayers [0], 70);
-			_carichi3 = new BidCarichi (Board.Instance.AllPlayers [0], 70);
+			_carichi1 = new CarichiBid (Board.Instance.AllPlayers [0], 61);
+			_carichi2 = new CarichiBid (Board.Instance.AllPlayers [0], 70);
+			_carichi3 = new CarichiBid (Board.Instance.AllPlayers [0], 70);
 
 		}
 

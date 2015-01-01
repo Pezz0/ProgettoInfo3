@@ -169,9 +169,9 @@ namespace TestProject
 		{
 			NormalBid nb1 = new NormalBid (_players [3], EnNumbers.CAVALLO, 61);
 			NormalBid nb2 = new NormalBid (_players [4], EnNumbers.FANTE, 61);
-			BidCarichi bc1 = new BidCarichi (_players [0], 61);
+			CarichiBid bc1 = new CarichiBid (_players [0], 61);
 			NormalBid nb3 = new NormalBid (_players [4], EnNumbers.DUE, 70);
-			BidCarichi bc2 = new BidCarichi (_players [0], 80);
+			CarichiBid bc2 = new CarichiBid (_players [0], 80);
 
 			IBid wb = Board.Instance.currentAuctionWinningBid;
 

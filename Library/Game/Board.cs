@@ -313,14 +313,14 @@ namespace ChiamataLibrary
 		/// Gets the current auction winning bid.
 		/// </summary>
 		/// <value>The current auction winning bid. If null all the player have passed for now</value>
-		public IBid currentAuctionWinningBid {
+		public NotPassBid currentAuctionWinningBid {
 			get {
 				if (!isAuctionPhase)
 					throw new WrongPhaseException ("This information isn't relevant outside the auction", "Open/closed auction");
 					
 				return _bidList.FindLast (delegate(IBid bid) {
-					return !( bid is PassBid );
-				});
+					return bid is NotPassBid;
+				}) as NotPassBid;
 			}
 		}
 
@@ -445,12 +445,12 @@ namespace ChiamataLibrary
 
 			if (wb == null)
 				_gameType = EnGameType.MONTE;
-			else if (wb is BidCarichi) {	//carichi
+			else if (wb is CarichiBid) {	//carichi
 				_gameType = EnGameType.CARICHI;
 
 				wb.bidder.Role = EnRole.CHIAMANTE;
 
-				_point = ( (BidCarichi) wb ).point;
+				_point = ( (CarichiBid) wb ).point;
 			} else if (wb is NormalBid) {	//standard
 				_gameType = EnGameType.STANDARD;
 

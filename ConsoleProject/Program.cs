@@ -50,7 +50,7 @@ namespace ConsolePerDebug
 					Board.Instance.auctionPass (Board.Instance.ActiveAuctionPlayer);
 				else if (a == "c") {
 					Console.Write ("Punti: ");
-					bid = new BidCarichi (Board.Instance.ActiveAuctionPlayer, int.Parse (Console.ReadLine ()));
+					bid = new CarichiBid (Board.Instance.ActiveAuctionPlayer, int.Parse (Console.ReadLine ()));
 				} else {
 					Console.Write ("Numero[0=due,...,8=tre,9=asse]: ");
 					EnNumbers n = (EnNumbers) int.Parse (Console.ReadLine ());
@@ -133,18 +133,30 @@ namespace ConsolePerDebug
 			Board.Instance.eventSomeonePlayACard += mssMove;
 			Board.Instance.eventPickTheBoard += mssPick;
 
-//			IAIPlayer ia1 = new StupidAI (1);
-//			IAIPlayer ia2 = new StupidAI (2);
-//			IAIPlayer ia3 = new StupidAI (3);
-//			IAIPlayer ia4 = new StupidAI (4);
+//			IAIAuction iaa1 = new AIAuFixJump (1, true, 2);
+//			IAIAuction iaa2 = new AIAuFixJump (2, true, 2);
+//			IAIAuction iaa3 = new AIAuFixJump (3, true, 2);
+//			IAIAuction iaa4 = new AIAuFixJump (4, true, 2);
+
+			IAIAuction iaa1 = new AIAuMobileJump (1, true, 10, 1, 1);
+			IAIAuction iaa2 = new AIAuMobileJump (2, true, 10, 1, 1);
+			IAIAuction iaa3 = new AIAuMobileJump (3, true, 10, 1, 1);
+			IAIAuction iaa4 = new AIAuMobileJump (4, true, 10, 1, 1);
+
+			AIPlStupid iap1 = new AIPlStupid (1);
+			AIPlStupid iap2 = new AIPlStupid (2);
+			AIPlStupid iap3 = new AIPlStupid (3);
+			AIPlStupid iap4 = new AIPlStupid (4);
+
 
 			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
 	
-			Console.WriteLine ("possiedi:");
-			Board.Instance.getPlayerHand (Board.Instance.Me).ForEach (delegate(Card c) {
-				Console.WriteLine (c.ToString ());
+			Board.Instance.AllPlayers.ForEach (delegate(Player p) {
+				Console.WriteLine (p.ToString () + " possiede:");
+				Board.Instance.getPlayerHand (p).ForEach (delegate(Card c) {
+					Console.WriteLine (c.ToString ());
+				});
 			});
-
 
 			while (!Board.Instance.isAuctionClosed) {
 				if (Board.Instance.ActiveAuctionPlayer == Board.Instance.Me) {
@@ -157,7 +169,7 @@ namespace ConsolePerDebug
 						Board.Instance.auctionPass (Board.Instance.ActiveAuctionPlayer);
 					else if (a == "c") {
 						Console.Write ("Punti: ");
-						bid = new BidCarichi (Board.Instance.ActiveAuctionPlayer, int.Parse (Console.ReadLine ()));
+						bid = new CarichiBid (Board.Instance.ActiveAuctionPlayer, int.Parse (Console.ReadLine ()));
 					} else {
 						Console.Write ("Numero[0=due,...,8=tre,9=asse]: ");
 						EnNumbers n = (EnNumbers) int.Parse (Console.ReadLine ());
@@ -189,10 +201,7 @@ namespace ConsolePerDebug
 				foreach (Player p in Board.Instance.PlayerAltri)
 					Console.WriteLine ("Altro: " + p.ToString ());
 			}
-
-			Console.WriteLine ("********************************");
-			Console.WriteLine ("inizia la partita.");
-			Console.WriteLine ("********************************");
+				
 
 			while (!Board.Instance.isGameFinish) {
 
@@ -236,10 +245,12 @@ namespace ConsolePerDebug
 		{
 			Console.WriteLine ("**********************");
 			Console.WriteLine ("Nuova mossa:" + move.ToString ());
-			Console.WriteLine ("carte in banco:");
-			Board.Instance.CardOnTheBoard.ForEach (delegate(Card c) {
-				Console.WriteLine (c.ToString ());
-			});
+			if (!Board.Instance.isGameFinish) {
+				Console.WriteLine ("carte in banco:");
+				Board.Instance.CardOnTheBoard.ForEach (delegate(Card c) {
+					Console.WriteLine (c.ToString ());
+				});
+			}
 			Console.WriteLine ("**********************");
 		}
 

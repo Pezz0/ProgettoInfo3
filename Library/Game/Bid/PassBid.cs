@@ -18,6 +18,10 @@ namespace ChiamataLibrary
 
 		#endregion
 
+		public override IBid changeBidder (Player newBidder)
+		{
+			return new PassBid (newBidder);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.Pass"/> class.

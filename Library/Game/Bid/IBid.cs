@@ -19,7 +19,7 @@ namespace ChiamataLibrary
 				return new PassBid (Board.Instance.getPlayer (bytes [0]));
 
 			if (bytes [2] == 255)
-				return new BidCarichi (Board.Instance.getPlayer (bytes [0]), (int) bytes [1]);
+				return new CarichiBid (Board.Instance.getPlayer (bytes [0]), (int) bytes [1]);
 
 			return new NormalBid (Board.Instance.getPlayer (bytes [0]), (EnNumbers) bytes [2], (int) bytes [1]);
 		}
@@ -34,6 +34,8 @@ namespace ChiamataLibrary
 		{
 			this.bidder = bidder;
 		}
+
+		public abstract IBid changeBidder (Player newBidder);
 
 		#region Comparison
 
@@ -58,9 +60,9 @@ namespace ChiamataLibrary
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
-			if (this is NormalBid && other is BidCarichi) {
+			if (this is NormalBid && other is CarichiBid) {
 				NormalBid b1 = (NormalBid) this;
-				BidCarichi b2 = (BidCarichi) other;
+				CarichiBid b2 = (CarichiBid) other;
 
 				if (b1.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
 					return -1;
@@ -68,8 +70,8 @@ namespace ChiamataLibrary
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
-			if (this is BidCarichi && other is NormalBid) {
-				BidCarichi b1 = (BidCarichi) this;
+			if (this is CarichiBid && other is NormalBid) {
+				CarichiBid b1 = (CarichiBid) this;
 				NormalBid b2 = (NormalBid) other;
 
 				if (b2.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
@@ -78,9 +80,9 @@ namespace ChiamataLibrary
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
 
-			if (this is BidCarichi && other is BidCarichi) {
-				BidCarichi b1 = (BidCarichi) this;
-				BidCarichi b2 = (BidCarichi) other;
+			if (this is CarichiBid && other is CarichiBid) {
+				CarichiBid b1 = (CarichiBid) this;
+				CarichiBid b2 = (CarichiBid) other;
 
 				return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}

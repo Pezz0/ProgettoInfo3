@@ -2,7 +2,7 @@
 
 namespace ChiamataLibrary
 {
-	public class StupidAI:IAIPlayer
+	public class AIAuStupid:IAIAuction
 	{
 
 		protected override IBid PlaceABid ()
@@ -15,13 +15,9 @@ namespace ChiamataLibrary
 			return EnSemi.SPADE;
 		}
 
-		protected override Card PlayACard ()
-		{
-			return Board.Instance.getPlayerHand (Me) [0];
-		}
-
-		public StupidAI (int me) : base (me)
+		public AIAuStupid (int me) : base (me)
 		{
 		}
 	}
 }
+
