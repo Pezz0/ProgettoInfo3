@@ -489,8 +489,9 @@ namespace BTLibrary
 			// Send a failure message back to the Activity
 			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
 			_handler.SendMessage (msg);
-			SetState (ConnectionState.STATE_LISTEN);
-			ConnectAsMaster ();
+			Stop ();
+			SetState (ConnectionState.STATE_NONE);
+			//ConnectAsMaster ();
 		}
 
 		/// <summary>
@@ -502,10 +503,16 @@ namespace BTLibrary
 			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost");
 			_handler.SendMessage (msg);
 
-			if (connectThread == null) {
-				SetState (ConnectionState.STATE_LISTEN);
-				ConnectAsMaster ();
+//			if (connectThread == null) {
+//				SetState (ConnectionState.STATE_LISTEN);
+//				ConnectAsMaster ();
+//			}
+			if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
+				SetState (ConnectionState.STATE_NONE);
+				Stop ();
 			}
+
+			//TODO CAZZO FACCIO SE IL MASTER PERDE LA COMUNICAZIONE CON UNO SLAVE??????
 		}
 
 		public BluetoothAdapter getBTAdapter ()

@@ -5,14 +5,14 @@ namespace BTLibrary
 	public enum MessageType
 	{
 		//TODO : togliere "= numero"
-		MESSAGE_STATE_CHANGE = 1,
-		MESSAGE_READ = 2,
-		MESSAGE_WRITE = 3,
-		MESSAGE_DEVICE_NAME = 4,
-		MESSAGE_TOAST = 5,
-		NEW_DEVICE = 6,
-		END_SCANNING = 7,
-		NONE_FOUND = 8,
+		MESSAGE_STATE_CHANGE = 9,
+		MESSAGE_READ = 10,
+		MESSAGE_WRITE = 11,
+		MESSAGE_DEVICE_NAME = 12,
+		MESSAGE_TOAST = 13,
+		NEW_DEVICE = 14,
+		END_SCANNING = 15,
+		NONE_FOUND = 16,
 	}
 }
 

@@ -20,6 +20,7 @@ namespace ProgettoInfo3
 		private Button scan;
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
+		BTReceiver receiver;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -29,30 +30,25 @@ namespace ProgettoInfo3
 			scan = FindViewById<Button> (Resource.Id.scan);
 			ListView paired = FindViewById<ListView> (Resource.Id.paired);
 			ListView newdev = FindViewById<ListView> (Resource.Id.newdev);
-			List<string> temp = new List<string> ();
-			pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name, temp);
-			newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name, temp);
+			pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
+			newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 
+			paired.Adapter = pairedArrayList; //NON VANNO GLI ADAPTER
+			paired.ItemClick += (sender, e) => devicelistClick (sender, e);
 
-			BTReceiver receiver = new BTReceiver (new BTConnHandler (this));
+			newdev.Adapter = newArrayList;
+			newdev.ItemClick += (sender, e) => devicelistClick (sender, e);
+
+			scan = FindViewById<Button> (Resource.Id.scan);
+			scan.Click += (sender, e) => scanDevice (sender, e);
+
+			receiver = new BTReceiver (new BTConnHandler (this));
 			var filter = new IntentFilter (BTPlayService.found);
 			RegisterReceiver (receiver, filter);
 
 			// Register for broadcasts when discovery has finished
 			filter = new IntentFilter (BTPlayService.endscan);
 			RegisterReceiver (receiver, filter);
-
-
-			//paired.Adapter = pairedArrayList; //NON VANNO GLI ADAPTER
-			paired.ItemClick += (sender, e) => devicelistClick (sender, e);
-
-
-
-			//newdev.Adapter = newArrayList;
-			newdev.ItemClick += (sender, e) => devicelistClick (sender, e);
-
-			scan = FindViewById<Button> (Resource.Id.scan);
-			scan.Click += (sender, e) => scanDevice (sender, e);
 
 
 			BTPlayService.Instance.Initialize (this, new BTHandler ());
@@ -67,10 +63,16 @@ namespace ProgettoInfo3
 			else {
 				List<string> address = BTPlayService.Instance.GetPaired ();
 				foreach (string addr in address)
-					pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr) + "\n" + addr);
+					pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 
 			}
 
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			UnregisterReceiver (receiver);
 		}
 
 		void scanDevice (object sender, EventArgs e)
@@ -113,7 +115,7 @@ namespace ProgettoInfo3
 						// Bluetooth is now enabled, so set up a chat session
 						List<string> address = BTPlayService.Instance.GetPaired ();
 						foreach (string addr in address)
-							pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr) + "\n" + addr);
+							pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 
 					}
 				break;

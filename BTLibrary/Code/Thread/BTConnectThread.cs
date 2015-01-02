@@ -48,7 +48,8 @@ namespace BTLibrary
 			Name = "ConnectThread";
 
 			// Always cancel discovery because it will slow down a connection
-			_PlayService.getBTAdapter ().CancelDiscovery ();
+//			if(_PlayService.isDiscovering)
+//				_PlayService.getBTAdapter ().CancelDiscovery ();
 
 			// Make a connection to the BluetoothSocket
 			try {
@@ -68,7 +69,7 @@ namespace BTLibrary
 				}
 
 				// Start the service over to restart listening mode
-				_PlayService.ConnectAsMaster ();
+				//_PlayService.ConnectAsMaster ();
 				return;
 			}
 

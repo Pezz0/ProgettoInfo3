@@ -9,7 +9,7 @@
         android:orientation="horizontal"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="638.9dp"
+        android:layout_width="629.4dp"
         android:layout_height="244.9dp"
         android:id="@+id/linearLayout1"
         android:layout_marginBottom="0.0dp">
