@@ -4,21 +4,24 @@ namespace ChiamataLibrary
 {
 	public abstract class IAIPlayTime:IArtificialIntelligence
 	{
-		protected abstract Card PlayACard ();
+		protected abstract Card playACard ();
 
 		public void controlYourTurnPlayTime (Move move)
 		{
-			startPlayTime ();
+			if (!Board.Instance.isGameFinish && Board.Instance.ActivePlayer == me)
+				Board.Instance.PlayACard (me, playACard ());
 		}
 
 		public void startPlayTime ()
 		{
-			if (!Board.Instance.isGameFinish && Board.Instance.ActivePlayer == Me)
-				Board.Instance.PlayACard (Me, PlayACard ());
+			setup ();
+
+			if (!Board.Instance.isGameFinish && Board.Instance.ActivePlayer == me)
+				Board.Instance.PlayACard (me, playACard ());
 		}
 
 
-		public IAIPlayTime (int me) : base (me)
+		public IAIPlayTime (Player me) : base (me)
 		{
 			Board.Instance.eventGameStarted += startPlayTime;
 

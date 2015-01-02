@@ -22,25 +22,31 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bluetooth\IBTSendable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Move.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\IRandomGenerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\AIAuStupid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\_Basics\IArtificialIntelligence.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\_Basics\IAIAuction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\_Basics\IAIPlayTime.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\AIPlStupid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\GenericAI\AIStupid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\_Basics\IAIAuCallEverything.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Bid\NotPassBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Bid\CarichiBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\Bid\PassBid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\IArtificialIntelligence.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\AIAuStupid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\AIAuFixJump.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\AIAUMobileJump.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\_Basics\IAIAuCallEverything.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\AuctionAI\_Basics\IAIAuction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\_CompleteAI\AIStupid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Basics\IAIPlayTime.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Generic\AIPtStupid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\AIPtCTakeAll.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Bluetooth\" />
     <Folder Include="$(MSBuildThisFileDirectory)AI\" />
     <Folder Include="$(MSBuildThisFileDirectory)AI\AuctionAI\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\AuctionAI\_Basics\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\_CompleteAI\" />
     <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\" />
-    <Folder Include="$(MSBuildThisFileDirectory)AI\_Basics\" />
-    <Folder Include="$(MSBuildThisFileDirectory)AI\GenericAI\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Basics\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Generic\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Altri\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Socio\" />
+    <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\" />
   </ItemGroup>
 </Project>

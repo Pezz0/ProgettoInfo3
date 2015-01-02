@@ -5,9 +5,9 @@ namespace ChiamataLibrary
 	public class AIAuStupid:IAIAuction
 	{
 
-		protected override IBid PlaceABid ()
+		protected override IBid placeABid ()
 		{
-			return new PassBid (Me);
+			return new PassBid (me);
 		}
 
 		protected override EnSemi chooseSeme ()
@@ -15,7 +15,7 @@ namespace ChiamataLibrary
 			return EnSemi.SPADE;
 		}
 
-		public AIAuStupid (int me) : base (me)
+		public AIAuStupid (Player me) : base (me)
 		{
 		}
 	}

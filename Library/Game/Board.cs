@@ -632,7 +632,20 @@ namespace ChiamataLibrary
 		/// Gets the card on the board.
 		/// </summary>
 		/// <value>The card on the board.</value>
-		public  List<Card> CardOnTheBoard { get { return _lastCycle; } }
+		public List<Card> CardOnTheBoard { get { return _lastCycle; } }
+
+		/// <summary>
+		/// Gets the value on board.
+		/// </summary>
+		/// <returns>The value on board.</returns>
+		public int getValueOnBoard ()
+		{
+			int v = 0;
+			_lastCycle.ForEach (delegate(Card c) {
+				v = v + c.getPoint ();
+			});
+			return v;
+		}
 
 		/// <summary>
 		/// A method that allow a player to play a card.
@@ -789,13 +802,6 @@ namespace ChiamataLibrary
 					//add the assigned player to the bytes array
 					_bytes.Add (BitConverter.GetBytes (assignedPlayer) [0]);
 				}
-
-			_t = -1;	//start the auction
-			_bidList = new List<IBid> ();
-
-			if (eventAuctionStarted != null)
-				eventAuctionStarted ();
-
 		}
 
 		public void initializeSlave (string me)
@@ -808,11 +814,19 @@ namespace ChiamataLibrary
 
 			_defBid = new PassBid (_players [0]);
 			_defMove = new Move ();
+		}
 
+		/// <summary>
+		/// Starts the game.
+		/// </summary>
+		public void startGame ()
+		{
+			_t = -1;
+			//start the auction
+			_bidList = new List<IBid> ();
 			if (eventAuctionStarted != null)
 				eventAuctionStarted ();
 		}
-
 
 		#endregion
 

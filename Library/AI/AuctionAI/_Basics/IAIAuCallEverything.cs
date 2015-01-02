@@ -9,12 +9,12 @@ namespace ChiamataLibrary
 		protected IBid _lastBid;
 		protected EnSemi _seme;
 
-		protected override IBid PlaceABid ()
+		protected override IBid placeABid ()
 		{
 			if (_lastBid is PassBid)
-				return new PassBid (Me);
+				return new PassBid (me);
 
-			NotPassBid bid = new NormalBid (Me, EnNumbers.ASSE, 61);
+			NotPassBid bid = new NormalBid (me, EnNumbers.ASSE, 61);
 
 			if (Board.Instance.currentAuctionWinningBid != null)
 				bid = Board.Instance.currentAuctionWinningBid.getNext ();
@@ -23,9 +23,9 @@ namespace ChiamataLibrary
 				bid = lowerTheBidUntilNotCIM (bid);
 
 			if (_lastBid >= bid)
-				return bid.changeBidder (Me);
+				return bid.changeBidder (me);
 
-			return new PassBid (Me);
+			return new PassBid (me);
 		}
 
 		protected override EnSemi chooseSeme ()
@@ -40,14 +40,14 @@ namespace ChiamataLibrary
 
 			NormalBid nb = (NormalBid) bid;
 
-			while (Board.Instance.getCard (_seme, nb.number).initialPlayer == Me && nb.number == EnNumbers.DUE)
+			while (Board.Instance.getCard (_seme, nb.number).initialPlayer == me && nb.number == EnNumbers.DUE)
 				nb = (NormalBid) nb.getNext ();
 
 			return nb;
 		}
 
 
-		public IAIAuCallEverything (int me) : base (me)
+		public IAIAuCallEverything (Player me) : base (me)
 		{
 		}
 	}

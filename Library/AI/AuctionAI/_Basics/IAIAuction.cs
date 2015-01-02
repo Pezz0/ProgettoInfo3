@@ -7,18 +7,18 @@ namespace ChiamataLibrary
 	{
 		protected List<Card> [] _onHand;
 
-		protected virtual void setup ()
+		protected override void setup ()
 		{
 			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);
 
 			_onHand = new List<Card>[nSemi];
 			for (int i = 0; i < nSemi; i++)
-				_onHand [i] = Board.Instance.getPlayerHand (Me).FindAll (delegate(Card c) {
+				_onHand [i] = Board.Instance.getPlayerHand (me).FindAll (delegate(Card c) {
 					return c.seme == (EnSemi) i;
 				});
 		}
 
-		protected abstract IBid PlaceABid ();
+		protected abstract IBid placeABid ();
 
 		protected abstract EnSemi chooseSeme ();
 
@@ -26,22 +26,22 @@ namespace ChiamataLibrary
 		{
 			setup ();
 
-			if (Board.Instance.ActiveAuctionPlayer == Me)
-				Board.Instance.auctionPlaceABid (PlaceABid ());
+			if (Board.Instance.ActiveAuctionPlayer == me)
+				Board.Instance.auctionPlaceABid (placeABid ());
 		}
 
 		public void controlYourTurnAuction (IBid bid)
 		{
 			if (Board.Instance.isAuctionClosed) {
-				if (Board.Instance.currentAuctionWinningBid.bidder == Me)
+				if (Board.Instance.currentAuctionWinningBid.bidder == me)
 					Board.Instance.finalizeAuction (chooseSeme ());
-			} else if (Board.Instance.ActiveAuctionPlayer == Me)
-				Board.Instance.auctionPlaceABid (PlaceABid ());
+			} else if (Board.Instance.ActiveAuctionPlayer == me)
+				Board.Instance.auctionPlaceABid (placeABid ());
 
 		}
 
 
-		public IAIAuction (int me) : base (me)
+		public IAIAuction (Player me) : base (me)
 		{
 			Board.Instance.eventAuctionStarted += startAuction;
 

@@ -129,27 +129,28 @@ namespace ConsolePerDebug
 
 		private static void mainIA ()
 		{
+			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+
 			Board.Instance.eventSomeonePlaceABid += mssBid;
 			Board.Instance.eventSomeonePlayACard += mssMove;
 			Board.Instance.eventPickTheBoard += mssPick;
 
-//			IAIAuction iaa1 = new AIAuFixJump (1, true, 2);
-//			IAIAuction iaa2 = new AIAuFixJump (2, true, 2);
-//			IAIAuction iaa3 = new AIAuFixJump (3, true, 2);
-//			IAIAuction iaa4 = new AIAuFixJump (4, true, 2);
+			//IAIAuction iaa1 = new AIAuFixJump (Board.Instance.AllPlayers[1], true, 2);
+			//IAIAuction iaa2 = new AIAuFixJump (Board.Instance.AllPlayers[2], true, 2);
+			//IAIAuction iaa3 = new AIAuFixJump (Board.Instance.AllPlayers[3], true, 2);
+			//IAIAuction iaa4 = new AIAuFixJump (Board.Instance.AllPlayers[4], true, 2);
 
-			IAIAuction iaa1 = new AIAuMobileJump (1, true, 10, 1, 1);
-			IAIAuction iaa2 = new AIAuMobileJump (2, true, 10, 1, 1);
-			IAIAuction iaa3 = new AIAuMobileJump (3, true, 10, 1, 1);
-			IAIAuction iaa4 = new AIAuMobileJump (4, true, 10, 1, 1);
+			IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
+			IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
+			IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
+			IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
 
-			AIPlStupid iap1 = new AIPlStupid (1);
-			AIPlStupid iap2 = new AIPlStupid (2);
-			AIPlStupid iap3 = new AIPlStupid (3);
-			AIPlStupid iap4 = new AIPlStupid (4);
+			AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
+			AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
+			AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
+			AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
 
-
-			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.startGame ();
 	
 			Board.Instance.AllPlayers.ForEach (delegate(Player p) {
 				Console.WriteLine (p.ToString () + " possiede:");

@@ -40,9 +40,9 @@ namespace ChiamataLibrary
 
 			int cj = 0;
 			for (int i = nNumber - 1; i > 0; i--) {
-				_lastBid = new NormalBid (Me, (EnNumbers) i, 61);
+				_lastBid = new NormalBid (me, (EnNumbers) i, 61);
 
-				if (Board.Instance.getCard (_seme, (EnNumbers) i).initialPlayer == Me)
+				if (Board.Instance.getCard (_seme, (EnNumbers) i).initialPlayer == me)
 					cj = 0;
 				else if (cj < _maxJump)
 					cj = cj + 1;
@@ -50,14 +50,14 @@ namespace ChiamataLibrary
 					break;
 			}
 
-			while (Board.Instance.getCard (_seme, ( (NormalBid) _lastBid ).number).initialPlayer == Me)
-				_lastBid = new NormalBid (Me, ( (NormalBid) _lastBid ).number + 1, 61);
+			while (Board.Instance.getCard (_seme, ( (NormalBid) _lastBid ).number).initialPlayer == me)
+				_lastBid = new NormalBid (me, ( (NormalBid) _lastBid ).number + 1, 61);
 
 //			Console.WriteLine ("LAST BID: " + _lastBid.ToString ());
 
 		}
 
-		public AIAuFixJump (int me, bool politic, int maxJump) : base (me)
+		public AIAuFixJump (Player me, bool politic, int maxJump) : base (me)
 		{
 			this._politic = politic;
 			this._maxJump = maxJump;
