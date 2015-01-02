@@ -56,7 +56,7 @@ namespace ChiamataLibrary
 			while (Board.Instance.getCard (_seme, ( (NormalBid) _lastBid ).number).initialPlayer == me)
 				_lastBid = new NormalBid (me, ( (NormalBid) _lastBid ).number + 1, 61);
 
-			Console.WriteLine ("LAST BID: " + _lastBid.ToString ());
+			//Console.WriteLine ("LAST BID: " + _lastBid.ToString ());
 		}
 
 		public AIAuMobileJump (Player me, bool politic, int maxJump, int startJump, int incr) : base (me)

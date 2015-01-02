@@ -24,6 +24,7 @@ namespace ChiamataLibrary
 
 		private Board ()
 		{
+			reset ();
 		}
 
 		#endregion
@@ -884,6 +885,16 @@ namespace ChiamataLibrary
 
 		public void reset ()
 		{
+			eventAuctionEnded = null;
+			eventAuctionStarted = null;
+			eventGameEnded = null;
+			eventGameStarted = null;
+			eventIPlaceABid = null;
+			eventIPlayACard = null;
+			eventPickTheBoard = null;
+			eventSomeonePlaceABid = null;
+			eventSomeonePlayACard = null;
+
 			_t = -2;
 		}
 	}

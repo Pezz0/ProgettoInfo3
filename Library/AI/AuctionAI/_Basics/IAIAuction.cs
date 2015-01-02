@@ -26,8 +26,12 @@ namespace ChiamataLibrary
 		{
 			setup ();
 
-			if (Board.Instance.ActiveAuctionPlayer == me)
+			if (Board.Instance.ActiveAuctionPlayer == me) {
+				IBid bid = placeABid ();
 				Board.Instance.auctionPlaceABid (placeABid ());
+				if (bid is PassBid)
+					deActivate ();
+			}
 		}
 
 		public void controlYourTurnAuction (IBid bid)
@@ -48,8 +52,17 @@ namespace ChiamataLibrary
 			Board.Instance.eventSomeonePlaceABid += controlYourTurnAuction;
 
 			Board.Instance.eventIPlaceABid += controlYourTurnAuction;
-
 		}
+
+		protected void deActivate ()
+		{
+			Board.Instance.eventAuctionStarted -= startAuction;
+
+			Board.Instance.eventSomeonePlaceABid -= controlYourTurnAuction;
+
+			Board.Instance.eventIPlaceABid -= controlYourTurnAuction;
+		}
+
 	}
 }
 
