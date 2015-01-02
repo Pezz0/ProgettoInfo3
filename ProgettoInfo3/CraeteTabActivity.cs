@@ -68,18 +68,31 @@ namespace ProgettoInfo3
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			if (e.Id == 0) {
-				if (counter > 0)
+				if (counter > 0) {
 					counter--;
+					if (sender.ToString () == spinner1.ToString ())
+						Toast.MakeText (this, "spinner1", ToastLength.Short).Show ();
+					else if (sender.ToString () == spinner2.ToString ())
+						Toast.MakeText (this, "spinner2", ToastLength.Short).Show ();
+					else if (sender.ToString () == spinner3.ToString ())
+						Toast.MakeText (this, "spinner3", ToastLength.Short).Show ();
+					else
+						Toast.MakeText (this, "spinner4", ToastLength.Short).Show ();
+
+				}
 			} else {
-				if (counter == 0)
-				if (BTPlayService.Instance.isBTEnabled ())
-					BTPlayService.Instance.ConnectAsMaster ();
-				else
-					BTPlayService.Instance.enableBluetooth ();
+				if (counter == 0) {
+					if (BTPlayService.Instance.isBTEnabled ())
+						BTPlayService.Instance.ConnectAsMaster ();
+					else
+						BTPlayService.Instance.enableBluetooth ();
+				}
 				counter++;
+
+
 			}
 
-			Toast.MakeText (this, "AI: " + ( 4 - counter ) + " BT: " + counter, ToastLength.Short).Show ();
+			//Toast.MakeText (this, "AI: " + ( 4 - counter ) + " BT: " + counter, ToastLength.Short).Show ();
 
 		}
 
