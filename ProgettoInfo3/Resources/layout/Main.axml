@@ -2,6 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:minWidth="25px"
-    android:minHeight="25px" />
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="87.0dp"
+            android:id="@+id/linearLayout1" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="144.5dp"
+            android:id="@+id/linearLayout2">
+            <Button
+                android:text="Create Table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/create" />
+            <Button
+                android:text="Select Table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/select" />
+            <Button
+                android:text="Settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/settings" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -21,10 +21,11 @@ namespace BTLibrary
 		//TODO: interfaccia menu
 		//TODO: controllare i readonly
 
-
+		public const string found = BluetoothDevice.ActionFound;
+		public const string endscan = BluetoothAdapter.ActionDiscoveryFinished;
 		private Activity _activity;
 		private Handler _handler;
-		private int _MAXPLAYER;
+		//private int _MAXPLAYER;
 
 		//Fields for finding devices
 		private BluetoothAdapter _btAdapter;
@@ -35,7 +36,7 @@ namespace BTLibrary
 		private BTListenThread listenThread;
 		public BTConnectThread connectThread;
 		private BTConnectedThread connectedSlaveThread;
-		private BTConnectedThread [] connectedMasterThread;
+		private List<BTConnectedThread> connectedMasterThread;
 		private int counter = 0;
 
 		public static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
@@ -58,7 +59,7 @@ namespace BTLibrary
 
 		#endregion
 
-		public void Initialize (Activity activity, Handler handler, int maxplayer)
+		public void Initialize (Activity activity, Handler handler)//, int maxplayer)
 		{
 			// Initialize the list of device that are already paired  
 			_pairedDevicesList = new List<string> ();
@@ -67,7 +68,7 @@ namespace BTLibrary
 			_handler = handler;
 
 			//max number of player in the network
-			_MAXPLAYER = maxplayer;
+			//_MAXPLAYER = maxplayer;
 
 			//activity to register the receiver
 			_activity = activity;
@@ -88,7 +89,7 @@ namespace BTLibrary
 			_state = ConnectionState.STATE_NONE;
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new BTConnectedThread[_MAXPLAYER];
+			connectedMasterThread = new List<BTConnectedThread> ();
 		}
 
 		/// <summary>
@@ -160,6 +161,8 @@ namespace BTLibrary
 				foreach (var device in pairedDevices) {
 					_pairedDevicesList.Add (( (BluetoothDevice) device ).Address);
 				}
+			else
+				_pairedDevicesList.Add ("No Device Paired");
 
 			return _pairedDevicesList;
 		}
@@ -191,6 +194,7 @@ namespace BTLibrary
 			//Start the VisibilityRequest activity
 			_activity.StartActivityForResult (visibleIntent, (int) ActivityResultCode.VISIBILITY_REQUEST);
 		}
+
 
 		/// <summary>
 		/// Enables the bluetooth.
@@ -324,30 +328,30 @@ namespace BTLibrary
 			}
 				
 			// Cancel the listen thread because we only want to connect to _MAXPLAYER device
-			if (listenThread != null && counter >= _MAXPLAYER - 1) {
+			/*if (listenThread != null && counter >= _MAXPLAYER - 1) {
 				listenThread.Cancel ();
 				listenThread = null;
-			}
+			}*/
 
 			// Start the thread to manage the connection and perform transmissions
-			if (counter < _MAXPLAYER) {
-				connectedMasterThread [counter] = new BTConnectedThread (socket, this);
-				connectedMasterThread [counter].Start ();
-				counter++;
+			//if (counter < _MAXPLAYER) {
+			connectedMasterThread.Add (new BTConnectedThread (socket, this));
+			connectedMasterThread [counter].Start ();
+			counter++;
 
-				//sends a message to the activity indicates the connection to a device
-				var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
-				_handler.SendMessage (msg);
+			//sends a message to the activity indicates the connection to a device
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
+			_handler.SendMessage (msg);
 
 
-				//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN
-				if (counter == _MAXPLAYER)
+			//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN
+			/*if (counter == _MAXPLAYER)
 					SetState (ConnectionState.STATE_CONNECTED_MASTER);
 				else
-					SetState (ConnectionState.STATE_LISTEN);
-			} else {
-				ConnectionFailed ();
-			}
+					SetState (ConnectionState.STATE_LISTEN);*/
+			//} else {
+			//ConnectionFailed ();
+			//}
 		}
 
 		/// <summary>
@@ -376,6 +380,35 @@ namespace BTLibrary
 				listenThread.Cancel ();
 				listenThread = null;
 			}
+		}
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void StopListen ()
+		{
+
+			if (listenThread != null) {
+				listenThread.Cancel ();
+				listenThread = null;
+			}
+			if (counter > 0)
+				SetState (ConnectionState.STATE_CONNECTED_MASTER);
+		}
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void RemoveSlave (string address)
+		{
+			for (int i = 0; i < counter; i++) {
+				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (address) == 0) {
+					connectedMasterThread.RemoveAt (i);
+					return;
+				}
+			}
+		}
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public int getCounter ()
+		{
+			return counter;
 		}
 
 		/// <summary>

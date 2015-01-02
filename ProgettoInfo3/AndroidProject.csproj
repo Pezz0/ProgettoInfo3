@@ -14,7 +14,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>ProgettoInfo3</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -68,6 +68,8 @@
     <Compile Include="Code\Support\touchList.cs" />
     <Compile Include="Code\Support\cardData.cs" />
     <Compile Include="Code\Support\Slider.cs" />
+    <Compile Include="CraeteTabActivity.cs" />
+    <Compile Include="JoinTableActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -78,6 +80,9 @@
     <AndroidResource Include="Resources\layout\Main.axml" />
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
+    <AndroidResource Include="Resources\layout\CreateTable.axml" />
+    <AndroidResource Include="Resources\layout\device_name.axml" />
+    <AndroidResource Include="Resources\layout\DeviceList.axml" />
   </ItemGroup>
   <Import Project="..\Library\Library.projitems" Label="Shared" Condition="Exists('..\Library\Library.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
@@ -155,5 +160,11 @@
     <AndroidAsset Include="Assets\Content\TRECOPE.png" />
     <AndroidAsset Include="Assets\Content\TREORI.png" />
     <AndroidAsset Include="Assets\Content\TRESPADE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">
+      <Project>{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}</Project>
+      <Name>BTLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

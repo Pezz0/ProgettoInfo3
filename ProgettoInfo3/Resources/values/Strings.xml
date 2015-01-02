@@ -2,4 +2,18 @@
 <resources>
 	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">ProgettoInfo3</string>
+	<string-array name="Type">
+		<item> AI</item>
+		<item>BlueTooth</item>
+	</string-array>
+	<string name="Default1"> pippo</string>
+	<string name="Default2"> pluto</string>
+	<string name="Default3"> paperino</string>
+	<string name="Default4"> topolino</string>
+	<string-array name="State">
+		<item> None</item>
+		<item> Waiting For Connection</item> 
+		<item> Connecting</item>
+		<item> Connected</item>
+	</string-array>
 </resources>

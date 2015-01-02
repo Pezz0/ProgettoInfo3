@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="307.0dp"
+        android:id="@+id/linearLayout1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="79.7dp"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout2">
+            <TextView
+                android:text="Players"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView1" />
+            <TextView
+                android:text="Player 1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView2" />
+            <TextView
+                android:text="Player 2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView3" />
+            <TextView
+                android:text="Player 3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView4" />
+            <TextView
+                android:text="Player 4"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView5" />
+            <TextView
+                android:text="Player 5"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView6" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="113.0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout3">
+            <TextView
+                android:text="Type"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView7" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:id="@+id/spinner" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:id="@+id/spinner1" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:id="@+id/spinner2" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/spinner3" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:id="@+id/spinner4" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="136.4dp"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout4">
+            <TextView
+                android:text="Names"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView8" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/player1"
+                android:text="You" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/player2" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/player3" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/player4" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/player5" />
+        </LinearLayout>
+        <GridLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/gridLayout2" />
+    </LinearLayout>
+</LinearLayout>
