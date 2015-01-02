@@ -80,6 +80,13 @@ namespace Core
 				lblValue.Text = _currentValue.ToString ();
 			}
 		}
+
+		public void remove(){
+			touch.eventTouchBegan -= touchBegan;
+			touch.eventTouchEnded -= touchMoved;
+			mainLayer.RemoveChild (spriteBar);
+			mainLayer.RemoveChild (spritePoint);
+		}
 			
 	}
 }

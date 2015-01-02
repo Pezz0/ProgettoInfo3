@@ -73,7 +73,6 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
@@ -88,7 +87,6 @@
     <Folder Include="Code\Support\" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Content\AsseBastoni.png" />
     <AndroidAsset Include="Assets\Content\btnAsse.png" />
     <AndroidAsset Include="Assets\Content\btnCinque.png" />
     <AndroidAsset Include="Assets\Content\btnDieci.png" />
@@ -117,5 +115,45 @@
     <AndroidAsset Include="Assets\Content\sliderBar.png" />
     <AndroidAsset Include="Assets\Content\turnLight.png" />
     <AndroidAsset Include="Assets\Content\turnLight2.png" />
+    <AndroidAsset Include="Assets\Content\ASSEBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\ASSECOPE.png" />
+    <AndroidAsset Include="Assets\Content\ASSEORI.png" />
+    <AndroidAsset Include="Assets\Content\ASSESPADE.png" />
+    <AndroidAsset Include="Assets\Content\CAVALLOBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\CAVALLOCOPE.png" />
+    <AndroidAsset Include="Assets\Content\CAVALLOORI.png" />
+    <AndroidAsset Include="Assets\Content\CAVALLOSPADE.png" />
+    <AndroidAsset Include="Assets\Content\CINQUEBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\CINQUECOPE.png" />
+    <AndroidAsset Include="Assets\Content\CINQUEORI.png" />
+    <AndroidAsset Include="Assets\Content\CINQUESPADE.png" />
+    <AndroidAsset Include="Assets\Content\DUEBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\DUECOPE.png" />
+    <AndroidAsset Include="Assets\Content\DUEORI.png" />
+    <AndroidAsset Include="Assets\Content\DUESPADE.png" />
+    <AndroidAsset Include="Assets\Content\FANTEBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\FANTECOPE.png" />
+    <AndroidAsset Include="Assets\Content\FANTEORI.png" />
+    <AndroidAsset Include="Assets\Content\FANTESPADE.png" />
+    <AndroidAsset Include="Assets\Content\QUATTROBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\QUATTROCOPE.png" />
+    <AndroidAsset Include="Assets\Content\QUATTROORI.png" />
+    <AndroidAsset Include="Assets\Content\QUATTROSPADE.png" />
+    <AndroidAsset Include="Assets\Content\REBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\RECOPE.png" />
+    <AndroidAsset Include="Assets\Content\REORI.png" />
+    <AndroidAsset Include="Assets\Content\RESPADE.png" />
+    <AndroidAsset Include="Assets\Content\SEIBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\SEICOPE.png" />
+    <AndroidAsset Include="Assets\Content\SEIORI.png" />
+    <AndroidAsset Include="Assets\Content\SEISPADE.png" />
+    <AndroidAsset Include="Assets\Content\SETTEBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\SETTECOPE.png" />
+    <AndroidAsset Include="Assets\Content\SETTEORI.png" />
+    <AndroidAsset Include="Assets\Content\SETTESPADE.png" />
+    <AndroidAsset Include="Assets\Content\TREBASTONI.png" />
+    <AndroidAsset Include="Assets\Content\TRECOPE.png" />
+    <AndroidAsset Include="Assets\Content\TREORI.png" />
+    <AndroidAsset Include="Assets\Content\TRESPADE.png" />
   </ItemGroup>
 </Project>

@@ -20,12 +20,16 @@ namespace Core
 			set{
 				if(value==true){
 					//TODO : aggiungere la texture di disabled
+					spritePressed.Visible = false;
+					spriteNorm.Visible = true;
 					touch.eventTouchBegan += touchBegan;
 					touch.eventTouchEnded += touchEnded;
 					_Enabled = true;
 				}
 				else {
 					//TODO : aggiungere la texture di disabled
+					spritePressed.Visible = true;
+					spriteNorm.Visible = false;
 					touch.eventTouchBegan -= touchBegan;
 					touch.eventTouchEnded -= touchEnded;
 					_Enabled = false;
