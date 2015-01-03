@@ -56,7 +56,7 @@ namespace TestProject
 			Board.Instance.finalizeAuction (EnSemi.COPE);
 		
 			Assert.AreEqual (EnGameType.STANDARD, Board.Instance.GameType);
-			Assert.AreSame (_players [3], Board.Instance.PlayerChiamante);
+			Assert.AreSame (_players [3], Board.Instance.getChiamante ());
 		}
 
 		[Test ()]
@@ -120,7 +120,7 @@ namespace TestProject
 			Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			Assert.AreEqual (EnGameType.STANDARD, Board.Instance.GameType);
-			Assert.AreSame (_players [3], Board.Instance.PlayerChiamante);
+			Assert.AreSame (_players [3], Board.Instance.getChiamante ());
 		}
 
 		[Test ()]
@@ -225,7 +225,7 @@ namespace TestProject
 			Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			Assert.AreEqual (EnGameType.CARICHI, Board.Instance.GameType);
-			Assert.AreSame (_players [0], Board.Instance.PlayerChiamante);
+			Assert.AreSame (_players [0], Board.Instance.getChiamante ());
 		}
 	
 	}

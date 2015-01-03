@@ -137,34 +137,6 @@ namespace ChiamataLibrary
 			return cl;
 		}
 
-		/// <summary>
-		/// Gets current chiamante's point count.
-		/// </summary>
-		/// <returns>The current chiamante's point count.</returns>
-		public int getChiamantePointCount ()
-		{
-			int count = 0;
-			foreach (Card c in _cardGrid)
-				if (( c.FinalPlayer.Role == EnRole.CHIAMANTE || c.FinalPlayer.Role == EnRole.SOCIO ) && !c.isPlayable)
-					count = count + c.getPoint ();
-
-			return count;
-		}
-
-		/// <summary>
-		/// Gets current altri's point count.
-		/// </summary>
-		/// <returns>The current chiamante's point count.</returns>
-		public int getAltriPointCount ()
-		{
-			int count = 0;
-			foreach (Card c in _cardGrid)
-				if (c.FinalPlayer.Role == EnRole.ALTRO && !c.isPlayable)
-					count = count + c.getPoint ();
-
-			return count;
-		}
-
 		#endregion
 
 		#region Players management
@@ -225,52 +197,53 @@ namespace ChiamataLibrary
 		/// Gets the player chiamante.
 		/// </summary>
 		/// <value>The player chiamante.</value>
-		public Player PlayerChiamante {
-			get {
-				if (!isPlayTime)
-					throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
+		public Player getChiamante ()
+		{
 
-				foreach (Player p in _players)
-					if (p.Role == EnRole.CHIAMANTE)
-						return p;
+			if (!isPlayTime)
+				throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
 
-				throw new Exception ("Some error occur, this path shoudn't be executed");
-			}
+			foreach (Player p in _players)
+				if (p.Role == EnRole.CHIAMANTE)
+					return p;
+
+			throw new Exception ("Some error occur, this path shoudn't be executed");
 		}
 
 		/// <summary>
 		/// Gets the player socio.
 		/// </summary>
 		/// <value>The player socio.</value>
-		public Player PlayerSocio {
-			get {
-				if (!isPlayTime)
-					throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
+		public Player getSocio ()
+		{
+			if (!isPlayTime)
+				throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
 
-				foreach (Player p in _players)
-					if (p.Role == EnRole.SOCIO)
-						return p;
-				throw new Exception ("Some error occur, this path shoudn't be executed");
-			}
+			if (isChiamataInMano)
+				return null;
+
+			foreach (Player p in _players)
+				if (p.Role == EnRole.SOCIO)
+					return p;
+			throw new Exception ("Some error occur, this path shoudn't be executed");
 		}
 
 		/// <summary>
 		/// Gets the player altri.
 		/// </summary>
 		/// <value>The player altri.</value>
-		public List<Player> PlayerAltri {
-			get {
-				if (!isPlayTime)
-					throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
+		public List<Player> getAltri ()
+		{
+			if (!isPlayTime)
+				throw new WrongPhaseException ("Roles not assigned yet", "Playtime");
 
-				List<Player> pl = new List<Player> ();
+			List<Player> pl = new List<Player> ();
 
-				foreach (Player p in _players)
-					if (p.Role == EnRole.ALTRO)
-						pl.Add (p);
+			foreach (Player p in _players)
+				if (p.Role == EnRole.ALTRO)
+					pl.Add (p);
 
-				return pl;
-			}
+			return pl;
 		}
 
 		#endregion
@@ -451,13 +424,13 @@ namespace ChiamataLibrary
 
 				wb.bidder.Role = EnRole.CHIAMANTE;
 
-				_point = ( (CarichiBid) wb ).point;
+				_winningPoint = ( (CarichiBid) wb ).point;
 			} else if (wb is NormalBid) {	//standard
 				_gameType = EnGameType.STANDARD;
 
 				_calledCard = getCard (seme, ( (NormalBid) wb ).number);
 
-				_point = ( (NormalBid) wb ).point;
+				_winningPoint = ( (NormalBid) wb ).point;
 
 				//set the roles
 				_calledCard.initialPlayer.Role = EnRole.SOCIO;
@@ -529,13 +502,13 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The necessary point to win.
 		/// </summary>
-		private int _point;
+		private int _winningPoint;
 
 		/// <summary>
 		/// Gets the winning point.
 		/// </summary>
 		/// <value>The winning point.</value>
-		public int WinningPoint { get { return _point; } }
+		public int WinningPoint { get { return _winningPoint; } }
 
 		/// <summary>
 		/// The called card.
@@ -552,7 +525,7 @@ namespace ChiamataLibrary
 		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is a chiamata in mano.
 		/// </summary>
 		/// <value><c>true</c> if is a chiamata in mano; otherwise, <c>false</c>.</value>
-		public bool isChiamataInMano{ get { return _gameType == EnGameType.STANDARD && _calledCard.initialPlayer == PlayerChiamante; } }
+		public bool isChiamataInMano{ get { return _gameType == EnGameType.STANDARD && _calledCard.initialPlayer.Role == EnRole.CHIAMANTE; } }
 
 
 		#endregion
@@ -692,8 +665,14 @@ namespace ChiamataLibrary
 			if (eventSomeonePlaceABid != null && move.player != Me)
 				eventSomeonePlayACard (move);
 
-			if (isGameFinish && eventGameEnded != null)
-				eventGameEnded ();
+			if (isGameFinish) {
+				this.addToArchive ();
+				if (eventGameEnded != null)
+					eventGameEnded ();
+			}
+
+
+
 
 		}
 
@@ -727,24 +706,6 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <value>The number of card on board.</value>
 		public int numberOfCardOnBoard{ get { return _t % PLAYER_NUMBER; } }
-
-		/// <summary>
-		/// Gets the winner.
-		/// </summary>
-		/// <value>The winner.</value>
-		public List<Player> Winner {
-			get {
-				List<Player> w = new List<Player> ();
-				if (getChiamantePointCount () >= WinningPoint) {
-					w.Add (PlayerChiamante);
-					if (!isChiamataInMano)
-						w.Add (PlayerSocio);
-				} else
-					w = PlayerAltri;
-
-				return w;
-			}
-		}
 
 		#endregion
 
@@ -829,6 +790,21 @@ namespace ChiamataLibrary
 				eventAuctionStarted ();
 		}
 
+		public void reset ()
+		{
+			eventAuctionEnded = null;
+			eventAuctionStarted = null;
+			eventGameEnded = null;
+			eventGameStarted = null;
+			eventIPlaceABid = null;
+			eventIPlayACard = null;
+			eventPickTheBoard = null;
+			eventSomeonePlaceABid = null;
+			eventSomeonePlayACard = null;
+
+			_t = -2;
+		}
+
 		#endregion
 
 		#region Bluetooth
@@ -883,20 +859,11 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		public void reset ()
+		private void addToArchive ()
 		{
-			eventAuctionEnded = null;
-			eventAuctionStarted = null;
-			eventGameEnded = null;
-			eventGameStarted = null;
-			eventIPlaceABid = null;
-			eventIPlayACard = null;
-			eventPickTheBoard = null;
-			eventSomeonePlaceABid = null;
-			eventSomeonePlayACard = null;
-
-			_t = -2;
+			Archive.Instance.add (new GameData (DateTime.Now, _cardGrid, _players, _bidList, _gameType, _calledCard, _winningPoint));
 		}
+
 	}
 }
 

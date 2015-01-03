@@ -18,7 +18,8 @@ namespace ConsolePerDebug
 				mainIA ();
 		}
 
-	
+		#region standard
+
 		private static void mainStandard ()
 		{
 			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
@@ -76,16 +77,16 @@ namespace ConsolePerDebug
 			if (Board.Instance.GameType == EnGameType.MONTE)
 				Console.WriteLine ("Hanno passato tutti senza offerte e quindi la partita va a monte");
 			else if (Board.Instance.GameType == EnGameType.CARICHI)
-				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.PlayerChiamante.ToString ());
+				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.getChiamante ().ToString ());
 			else if (Board.Instance.GameType == EnGameType.STANDARD) {
 				Console.WriteLine ("Partita standard");
-				Console.WriteLine ("Chiamante: " + Board.Instance.PlayerChiamante.ToString ());
+				Console.WriteLine ("Chiamante: " + Board.Instance.getChiamante ().ToString ());
 				if (Board.Instance.isChiamataInMano)
 					Console.WriteLine ("Chiamata in mano");
 				else
-					Console.WriteLine ("Socio: " + Board.Instance.PlayerChiamante.ToString ());
+					Console.WriteLine ("Socio: " + Board.Instance.getSocio ().ToString ());
 
-				foreach (Player p in Board.Instance.PlayerAltri)
+				foreach (Player p in Board.Instance.getAltri())
 					Console.WriteLine ("Altro: " + p.ToString ());
 			}
 
@@ -117,15 +118,17 @@ namespace ConsolePerDebug
 			}
 
 			Console.WriteLine ("Partita finita");
-			Console.WriteLine ("Il chiamante ha fatto: " + Board.Instance.getChiamantePointCount ().ToString () + " punti");
-			Console.WriteLine ("gli altri hanno fatto: " + Board.Instance.getAltriPointCount ().ToString () + " punti");
-
-			Console.WriteLine ("Il chiamante deve fare " + Board.Instance.WinningPoint.ToString () + " punti, quindi i vincitori sono:");
-			Board.Instance.Winner.ForEach (delegate(Player p) {
-				Console.WriteLine (p.ToString ());
-			});
+//			Console.WriteLine ("Il chiamante ha fatto: " + Board.Instance.getChiamantePointCount ().ToString () + " punti");
+//			Console.WriteLine ("gli altri hanno fatto: " + Board.Instance.getAltriPointCount ().ToString () + " punti");
+//
+//			Console.WriteLine ("Il chiamante deve fare " + Board.Instance.WinningPoint.ToString () + " punti, quindi i vincitori sono:");
+//			Board.Instance.Winner.ForEach (delegate(Player p) {
+//				Console.WriteLine (p.ToString ());
+//			});
 
 		}
+
+		#endregion
 
 		private static void mainIA ()
 		{
@@ -180,7 +183,7 @@ namespace ConsolePerDebug
 
 			Console.WriteLine ("**********************");
 
-			if (Board.Instance.ActiveAuctionPlayer == Board.Instance.Me) {
+			if (!Board.Instance.isAuctionClosed && Board.Instance.ActiveAuctionPlayer == Board.Instance.Me) {
 				Console.WriteLine (Board.Instance.ActiveAuctionPlayer.ToString () + " deve fare una offerta [passo=p; carichi=c, normale=qualsiasi altra cosa]");
 
 				string a = Console.ReadLine ();
@@ -247,16 +250,16 @@ namespace ConsolePerDebug
 			if (Board.Instance.GameType == EnGameType.MONTE)
 				Console.WriteLine ("Hanno passato tutti senza offerte e quindi la partita va a monte");
 			else if (Board.Instance.GameType == EnGameType.CARICHI)
-				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.PlayerChiamante.ToString ());
+				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.getChiamante ().ToString ());
 			else if (Board.Instance.GameType == EnGameType.STANDARD) {
 				Console.WriteLine ("Partita standard");
-				Console.WriteLine ("Chiamante: " + Board.Instance.PlayerChiamante.ToString ());
+				Console.WriteLine ("Chiamante: " + Board.Instance.getChiamante ().ToString ());
 				if (Board.Instance.isChiamataInMano)
 					Console.WriteLine ("Chiamata in mano");
 				else
-					Console.WriteLine ("Socio: " + Board.Instance.PlayerChiamante.ToString ());
+					Console.WriteLine ("Socio: " + Board.Instance.getSocio ().ToString ());
 
-				foreach (Player p in Board.Instance.PlayerAltri)
+				foreach (Player p in Board.Instance.getAltri())
 					Console.WriteLine ("Altro: " + p.ToString ());
 			}
 		}
@@ -265,13 +268,13 @@ namespace ConsolePerDebug
 		{
 
 			Console.WriteLine ("Partita finita");
-			Console.WriteLine ("Il chiamante ha fatto: " + Board.Instance.getChiamantePointCount ().ToString () + " punti");
-			Console.WriteLine ("gli altri hanno fatto: " + Board.Instance.getAltriPointCount ().ToString () + " punti");
-
-			Console.WriteLine ("Il chiamante deve fare " + Board.Instance.WinningPoint.ToString () + " punti, quindi i vincitori sono:");
-			Board.Instance.Winner.ForEach (delegate(Player p) {
-				Console.WriteLine (p.ToString ());
-			});
+//			Console.WriteLine ("Il chiamante ha fatto: " + Board.Instance.getChiamantePointCount ().ToString () + " punti");
+//			Console.WriteLine ("gli altri hanno fatto: " + Board.Instance.getAltriPointCount ().ToString () + " punti");
+//
+//			Console.WriteLine ("Il chiamante deve fare " + Board.Instance.WinningPoint.ToString () + " punti, quindi i vincitori sono:");
+//			Board.Instance.Winner.ForEach (delegate(Player p) {
+//				Console.WriteLine (p.ToString ());
+//			});
 		}
 
 	}

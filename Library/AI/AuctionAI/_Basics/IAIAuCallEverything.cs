@@ -40,7 +40,7 @@ namespace ChiamataLibrary
 
 			NormalBid nb = (NormalBid) bid;
 
-			while (Board.Instance.getCard (_seme, nb.number).initialPlayer == me && nb.number == EnNumbers.DUE)
+			while (Board.Instance.getCard (_seme, nb.number).initialPlayer == me && nb.number != EnNumbers.DUE)
 				nb = (NormalBid) nb.getNext ();
 
 			return nb;

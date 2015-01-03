@@ -6,7 +6,7 @@
     <SharedGUID>{6EC074BC-6C0F-47F5-A775-F89CC1C95A79}</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Library</Import_RootNamespace>
+    <Import_RootNamespace>ChiamataLibrary</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnRole.cs" />
@@ -35,6 +35,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Basics\IAIPlayTime.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\_Generic\AIPtStupid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\AIPtCTakeAll.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Archive\GameData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Archive\Archive.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Bluetooth\" />
@@ -48,5 +50,6 @@
     <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Altri\" />
     <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Socio\" />
     <Folder Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Archive\" />
   </ItemGroup>
 </Project>
