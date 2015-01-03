@@ -83,8 +83,11 @@ namespace ProgettoInfo3
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f07001a
-			public const int create = 2131165210;
+			// aapt resource value: 0x7f070019
+			public const int Start = 2131165209;
+			
+			// aapt resource value: 0x7f07001d
+			public const int create = 2131165213;
 			
 			// aapt resource value: 0x7f070016
 			public const int gridLayout2 = 2131165206;
@@ -101,11 +104,17 @@ namespace ProgettoInfo3
 			// aapt resource value: 0x7f07000f
 			public const int linearLayout4 = 2131165199;
 			
-			// aapt resource value: 0x7f070018
-			public const int newdev = 2131165208;
-			
 			// aapt resource value: 0x7f070017
-			public const int paired = 2131165207;
+			public const int linearLayout5 = 2131165207;
+			
+			// aapt resource value: 0x7f070018
+			public const int linearLayout6 = 2131165208;
+			
+			// aapt resource value: 0x7f07001b
+			public const int newdev = 2131165211;
+			
+			// aapt resource value: 0x7f07001a
+			public const int paired = 2131165210;
 			
 			// aapt resource value: 0x7f070011
 			public const int player1 = 2131165201;
@@ -122,14 +131,14 @@ namespace ProgettoInfo3
 			// aapt resource value: 0x7f070015
 			public const int player5 = 2131165205;
 			
-			// aapt resource value: 0x7f070019
-			public const int scan = 2131165209;
-			
-			// aapt resource value: 0x7f07001b
-			public const int select = 2131165211;
-			
 			// aapt resource value: 0x7f07001c
-			public const int settings = 2131165212;
+			public const int scan = 2131165212;
+			
+			// aapt resource value: 0x7f07001e
+			public const int select = 2131165214;
+			
+			// aapt resource value: 0x7f07001f
+			public const int settings = 2131165215;
 			
 			// aapt resource value: 0x7f07000a
 			public const int spinner = 2131165194;

@@ -5,7 +5,8 @@ using Android.Content.PM;
 using Microsoft.Xna.Framework;
 using Android.App;
 using Android.Widget;
-using Core;
+
+//using Core;
 using Android.Content;
 
 
@@ -25,19 +26,19 @@ namespace ProgettoInfo3
 	]
 	public class MainActivity : AndroidGameActivity
 	{
-		Android.Widget.Button create;
-		Android.Widget.Button join;
-		Android.Widget.Button settings;
+		Button create;
+		Button join;
+		Button settings;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Main);
 
-			create = FindViewById<Android.Widget.Button> (Resource.Id.create);
-			join = FindViewById<Android.Widget.Button> (Resource.Id.select);
+			create = FindViewById<Button> (Resource.Id.create);
+			join = FindViewById<Button> (Resource.Id.select);
 
-			settings = FindViewById<Android.Widget.Button> (Resource.Id.settings);
+			settings = FindViewById<Button> (Resource.Id.settings);
 
 			create.Click += (sender, e) => createClick (sender, e);
 			join.Click += (sender, e) => joinClick (sender, e);
@@ -62,20 +63,12 @@ namespace ProgettoInfo3
 
 		void settingClick (object sender, EventArgs e)
 		{
-			starGame ();
+
 			//Toast.MakeText (this, "not implemented yet", ToastLength.Long).Show ();
 
 		}
 
-		protected void starGame ()
-		{
-			var application = new CCApplication ();
 
-
-			application.ApplicationDelegate = new GameAppDelegate ();
-			SetContentView (application.AndroidContentView);
-			application.StartGame ();
-		}
 	}
 }
 

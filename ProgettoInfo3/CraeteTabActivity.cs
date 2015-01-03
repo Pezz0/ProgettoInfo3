@@ -11,6 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using BTLibrary;
+using CocosSharp;
 
 namespace ProgettoInfo3
 {
@@ -26,9 +27,9 @@ namespace ProgettoInfo3
 		EditText pl3;
 		EditText pl4;
 		EditText pl5;
+		Button start;
 
 		int counter = 0;
-
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -62,24 +63,30 @@ namespace ProgettoInfo3
 			pl4.Text = Resources.GetText (Resource.String.Default3);
 			pl5.Text = Resources.GetText (Resource.String.Default4);
 
+			start = FindViewById<Button> (Resource.Id.Start);
+			start.Click += Start_Game;
+
 			BTPlayService.Instance.Initialize (this, new BTHandler ());
 		}
 
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
+			//se scelgo AI
 			if (e.Id == 0) {
-				if (counter > 0) {
+				if (counter - BTPlayService.Instance.getNumConnected () > 0) {
 					counter--;
-					if (sender.ToString () == spinner1.ToString ())
+					if (sender.ToString () == spinner1.ToString ()) {
 						Toast.MakeText (this, "spinner1", ToastLength.Short).Show ();
-					else if (sender.ToString () == spinner2.ToString ())
+					} else if (sender.ToString () == spinner2.ToString ()) {
 						Toast.MakeText (this, "spinner2", ToastLength.Short).Show ();
-					else if (sender.ToString () == spinner3.ToString ())
+					} else if (sender.ToString () == spinner3.ToString ()) {
 						Toast.MakeText (this, "spinner3", ToastLength.Short).Show ();
-					else
+					} else {
 						Toast.MakeText (this, "spinner4", ToastLength.Short).Show ();
-
-				}
+					}
+				} else
+					BTPlayService.Instance.StopListen ();
+				//se scelgo BT
 			} else {
 				if (counter == 0) {
 					if (BTPlayService.Instance.isBTEnabled ())
@@ -90,9 +97,21 @@ namespace ProgettoInfo3
 				counter++;
 
 
+
 			}
 
-			//Toast.MakeText (this, "AI: " + ( 4 - counter ) + " BT: " + counter, ToastLength.Short).Show ();
+		}
+
+		void Start_Game (object sender, EventArgs e)
+		{
+
+
+			var application = new CCApplication ();
+
+
+			application.ApplicationDelegate = new Core.GameAppDelegate ();
+			SetContentView (application.AndroidContentView);
+			application.StartGame ();
 
 		}
 
@@ -105,11 +124,14 @@ namespace ProgettoInfo3
 					if (resultCode == Result.Ok)
 						// Bluetooth is now enabled, so set up a chat session
 						BTPlayService.Instance.ConnectAsMaster ();
+					else
+						Finish ();
 					
 				break;
 					
 			}
 		}
+			
 	}
 }
 

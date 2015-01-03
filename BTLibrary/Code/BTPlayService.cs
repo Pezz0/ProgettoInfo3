@@ -354,6 +354,12 @@ namespace BTLibrary
 			//}
 		}
 
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public int getNumConnected ()
+		{
+			return counter;
+		}
+
 		/// <summary>
 		/// Stop all threads.
 		/// </summary>
@@ -390,8 +396,9 @@ namespace BTLibrary
 				listenThread.Cancel ();
 				listenThread = null;
 			}
-			if (counter > 0)
-				SetState (ConnectionState.STATE_CONNECTED_MASTER);
+			/*if (counter > 0)
+				SetState (ConnectionState.STATE_CONNECTED_MASTER);*/
+			SetState (ConnectionState.STATE_NONE);
 		}
 
 		[MethodImpl (MethodImplOptions.Synchronized)]
@@ -478,6 +485,21 @@ namespace BTLibrary
 					tmp = connectedMasterThread [i];
 				}
 				tmp.Write (msg);
+			}
+		}
+
+		public void WriteToAllSlave<T> (IBTSendable<T> bts)
+		{
+			byte [] msg = bts.toByteArray ();
+			BTConnectedThread tmp;
+			for (int i = 0; i < counter; i++) {
+				lock (this) {
+					if (connectedMasterThread [i] != null) {
+						tmp = connectedMasterThread [i];
+						tmp.Write (msg);
+					}
+				}
+				
 			}
 		}
 

@@ -123,5 +123,25 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/gridLayout2" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="138.7dp"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout5" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="160.8dp"
+            android:layout_height="191.9dp"
+            android:id="@+id/linearLayout6">
+            <Button
+                android:text="Start Game"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Start" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
