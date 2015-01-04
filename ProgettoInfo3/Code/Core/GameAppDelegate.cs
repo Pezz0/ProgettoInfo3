@@ -12,9 +12,8 @@ namespace Core
 			application.PreferMultiSampling = false;
 			application.ContentRootDirectory = "Content";
 
-			// TODO : Qui ci va l'inizializzazione della GameScene e di tutte le robe che servono (matrice carte, setup connessione)
-			//	  Per ora è solamente una scena con un solo layer			
 			GameScene gameScene = new GameScene (mainWindow);
+
 			mainWindow.RunWithScene (gameScene);
 
 

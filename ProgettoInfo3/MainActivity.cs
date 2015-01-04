@@ -2,12 +2,11 @@ using System;
 using Android.OS;
 using CocosSharp;
 using Android.Content.PM;
-using Microsoft.Xna.Framework;
 using Android.App;
 using Android.Widget;
-
-//using Core;
 using Android.Content;
+using ChiamataLibrary;
+using Microsoft.Xna.Framework;
 
 
 
@@ -18,8 +17,8 @@ namespace ProgettoInfo3
 		AlwaysRetainTaskState = true,
 		Icon = "@drawable/icon",
 		Theme = "@android:style/Theme.NoTitleBar",
-		LaunchMode = LaunchMode.SingleInstance,
-		ScreenOrientation = ScreenOrientation.ReverseLandscape,
+		LaunchMode = LaunchMode.SingleTop,
+		ScreenOrientation = ScreenOrientation.Portrait,
 		MainLauncher = true,
 		ConfigurationChanges = ConfigChanges.Keyboard |
 		ConfigChanges.KeyboardHidden)
@@ -45,14 +44,14 @@ namespace ProgettoInfo3
 			settings.Click += (sender, e) => settingClick (sender, e);
 
 
+
 		}
 
 		void createClick (object sender, EventArgs e)
 		{
 			//Toast.MakeText (this, "Create new tab", ToastLength.Long).Show ();
 			var serverIntent = new Intent (this, typeof (CraeteTabActivity));
-			StartActivity (serverIntent);
-
+			StartActivityForResult (serverIntent,1);
 		}
 
 		void joinClick (object sender, EventArgs e)
@@ -64,7 +63,52 @@ namespace ProgettoInfo3
 		void settingClick (object sender, EventArgs e)
 		{
 
-			//Toast.MakeText (this, "not implemented yet", ToastLength.Long).Show ();
+
+
+		}
+
+		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
+		{
+		
+
+					if (requestCode==1&&resultCode == Result.Ok) {
+
+						
+						var application = new CCApplication ();
+
+
+						application.ApplicationDelegate = new Core.GameAppDelegate ();
+						SetContentView (application.AndroidContentView);
+
+
+
+
+						ChiamataLibrary.Board.Instance.initializeMaster (new String[] {
+							"A",
+							"B",
+							"C",
+							"D",
+							"E"
+						}, 2);
+
+						#region IA setup
+						IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
+						IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
+						IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
+						IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
+
+						AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
+						AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
+						AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
+						AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
+						#endregion
+
+						application.StartGame ();
+
+					}
+
+
+
 
 		}
 

@@ -73,72 +73,72 @@ namespace Core
 
 		private void actLascio (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			Board.Instance.auctionPass (Board.Instance.ActiveAuctionPlayer);
+			Board.Instance.auctionPass (Board.Instance.Me);
 		}
 
 		private void actCarichi (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			CarichiBid cb = new CarichiBid (Board.Instance.ActiveAuctionPlayer, slider.currentValue);
+			CarichiBid cb = new CarichiBid (Board.Instance.Me, slider.currentValue);
 			Board.Instance.auctionPlaceABid (cb);
 		}
 
 		private void actAsse (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.ASSE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.ASSE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actTre (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.TRE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.TRE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actDieci (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.RE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.RE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actNove (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.CAVALLO, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actOtto (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.FANTE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.FANTE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actSette (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.SETTE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.SETTE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actSei (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.SEI, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.SEI, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actCinque (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.CINQUE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.CINQUE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actQuattro (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.QUATTRO, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.QUATTRO, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actDue (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			NormalBid nb = new NormalBid (Board.Instance.ActiveAuctionPlayer, EnNumbers.DUE, slider.currentValue);
+			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.DUE, slider.currentValue);
 			Board.Instance.auctionPlaceABid (nb);
 		}
 
@@ -613,6 +613,8 @@ namespace Core
 		/// <param name="mainWindow">Main window.</param>
 		public GameScene (CCWindow mainWindow) : base (mainWindow)
 		{
+
+
 			//Instancing the layer and setting him as a child of the mainWindow
 			mainLayer = new CCLayer ();
 			AddChild (mainLayer);
@@ -908,13 +910,13 @@ namespace Core
 		#region Auction turn changed
 		public void bidPlaced(IBid bid){
 			//TODO : disabilitare i pulsanti che non posso cliccare perchè puntano roba troppo alta
-			if(Board.Instance.ActiveAuctionPlayer==Board.Instance.Me){
+			if(Board.Instance.isAuctionClosed||Board.Instance.ActiveAuctionPlayer!=Board.Instance.Me){
 				for (int i=0;i<12;i++)
-					buttons [i].Enabled = true;
+					buttons [i].Enabled = false;
 			}
 			else{
 				for (int i=0;i<12;i++)
-					buttons [i].Enabled = false;
+					buttons [i].Enabled = true;
 			}
 
 			playerBids [(bid.bidder.order - Board.Instance.Me.order + 5) % 5].Text = bidToString (bid);
@@ -944,6 +946,7 @@ namespace Core
 				buttons [i].remove ();
 			}
 			slider.remove ();
+			Board.Instance.eventAuctionEnded-=auctionEnded;;
 		}
 		#endregion
 

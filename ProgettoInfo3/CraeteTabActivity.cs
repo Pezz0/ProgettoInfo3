@@ -11,7 +11,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using BTLibrary;
+using ChiamataLibrary;
+
 using CocosSharp;
+using Android.Content.PM;
+
 
 namespace ProgettoInfo3
 {
@@ -104,14 +108,12 @@ namespace ProgettoInfo3
 
 		void Start_Game (object sender, EventArgs e)
 		{
+			Intent returnIntent = new Intent();
+			SetResult(Result.Ok, returnIntent);
+
+			Finish ();
 
 
-			var application = new CCApplication ();
-
-
-			application.ApplicationDelegate = new Core.GameAppDelegate ();
-			SetContentView (application.AndroidContentView);
-			application.StartGame ();
 
 		}
 
@@ -131,6 +133,7 @@ namespace ProgettoInfo3
 					
 			}
 		}
+
 			
 	}
 }

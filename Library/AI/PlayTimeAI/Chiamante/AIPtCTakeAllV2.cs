@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ChiamataLibrary
 {
-	public class AIPtCTakeAll:IAIPlayTime
+	public class AIPtCTakeAllV2:IAIPlayTime
 	{
 		//FIXME : 
 		//Non strozza mai e poi mai
@@ -11,12 +11,15 @@ namespace ChiamataLibrary
 		//Gioca peggio di haxhi
 		private readonly int _thresholdH;
 		private readonly int _thresholdL;
+		private readonly int _pointsAfter;
 		private const string NAME = "Haxhi";
 
 		protected override Card playACard ()
 		{
-			int valueOnBoard = Board.Instance.getValueOnBoard ();
+
+
 			int nCardOnBoard = Board.Instance.numberOfCardOnBoard;
+			int valueOnBoard = Board.Instance.getValueOnBoard ()+_pointsAfter*(Board.PLAYER_NUMBER-nCardOnBoard-1);
 			int turn = Board.Instance.Turn;
 			bool reveal = !Board.Instance.CalledCard.isPlayable;
 			List<Card> cards = Board.Instance.getPlayerHand (me);
@@ -29,17 +32,18 @@ namespace ChiamataLibrary
 					return getScartino (cards);
 				return briscole [0];
 			}
-				if (briscole.Count == 0)
-					return getScartino (cards);
-				return briscole [briscole.Count-1];
+			if (briscole.Count == 0)
+				return getScartino (cards);
+			return briscole [briscole.Count-1];
 
 
 		}
 
-		public AIPtCTakeAll (Player me, int thresholdH, int thresholdL) : base (me)
+		public AIPtCTakeAllV2 (Player me, int thresholdH, int thresholdL,int pointsAfter) : base (me)
 		{
 			this._thresholdH = thresholdH;
 			this._thresholdL = thresholdL;
+			this._pointsAfter = pointsAfter;
 		}
 
 		private Card getScartino(List<Card> mano){
@@ -59,7 +63,6 @@ namespace ChiamataLibrary
 			});
 			return temp;
 		}
-		
-	}
+}
 }
 

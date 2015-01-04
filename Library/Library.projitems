@@ -37,6 +37,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\AIPtCTakeAll.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Archive\GameData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Archive\Archive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\AIPtCTakeAllV2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Chiamante\AIPtCTakeAllV3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Altri\AIPtACargaOsti.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\PlayTimeAI\Socio\AIPtSNascosto.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Bluetooth\" />
