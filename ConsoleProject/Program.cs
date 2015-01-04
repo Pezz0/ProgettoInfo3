@@ -16,6 +16,8 @@ namespace ConsolePerDebug
 				mainStandard ();
 			else if (a == "1")
 				mainIA ();
+			else if (a == "2")
+				mainXML ();
 		}
 
 		#region standard
@@ -130,6 +132,8 @@ namespace ConsolePerDebug
 
 		#endregion
 
+		#region MainIA
+
 		private static void mainIA ()
 		{
 			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
@@ -218,7 +222,7 @@ namespace ConsolePerDebug
 			}
 			Console.WriteLine ("**********************");
 
-			if (Board.Instance.ActivePlayer == Board.Instance.Me) {
+			if (!Board.Instance.isGameFinish && Board.Instance.ActivePlayer == Board.Instance.Me) {
 				List<Card> mano = Board.Instance.ActivePlayer.Hand;
 				for (int i = 0; i < mano.Count; i++)
 					Console.WriteLine ("premere " + i.ToString () + " per giocare " + mano [i].ToString ());
@@ -268,6 +272,11 @@ namespace ConsolePerDebug
 		{
 
 			Console.WriteLine ("Partita finita");
+//			int i = 0;
+//			Archive.Instance.forEach (delegate(GameData gm) {
+//				gm.writeOnXML ("C:\\Users\\Matteo\\prova" + i.ToString () + ".xml");
+//				i++;
+//			});
 //			Console.WriteLine ("Il chiamante ha fatto: " + Board.Instance.getChiamantePointCount ().ToString () + " punti");
 //			Console.WriteLine ("gli altri hanno fatto: " + Board.Instance.getAltriPointCount ().ToString () + " punti");
 //
@@ -277,5 +286,21 @@ namespace ConsolePerDebug
 //			});
 		}
 
+		#endregion
+
+		#region MainXML
+
+		private static void mainXML ()
+		{
+			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+
+			GameData gm = new GameData (DateTime.Now, null, Board.Instance.AllPlayers.ToArray (), null, EnGameType.MONTE, null, 61);
+
+			gm.writeOnXML ("C:\\Users\\Matteo\\prova.xml");
+
+		}
+
+		#endregion
+	
 	}
 }

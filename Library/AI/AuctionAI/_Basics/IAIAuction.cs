@@ -7,12 +7,28 @@ namespace ChiamataLibrary
 	{
 		protected List<Card> [] _onHand;
 
+		private bool _active;
+
+		public override bool Active {
+			get { return _active; }
+			set {
+				_active = value;
+				if (_active) {
+					Board.Instance.eventAuctionStarted += startAuction;
+					Board.Instance.eventSomeonePlaceABid += controlYourTurnAuction;
+					Board.Instance.eventIPlaceABid += controlYourTurnAuction;
+				} else {
+					Board.Instance.eventAuctionStarted -= startAuction;
+					Board.Instance.eventSomeonePlaceABid -= controlYourTurnAuction;
+					Board.Instance.eventIPlaceABid -= controlYourTurnAuction;
+				}
+			}
+		}
+
 		protected override void setup ()
 		{
-			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);
-
-			_onHand = new List<Card>[nSemi];
-			for (int i = 0; i < nSemi; i++)
+			_onHand = new List<Card>[Board.Instance.nSemi];
+			for (int i = 0; i < Board.Instance.nSemi; i++)
 				_onHand [i] = Board.Instance.getPlayerHand (me).FindAll (delegate(Card c) {
 					return c.seme == (EnSemi) i;
 				});
@@ -30,7 +46,7 @@ namespace ChiamataLibrary
 				IBid bid = placeABid ();
 				Board.Instance.auctionPlaceABid (placeABid ());
 				if (bid is PassBid)
-					deActivate ();
+					Active = false;
 			}
 		}
 
@@ -44,24 +60,19 @@ namespace ChiamataLibrary
 
 		}
 
+		public void finish ()
+		{
+			Active = false;
+		}
+
 
 		public IAIAuction (Player me) : base (me)
 		{
-			Board.Instance.eventAuctionStarted += startAuction;
-
-			Board.Instance.eventSomeonePlaceABid += controlYourTurnAuction;
-
-			Board.Instance.eventIPlaceABid += controlYourTurnAuction;
+			Active = true;
+			Board.Instance.eventAuctionEnded += finish;
 		}
 
-		protected void deActivate ()
-		{
-			Board.Instance.eventAuctionStarted -= startAuction;
 
-			Board.Instance.eventSomeonePlaceABid -= controlYourTurnAuction;
-
-			Board.Instance.eventIPlaceABid -= controlYourTurnAuction;
-		}
 
 	}
 }

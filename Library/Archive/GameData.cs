@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace ChiamataLibrary
 {
@@ -140,6 +141,91 @@ namespace ChiamataLibrary
 		}
 
 		#endregion
+
+		#region XML
+
+		private void writePlayer (int i, XmlWriter w)
+		{
+			w.WriteStartElement ("Player", _players [i].name);
+
+			w.WriteStartElement ("Role");
+			w.WriteString (_players [i].Role.ToString ());
+			w.WriteEndElement ();	//role
+
+			w.WriteStartElement ("Order");
+			w.WriteString (_players [i].order.ToString ());
+			w.WriteEndElement ();	//order
+
+			w.WriteEndElement ();	//player
+		}
+
+		private void writeCard (int seme, int number, XmlWriter w)
+		{
+			w.WriteStartElement ("Card");
+			w.WriteAttributeString ("Seme", ( (int) seme ).ToString ());
+			w.WriteAttributeString ("Number", ( (int) seme ).ToString ());
+			w.WriteAttributeString ("CalledCard", ( calledCard == _cards [seme, number] ).ToString ());
+
+			w.WriteStartElement ("InitialPlayer");
+			w.WriteString (_cards [seme, number].initialPlayer.name);
+			w.WriteEndElement ();	//initialPlayer
+
+			w.WriteStartElement ("FinalPlayer");
+			w.WriteString (_cards [seme, number].FinalPlayer.name);
+			w.WriteEndElement ();	//initialPlayer
+
+			w.WriteStartElement ("Playing time");
+			w.WriteString (_cards [seme, number].PlayingTime.ToString ());
+			w.WriteEndElement ();	//Playing time
+
+			w.WriteEndElement ();	//Card
+		}
+
+		public void writeOnXML (string path)
+		{
+
+			XmlWriterSettings setting = new XmlWriterSettings ();
+			setting.Indent = true;
+			setting.IndentChars = "\t";
+
+			XmlWriter writer = XmlWriter.Create (path, setting);
+
+			writer.WriteStartDocument ();
+
+			writer.WriteComment ("This XML document contains the data for a game");
+
+			writer.WriteStartElement ("Game");
+			writer.WriteAttributeString ("DateTime", time.ToString ());
+			writer.WriteAttributeString ("GameType", gameType.ToString ());
+
+			writer.WriteStartElement ("Players");
+
+			for (int i = 0; i < Board.PLAYER_NUMBER; i++)
+				writePlayer (i, writer);
+
+			writer.WriteEndElement ();	//end player
+
+			writer.WriteStartElement ("Cards");
+
+			for (int seme = 0; seme < Board.Instance.nSemi; seme++) {
+				writer.WriteStartElement ("Seme", ( (int) seme ).ToString ());
+
+				for (int number = 0; number < Board.Instance.nNumber; number++)
+					writeCard (seme, number, writer);
+
+				writer.WriteEndElement ();	//end seme
+			}
+
+			writer.WriteEndElement ();	//end card
+
+			writer.WriteEndElement ();	//end game
+
+			writer.WriteEndDocument ();
+			writer.Close ();
+		}
+
+		#endregion
+
 
 		public GameData (DateTime time, Card [,] cards, Player [] players, List<IBid> bids, EnGameType type, Card calledCard, int winningPoint)
 		{

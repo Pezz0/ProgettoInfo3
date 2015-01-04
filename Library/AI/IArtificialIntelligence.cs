@@ -6,6 +6,8 @@ namespace ChiamataLibrary
 	{
 		public readonly Player me;
 
+		public abstract bool Active{ get; set; }
+
 		protected virtual void setup ()
 		{
 		}

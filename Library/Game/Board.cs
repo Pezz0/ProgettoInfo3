@@ -12,6 +12,11 @@ namespace ChiamataLibrary
 		public const int PLAYER_NUMBER = 5;
 		public const int MAX_NAME_LENGHT = 10;
 
+		public readonly int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);
+		//the number of semi
+		public readonly int nNumber = Enum.GetValues (typeof (EnNumbers)).GetLength (0);
+		//the number of numbers
+
 		#region Singleton implementation
 
 		private static readonly Board _instance = new Board ();
@@ -373,8 +378,10 @@ namespace ChiamataLibrary
 			if (eventSomeonePlaceABid != null && bid.bidder != Me)
 				eventSomeonePlaceABid (bid);
 
-			if (eventAuctionEnded != null && isAuctionClosed)
+			if (eventAuctionEnded != null && isAuctionClosed && !isEventAuctionEnded) {
+				isEventAuctionEnded = true;
 				eventAuctionEnded ();
+			}
 
 		}
 
@@ -440,8 +447,10 @@ namespace ChiamataLibrary
 			//time for the first turn
 			_t = 0;
 
-			if (eventGameStarted != null)
+			if (eventGameStarted != null && !isEventGameStarted) {
+				isEventGameStarted = true;
 				eventGameStarted ();
+			}
 		}
 
 
@@ -474,10 +483,14 @@ namespace ChiamataLibrary
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStarted;
 
+		private bool isEventAuctionStarted = false;
+
 		/// <summary>
 		/// Occurs when auction ended.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionEnded;
+
+		private bool isEventAuctionEnded = false;
 
 
 		#endregion
@@ -562,10 +575,14 @@ namespace ChiamataLibrary
 		/// </summary>
 		public event eventHandlerChangePhase eventGameStarted;
 
+		private bool isEventGameStarted = false;
+
 		/// <summary>
 		/// Occurs when game end.
 		/// </summary>
 		public event eventHandlerChangePhase eventGameEnded;
+
+		private bool isEventGameEnded = false;
 
 		#endregion
 
@@ -627,7 +644,7 @@ namespace ChiamataLibrary
 		/// <param name="move">The move.</param>
 		public void PlayACard (Move move)
 		{
-			if (!isPlayTime)
+			if (!isPlayTime || isGameFinish)
 				throw new WrongPhaseException ("A player can play a card if and only if during the playtime", "Playtime");
 
 			if (ActivePlayer != move.player)
@@ -667,8 +684,10 @@ namespace ChiamataLibrary
 
 			if (isGameFinish) {
 				this.addToArchive ();
-				if (eventGameEnded != null)
+				if (eventGameEnded != null && !isEventGameEnded) {
+					isEventGameEnded = true;
 					eventGameEnded ();
+				}
 			}
 
 
@@ -699,7 +718,7 @@ namespace ChiamataLibrary
 		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> game is ended.
 		/// </summary>
 		/// <value><c>true</c> if this game is ended; otherwise, <c>false</c>.</value>
-		public bool isGameFinish{ get { return _t == Enum.GetValues (typeof (EnSemi)).GetLength (0) * Enum.GetValues (typeof (EnNumbers)).GetLength (0); } }
+		public bool isGameFinish{ get { return _t == nSemi * nNumber; } }
 
 		/// <summary>
 		/// Gets the number of card on board.
@@ -744,16 +763,14 @@ namespace ChiamataLibrary
 			_defBid = new PassBid (_players [0]);
 			_defMove = new Move ();
 
-			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
-			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
-			int nCard = nSemi * nNumbers;	//the numbers of card
+			int nCard = nSemi * nNumber;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
 
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
 			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
-				for (int j = 0; j < nNumbers; j++) {
+				for (int j = 0; j < nNumber; j++) {
 					int assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
 					while (cardAssign [assignedPlayer] == nCardForPlayer)
 						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
@@ -786,8 +803,10 @@ namespace ChiamataLibrary
 			_t = -1;
 			//start the auction
 			_bidList = new List<IBid> ();
-			if (eventAuctionStarted != null)
+			if (eventAuctionStarted != null && !isEventAuctionStarted) {
+				isEventAuctionStarted = true;
 				eventAuctionStarted ();
+			}
 		}
 
 		public void reset ()
@@ -837,11 +856,9 @@ namespace ChiamataLibrary
 			_lastWinner = _bytes [index];	//the last winner is the player that have to play first in the next turn
 			index++;
 	
-			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);	//the number of semi
-			int nNumbers = Enum.GetValues (typeof (EnNumbers)).GetLength (0);	//the number of numbers
 
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
-				for (int j = 0; j < nNumbers; j++) {
+				for (int j = 0; j < nNumber; j++) {
 
 					int assignedPlayer = BitConverter.ToInt16 (new Byte[] { bytes [index], 0 }, 0);
 

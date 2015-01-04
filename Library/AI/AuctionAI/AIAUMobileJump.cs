@@ -12,14 +12,12 @@ namespace ChiamataLibrary
 		protected override void setup ()
 		{
 			base.setup ();
-			int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);
-			int nNumber = Enum.GetValues (typeof (EnNumbers)).GetLength (0);
 
 			int maxValue = 0;
 			int maxLenght = 0;
-			int [] p = new int[nSemi];
+			int [] p = new int[Board.Instance.nSemi];
 
-			for (int i = 0; i < nSemi; i++) {
+			for (int i = 0; i < Board.Instance.nSemi; i++) {
 				if (_onHand [i].Count > _onHand [maxLenght].Count)
 					maxLenght = i;
 
@@ -39,7 +37,7 @@ namespace ChiamataLibrary
 			int currentMaxJump = _startJump;
 
 			int cj = 0;
-			for (int i = nNumber - 1; i > 0; i--) {
+			for (int i = Board.Instance.nNumber - 1; i > 0; i--) {
 				_lastBid = new NormalBid (me, (EnNumbers) i, 61);
 
 				if (Board.Instance.getCard (_seme, (EnNumbers) i).initialPlayer == me) {
