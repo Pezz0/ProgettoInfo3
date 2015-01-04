@@ -26,6 +26,7 @@ namespace ChiamataLibrary
 				
 
 				case -3:
+				case -2:
 					Card strozzo = getStrozzoBassoNB (cards);
 					if (strozzo == null) {
 						vestita = getVestita (cards);
@@ -35,25 +36,45 @@ namespace ChiamataLibrary
 							return vestita;
 					} else
 						return strozzo;
-						
-				case -2:
 
 
 				break;
 				case -1:
-
+					return getScartino (cards);
 				break;
 				case 1:
-
+					temp = getStrozzoBassoNB (cards);
+					if (temp == null)
+						return getScartino (cards);
+					else
+						return temp;
 				break;
 				case 2:
-
+					return getScartino (cards);
 				break;
 				case 3:
-
+					strozzo = getStrozzoBassoNB (cards);
+					if (strozzo == null)
+						return getScartino (cards);
+					else
+						return strozzo;
 				break;
 				case 4:
-
+					if (!Board.Instance.CardOnTheBoard.Exists (delegate (Card c) {
+						return c.seme == Board.Instance.CalledCard.seme;
+					})) {
+						temp = getStrozzoAlto (cards);
+						if (temp == null)
+							return getScartino (cards);
+						else
+							return temp;
+					} else {
+						temp = getVestita (cards);
+						if (temp == null)
+							return getScartino (cards);
+						else
+							return temp;
+					}
 				break;
 			}
 

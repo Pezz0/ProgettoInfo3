@@ -150,15 +150,15 @@ namespace ConsolePerDebug
 			//IAIAuction iaa3 = new AIAuFixJump (Board.Instance.AllPlayers[3], true, 2);
 			//IAIAuction iaa4 = new AIAuFixJump (Board.Instance.AllPlayers[4], true, 2);
 
-			IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
-			IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
-			IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
-			IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
+			IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.getPlayer (1), true, 10, 1, 1);
+			IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.getPlayer (2), true, 10, 1, 1);
+			IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.getPlayer (3), true, 10, 1, 1);
+			IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.getPlayer (4), true, 10, 1, 1);
 
-			IAIPlayTime iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
-			IAIPlayTime iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
-			IAIPlayTime iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
-			IAIPlayTime iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
+			IArtificialIntelligence iap1 = new AIPtProva (Board.Instance.getPlayer (1));
+			IArtificialIntelligence iap2 = new AIPtProva (Board.Instance.getPlayer (2));
+			IArtificialIntelligence iap3 = new AIPtProva (Board.Instance.getPlayer (3));
+			IArtificialIntelligence iap4 = new AIPtProva (Board.Instance.getPlayer (4));
 	
 			Board.Instance.AllPlayers.ForEach (delegate(Player p) {
 				Console.WriteLine (p.ToString () + " possiede:");
