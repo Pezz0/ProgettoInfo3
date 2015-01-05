@@ -21,8 +21,6 @@ namespace BTLibrary
 		//TODO: interfaccia menu
 		//TODO: controllare i readonly
 
-		public const string found = BluetoothDevice.ActionFound;
-		public const string endscan = BluetoothAdapter.ActionDiscoveryFinished;
 		private Activity _activity;
 		private Handler _handler;
 		//private int _MAXPLAYER;
@@ -73,15 +71,6 @@ namespace BTLibrary
 			//activity to register the receiver
 			_activity = activity;
 
-			// Register for broadcasts when a device is discovered
-			_receiver = new BTReceiver (_handler);
-			var filter = new IntentFilter (BluetoothDevice.ActionFound);
-			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
-
-			// Register for broadcasts when discovery has finished
-			filter = new IntentFilter (BluetoothAdapter.ActionDiscoveryFinished);
-			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
-
 			// Get the local Bluetooth adapter
 			_btAdapter = BluetoothAdapter.DefaultAdapter;
 
@@ -121,9 +110,21 @@ namespace BTLibrary
 		/// <summary>
 		/// Unregisters the reciever.
 		/// </summary>
-		public void UnregisterReciever ()
+		public void UnregisterReceiever ()
 		{
 			_activity.ApplicationContext.UnregisterReceiver (_receiver);
+		}
+
+		public void RegisterReceiver ()
+		{
+			// Register for broadcasts when a device is discovered
+			_receiver = new BTReceiver (_handler);
+			var filter = new IntentFilter (BluetoothDevice.ActionFound);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+
+			// Register for broadcasts when discovery has finished
+			filter = new IntentFilter (BluetoothAdapter.ActionDiscoveryFinished);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 		}
 
 		/// <summary>
@@ -269,7 +270,7 @@ namespace BTLibrary
 		public void ConnectAsMaster ()
 		{	
 			//stops all existing thread
-			Stop ();
+			StopListen ();
 
 			// Start the thread to listen on a BluetoothServerSocket
 			listenThread = new BTListenThread (this, NAME, MY_UUID);
@@ -356,8 +357,8 @@ namespace BTLibrary
 
 
 			//sends a message to the activity indicates the connection to a device
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address);
-			_handler.SendMessage (msg);
+			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+
 
 
 			//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN
@@ -394,12 +395,14 @@ namespace BTLibrary
 
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				connectedMasterThread [i].Cancel ();
-				connectedMasterThread [i] = null;
+				connectedMasterThread.RemoveAt (i);
 			}
 			connectedMasterThread.Clear ();
 
 			if (listenThread != null) {
-				listenThread.Cancel ();
+				BTListenThread tmp = listenThread;
+				tmp.Cancel ();
+				tmp = null;
 				listenThread = null;
 			}
 		}
@@ -409,7 +412,9 @@ namespace BTLibrary
 		{
 
 			if (listenThread != null) {
-				listenThread.Cancel ();
+				BTListenThread tmp = listenThread;
+				tmp.Cancel ();
+				tmp = null;
 				listenThread = null;
 			}
 			/*if (counter > 0)

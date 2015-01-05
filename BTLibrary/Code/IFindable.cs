@@ -12,8 +12,6 @@ namespace BTLibrary
 
 		void CancelDiscovery ();
 
-		void UnregisterReciever ();
-
 		List<string> GetPaired ();
 
 		void Discovery ();

@@ -30,7 +30,7 @@ namespace BTLibrary
 		/// </summary>
 		private BTPlayService _PlayService;
 
-		private int Connected;
+		private string Connected;
 
 
 		public BTConnectedThread (BluetoothSocket socket, BTPlayService playService)
@@ -51,7 +51,7 @@ namespace BTLibrary
 			_InStream = tmpIn;
 			_OutStream = tmpOut;
 
-			Connected = Convert.ToInt32 (_Socket.RemoteDevice.Address);
+			Connected = _Socket.RemoteDevice.Address;
 		}
 
 		/// <summary>
@@ -69,7 +69,8 @@ namespace BTLibrary
 					bytes = _InStream.Read (buffer, 0, buffer.Length);
 
 					// Send the obtained bytes to the UI Activity
-					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, Connected, buffer)
+					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
+					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer)
 						.SendToTarget ();
 				} catch (Java.IO.IOException e) {
 					e.ToString ();

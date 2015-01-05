@@ -44,6 +44,8 @@ namespace ProgettoInfo3
 			join.Click += (sender, e) => joinClick (sender, e);
 			settings.Click += (sender, e) => settingClick (sender, e);
 
+			BTPlayService.Instance.Initialize (this, new BTManager ());
+
 
 
 		}
@@ -76,8 +78,8 @@ namespace ProgettoInfo3
 				SetContentView (application.AndroidContentView);
 
 				ChiamataLibrary.Board.Instance.initializeMaster (result, 2);
-				if (BTPlayService.Instance.getNumConnected () > 0)
-					BTPlayService.Instance.WriteToAllSlave<Board> ((IBTSendable<Board>) Board.Instance);
+				/*if (BTPlayService.Instance.getNumConnected () > 0)
+					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);*/
 				#region IA setup
 				IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
 				IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);

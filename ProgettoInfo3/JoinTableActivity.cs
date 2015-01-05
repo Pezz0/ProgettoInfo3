@@ -25,11 +25,13 @@ namespace ProgettoInfo3
 
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
-		BTReceiver receiver;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+
+			BTPlayService.Instance.setHandler (new BTConnHandler (this, this));
+			BTPlayService.Instance.RegisterReceiver ();
 
 			SetContentView (Resource.Layout.DeviceList);
 
@@ -54,18 +56,11 @@ namespace ProgettoInfo3
 			send.Click += SendName;
 
 			name = FindViewById<EditText> (Resource.Id.MyName);
+
+
+
+
 			name.Text = BTPlayService.Instance.GetLocalName ();
-
-			receiver = new BTReceiver (new BTConnHandler (this, this));
-			var filter = new IntentFilter (BTPlayService.found);
-			RegisterReceiver (receiver, filter);
-
-			// Register for broadcasts when discovery has finished
-			filter = new IntentFilter (BTPlayService.endscan);
-			RegisterReceiver (receiver, filter);
-
-
-			BTPlayService.Instance.Initialize (this, new BTConnHandler (this, this));
 
 			if (!BTPlayService.Instance.existBluetooth ()) {
 				Toast.MakeText (this, "BlueTooth not supported", ToastLength.Short);
@@ -86,8 +81,15 @@ namespace ProgettoInfo3
 		protected override void OnDestroy ()
 		{
 			base.OnDestroy ();
-			UnregisterReceiver (receiver);
+			BTPlayService.Instance.UnregisterReceiever ();
 		}
+
+		public override void OnBackPressed ()
+		{
+			base.OnBackPressed ();
+			Finish ();
+		}
+
 
 		void scanDevice (object sender, EventArgs e)
 		{
@@ -99,7 +101,7 @@ namespace ProgettoInfo3
 		void SendName (object sender, EventArgs e)
 		{
 			if (name.Text.CompareTo ("") != 0)
-				BTPlayService.Instance.WriteToMaster (Encoding.UTF8.GetBytes (name.Text));
+				BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (name.Text));
 			else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
 			
@@ -165,7 +167,7 @@ namespace ProgettoInfo3
 
 					case (int)MessageType.NEW_DEVICE:
 						string address = (string) msg.Obj;
-						newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address) + "\n" + address);
+						newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address).Name + "\n" + address);
 
 					break;
 
@@ -189,6 +191,9 @@ namespace ProgettoInfo3
 						send.Enabled = false;
 						Board.Instance.ricreateFromByteArray ((Byte []) msg.Obj);
 						Board.Instance.initializeSlave (name.Text);
+					break;
+					case (int)MessageType.MESSAGE_TOAST:
+						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
 					break;
 
 				}

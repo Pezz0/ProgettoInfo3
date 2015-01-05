@@ -15,7 +15,7 @@ namespace BTLibrary
 
 		void CancelDiscovery ();
 
-		void UnregisterReciever ();
+		void UnregisterReceiever ();
 
 		bool isBTEnabled ();
 

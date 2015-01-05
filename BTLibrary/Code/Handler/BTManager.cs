@@ -48,6 +48,8 @@ namespace BTLibrary
 
 					Player sender = Board.Instance.getPlayer ((byte []) msg.Obj);
 
+					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short);
+
 				break;
 				case (int)MessageType.MESSAGE_DEVICE_ADDR:
 					Toast.MakeText (Application.Context, "Connected to " + BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name, ToastLength.Short).Show ();

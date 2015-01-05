@@ -1,9 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -12,14 +10,13 @@ using Android.Views;
 using Android.Widget;
 using BTLibrary;
 using ChiamataLibrary;
-
 using CocosSharp;
 using Android.Content.PM;
 
 
 namespace ProgettoInfo3
 {
-	[Activity (Label = "CraeteTabActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.ReverseLandscape)]			
+	[Activity (Label = "CraeteTabActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class CraeteTabActivity : Activity
 	{
 		static Spinner spinner1;
@@ -42,7 +39,7 @@ namespace ProgettoInfo3
 		Button start;
 		Button back;
 
-		static int counter = 0;
+		static int counter;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -94,34 +91,46 @@ namespace ProgettoInfo3
 			start.Click += Start_Game;
 			back.Click += Back;
 
-			BTPlayService.Instance.Initialize (this, new MyHandler ());
+			counter = 4;
 
-			pl0.Text = BTPlayService.Instance.GetLocalName ();
+			BTPlayService.Instance.setHandler (new MyHandler ());
+
+			string name = BTPlayService.Instance.GetLocalName ();
+			if (name.Length > 10)
+				pl0.Text = name.Substring (0, 10);
+			else
+				pl0.Text = name;
 		}
 
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			//se scelgo AI
 			if (e.Id == 0) {
-				if (counter - BTPlayService.Instance.getNumConnected () > 0) {
+				if (counter - BTPlayService.Instance.getNumConnected () >= 0) {
 					counter--;
 					if (sender.ToString () == spinner1.ToString () && add1.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add1.Text);
 						add1.Text = Resources.GetText (Resource.String.none_add);
+						pl1.Text = Resources.GetText (Resource.String.Default1);
+
 					} else if (sender.ToString () == spinner2.ToString () && add2.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add2.Text);
 						add2.Text = Resources.GetText (Resource.String.none_add);
+						pl2.Text = Resources.GetText (Resource.String.Default2);
+
 					} else if (sender.ToString () == spinner3.ToString () && add3.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add3.Text);
 						add3.Text = Resources.GetText (Resource.String.none_add);
+						pl3.Text = Resources.GetText (Resource.String.Default3);
+
 					} else {
 						BTPlayService.Instance.RemoveSlave (add4.Text);
 						add4.Text = Resources.GetText (Resource.String.none_add);
+						pl4.Text = Resources.GetText (Resource.String.Default4);
 					}
 					if (counter - BTPlayService.Instance.getNumConnected () <= 0)
 						BTPlayService.Instance.StopListen ();
-				} else
-					BTPlayService.Instance.StopListen ();
+				}
 				//se scelgo BT
 			} else {
 				if (counter - BTPlayService.Instance.getNumConnected () == 0) {
@@ -147,7 +156,6 @@ namespace ProgettoInfo3
 				SetResult (Result.Ok, returnIntent);
 				BTPlayService.Instance.setHandler (new BTManager ());
 				BTPlayService.Instance.StopListen ();
-
 				Finish ();
 			} else
 				Toast.MakeText (this, "Waiting for missing connection", ToastLength.Short).Show ();
@@ -158,7 +166,6 @@ namespace ProgettoInfo3
 		{
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
-
 			Finish ();
 		}
 
@@ -182,6 +189,8 @@ namespace ProgettoInfo3
 
 		private class MyHandler:Handler
 		{
+			string address = "";
+
 			public MyHandler ()
 			{
 			}
@@ -190,38 +199,65 @@ namespace ProgettoInfo3
 			{
 
 				if (msg.What == (int) MessageType.MESSAGE_DEVICE_ADDR) {
-						
+					string name;	
 					if (spinner1.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add1.Text.CompareTo ("None") == 0) {
 						add1.Text = (string) msg.Obj;
-						pl1.Text = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						if (name.Length > 10)
+							pl1.Text = name.Substring (0, 10);
+						else
+							pl1.Text = name;
 					} else if (spinner2.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add2.Text.CompareTo ("None") == 0) {
 						add2.Text = (string) msg.Obj;
-						pl2.Text = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						if (name.Length > 10)
+							pl2.Text = name.Substring (0, 10);
+						else
+							pl2.Text = name;
 					} else if (spinner3.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add3.Text.CompareTo ("None") == 0) {
 						add3.Text = (string) msg.Obj;
-						pl3.Text = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						if (name.Length > 10)
+							pl3.Text = name.Substring (0, 10);
+						else
+							pl3.Text = name;
 					} else if (spinner4.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add4.Text.CompareTo ("None") == 0) {
 						add4.Text = (string) msg.Obj;
-						pl4.Text = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-					} else
-						// non dovrebbe mai succedere ma nel caso in cui non ho posto per un ulteriore connessione la stacco
-						BTPlayService.Instance.RemoveSlave ((string) msg.Obj);
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						if (name.Length > 10)
+							pl4.Text = name.Substring (0, 10);
+						else
+							pl4.Text = name;
+					} 
+					// non dovrebbe mai succedere ma nel caso in cui non ho posto per un ulteriore connessione la stacco
+					//BTPlayService.Instance.RemoveSlave ((string) msg.Obj);
+
 				}
 
 				if (msg.What == (int) MessageType.MESSAGE_READ) {
-					if (Convert.ToString (msg.Arg2).CompareTo (add1.Text) == 0)
-						pl1.Text = Convert.ToString (msg.Arg1);
-					if (Convert.ToString (msg.Arg2).CompareTo (add2.Text) == 0)
-						pl2.Text = Convert.ToString (msg.Arg1);
-					if (Convert.ToString (msg.Arg2).CompareTo (add3.Text) == 0)
-						pl3.Text = Convert.ToString (msg.Arg1);
-					if (Convert.ToString (msg.Arg2).CompareTo (add4.Text) == 0)
-						pl4.Text = Convert.ToString (msg.Arg1);
+					if (address.CompareTo (add1.Text) == 0)
+						pl1.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					if (address.CompareTo (add2.Text) == 0)
+						pl2.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					if (address.CompareTo (add3.Text) == 0)
+						pl3.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					if (address.CompareTo (add4.Text) == 0)
+						pl4.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					address = "";
 				}
 
-				if (counter - BTPlayService.Instance.getNumConnected () <= 0)
-					BTPlayService.Instance.StopListen ();
+				if (msg.What == (int) MessageType.MESSAGE_DEVICE_READ) {
+					address = (string) msg.Obj;
+				}
+				if (msg.What == (int) MessageType.MESSAGE_TOAST)
+					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
 
+				if (msg.What != (int) MessageType.MESSAGE_STATE_CHANGE) {
+					if (counter - BTPlayService.Instance.getNumConnected () > 0)
+						BTPlayService.Instance.ConnectAsMaster ();
+					else
+						BTPlayService.Instance.StopListen ();
+				}
 
 			}
 		}
