@@ -84,7 +84,6 @@
     <AndroidResource Include="Resources\layout\device_name.axml" />
     <AndroidResource Include="Resources\layout\DeviceList.axml" />
   </ItemGroup>
-  <Import Project="..\Library\Library.projitems" Label="Shared" Condition="Exists('..\Library\Library.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Code\" />

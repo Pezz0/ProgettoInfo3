@@ -1,13 +1,13 @@
-﻿using Android.Bluetooth;
-using Android.App;
-using Android.Content;
-using Android.Widget;
-using Android.OS;
-using System.Collections.Generic;
-using Java.Util;
-using Java.Lang;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using Android.App;
+using Android.Bluetooth;
+using Android.Content;
+using Android.OS;
+using Android.Widget;
+using Java.Lang;
+using Java.Util;
 using ChiamataLibrary;
 
 

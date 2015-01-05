@@ -63,8 +63,7 @@ namespace ProgettoInfo3
 
 		void settingClick (object sender, EventArgs e)
 		{
-
-
+		
 
 		}
 
@@ -78,8 +77,7 @@ namespace ProgettoInfo3
 
 				ChiamataLibrary.Board.Instance.initializeMaster (result, 2);
 				if (BTPlayService.Instance.getNumConnected () > 0)
-					;
-				//BTPlayService.Instance.WriteToAllSlave<Board> ((ChiamataLibrary.IBTSendable<Board>) Board.Instance);
+					BTPlayService.Instance.WriteToAllSlave<Board> ((IBTSendable<Board>) Board.Instance);
 				#region IA setup
 				IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
 				IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);

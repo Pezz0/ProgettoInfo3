@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -12,10 +11,11 @@ using Android.Views;
 using Android.Widget;
 using BTLibrary;
 using ChiamataLibrary;
+using Android.Content.PM;
 
 namespace ProgettoInfo3
 {
-	[Activity (Label = "JoinTableActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.ReverseLandscape)]			
+	[Activity (Label = "JoinTableActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class JoinTableActivity : Activity
 	{
 		private static Button scan;
