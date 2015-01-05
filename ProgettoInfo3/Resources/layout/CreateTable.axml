@@ -16,7 +16,7 @@
             android:orientation="vertical"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="79.7dp"
+            android:layout_width="54.8dp"
             android:layout_height="match_parent"
             android:id="@+id/linearLayout2">
             <TextView
@@ -54,7 +54,7 @@
             android:orientation="vertical"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="113.0dp"
+            android:layout_width="85.7dp"
             android:layout_height="match_parent"
             android:id="@+id/linearLayout3">
             <TextView
@@ -117,6 +117,39 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/player5" />
         </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="125.1dp"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout7">
+            <TextView
+                android:text="Addresses"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/textView9" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addr1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addr2" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addr3" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addr4" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addr5" />
+        </LinearLayout>
         <GridLayout
             android:minWidth="25px"
             android:minHeight="25px"
@@ -127,14 +160,7 @@
             android:orientation="vertical"
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="138.7dp"
-            android:layout_height="match_parent"
-            android:id="@+id/linearLayout5" />
-        <LinearLayout
-            android:orientation="vertical"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="160.8dp"
+            android:layout_width="139.0dp"
             android:layout_height="191.9dp"
             android:id="@+id/linearLayout6">
             <Button
@@ -142,6 +168,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/Start" />
+            <Button
+                android:text="Back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/back" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

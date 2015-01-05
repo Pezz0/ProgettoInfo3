@@ -10,10 +10,10 @@
 	<string name="Default2"> pluto</string>
 	<string name="Default3"> paperino</string>
 	<string name="Default4"> topolino</string>
-	<string-array name="State">
-		<item> None</item>
-		<item> Waiting For Connection</item> 
-		<item> Connecting</item>
-		<item> Connected</item>
-	</string-array>
+	<string name="none_add"> None</string>
+	<string name="select"> Select a Device to Connect </string>
+	<string name="scanning"> Scanning for new device...</string>
+
+
+	
 </resources>

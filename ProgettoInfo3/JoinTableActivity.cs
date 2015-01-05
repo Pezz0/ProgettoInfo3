@@ -27,6 +27,8 @@ namespace ProgettoInfo3
 			base.OnCreate (bundle);
 
 			SetContentView (Resource.Layout.DeviceList);
+
+			SetTitle (Resource.String.select);
 			scan = FindViewById<Button> (Resource.Id.scan);
 			ListView paired = FindViewById<ListView> (Resource.Id.paired);
 			ListView newdev = FindViewById<ListView> (Resource.Id.newdev);
@@ -42,7 +44,7 @@ namespace ProgettoInfo3
 			scan = FindViewById<Button> (Resource.Id.scan);
 			scan.Click += (sender, e) => scanDevice (sender, e);
 
-			receiver = new BTReceiver (new BTConnHandler (this));
+			receiver = new BTReceiver (new BTConnHandler (this, this));
 			var filter = new IntentFilter (BTPlayService.found);
 			RegisterReceiver (receiver, filter);
 
@@ -77,6 +79,7 @@ namespace ProgettoInfo3
 
 		void scanDevice (object sender, EventArgs e)
 		{
+			SetTitle (Resource.String.scanning);
 			newArrayList.Clear ();
 			BTPlayService.Instance.Discovery ();
 		}
@@ -126,10 +129,12 @@ namespace ProgettoInfo3
 		private class BTConnHandler:Handler
 		{
 			Context c;
+			Activity a;
 
-			public BTConnHandler (Context co)
+			public BTConnHandler (Context co, Activity ac)
 			{
 				c = co;
+				a = ac;
 			}
 
 			public override void HandleMessage (Message msg)
@@ -149,6 +154,7 @@ namespace ProgettoInfo3
 						connect.SetNeutralButton ("OK", delegate {
 						});
 						connect.Show ();
+						a.SetTitle (Resource.String.select);
 					break;
 					case (int)MessageType.NONE_FOUND:
 						newArrayList.Add ("No Device Found");

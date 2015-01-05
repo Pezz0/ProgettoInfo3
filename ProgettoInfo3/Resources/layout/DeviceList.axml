@@ -16,13 +16,13 @@
         <ListView
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="320dp"
+            android:layout_width="220.9dp"
             android:layout_height="match_parent"
             android:id="@+id/paired" />
         <ListView
             android:minWidth="25px"
             android:minHeight="25px"
-            android:layout_width="wrap_content"
+            android:layout_width="207.6dp"
             android:layout_height="match_parent"
             android:id="@+id/newdev" />
     </LinearLayout>

@@ -3,6 +3,7 @@ using Android.OS;
 using ChiamataLibrary;
 using Android.Widget;
 using Android.App;
+using BTLibrary;
 
 namespace BTLibrary
 {
@@ -29,8 +30,8 @@ namespace BTLibrary
 					Player sender = Board.Instance.getPlayer ((byte []) msg.Obj);
 
 				break;
-				case (int)MessageType.MESSAGE_DEVICE_NAME:
-					Toast.MakeText (Application.Context, "Connected to " + msg.Obj, ToastLength.Short).Show ();
+				case (int)MessageType.MESSAGE_DEVICE_ADDR:
+					Toast.MakeText (Application.Context, "Connected to " + BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name, ToastLength.Short).Show ();
 
 				break;
 				case (int)MessageType.MESSAGE_TOAST:

@@ -236,6 +236,11 @@ namespace BTLibrary
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
 		}
 
+		public void setHandler (Handler handler)
+		{
+			_handler = handler;
+		}
+
 		/// <summary>
 		/// Gets the state.
 		/// </summary>
@@ -306,7 +311,7 @@ namespace BTLibrary
 			connectedSlaveThread.Start ();
 
 			// Send the name of the connected device back to the Activity
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address);
 			_handler.SendMessage (msg);
 
 			//sets the state to CONNECTED_SLAVE
@@ -340,7 +345,7 @@ namespace BTLibrary
 			counter++;
 
 			//sends a message to the activity indicates the connection to a device
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_NAME, device.Name);
+			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address);
 			_handler.SendMessage (msg);
 
 
@@ -406,6 +411,7 @@ namespace BTLibrary
 		{
 			for (int i = 0; i < counter; i++) {
 				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (address) == 0) {
+					connectedMasterThread [i].Cancel ();
 					connectedMasterThread.RemoveAt (i);
 					return;
 				}
