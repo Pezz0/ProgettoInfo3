@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidProject", "ProgettoInfo3\AndroidProject.csproj", "{27AB8DF4-1E2F-4442-8CC5-7D7432AE6B0E}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LibraryChiamata", "Library\LibraryChiamata.shproj", "{6EC074BC-6C0F-47F5-A775-F89CC1C95A79}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleProject", "ConsoleProject\ConsoleProject.csproj", "{CB37BE02-8FEF-44A5-A9AD-89E1E21D3A76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{EE3A068B-9E28-4FF3-B946-7526284C347B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTLibrary", "BTLibrary\BTLibrary.csproj", "{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ChiamataLibrary", "ChiamataLibrary\ChiamataLibrary.shproj", "{375B1BA9-FD8D-4A28-9BF2-AFA1F20BF45E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
