@@ -7,6 +7,7 @@ using Android.Widget;
 using Android.Content;
 using ChiamataLibrary;
 using Microsoft.Xna.Framework;
+using BTLibrary;
 
 
 
@@ -51,7 +52,7 @@ namespace ProgettoInfo3
 		{
 			//Toast.MakeText (this, "Create new tab", ToastLength.Long).Show ();
 			var serverIntent = new Intent (this, typeof (CraeteTabActivity));
-			StartActivityForResult (serverIntent,1);
+			StartActivityForResult (serverIntent, 1);
 		}
 
 		void joinClick (object sender, EventArgs e)
@@ -69,43 +70,31 @@ namespace ProgettoInfo3
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
-		
+			if (requestCode == 1 && resultCode == Result.Ok) {
+				string [] result = data.GetStringArrayExtra ("Names");
+				var application = new CCApplication ();
+				application.ApplicationDelegate = new Core.GameAppDelegate ();
+				SetContentView (application.AndroidContentView);
 
-					if (requestCode==1&&resultCode == Result.Ok) {
+				ChiamataLibrary.Board.Instance.initializeMaster (result, 2);
+				if (BTPlayService.Instance.getNumConnected () > 0)
+					;
+				//BTPlayService.Instance.WriteToAllSlave<Board> ((ChiamataLibrary.IBTSendable<Board>) Board.Instance);
+				#region IA setup
+				IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
+				IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
+				IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
+				IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
 
-						
-						var application = new CCApplication ();
+				AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
+				AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
+				AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
+				AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
+				#endregion
 
+				application.StartGame ();
 
-						application.ApplicationDelegate = new Core.GameAppDelegate ();
-						SetContentView (application.AndroidContentView);
-
-
-
-
-						ChiamataLibrary.Board.Instance.initializeMaster (new String[] {
-							"A",
-							"B",
-							"C",
-							"D",
-							"E"
-						}, 2);
-
-						#region IA setup
-						IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
-						IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
-						IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
-						IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
-
-						AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
-						AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
-						AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
-						AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
-						#endregion
-
-						application.StartGame ();
-
-					}
+			}
 
 
 

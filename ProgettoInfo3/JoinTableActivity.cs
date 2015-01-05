@@ -11,13 +11,18 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using BTLibrary;
+using ChiamataLibrary;
 
 namespace ProgettoInfo3
 {
 	[Activity (Label = "JoinTableActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.ReverseLandscape)]			
 	public class JoinTableActivity : Activity
 	{
-		private Button scan;
+		private static Button scan;
+		private static Button send;
+
+		private static EditText name;
+
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
 		BTReceiver receiver;
@@ -35,14 +40,21 @@ namespace ProgettoInfo3
 			pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 			newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 
-			paired.Adapter = pairedArrayList; //NON VANNO GLI ADAPTER
+			paired.Adapter = pairedArrayList; 
 			paired.ItemClick += (sender, e) => devicelistClick (sender, e);
 
 			newdev.Adapter = newArrayList;
-			newdev.ItemClick += (sender, e) => devicelistClick (sender, e);
+			newdev.ItemClick += devicelistClick;
 
 			scan = FindViewById<Button> (Resource.Id.scan);
 			scan.Click += (sender, e) => scanDevice (sender, e);
+
+			send = FindViewById<Button> (Resource.Id.Sendname);
+			send.Enabled = false;
+			send.Click += SendName;
+
+			name = FindViewById<EditText> (Resource.Id.MyName);
+			name.Text = BTPlayService.Instance.GetLocalName ();
 
 			receiver = new BTReceiver (new BTConnHandler (this, this));
 			var filter = new IntentFilter (BTPlayService.found);
@@ -53,7 +65,7 @@ namespace ProgettoInfo3
 			RegisterReceiver (receiver, filter);
 
 
-			BTPlayService.Instance.Initialize (this, new BTHandler ());
+			BTPlayService.Instance.Initialize (this, new BTConnHandler (this, this));
 
 			if (!BTPlayService.Instance.existBluetooth ()) {
 				Toast.MakeText (this, "BlueTooth not supported", ToastLength.Short);
@@ -84,6 +96,15 @@ namespace ProgettoInfo3
 			BTPlayService.Instance.Discovery ();
 		}
 
+		void SendName (object sender, EventArgs e)
+		{
+			if (name.Text.CompareTo ("") != 0)
+				BTPlayService.Instance.WriteToMaster (Encoding.UTF8.GetBytes (name.Text));
+			else
+				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
+			
+		}
+
 		void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			if (BTPlayService.Instance.isDiscovering ())
@@ -97,9 +118,10 @@ namespace ProgettoInfo3
 			connect.SetMessage ("Do you really want to connect with " + BTPlayService.Instance.getRemoteDevice (address).Name + "?");
 			connect.SetPositiveButton ("YES", delegate {
 				BTPlayService.Instance.ConnectAsSlave (BTPlayService.Instance.getRemoteDevice (address));
+
 			});
 			connect.SetNegativeButton ("NO", delegate {
-				Finish ();
+				//Finish ();
 			});
 			connect.Show ();
 
@@ -158,6 +180,15 @@ namespace ProgettoInfo3
 					break;
 					case (int)MessageType.NONE_FOUND:
 						newArrayList.Add ("No Device Found");
+					break;
+					case (int) MessageType.MESSAGE_STATE_CHANGE:
+						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE)
+							send.Enabled = true;
+					break;
+					case (int)MessageType.MESSAGE_READ:
+						send.Enabled = false;
+						Board.Instance.ricreateFromByteArray ((Byte []) msg.Obj);
+						Board.Instance.initializeSlave (name.Text);
 					break;
 
 				}

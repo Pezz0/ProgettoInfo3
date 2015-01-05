@@ -80,6 +80,12 @@ namespace ProgettoInfo3
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f070023
+			public const int MyName = 2131165219;
+			
+			// aapt resource value: 0x7f070024
+			public const int Sendname = 2131165220;
+			
 			// aapt resource value: 0x7f07001f
 			public const int Start = 2131165215;
 			
@@ -101,8 +107,8 @@ namespace ProgettoInfo3
 			// aapt resource value: 0x7f070020
 			public const int back = 2131165216;
 			
-			// aapt resource value: 0x7f070024
-			public const int create = 2131165220;
+			// aapt resource value: 0x7f070026
+			public const int create = 2131165222;
 			
 			// aapt resource value: 0x7f07001d
 			public const int gridLayout2 = 2131165213;
@@ -146,14 +152,14 @@ namespace ProgettoInfo3
 			// aapt resource value: 0x7f070015
 			public const int player5 = 2131165205;
 			
-			// aapt resource value: 0x7f070023
-			public const int scan = 2131165219;
-			
 			// aapt resource value: 0x7f070025
-			public const int select = 2131165221;
+			public const int scan = 2131165221;
 			
-			// aapt resource value: 0x7f070026
-			public const int settings = 2131165222;
+			// aapt resource value: 0x7f070027
+			public const int select = 2131165223;
+			
+			// aapt resource value: 0x7f070028
+			public const int settings = 2131165224;
 			
 			// aapt resource value: 0x7f07000a
 			public const int spinner = 2131165194;

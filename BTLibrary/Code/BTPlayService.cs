@@ -37,7 +37,7 @@ namespace BTLibrary
 		public BTConnectThread connectThread;
 		private BTConnectedThread connectedSlaveThread;
 		private List<BTConnectedThread> connectedMasterThread;
-		private int counter = 0;
+		//private int counter = 0;
 
 		public static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
 		public const string NAME = "Play";
@@ -251,6 +251,17 @@ namespace BTLibrary
 			return _state;
 		}
 
+
+		public string GetLocalName ()
+		{
+			return _btAdapter.Name;
+		}
+
+		public string GetLocalAddress ()
+		{
+			return _btAdapter.Address;
+		}
+
 		/// <summary>
 		/// Connects as master in the network.
 		/// </summary>
@@ -276,7 +287,7 @@ namespace BTLibrary
 		public void ConnectAsSlave (BluetoothDevice device)
 		{	
 			//if the device we want to connect is a slave connected to this device the connection is not performed
-			for (int i = 0; i < counter; i++) {
+			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
 					var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
 					_handler.SendMessage (msg);
@@ -341,8 +352,8 @@ namespace BTLibrary
 			// Start the thread to manage the connection and perform transmissions
 			//if (counter < _MAXPLAYER) {
 			connectedMasterThread.Add (new BTConnectedThread (socket, this));
-			connectedMasterThread [counter].Start ();
-			counter++;
+			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
+
 
 			//sends a message to the activity indicates the connection to a device
 			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address);
@@ -362,7 +373,7 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public int getNumConnected ()
 		{
-			return counter;
+			return connectedMasterThread.Count;
 		}
 
 		/// <summary>
@@ -381,11 +392,11 @@ namespace BTLibrary
 				connectedSlaveThread = null;
 			}
 
-			for (int i = 0; i < counter; i++) {
+			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				connectedMasterThread [i].Cancel ();
 				connectedMasterThread [i] = null;
 			}
-			counter = 0;
+			connectedMasterThread.Clear ();
 
 			if (listenThread != null) {
 				listenThread.Cancel ();
@@ -409,19 +420,13 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveSlave (string address)
 		{
-			for (int i = 0; i < counter; i++) {
+			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (address) == 0) {
 					connectedMasterThread [i].Cancel ();
 					connectedMasterThread.RemoveAt (i);
 					return;
 				}
 			}
-		}
-
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public int getCounter ()
-		{
-			return counter;
 		}
 
 		/// <summary>
@@ -446,6 +451,23 @@ namespace BTLibrary
 			}
 			// Perform the write unsynchronized
 			tmp.Write (msg);
+
+		}
+
+		public void WriteToMaster (byte [] bts)
+		{
+		
+			// Create temporary ConnectedThread
+			BTConnectedThread tmp;
+			// Synchronize a copy of the ConnectedThread
+			lock (this) {
+				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
+					return;
+
+				tmp = connectedSlaveThread;
+			}
+			// Perform the write unsynchronized
+			tmp.Write (bts);
 
 		}
 
@@ -484,7 +506,7 @@ namespace BTLibrary
 		{
 			byte [] msg = bts.toByteArray ();
 			BTConnectedThread tmp;
-			for (int i = 0; i < counter; i++) {
+			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				lock (this) {
 					if (connectedMasterThread [i]._Socket.RemoteDevice.Address == address || connectedMasterThread [i] == null)
 						return;
@@ -498,7 +520,7 @@ namespace BTLibrary
 		{
 			byte [] msg = bts.toByteArray ();
 			BTConnectedThread tmp;
-			for (int i = 0; i < counter; i++) {
+			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				lock (this) {
 					if (connectedMasterThread [i] != null) {
 						tmp = connectedMasterThread [i];
