@@ -5,10 +5,38 @@ La nuova board è pronta, funzionante, ma con cose diverse.
 La principale modifica riguarda come si inviano i comandi (place a bid, choose seme e play a card) alla board infatti ora i rispettivi metodi non esistono più.
 
 Nella classe player ci sono due nuovi metodi:
-  - setControAuction
+  - setControAuction: questo metodo richiede due delegati nei parametri:
+    - il primo deve restituire una bid
+    - il seconde deve restituire un seme
+  - seControlPlaytime: questo metodo richiede un delegato nei parametri che deve restituire una carta-
 
+questi 3 delegati saranno chiamati dalla board a tempo debito per mettere una determinata bid, card o scelta del seme di quel player.
 
+Ad esempio ora il BTManager deve settare i player comandati dal BT assegnando questi 3 metodi a dovere.
 
+Per l'ui è uguale i metodi conterrano l'animazione(la board si ferma ad aspettare il return del metodo quindi si può mettere tutte le attese del mondo dentro) e restituranno l'azione fatta (bid piazzata, seme scelto o carta giocata).
+E si potranno assegnare con Board.Instance.Me.
+
+A questo sistema di controllo si affiancano ancora gli eventi di prima:
+  - someonePlaceABid: qualcuno che non il proprietario del device ha messo una bid
+  - IPlaceABid: il proprietario del device ha fatto una bid
+  - someonePlayACard: qualcuno che non il proprietario del device ha giocato una carta
+  - IPlayACard: il proprietario del device ha giocato una carta
+  - AuctionStart: inizia l'asta
+  - GameStart: iniza il playtime
+  - GameFinish: fine partita
+
+A cui ci si potrà iscrivere sia per inviare i dati agli altri(BTManager) sia per fare le animazioni(Gamescene).
+
+Anche il modo in cui funzionano le AI è cambiato, per l'inizializzazione si può vedere il program.cs, e ve le spiegherò la prossima volta(ora sono più semplici di prima).
+
+L'inizializzazione rimane invariata, mentre sparisce il metodo startGame che viene sostituito dal metodo .run che svolgono la stessa funzione praticamente.
+
+Io ho inserito la mia nuova board e tutto ciò che ci sta intorno adattando tutto e sostituisco il consoleProject con uno di esempio funzionante col nuovo metodo (vanno anche le AI, non so se intelligentemente, ma vanno).
+
+Però ci sono tanti errori dato che le altre parti usano ancora la vecchia board e dato che non so fare le vostre parti(e non ne ho la minima voglia dopo tutto il giorno che preparo la dannata nuova board) li lascio li e li sistemerete voi.
+
+(io le warning le ho ancora... dannate)
 
 -------------------------------------
 Inizializzazione
