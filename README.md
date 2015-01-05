@@ -28,7 +28,7 @@ A questo sistema di controllo si affiancano ancora gli eventi di prima:
 
 A cui ci si potrà iscrivere sia per inviare i dati agli altri(BTManager) sia per fare le animazioni(Gamescene).
 
-Anche il modo in cui funzionano le AI è cambiato, per l'inizializzazione si può vedere il program.cs, e ve le spiegherò la prossima volta(ora sono più semplici di prima), se volete crearne una è molto semplice e simile a prima copiate da quelle che ho fatto io.
+Anche il modo in cui le AI è cambiato e ve le spiegherò alle prossima riunione per vedere come si inizializza si può vedere il program.cs e se volete crearne alcune guardate come ho fatto quelle che ci sono.
 
 L'inizializzazione rimane invariata, mentre sparisce il metodo startGame che viene sostituito dal metodo .run che svolgono la stessa funzione praticamente.
 
