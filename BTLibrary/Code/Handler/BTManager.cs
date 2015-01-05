@@ -7,12 +7,31 @@ using BTLibrary;
 
 namespace BTLibrary
 {
-	public class BTHandler:Handler
+	public class BTManager:Handler
 	{
 	
-		public BTHandler ()
+
+		private static readonly BTManager _instance = new BTManager ();
+
+		public static BTManager Instance{ get { return _instance; } }
+
+		static BTManager ()
+		{
+		}
+
+		public BTManager ()
 		{
 
+		}
+
+		public void WriteToAllSlave<T> (IBTSendable<T> bts)
+		{
+			BTPlayService.Instance.WriteToAllSlave (bts);
+		}
+
+		public void WriteToMaster<T> (IBTSendable<T> bts)
+		{
+			BTPlayService.Instance.WriteToMaster (bts);
 		}
 
 		public override void HandleMessage (Message msg)

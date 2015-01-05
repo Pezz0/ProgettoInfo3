@@ -145,7 +145,7 @@ namespace ProgettoInfo3
 				String [] result = { pl0.Text, pl1.Text, pl2.Text, pl3.Text, pl4.Text };
 				returnIntent.PutExtra ("Names", result);
 				SetResult (Result.Ok, returnIntent);
-				BTPlayService.Instance.setHandler (new BTHandler ());
+				BTPlayService.Instance.setHandler (new BTManager ());
 				BTPlayService.Instance.StopListen ();
 
 				Finish ();
