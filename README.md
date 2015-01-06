@@ -30,7 +30,9 @@ A cui ci si potrà iscrivere sia per inviare i dati agli altri(BTManager) sia pe
 
 Anche il modo in cui le AI è cambiato e ve le spiegherò alle prossima riunione per vedere come si inizializza si può vedere il program.cs e se volete crearne alcune guardate come ho fatto quelle che ci sono.
 
-L'inizializzazione rimane invariata, mentre sparisce il metodo startGame che viene sostituito dal metodo .run che svolgono la stessa funzione praticamente.
+L'inizializzazione rimane invariata, mentre sparisce il metodo startGame che viene sostituito dai metodi:
+  - start: da chiamare una volta sola alla partenza (dopo l'inizializzazione nella scene)
+  - update: il tempo prosegue chiamando questo metodo e quindi bisogna chiamarlo ogni frame, se uno dei metodi per controllare il player ritorna nullo allora non succede nulla e riprova la volta dopo.
 
 Io ho inserito la mia nuova board e tutto ciò che ci sta intorno adattando tutto e sostituisco il consoleProject con uno di esempio funzionante col nuovo metodo (vanno anche le AI, non so se intelligentemente, ma vanno).
 
