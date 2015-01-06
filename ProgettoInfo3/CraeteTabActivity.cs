@@ -95,6 +95,8 @@ namespace ProgettoInfo3
 
 			BTPlayService.Instance.setHandler (new MyHandler ());
 
+			SetTitle (Resource.String.create_title);
+
 			string name = BTPlayService.Instance.GetLocalName ();
 			if (name.Length > 10)
 				pl0.Text = name.Substring (0, 10);
@@ -112,21 +114,25 @@ namespace ProgettoInfo3
 						BTPlayService.Instance.RemoveSlave (add1.Text);
 						add1.Text = Resources.GetText (Resource.String.none_add);
 						pl1.Text = Resources.GetText (Resource.String.Default1);
+						pl1.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else if (sender.ToString () == spinner2.ToString () && add2.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add2.Text);
 						add2.Text = Resources.GetText (Resource.String.none_add);
 						pl2.Text = Resources.GetText (Resource.String.Default2);
+						pl2.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else if (sender.ToString () == spinner3.ToString () && add3.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add3.Text);
 						add3.Text = Resources.GetText (Resource.String.none_add);
 						pl3.Text = Resources.GetText (Resource.String.Default3);
+						pl3.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else {
 						BTPlayService.Instance.RemoveSlave (add4.Text);
 						add4.Text = Resources.GetText (Resource.String.none_add);
 						pl4.Text = Resources.GetText (Resource.String.Default4);
+						pl4.InputType = Android.Text.InputTypes.TextVariationNormal;
 					}
 					if (counter - BTPlayService.Instance.getNumConnected () <= 0)
 						BTPlayService.Instance.StopListen ();
@@ -166,6 +172,7 @@ namespace ProgettoInfo3
 		{
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
+			BTPlayService.Instance.Stop ();
 			Finish ();
 		}
 
@@ -190,6 +197,7 @@ namespace ProgettoInfo3
 		private class MyHandler:Handler
 		{
 			string address = "";
+			string name = "";
 
 			public MyHandler ()
 			{
@@ -197,9 +205,8 @@ namespace ProgettoInfo3
 
 			public override void HandleMessage (Message msg)
 			{
-
 				if (msg.What == (int) MessageType.MESSAGE_DEVICE_ADDR) {
-					string name;	
+						
 					if (spinner1.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add1.Text.CompareTo ("None") == 0) {
 						add1.Text = (string) msg.Obj;
 						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
@@ -207,6 +214,7 @@ namespace ProgettoInfo3
 							pl1.Text = name.Substring (0, 10);
 						else
 							pl1.Text = name;
+						pl1.InputType = Android.Text.InputTypes.Null;
 					} else if (spinner2.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add2.Text.CompareTo ("None") == 0) {
 						add2.Text = (string) msg.Obj;
 						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
@@ -214,6 +222,7 @@ namespace ProgettoInfo3
 							pl2.Text = name.Substring (0, 10);
 						else
 							pl2.Text = name;
+						pl2.InputType = Android.Text.InputTypes.Null;
 					} else if (spinner3.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add3.Text.CompareTo ("None") == 0) {
 						add3.Text = (string) msg.Obj;
 						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
@@ -221,6 +230,7 @@ namespace ProgettoInfo3
 							pl3.Text = name.Substring (0, 10);
 						else
 							pl3.Text = name;
+						pl3.InputType = Android.Text.InputTypes.Null;
 					} else if (spinner4.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add4.Text.CompareTo ("None") == 0) {
 						add4.Text = (string) msg.Obj;
 						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
@@ -228,21 +238,32 @@ namespace ProgettoInfo3
 							pl4.Text = name.Substring (0, 10);
 						else
 							pl4.Text = name;
+						pl4.InputType = Android.Text.InputTypes.Null;
 					} 
-					// non dovrebbe mai succedere ma nel caso in cui non ho posto per un ulteriore connessione la stacco
-					//BTPlayService.Instance.RemoveSlave ((string) msg.Obj);
+
 
 				}
 
 				if (msg.What == (int) MessageType.MESSAGE_READ) {
-					if (address.CompareTo (add1.Text) == 0)
-						pl1.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
-					if (address.CompareTo (add2.Text) == 0)
-						pl2.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
-					if (address.CompareTo (add3.Text) == 0)
-						pl3.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
-					if (address.CompareTo (add4.Text) == 0)
-						pl4.Text = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					string name = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					if (name.Length > 10)
+						name = name.Substring (0, 10);
+					if (address.CompareTo (add1.Text) == 0) {
+						Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + name, ToastLength.Short).Show (); 
+						pl1.Text = name;
+					}
+					if (address.CompareTo (add2.Text) == 0) {
+						Toast.MakeText (Application.Context, pl2.Text + " changed his/her name to " + name, ToastLength.Short).Show (); 
+						pl2.Text = name;
+					}
+					if (address.CompareTo (add3.Text) == 0) {
+						Toast.MakeText (Application.Context, pl3.Text + " changed his/her name to " + name, ToastLength.Short).Show (); 
+						pl3.Text = name;
+					}
+					if (address.CompareTo (add4.Text) == 0) {
+						Toast.MakeText (Application.Context, pl4.Text + " changed his/her name to " + name, ToastLength.Short).Show (); 
+						pl4.Text = name;
+					}
 					address = "";
 				}
 
@@ -257,6 +278,12 @@ namespace ProgettoInfo3
 						BTPlayService.Instance.ConnectAsMaster ();
 					else
 						BTPlayService.Instance.StopListen ();
+				}
+
+				if (msg.What == (int) MessageType.MESSAGE_STATE_CHANGE) {
+					if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_MASTER)
+						Toast.MakeText (Application.Context, "Connected to " + name, ToastLength.Short).Show ();
+
 				}
 
 			}

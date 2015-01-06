@@ -81,15 +81,15 @@ namespace ProgettoInfo3
 				/*if (BTPlayService.Instance.getNumConnected () > 0)
 					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);*/
 				#region IA setup
-				IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
-				IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
-				IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
-				IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
-
-				AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
-				AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
-				AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
-				AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
+//				IAIAuction iaa1 = new AIAuMobileJump (Board.Instance.AllPlayers [1], true, 10, 1, 1);
+//				IAIAuction iaa2 = new AIAuMobileJump (Board.Instance.AllPlayers [2], true, 10, 1, 1);
+//				IAIAuction iaa3 = new AIAuMobileJump (Board.Instance.AllPlayers [3], true, 10, 1, 1);
+//				IAIAuction iaa4 = new AIAuMobileJump (Board.Instance.AllPlayers [4], true, 10, 1, 1);
+//
+//				AIPtStupid iap1 = new AIPtStupid (Board.Instance.AllPlayers [1]);
+//				AIPtStupid iap2 = new AIPtStupid (Board.Instance.AllPlayers [2]);
+//				AIPtStupid iap3 = new AIPtStupid (Board.Instance.AllPlayers [3]);
+//				AIPtStupid iap4 = new AIPtStupid (Board.Instance.AllPlayers [4]);
 				#endregion
 
 				application.StartGame ();

@@ -73,73 +73,67 @@ namespace Core
 
 		private void actLascio (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			Board.Instance.auctionPass (Board.Instance.Me);
-		}
-
-		private void actCarichi (List<CCTouch> touches, CCEvent touchEvent)
-		{
-			CarichiBid cb = new CarichiBid (Board.Instance.Me, slider.currentValue);
-			Board.Instance.auctionPlaceABid (cb);
+			//Board.Instance.auctionPlaceABid (cb);
 		}
 
 		private void actAsse (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.ASSE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actTre (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.TRE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actDieci (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.RE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actNove (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actOtto (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.FANTE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actSette (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.SETTE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actSei (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.SEI, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actCinque (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.CINQUE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actQuattro (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.QUATTRO, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		private void actDue (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			NormalBid nb = new NormalBid (Board.Instance.Me, EnNumbers.DUE, slider.currentValue);
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		}
 
 		#endregion
@@ -642,114 +636,114 @@ namespace Core
 			#endregion
 
 			#region Events subscriptions
-			Board.Instance.eventAuctionStarted+=auctionStarted;
-			Board.Instance.eventSomeonePlaceABid+=bidPlaced;
-			Board.Instance.eventAuctionEnded+=auctionEnded;
+			//Board.Instance.eventAuctionStarted += auctionStarted;
+			Board.Instance.eventSomeonePlaceABid += bidPlaced;
+			//Board.Instance.eventAuctionEnded += auctionEnded;
 			#endregion
 
 			#region Light initialization
-			turnLights= new List<CCSprite>(5);
-			turnLights.Add(new CCSprite("turnLight2"));
-			turnLights[0].Position= new CCPoint(winSize.Width-turnLights[0].ContentSize.Height/2,winSize.Height/2);
-			turnLights[0].BlendFunc=CCBlendFunc.Additive;
-			turnLights[0].Rotation=-90;
-			turnLights[0].Color=CCColor3B.Green;
-			turnLights[0].ScaleX=winSize.Height/turnLights[0].ContentSize.Width;
-			mainLayer.AddChild(turnLights[0]);
-			turnLights[0].ZOrder=-1;
-			turnLights[0].Visible=false;
+			turnLights = new List<CCSprite> (5);
+			turnLights.Add (new CCSprite ("turnLight2"));
+			turnLights [0].Position = new CCPoint (winSize.Width - turnLights [0].ContentSize.Height / 2, winSize.Height / 2);
+			turnLights [0].BlendFunc = CCBlendFunc.Additive;
+			turnLights [0].Rotation = -90;
+			turnLights [0].Color = CCColor3B.Green;
+			turnLights [0].ScaleX = winSize.Height / turnLights [0].ContentSize.Width;
+			mainLayer.AddChild (turnLights [0]);
+			turnLights [0].ZOrder = -1;
+			turnLights [0].Visible = false;
 
-			turnLights.Add(new CCSprite("turnLight2"));
-			turnLights[1].Position= new CCPoint(winSize.Width/2,winSize.Height+5-turnLights[1].ContentSize.Height/2);
-			turnLights[1].BlendFunc=CCBlendFunc.Additive;
-			turnLights[1].Rotation=180;
-			turnLights[1].Color=CCColor3B.Red;
-			turnLights[1].ScaleX=winSize.Width/turnLights[1].ContentSize.Width;
-			mainLayer.AddChild(turnLights[1]);
-			turnLights[1].ZOrder=20;
-			turnLights[1].Visible=false;
+			turnLights.Add (new CCSprite ("turnLight2"));
+			turnLights [1].Position = new CCPoint (winSize.Width / 2, winSize.Height + 5 - turnLights [1].ContentSize.Height / 2);
+			turnLights [1].BlendFunc = CCBlendFunc.Additive;
+			turnLights [1].Rotation = 180;
+			turnLights [1].Color = CCColor3B.Red;
+			turnLights [1].ScaleX = winSize.Width / turnLights [1].ContentSize.Width;
+			mainLayer.AddChild (turnLights [1]);
+			turnLights [1].ZOrder = 20;
+			turnLights [1].Visible = false;
 
-			turnLights.Add(new CCSprite("turnLight2"));
-			turnLights[2].Position= new CCPoint(-5+turnLights[2].ContentSize.Height/2,winSize.Height*3/4);
-			turnLights[2].BlendFunc=CCBlendFunc.Additive;
-			turnLights[2].Rotation=90;
-			turnLights[2].Color=CCColor3B.Yellow;
-			turnLights[2].ScaleX=(winSize.Height/2)/turnLights[2].ContentSize.Width;
-			mainLayer.AddChild(turnLights[2]);
-			turnLights[2].ZOrder=20;
-			turnLights[2].Visible=false;
+			turnLights.Add (new CCSprite ("turnLight2"));
+			turnLights [2].Position = new CCPoint (-5 + turnLights [2].ContentSize.Height / 2, winSize.Height * 3 / 4);
+			turnLights [2].BlendFunc = CCBlendFunc.Additive;
+			turnLights [2].Rotation = 90;
+			turnLights [2].Color = CCColor3B.Yellow;
+			turnLights [2].ScaleX = ( winSize.Height / 2 ) / turnLights [2].ContentSize.Width;
+			mainLayer.AddChild (turnLights [2]);
+			turnLights [2].ZOrder = 20;
+			turnLights [2].Visible = false;
 
-			turnLights.Add(new CCSprite("turnLight2"));
-			turnLights[3].Position= new CCPoint(-5+turnLights[3].ContentSize.Height/2,winSize.Height/4);
-			turnLights[3].BlendFunc=CCBlendFunc.Additive;
-			turnLights[3].Rotation=90;
-			turnLights[3].Color=CCColor3B.Blue;
-			turnLights[3].ScaleX=(winSize.Height/2)/turnLights[3].ContentSize.Width;
-			mainLayer.AddChild(turnLights[3]);
-			turnLights[3].ZOrder=20;
-			turnLights[3].Visible=false;
+			turnLights.Add (new CCSprite ("turnLight2"));
+			turnLights [3].Position = new CCPoint (-5 + turnLights [3].ContentSize.Height / 2, winSize.Height / 4);
+			turnLights [3].BlendFunc = CCBlendFunc.Additive;
+			turnLights [3].Rotation = 90;
+			turnLights [3].Color = CCColor3B.Blue;
+			turnLights [3].ScaleX = ( winSize.Height / 2 ) / turnLights [3].ContentSize.Width;
+			mainLayer.AddChild (turnLights [3]);
+			turnLights [3].ZOrder = 20;
+			turnLights [3].Visible = false;
 
-			turnLights.Add(new CCSprite("turnLight2"));
-			turnLights[4].Position= new CCPoint(winSize.Width/2,-5+turnLights[1].ContentSize.Height/2);
-			turnLights[4].BlendFunc=CCBlendFunc.Additive;
-			turnLights[4].Color=CCColor3B.Orange;
-			turnLights[4].ScaleX=winSize.Width/turnLights[4].ContentSize.Width;
-			mainLayer.AddChild(turnLights[4]);
-			turnLights[4].ZOrder=20;
-			turnLights[4].Visible=false;
+			turnLights.Add (new CCSprite ("turnLight2"));
+			turnLights [4].Position = new CCPoint (winSize.Width / 2, -5 + turnLights [1].ContentSize.Height / 2);
+			turnLights [4].BlendFunc = CCBlendFunc.Additive;
+			turnLights [4].Color = CCColor3B.Orange;
+			turnLights [4].ScaleX = winSize.Width / turnLights [4].ContentSize.Width;
+			mainLayer.AddChild (turnLights [4]);
+			turnLights [4].ZOrder = 20;
+			turnLights [4].Visible = false;
 
 			#endregion
 
 			#region Names initialization
-			playerNames= new List<CCLabel>(5);
+			playerNames = new List<CCLabel> (5);
 
-			playerNames.Add(new CCLabel("","Arial",12));
+			playerNames.Add (new CCLabel ("", "Arial", 12));
 
-			playerNames.Add(new CCLabel(Board.Instance.AllPlayers[1].name,"Arial",20));
-			playerNames[1].Position= new CCPoint(winSize.Width/2,winSize.Height-15);
-			playerNames[1].Rotation=180;
-			mainLayer.AddChild(playerNames[1]);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [1].name, "Arial", 20));
+			playerNames [1].Position = new CCPoint (winSize.Width / 2, winSize.Height - 15);
+			playerNames [1].Rotation = 180;
+			mainLayer.AddChild (playerNames [1]);
 
-			playerNames.Add(new CCLabel(Board.Instance.AllPlayers[2].name,"Arial",20)) ;
-			playerNames[2].Position= new CCPoint(15,winSize.Height*3/4);
-			playerNames[2].Rotation=-90;
-			mainLayer.AddChild(playerNames[2]);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [2].name, "Arial", 20));
+			playerNames [2].Position = new CCPoint (15, winSize.Height * 3 / 4);
+			playerNames [2].Rotation = -90;
+			mainLayer.AddChild (playerNames [2]);
 
-			playerNames.Add(new CCLabel(Board.Instance.AllPlayers[3].name,"Arial",20)) ;
-			playerNames[3].Position= new CCPoint(15,winSize.Height/4);
-			playerNames[3].Rotation=-90;
-			mainLayer.AddChild(playerNames[3]);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [3].name, "Arial", 20));
+			playerNames [3].Position = new CCPoint (15, winSize.Height / 4);
+			playerNames [3].Rotation = -90;
+			mainLayer.AddChild (playerNames [3]);
 
-			playerNames.Add(new CCLabel(Board.Instance.AllPlayers[4].name,"Arial",20));
-			playerNames[4].Position= new CCPoint(winSize.Width/2,15);
-			playerNames[4].Rotation=180;
-			mainLayer.AddChild(playerNames[4]);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [4].name, "Arial", 20));
+			playerNames [4].Position = new CCPoint (winSize.Width / 2, 15);
+			playerNames [4].Rotation = 180;
+			mainLayer.AddChild (playerNames [4]);
 			#endregion
 
 			#region Debug bids labels
-			playerBids= new List <CCLabel>(5);
+			playerBids = new List <CCLabel> (5);
 
-			playerBids.Add(new CCLabel("","Arial",12));
+			playerBids.Add (new CCLabel ("", "Arial", 12));
 
-			playerBids.Add(new CCLabel("","Arial",20));
-			playerBids[1].Position= new CCPoint(playerNames[1].PositionX,playerNames[1].PositionY-15);
-			playerBids[1].Rotation=180;
-			mainLayer.AddChild(playerBids[1]);
+			playerBids.Add (new CCLabel ("", "Arial", 20));
+			playerBids [1].Position = new CCPoint (playerNames [1].PositionX, playerNames [1].PositionY - 15);
+			playerBids [1].Rotation = 180;
+			mainLayer.AddChild (playerBids [1]);
 
-			playerBids.Add(new CCLabel("","Arial",20));
-			playerBids[2].Position= new CCPoint(playerNames[2].PositionX+15,playerNames[2].PositionY);
-			playerBids[2].Rotation=-90;
-			mainLayer.AddChild(playerBids[2]);
+			playerBids.Add (new CCLabel ("", "Arial", 20));
+			playerBids [2].Position = new CCPoint (playerNames [2].PositionX + 15, playerNames [2].PositionY);
+			playerBids [2].Rotation = -90;
+			mainLayer.AddChild (playerBids [2]);
 
-			playerBids.Add(new CCLabel("","Arial",20));
-			playerBids[3].Position= new CCPoint(playerNames[3].PositionX+15,playerNames[3].PositionY);
-			playerBids[3].Rotation=-90;
-			mainLayer.AddChild(playerBids[3]);
+			playerBids.Add (new CCLabel ("", "Arial", 20));
+			playerBids [3].Position = new CCPoint (playerNames [3].PositionX + 15, playerNames [3].PositionY);
+			playerBids [3].Rotation = -90;
+			mainLayer.AddChild (playerBids [3]);
 
-			playerBids.Add(new CCLabel("","Arial",20));
-			playerBids[4].Position= new CCPoint(playerNames[4].PositionX,playerNames[4].PositionY+15);
-			playerBids[4].Rotation=180;
-			mainLayer.AddChild(playerBids[4]);
+			playerBids.Add (new CCLabel ("", "Arial", 20));
+			playerBids [4].Position = new CCPoint (playerNames [4].PositionX, playerNames [4].PositionY + 15);
+			playerBids [4].Rotation = 180;
+			mainLayer.AddChild (playerBids [4]);
 			#endregion
 
 			#region Card sprites creation and positioning
@@ -766,7 +760,7 @@ namespace Core
 					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
 				}
 				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
-				carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand[i].number.ToString()+Board.Instance.Me.Hand[i].seme.ToString()), posBase, rotation));
+				carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand [i].number.ToString () + Board.Instance.Me.Hand [i].seme.ToString ()), posBase, rotation));
 
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
 				carte [i].sprite.Position = carte [i].posBase;
@@ -792,7 +786,7 @@ namespace Core
 			actButtons.Add (actTre);
 			actButtons.Add (actAsse);
 			actButtons.Add (actLascio);
-			actButtons.Add (actCarichi);
+			//actButtons.Add (actCarichi);
 
 			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
 
@@ -814,7 +808,7 @@ namespace Core
 
 			#endregion
 
-			Board.Instance.startGame ();
+			//Board.Instance.startGame ();
 
 
 
@@ -881,16 +875,23 @@ namespace Core
 		#endregion
 
 		#region Let there be light
-		private void turnLight(int playerIndex){
-			for (int i=0; i<5;i++){turnLights[i].Visible=false;}
+
+		private void turnLight (int playerIndex)
+		{
+			for (int i = 0; i < 5; i++) {
+				turnLights [i].Visible = false;
+			}
 			turnLights [playerIndex].Visible = true;
 		}
+
 		#endregion
 
 		#region Event responses
 
 		#region Auction started
-		public void auctionStarted(){
+
+		public void auctionStarted ()
+		{
 
 			touch.eventTouchBegan += touchBeganAsta;
 			touch.eventTouchMoved += touchMovedAsta;
@@ -898,44 +899,50 @@ namespace Core
 
 
 
-			turnLight ((Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
-
-			if(Board.Instance.ActiveAuctionPlayer!=Board.Instance.Me)
-				for (int i=0;i<12;i++)
-					buttons [i].Enabled = false;
+//			turnLight (( Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+//
+//			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
+//				for (int i = 0; i < 12; i++)
+//					buttons [i].Enabled = false;
 
 		}
+
 		#endregion
 
 		#region Auction turn changed
-		public void bidPlaced(IBid bid){
+
+		public void bidPlaced (IBid bid)
+		{
 			//TODO : disabilitare i pulsanti che non posso cliccare perchè puntano roba troppo alta
-			if(Board.Instance.isAuctionClosed||Board.Instance.ActiveAuctionPlayer!=Board.Instance.Me){
-				for (int i=0;i<12;i++)
-					buttons [i].Enabled = false;
-			}
-			else{
-				for (int i=0;i<12;i++)
-					buttons [i].Enabled = true;
-			}
-
-			playerBids [(bid.bidder.order - Board.Instance.Me.order + 5) % 5].Text = bidToString (bid);
-			turnLight ((Board.Instance.isAuctionClosed ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
-
+//			if (Board.Instance.isAuctionClosed || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
+//				for (int i = 0; i < 12; i++)
+//					buttons [i].Enabled = false;
+//			} else {
+//				for (int i = 0; i < 12; i++)
+//					buttons [i].Enabled = true;
+//			}
+//
+//			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
+//			turnLight (( Board.Instance.isAuctionClosed ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+//
 		}
 
-		private string bidToString(IBid bid){
+		private string bidToString (IBid bid)
+		{
 			if (bid is PassBid)
 				return "Passo";
 			else if (bid is CarichiBid)
-				return "Carichi al " + ((CarichiBid) bid).point.ToString ();
+				return "Carichi al " + ( (CarichiBid) bid ).point.ToString ();
 			else
-				return ((NormalBid) bid).number.ToString () + " al " + ((NormalBid) bid).point.ToString ();
+				return ( (NormalBid) bid ).number.ToString () + " al " + ( (NormalBid) bid ).point.ToString ();
 		}
+
 		#endregion
 
 		#region Auction ended
-		public void auctionEnded(){
+
+		public void auctionEnded ()
+		{
 			touch.eventTouchBegan -= touchBeganAsta;
 			touch.eventTouchMoved -= touchMovedAsta;
 			touch.eventTouchEnded -= touchEndedAsta;
@@ -946,16 +953,20 @@ namespace Core
 				buttons [i].remove ();
 			}
 			slider.remove ();
-			Board.Instance.eventAuctionEnded-=auctionEnded;;
+			//Board.Instance.eventAuctionEnded -= auctionEnded;
+			;
 		}
+
 		#endregion
 
 		#region Play a card
-		public void playCard(Move m){
-			int localIndex = (m.player.order - Board.Instance.Me.order + 5) % 5;
+
+		public void playCard (Move m)
+		{
+			int localIndex = ( m.player.order - Board.Instance.Me.order + 5 ) % 5;
 			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + m.card.seme.ToString ());
 			CardData cd;
-			switch (localIndex){
+			switch (localIndex) {
 				case 1:
 					cardSprite.Position = new CCPoint (winSize.Width / 2, -100);
 					cardSprite.Rotation = 180;
@@ -965,10 +976,10 @@ namespace Core
 					moveSprite (cd.posBase, cardSprite);
 				break;
 				case 2:
-					cardSprite.Position = new CCPoint (-100, winSize.Height/4);
+					cardSprite.Position = new CCPoint (-100, winSize.Height / 4);
 					cardSprite.Rotation = 270;
 					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MinX, dropField.MidY-50), 270);
+					cd = new CardData (cardSprite, new CCPoint (dropField.MinX, dropField.MidY - 50), 270);
 					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 				break;
@@ -983,7 +994,7 @@ namespace Core
 				break;
 
 				case 4:
-					cardSprite.Position = new CCPoint (winSize.Width / 2, winSize.Height +100);
+					cardSprite.Position = new CCPoint (winSize.Width / 2, winSize.Height + 100);
 					mainLayer.AddChild (cardSprite);
 					cd = new CardData (cardSprite, new CCPoint (dropField.MidX, dropField.MaxY), 0);
 					droppedCards.Add (cd);
@@ -993,6 +1004,7 @@ namespace Core
 
 
 		}
+
 		#endregion
 
 		#endregion

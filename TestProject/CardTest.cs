@@ -23,13 +23,13 @@ namespace TestProject
 
 			NormalBid nb = new NormalBid (Board.Instance.AllPlayers [3], EnNumbers.CAVALLO, 70);
 
-			Board.Instance.auctionPlaceABid (nb);
-			Board.Instance.auctionPass (Board.Instance.AllPlayers [4]);
-			Board.Instance.auctionPass (Board.Instance.AllPlayers [0]);
-			Board.Instance.auctionPass (Board.Instance.AllPlayers [1]);
-			Board.Instance.auctionPass (Board.Instance.AllPlayers [2]);
+			//Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPass (Board.Instance.AllPlayers [4]);
+			//Board.Instance.auctionPass (Board.Instance.AllPlayers [0]);
+			//Board.Instance.auctionPass (Board.Instance.AllPlayers [1]);
+			//Board.Instance.auctionPass (Board.Instance.AllPlayers [2]);
 
-			Board.Instance.finalizeAuction (EnSemi.COPE);
+			//Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			_null = null;
 			_noBrisc1 = Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.ASSE);

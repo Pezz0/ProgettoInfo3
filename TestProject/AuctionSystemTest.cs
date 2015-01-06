@@ -27,33 +27,33 @@ namespace TestProject
 			IBid wb = Board.Instance.currentAuctionWinningBid;
 
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb);
+			//Board.Instance.auctionPlaceABid (nb);
 		
 			Assert.AreSame (nb, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 		
-			Board.Instance.auctionPass (_players [4]);
-		
-			Assert.AreSame (nb, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
-		
-			Board.Instance.auctionPass (_players [0]);
+			//Board.Instance.auctionPass (_players [4]);
 		
 			Assert.AreSame (nb, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
 		
-			Board.Instance.auctionPass (_players [1]);
+			//Board.Instance.auctionPass (_players [0]);
 		
 			Assert.AreSame (nb, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
 		
-			Board.Instance.auctionPass (_players [2]);
+			//Board.Instance.auctionPass (_players [1]);
 		
-			Assert.True (Board.Instance.isAuctionClosed);
+			Assert.AreSame (nb, Board.Instance.currentAuctionWinningBid);
+			//Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
 		
-			Board.Instance.finalizeAuction (EnSemi.COPE);
+			//Board.Instance.auctionPass (_players [2]);
+		
+			//Assert.True (Board.Instance.isAuctionClosed);
+		
+			//Board.Instance.finalizeAuction (EnSemi.COPE);
 		
 			Assert.AreEqual (EnGameType.STANDARD, Board.Instance.GameType);
 			Assert.AreSame (_players [3], Board.Instance.getChiamante ());
@@ -71,53 +71,53 @@ namespace TestProject
 			IBid wb = Board.Instance.currentAuctionWinningBid;
 
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb1);
+			//Board.Instance.auctionPlaceABid (nb1);
 
 			Assert.AreSame (nb1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb2);
-
-			Assert.AreSame (nb2, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [0]);
+			//Board.Instance.auctionPlaceABid (nb2);
 
 			Assert.AreSame (nb2, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb3);
+			//Board.Instance.auctionPass (_players [0]);
+
+			Assert.AreSame (nb2, Board.Instance.currentAuctionWinningBid);
+			//Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
+
+			//Board.Instance.auctionPlaceABid (nb3);
 
 			Assert.AreSame (nb3, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb4);
+			//Board.Instance.auctionPlaceABid (nb4);
 
 			Assert.AreSame (nb4, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb5);
-
-			Assert.AreSame (nb5, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [4]);
+			//Board.Instance.auctionPlaceABid (nb5);
 
 			Assert.AreSame (nb5, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [1]);
+			//Board.Instance.auctionPass (_players [4]);
 
 			Assert.AreSame (nb5, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [2]);
+			//Board.Instance.auctionPass (_players [1]);
 
-			Assert.True (Board.Instance.isAuctionClosed);
+			Assert.AreSame (nb5, Board.Instance.currentAuctionWinningBid);
+			//Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.finalizeAuction (EnSemi.COPE);
+			//Board.Instance.auctionPass (_players [2]);
+
+			//Assert.True (Board.Instance.isAuctionClosed);
+
+			//Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			Assert.AreEqual (EnGameType.STANDARD, Board.Instance.GameType);
 			Assert.AreSame (_players [3], Board.Instance.getChiamante ());
@@ -129,37 +129,37 @@ namespace TestProject
 			IBid wb = Board.Instance.currentAuctionWinningBid;
 
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [3]);
-
-			wb = Board.Instance.currentAuctionWinningBid;
-			Assert.IsNull (wb);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [4]);
+			//Board.Instance.auctionPass (_players [3]);
 
 			wb = Board.Instance.currentAuctionWinningBid;
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [0]);
-
-			wb = Board.Instance.currentAuctionWinningBid;
-			Assert.IsNull (wb);
-			Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [1]);
+			//Board.Instance.auctionPass (_players [4]);
 
 			wb = Board.Instance.currentAuctionWinningBid;
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [2]);
+			//Board.Instance.auctionPass (_players [0]);
 
-			Assert.True (Board.Instance.isAuctionClosed);
+			wb = Board.Instance.currentAuctionWinningBid;
+			Assert.IsNull (wb);
+			//Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.finalizeAuction (EnSemi.COPE);
+			//Board.Instance.auctionPass (_players [1]);
+
+			wb = Board.Instance.currentAuctionWinningBid;
+			Assert.IsNull (wb);
+			//Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+
+			//Board.Instance.auctionPass (_players [2]);
+
+			//Assert.True (Board.Instance.isAuctionClosed);
+
+			//Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			Assert.AreEqual (EnGameType.MONTE, Board.Instance.GameType);
 		}
@@ -176,53 +176,53 @@ namespace TestProject
 			IBid wb = Board.Instance.currentAuctionWinningBid;
 
 			Assert.IsNull (wb);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb1);
+			//Board.Instance.auctionPlaceABid (nb1);
 
 			Assert.AreSame (nb1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb2);
+			//Board.Instance.auctionPlaceABid (nb2);
 
 			Assert.AreSame (nb2, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (bc1);
-
-			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [1]);
+			//Board.Instance.auctionPlaceABid (bc1);
 
 			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [1], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [2]);
-
-			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
-
-			Board.Instance.auctionPass (_players [3]);
+			//Board.Instance.auctionPass (_players [1]);
 
 			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [2], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (nb3);
+			//Board.Instance.auctionPass (_players [2]);
+
+			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
+			//Assert.AreSame (_players [3], Board.Instance.ActiveAuctionPlayer);
+
+			//Board.Instance.auctionPass (_players [3]);
+
+			Assert.AreSame (bc1, Board.Instance.currentAuctionWinningBid);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+
+			//Board.Instance.auctionPlaceABid (nb3);
 
 			Assert.AreSame (nb3, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [0], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPlaceABid (bc2);
+			//Board.Instance.auctionPlaceABid (bc2);
 
 			Assert.AreSame (bc2, Board.Instance.currentAuctionWinningBid);
-			Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
+			//Assert.AreSame (_players [4], Board.Instance.ActiveAuctionPlayer);
 
-			Board.Instance.auctionPass (_players [4]);
+			//Board.Instance.auctionPass (_players [4]);
 
-			Assert.True (Board.Instance.isAuctionClosed);
+			//Assert.True (Board.Instance.isAuctionClosed);
 
-			Board.Instance.finalizeAuction (EnSemi.COPE);
+			//Board.Instance.finalizeAuction (EnSemi.COPE);
 
 			Assert.AreEqual (EnGameType.CARICHI, Board.Instance.GameType);
 			Assert.AreSame (_players [0], Board.Instance.getChiamante ());

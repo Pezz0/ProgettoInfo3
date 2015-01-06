@@ -3,7 +3,8 @@ using Android.OS;
 using ChiamataLibrary;
 using Android.Widget;
 using Android.App;
-using BTLibrary;
+
+//using BTLibrary;
 
 namespace BTLibrary
 {
@@ -41,10 +42,11 @@ namespace BTLibrary
 				case (int)MessageType.MESSAGE_READ:
 
 					if (Board.Instance.isAuctionPhase)
-						Board.Instance.auctionPlaceABid ((byte []) msg.Obj);
+						//Board.Instance.auctionPlaceABid ((byte []) msg.Obj);
 
 					if (Board.Instance.isPlayTime)
-						Board.Instance.PlayACard ((byte []) msg.Obj);
+						;
+						//Board.Instance.PlayACard ((byte []) msg.Obj);
 
 					Player sender = Board.Instance.getPlayer ((byte []) msg.Obj);
 

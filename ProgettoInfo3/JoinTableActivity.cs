@@ -26,9 +26,12 @@ namespace ProgettoInfo3
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
 
+		ListView paired, newdev;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+
 
 			BTPlayService.Instance.setHandler (new BTConnHandler (this, this));
 			BTPlayService.Instance.RegisterReceiver ();
@@ -37,12 +40,14 @@ namespace ProgettoInfo3
 
 			SetTitle (Resource.String.select);
 			scan = FindViewById<Button> (Resource.Id.scan);
-			ListView paired = FindViewById<ListView> (Resource.Id.paired);
-			ListView newdev = FindViewById<ListView> (Resource.Id.newdev);
+			paired = FindViewById<ListView> (Resource.Id.paired);
+			newdev = FindViewById<ListView> (Resource.Id.newdev);
 			pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 			newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 
+			pairedArrayList.Clear ();
 			paired.Adapter = pairedArrayList; 
+
 			paired.ItemClick += (sender, e) => devicelistClick (sender, e);
 
 			newdev.Adapter = newArrayList;
@@ -58,9 +63,11 @@ namespace ProgettoInfo3
 			name = FindViewById<EditText> (Resource.Id.MyName);
 
 
-
-
-			name.Text = BTPlayService.Instance.GetLocalName ();
+			string namedev = BTPlayService.Instance.GetLocalName ();
+			if (namedev.Length > 10)
+				name.Text = namedev.Substring (0, 10);
+			else
+				name.Text = namedev;
 
 			if (!BTPlayService.Instance.existBluetooth ()) {
 				Toast.MakeText (this, "BlueTooth not supported", ToastLength.Short);
@@ -70,9 +77,11 @@ namespace ProgettoInfo3
 			if (!BTPlayService.Instance.isBTEnabled ())
 				BTPlayService.Instance.enableBluetooth ();
 			else {
+
 				List<string> address = BTPlayService.Instance.GetPaired ();
 				foreach (string addr in address)
 					pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
+
 
 			}
 
@@ -87,6 +96,7 @@ namespace ProgettoInfo3
 		public override void OnBackPressed ()
 		{
 			base.OnBackPressed ();
+			BTPlayService.Instance.Stop ();
 			Finish ();
 		}
 
@@ -100,9 +110,25 @@ namespace ProgettoInfo3
 
 		void SendName (object sender, EventArgs e)
 		{
-			if (name.Text.CompareTo ("") != 0)
-				BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (name.Text));
-			else
+			if (name.Text.CompareTo ("") != 0) {
+				if (name.Text.Length > 10) {
+					string sub = name.Text.Substring (0, 10);
+					AlertDialog.Builder setName = new AlertDialog.Builder (this);
+					setName.SetTitle ("Name Too Long");
+					setName.SetMessage ("Your name is too long\nDo you want to be registered on master with this name: " + sub + "?");
+					setName.SetPositiveButton ("YES", delegate {
+						BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (sub));
+
+					});
+					setName.SetNegativeButton ("NO", delegate {
+						return;
+					});
+					setName.Show ();
+
+				} else
+					BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (name.Text));
+
+			} else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
 			
 		}
@@ -154,6 +180,7 @@ namespace ProgettoInfo3
 		{
 			Context c;
 			Activity a;
+			string conn = "";
 
 			public BTConnHandler (Context co, Activity ac)
 			{
@@ -184,8 +211,11 @@ namespace ProgettoInfo3
 						newArrayList.Add ("No Device Found");
 					break;
 					case (int) MessageType.MESSAGE_STATE_CHANGE:
-						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE)
+						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE) {
 							send.Enabled = true;
+							Toast.MakeText (Application.Context, "Connected to " + conn, ToastLength.Short).Show ();
+							a.SetTitle (Resource.String.change_name);
+						}
 					break;
 					case (int)MessageType.MESSAGE_READ:
 						send.Enabled = false;
@@ -195,7 +225,10 @@ namespace ProgettoInfo3
 					case (int)MessageType.MESSAGE_TOAST:
 						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
 					break;
-
+					case (int) MessageType.MESSAGE_DEVICE_ADDR:
+						conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+					break;
+					
 				}
 			}
 		

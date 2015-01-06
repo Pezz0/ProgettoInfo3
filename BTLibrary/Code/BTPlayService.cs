@@ -156,7 +156,7 @@ namespace BTLibrary
 		{
 			// Get a set of currently paired devices
 			var pairedDevices = _btAdapter.BondedDevices;
-
+			_pairedDevicesList.Clear ();
 			// If there are paired devices, add each address to the List
 			if (pairedDevices.Count > 0)
 				foreach (var device in pairedDevices) {
@@ -323,8 +323,8 @@ namespace BTLibrary
 			connectedSlaveThread.Start ();
 
 			// Send the name of the connected device back to the Activity
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address);
-			_handler.SendMessage (msg);
+			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+
 
 			//sets the state to CONNECTED_SLAVE
 			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
@@ -359,6 +359,7 @@ namespace BTLibrary
 			//sends a message to the activity indicates the connection to a device
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
+			SetState (ConnectionState.STATE_CONNECTED_MASTER);
 
 
 			//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN

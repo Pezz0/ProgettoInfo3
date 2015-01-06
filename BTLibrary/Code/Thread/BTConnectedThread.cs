@@ -65,6 +65,7 @@ namespace BTLibrary
 			// Keep listening to the InputStream while connected
 			while (true) {
 				try {
+					buffer = new byte[1024];
 					// Read from the InputStream
 					bytes = _InStream.Read (buffer, 0, buffer.Length);
 
