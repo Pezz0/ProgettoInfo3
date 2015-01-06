@@ -528,6 +528,8 @@ namespace ChiamataLibrary
 		/// </summary>
 		private int _activeAuctionPlayer;
 
+		public Player ActiveAuctionPlayer{ get { return _players [_activeAuctionPlayer]; } }
+
 		/// <summary>
 		/// The current winning bid.
 		/// </summary>
@@ -539,7 +541,7 @@ namespace ChiamataLibrary
 		/// <value>The current auction winning bid.</value>
 		public NotPassBid currentAuctionWinningBid {
 			get {
-				if (!( isAuctionPhase || isFinalizePhase ))
+				if (!(isAuctionPhase || isFinalizePhase))
 					throw new WrongPhaseException ("This information isn't relevant outside the auction", "Open/closed auction");
 
 				return _currentWinningBid;
@@ -581,7 +583,7 @@ namespace ChiamataLibrary
 		/// Gets the player that have to play.
 		/// </summary>
 		/// <value>The player that have to play.</value>
-		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % PLAYER_NUMBER]; } }
+		public Player ActivePlayer{ get { return _players [(_lastWinner + _t) % PLAYER_NUMBER]; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is game finish.
@@ -714,13 +716,6 @@ namespace ChiamataLibrary
 					if (bid is NotPassBid)
 						_currentWinningBid = (NotPassBid) bid;
 
-					//event place a bid.
-					if (eventIPlaceABid != null && bid.bidder == Me)
-						eventIPlaceABid (bid);
-
-					if (eventSomeonePlaceABid != null && bid.bidder != Me)
-						eventSomeonePlaceABid (bid);
-
 					List<Player> pass = new List<Player> ();
 
 					_listBid.ForEach (delegate(IBid b) {
@@ -729,10 +724,19 @@ namespace ChiamataLibrary
 					});
 						
 					//find the next bidder
-					_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+					_activeAuctionPlayer = (_activeAuctionPlayer + 1) % PLAYER_NUMBER;
 
 					while (pass.Contains (_players [_activeAuctionPlayer]))
-						_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+						_activeAuctionPlayer = (_activeAuctionPlayer + 1) % PLAYER_NUMBER;
+
+					//event place a bid.
+					if (eventIPlaceABid != null && bid.bidder == Me)
+						eventIPlaceABid (bid);
+
+					if (eventSomeonePlaceABid != null && bid.bidder != Me)
+						eventSomeonePlaceABid (bid);
+
+
 
 					//check if the auction is still open
 					if (pass.Count >= PLAYER_NUMBER - 1 && _listBid.Count >= PLAYER_NUMBER) {
@@ -744,7 +748,7 @@ namespace ChiamataLibrary
 							_gameType = EnGameType.CARICHI;
 
 							_currentWinningBid.bidder.Role = EnRole.CHIAMANTE;
-							_winningPoint = ( (CarichiBid) _currentWinningBid ).point;
+							_winningPoint = ((CarichiBid) _currentWinningBid).point;
 
 							_t = 0;
 
@@ -763,9 +767,9 @@ namespace ChiamataLibrary
 
 					_gameType = EnGameType.STANDARD;
 
-					_calledCard = getCard (seme.Value, ( (NormalBid) _currentWinningBid ).number);
+					_calledCard = getCard (seme.Value, ((NormalBid) _currentWinningBid).number);
 
-					_winningPoint = ( (NormalBid) _currentWinningBid ).point;
+					_winningPoint = ((NormalBid) _currentWinningBid).point;
 
 					//set the roles
 					_calledCard.initialPlayer.Role = EnRole.SOCIO;
@@ -791,7 +795,7 @@ namespace ChiamataLibrary
 					if (eventIPlayACard != null && move.player == Me)
 						eventIPlayACard (move);
 
-					if (eventSomeonePlaceABid != null && move.player != Me)
+					if (eventSomeonePlayACard != null && move.player != Me)
 						eventSomeonePlayACard (move);
 
 					if (numberOfCardOnBoard == PLAYER_NUMBER) {
@@ -869,10 +873,10 @@ namespace ChiamataLibrary
 
 			while (!isAuctionClosed) {
 				//find the next bidder
-				_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+				_activeAuctionPlayer = (_activeAuctionPlayer + 1) % PLAYER_NUMBER;
 
 				while (pass.Contains (_players [_activeAuctionPlayer]))
-					_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+					_activeAuctionPlayer = (_activeAuctionPlayer + 1) % PLAYER_NUMBER;
 
 				//find the bid
 				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid (); 
@@ -908,13 +912,13 @@ namespace ChiamataLibrary
 
 				_currentWinningBid.bidder.Role = EnRole.CHIAMANTE;
 
-				_winningPoint = ( (CarichiBid) _currentWinningBid ).point;
+				_winningPoint = ((CarichiBid) _currentWinningBid).point;
 			} else if (_currentWinningBid is NormalBid) {	//standard
 				_gameType = EnGameType.STANDARD;
 
-				_calledCard = getCard (_currentWinningBid.bidder.invokeChooseSeme ().Value, ( (NormalBid) _currentWinningBid ).number);
+				_calledCard = getCard (_currentWinningBid.bidder.invokeChooseSeme ().Value, ((NormalBid) _currentWinningBid).number);
 
-				_winningPoint = ( (NormalBid) _currentWinningBid ).point;
+				_winningPoint = ((NormalBid) _currentWinningBid).point;
 
 				//set the roles
 				_calledCard.initialPlayer.Role = EnRole.SOCIO;

@@ -207,12 +207,14 @@ namespace ChiamataLibrary
 			if (bid != null && bid < Board.Instance.currentAuctionWinningBid && bid is NotPassBid)
 				throw new BidNotEnoughException ("The new bid is not enough to beat the winning one", bid);
 
+			if (bid == null)
+				return null;
 			return bid.changeBidder (this);
 		}
 
 		public EnSemi? invokeChooseSeme ()
 		{
-			if (!( Board.Instance.isAuctionPhase || Board.Instance.isFinalizePhase ))
+			if (!(Board.Instance.isAuctionPhase || Board.Instance.isFinalizePhase))
 				throw new WrongPhaseException ("A player can choose a seme only during the auction phase", "Auction");
 
 			if (Board.Instance.currentAuctionWinningBid.bidder != this)
@@ -226,7 +228,10 @@ namespace ChiamataLibrary
 			if (!Board.Instance.isPlayTime)
 				throw new WrongPhaseException ("A player can play a card during the playtime phase", "Playtime");
 
-			return new Move (_playAcard (), this);
+			Card card = _playAcard ();
+			if (card == null)
+				return null;
+			return new Move (card, this);
 		}
 
 		#endregion
