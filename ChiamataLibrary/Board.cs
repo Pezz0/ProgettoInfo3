@@ -816,8 +816,9 @@ namespace ChiamataLibrary
 
 						_cardOnBoard = new List<Card> ();
 
-						_t++;
+
 					}
+					_t++;
 				}
 
 			} else if (isGameFinish) {

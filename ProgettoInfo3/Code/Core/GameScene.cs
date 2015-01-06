@@ -641,7 +641,8 @@ namespace Core
 				if (dropField.ContainsPoint (pos)) {
 					carte [selected].posBase = new CCPoint (dropField.MaxX, winSize.Height - dropField.Center.Y);
 					moveSprite (new CCPoint (carte [selected].posBase.X, carte [selected].posBase.Y), carte [selected].sprite);
-					droppedCards [Board.Instance.Me.order] = carte [selected];
+					droppedCards.Add (carte [selected]);
+					played = true;
 					carte.RemoveAt (selected);
 					inHand--;
 
@@ -711,6 +712,7 @@ namespace Core
 			Board.Instance.eventAuctionStart += auctionStarted;
 			Board.Instance.eventSomeonePlaceABid += bidPlaced;
 			Board.Instance.Me.setPlaytimeControl (iPlayCard);
+			Board.Instance.eventSomeonePlayACard += playCard;
 			#endregion
 
 			#region Light initialization
@@ -1055,7 +1057,7 @@ namespace Core
 		{
 			if (played) {
 				played = false;
-				Card temp = Board.Instance.Me.Hand [droppedCards [Board.Instance.Me.order].index];
+				Card temp = Board.Instance.Me.Hand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
 				return Board.Instance.getCard (temp.seme, temp.number);
 			}
 			return null;
@@ -1068,23 +1070,24 @@ namespace Core
 		public void playCard (Move m)
 		{
 			int localIndex = (m.player.order - Board.Instance.Me.order + 5) % 5;
-			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + m.card.seme.ToString ());
+			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
+			cardSprite.Scale = 0.25f;
 			CardData cd;
 			switch (localIndex) {
 				case 1:
 					cardSprite.Position = new CCPoint (winSize.Width / 2, -100);
 					cardSprite.Rotation = 180;
 					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MidX, dropField.MinY), 180, -1);
-					droppedCards [m.player.order] = cd;
+					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 3 / 4, winSize.Height - dropField.MinY), 180, -1);
+					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 				break;
 				case 2:
 					cardSprite.Position = new CCPoint (-100, winSize.Height / 4);
 					cardSprite.Rotation = 270;
 					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MinX, dropField.MidY - 50), 270, -1);
-					droppedCards [m.player.order] = cd;
+					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 2 / 5, dropField.MidY - 100), 270, -1);
+					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 				break;
 
@@ -1092,16 +1095,16 @@ namespace Core
 					cardSprite.Position = new CCPoint (-100, winSize.Height * 3 / 4);
 					cardSprite.Rotation = 270;
 					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MinX, dropField.MidY + 50), 270, -1);
-					droppedCards [m.player.order] = cd;
+					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 2 / 5, dropField.MidY + 100), 270, -1);
+					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 				break;
 
 				case 4:
 					cardSprite.Position = new CCPoint (winSize.Width / 2, winSize.Height + 100);
 					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MidX, dropField.MaxY), 0, -1);
-					droppedCards [m.player.order] = cd;
+					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 3 / 4, winSize.Height - dropField.MaxY), 0, -1);
+					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 				break;
 			}
