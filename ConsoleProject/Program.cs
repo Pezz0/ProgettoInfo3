@@ -37,7 +37,10 @@ namespace ChiamataLibrary
 			Console.WriteLine ("premere per partire...");
 			Console.ReadLine ();
 
-			Board.Instance.run ();
+			Board.Instance.start ();
+
+			while (Board.Instance.Time < 41)
+				Board.Instance.update ();
 
 			Console.WriteLine ("premere per uscire...");
 			Console.ReadLine ();
@@ -73,7 +76,7 @@ namespace ChiamataLibrary
 			}
 		}
 
-		public static EnSemi semeChooser ()
+		public static EnSemi? semeChooser ()
 		{
 			Console.WriteLine ("******************************");
 

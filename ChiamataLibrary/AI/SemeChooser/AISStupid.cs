@@ -12,7 +12,7 @@ namespace ChiamataLibrary
 
 		}
 
-		public EnSemi chooseSeme ()
+		public EnSemi? chooseSeme ()
 		{
 			return EnSemi.ORI;
 		}

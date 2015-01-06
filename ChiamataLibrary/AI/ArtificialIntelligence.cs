@@ -33,7 +33,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns>The seme.</returns>
 		/// <param name="me">Me.</param>
-		EnSemi chooseSeme ();
+		EnSemi? chooseSeme ();
 
 		/// <summary>
 		/// Setup this instance.
@@ -114,7 +114,7 @@ namespace ChiamataLibrary
 		private void startAuction ()
 		{
 			_semeChooser.setup (me);
-			_seme = _semeChooser.chooseSeme ();
+			_seme = _semeChooser.chooseSeme ().Value;
 			_bidChooser.setup (me, _seme);
 		}
 
@@ -136,7 +136,7 @@ namespace ChiamataLibrary
 		/// Chooses the seme.
 		/// </summary>
 		/// <returns>The seme.</returns>
-		private EnSemi chooseSeme ()
+		private EnSemi? chooseSeme ()
 		{
 			return _semeChooser.chooseSeme ();
 		}

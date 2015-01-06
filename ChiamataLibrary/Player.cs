@@ -17,7 +17,7 @@ namespace ChiamataLibrary
 		public EnRole Role {
 			get { return _role; }
 			set {
-				if (!Board.Instance.isAuctionPhase)
+				if (!Board.Instance.isFinalizePhase)
 					throw new WrongPhaseException ("The role is assigned at the end of the auction", "Auction closed");
 
 				_role = value;
@@ -178,7 +178,7 @@ namespace ChiamataLibrary
 
 		public delegate IBid chooseBid ();
 
-		public delegate EnSemi chooseSeme ();
+		public delegate EnSemi? chooseSeme ();
 
 		public delegate Card chooseCard ();
 
@@ -202,12 +202,17 @@ namespace ChiamataLibrary
 			if (!Board.Instance.isAuctionPhase)
 				throw new WrongPhaseException ("A player can place a bid only during the auction phase", "Auction");
 				
-			return _placeABid ().changeBidder (this);
+			IBid bid = _placeABid ();
+
+			if (bid != null && bid < Board.Instance.currentAuctionWinningBid && bid is NotPassBid)
+				throw new BidNotEnoughException ("The new bid is not enough to beat the winning one", bid);
+
+			return bid.changeBidder (this);
 		}
 
-		public EnSemi invokeChooseSeme ()
+		public EnSemi? invokeChooseSeme ()
 		{
-			if (!Board.Instance.isAuctionPhase)
+			if (!( Board.Instance.isAuctionPhase || Board.Instance.isFinalizePhase ))
 				throw new WrongPhaseException ("A player can choose a seme only during the auction phase", "Auction");
 
 			if (Board.Instance.currentAuctionWinningBid.bidder != this)

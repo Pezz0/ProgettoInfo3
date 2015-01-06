@@ -71,7 +71,7 @@ namespace ChiamataLibrary
 			eventPlaytimeStart = null;
 			eventPlaytimeEnd = null;
 
-			_t = -2;
+			_t = -3;
 		}
 
 		#endregion
@@ -200,8 +200,9 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Variable that rappresent the current discrete time
-		/// 	-2 = creation time
-		/// 	-1 = auction time
+		/// 	-3 = creation time
+		/// 	-2 = auction time
+		/// 	-1 = finalize
 		/// 	 0 = first play
 		/// 	...
 		///  	 4 = last play of the first turn
@@ -210,25 +211,31 @@ namespace ChiamataLibrary
 		/// 	 39 = last play
 		/// 	 40 = point counting e conclusion
 		/// </summary>
-		private int _t = -2;
+		private int _t = -3;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
-		public bool isCreationPhase{ get { return _t == -2; } }
+		public bool isCreationPhase{ get { return _t == -3; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
 		/// </summary>
 		/// <value><c>true</c> ifis the time for the auction; otherwise, <c>false</c>.</value>
-		public bool isAuctionPhase{ get { return _t == -1; } }
+		public bool isAuctionPhase{ get { return _t == -2; } }
+
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is finalize phase.
+		/// </summary>
+		/// <value><c>true</c> if is finalize phase; otherwise, <c>false</c>.</value>
+		public bool isFinalizePhase{ get { return _t == -1; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is play time.
 		/// </summary>
 		/// <value><c>true</c> if is play time; otherwise, <c>false</c>.</value>
-		public bool isPlayTime{ get { return _t >= 0; } }
+		public bool isPlayTime{ get { return _t >= 0 && _t < 40; } }
 
 		/// <summary>
 		/// Gets the current turn.
@@ -532,7 +539,7 @@ namespace ChiamataLibrary
 		/// <value>The current auction winning bid.</value>
 		public NotPassBid currentAuctionWinningBid {
 			get {
-				if (!isAuctionPhase)
+				if (!( isAuctionPhase || isFinalizePhase ))
 					throw new WrongPhaseException ("This information isn't relevant outside the auction", "Open/closed auction");
 
 				return _currentWinningBid;
@@ -612,6 +619,8 @@ namespace ChiamataLibrary
 
 		#region Flux management
 
+		#region Event declaration
+
 		/// <summary>
 		/// Event handler place A bid.
 		/// </summary>
@@ -673,6 +682,154 @@ namespace ChiamataLibrary
 		/// </summary>
 		public event eventHandlerChangePhase eventPlaytimeEnd;
 
+		#endregion
+
+		#region Start
+
+		public void start ()
+		{
+			_t = -2;
+
+			if (eventAuctionStart != null)
+				eventAuctionStart ();
+				
+			_listBid = new List<IBid> ();
+			_activeAuctionPlayer = _lastWinner + 1;	//dealer+1
+			_currentWinningBid = null;
+		}
+
+		#endregion
+
+		#region Update
+
+		public void update ()
+		{
+			if (isAuctionPhase) {	//auction
+				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
+
+				if (bid != null) {
+					//place a bid
+					_listBid.Add (bid);
+
+					if (bid is NotPassBid)
+						_currentWinningBid = (NotPassBid) bid;
+
+					//event place a bid.
+					if (eventIPlaceABid != null && bid.bidder == Me)
+						eventIPlaceABid (bid);
+
+					if (eventSomeonePlaceABid != null && bid.bidder != Me)
+						eventSomeonePlaceABid (bid);
+
+					List<Player> pass = new List<Player> ();
+
+					_listBid.ForEach (delegate(IBid b) {
+						if (b is PassBid)
+							pass.Add (b.bidder);
+					});
+						
+					//find the next bidder
+					_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+
+					while (pass.Contains (_players [_activeAuctionPlayer]))
+						_activeAuctionPlayer = ( _activeAuctionPlayer + 1 ) % PLAYER_NUMBER;
+
+					//check if the auction is still open
+					if (pass.Count >= PLAYER_NUMBER - 1 && _listBid.Count >= PLAYER_NUMBER) {
+						_t = -1;
+						if (_currentWinningBid == null) {
+							_gameType = EnGameType.MONTE;
+							_t = 40;
+						} else if (_currentWinningBid is CarichiBid) {	//carichi
+							_gameType = EnGameType.CARICHI;
+
+							_currentWinningBid.bidder.Role = EnRole.CHIAMANTE;
+							_winningPoint = ( (CarichiBid) _currentWinningBid ).point;
+
+							_t = 0;
+
+							if (eventPlaytimeStart != null)
+								eventPlaytimeStart ();
+
+						} 
+					}
+				}
+
+
+			} else if (isFinalizePhase) {	//finalize
+				EnSemi? seme = _currentWinningBid.bidder.invokeChooseSeme ();
+
+				if (seme.HasValue) {
+
+					_gameType = EnGameType.STANDARD;
+
+					_calledCard = getCard (seme.Value, ( (NormalBid) _currentWinningBid ).number);
+
+					_winningPoint = ( (NormalBid) _currentWinningBid ).point;
+
+					//set the roles
+					_calledCard.initialPlayer.Role = EnRole.SOCIO;
+					currentAuctionWinningBid.bidder.Role = EnRole.CHIAMANTE;
+
+					_t = 0;
+
+					if (eventPlaytimeStart != null)
+						eventPlaytimeStart ();
+
+				}
+
+
+			} else if (isPlayTime) {	//playtime
+
+				Move move = ActivePlayer.invokeChooseCard ();
+
+				if (move != null) {
+					move.card.PlayingTime = _t;
+					_cardOnBoard.Add (move.card);
+
+					//Events play a card
+					if (eventIPlayACard != null && move.player == Me)
+						eventIPlayACard (move);
+
+					if (eventSomeonePlaceABid != null && move.player != Me)
+						eventSomeonePlayACard (move);
+
+					if (numberOfCardOnBoard == PLAYER_NUMBER) {
+						Card max = _cardOnBoard [0];
+						for (int i = 1; i < PLAYER_NUMBER; i++)
+							if (_cardOnBoard [i] > max)
+								max = _cardOnBoard [i];
+
+						_lastWinner = max.initialPlayer.order;
+
+						_cardOnBoard.ForEach (delegate(Card c) {
+							c.FinalPlayer = max.initialPlayer;
+						});
+
+						//event pick up
+						if (eventPickTheBoard != null)
+							eventPickTheBoard (_players [_lastWinner], _cardOnBoard);
+
+						_cardOnBoard = new List<Card> ();
+
+						_t++;
+					}
+				}
+
+			} else if (isGameFinish) {
+				if (eventPlaytimeEnd != null)
+					eventPlaytimeEnd ();
+
+				addToArchive ();
+				_t++;
+			}
+
+		}
+
+		#endregion
+
+
+
 		/// <summary>
 		/// Run the game.
 		/// </summary>
@@ -695,11 +852,7 @@ namespace ChiamataLibrary
 
 			if (eventPlaytimeEnd != null)
 				eventPlaytimeEnd ();
-
-			addToArchive ();
-			Archive.Instance.forEach (delegate(GameData gm) {
-				gm.writeOnXML ("C:\\Users\\Matteo\\prova.xml");
-			});
+				
 		}
 
 		/// <summary>
@@ -759,7 +912,7 @@ namespace ChiamataLibrary
 			} else if (_currentWinningBid is NormalBid) {	//standard
 				_gameType = EnGameType.STANDARD;
 
-				_calledCard = getCard (_currentWinningBid.bidder.invokeChooseSeme (), ( (NormalBid) _currentWinningBid ).number);
+				_calledCard = getCard (_currentWinningBid.bidder.invokeChooseSeme ().Value, ( (NormalBid) _currentWinningBid ).number);
 
 				_winningPoint = ( (NormalBid) _currentWinningBid ).point;
 

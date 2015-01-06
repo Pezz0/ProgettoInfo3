@@ -9,7 +9,7 @@ namespace ChiamataLibrary
 		{
 			private EnSemi _seme;
 
-			public EnSemi chooseSeme ()
+			public EnSemi? chooseSeme ()
 			{
 				return _seme;
 			}
