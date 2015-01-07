@@ -7,10 +7,6 @@ namespace Core
 {
 	public class GameScene : CCScene
 	{
-		//TODO: iscriversi ai bellissimi eventi di scandi
-		//TODO: fare arrivare le carte dal nulla
-		//TODO: indicatore di a chi tocca
-		//TODO: carte visibili sulla board
 		//TODO: controllare i readonly
 
 		//Core variables
@@ -19,7 +15,9 @@ namespace Core
 		//Sprites and position variables
 		private List<CardData> carte;
 		private List<CardData> droppedCards;
-		bool played;
+		private CCPoint [] offScreen;
+		private bool played;
+		private float wait;
 		private CCSize winSize;
 
 		//Light
@@ -28,6 +26,7 @@ namespace Core
 		//Names
 		private List<CCLabel> playerNames;
 		private List<CCLabel> playerBids;
+
 
 		#region Buttons
 
@@ -284,7 +283,7 @@ namespace Core
 				//5 - Swap cardData elements
 				if (cardField.ContainsPoint (pos) && inHand > 1) {
 					if (selected == 0) {
-						if (( winSize.Height - pos.Y ) > carte [1].posBase.Y + 8) {
+						if ((winSize.Height - pos.Y) > carte [1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [1].posBase;
 							carte [1].posBase = carte [0].posBase;
@@ -315,7 +314,7 @@ namespace Core
 							selected = 1;
 						}
 					} else if (selected == inHand - 1) {
-						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
+						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [inHand - 2].posBase;
 							carte [inHand - 2].posBase = carte [inHand - 1].posBase;
@@ -346,7 +345,7 @@ namespace Core
 							selected = inHand - 2;
 						}
 					} else {
-						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
+						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected - 1].posBase;
 							carte [selected - 1].posBase = carte [selected].posBase;
@@ -376,7 +375,7 @@ namespace Core
 							selected = selected - 1;
 						}
 
-						if (( winSize.Height - pos.Y ) > carte [selected + 1].posBase.Y + 8) {
+						if ((winSize.Height - pos.Y) > carte [selected + 1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected + 1].posBase;
 							carte [selected + 1].posBase = carte [selected].posBase;
@@ -497,7 +496,7 @@ namespace Core
 				//5 - Swap cardData elements
 				if (cardField.ContainsPoint (pos) && inHand > 1) {
 					if (selected == 0) {
-						if (( winSize.Height - pos.Y ) > carte [1].posBase.Y + 8) {
+						if ((winSize.Height - pos.Y) > carte [1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [1].posBase;
 							carte [1].posBase = carte [0].posBase;
@@ -528,7 +527,7 @@ namespace Core
 							selected = 1;
 						}
 					} else if (selected == inHand - 1) {
-						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
+						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [inHand - 2].posBase;
 							carte [inHand - 2].posBase = carte [inHand - 1].posBase;
@@ -559,7 +558,7 @@ namespace Core
 							selected = inHand - 2;
 						}
 					} else {
-						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
+						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected - 1].posBase;
 							carte [selected - 1].posBase = carte [selected].posBase;
@@ -589,7 +588,7 @@ namespace Core
 							selected = selected - 1;
 						}
 
-						if (( winSize.Height - pos.Y ) > carte [selected + 1].posBase.Y + 8) {
+						if ((winSize.Height - pos.Y) > carte [selected + 1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected + 1].posBase;
 							carte [selected + 1].posBase = carte [selected].posBase;
@@ -639,10 +638,27 @@ namespace Core
 			CCPoint pos = touches [0].LocationOnScreen;
 			if (selected >= 0) {
 				if (dropField.ContainsPoint (pos)) {
+
+					if (selected < inHand / 2 && selected > 0) {
+						for (int i = 0; i <= selected - 1; i++) {
+							carte [i].posBase = carte [i + 1].posBase;
+							carte [i].rotation = carte [i + 1].rotation;
+							carte [i].sprite.ZOrder++;
+							moveSprite (carte [i].posBase, carte [i].sprite, 0.3f, carte [i].rotation);
+						}
+					} else if (selected >= inHand / 2 && selected < inHand - 1) {
+						for (int i = inHand - 1; i >= selected + 1; i--) {
+							carte [i].posBase = carte [i - 1].posBase;
+							carte [i].rotation = carte [i - 1].rotation;
+							carte [i].sprite.ZOrder--;
+							moveSprite (carte [i].posBase, carte [i].sprite, 0.3f, carte [i].rotation);
+						}
+					}
 					carte [selected].posBase = new CCPoint (dropField.MaxX, winSize.Height - dropField.Center.Y);
 					moveSprite (new CCPoint (carte [selected].posBase.X, carte [selected].posBase.Y), carte [selected].sprite);
 					droppedCards.Add (carte [selected]);
 					played = true;
+
 					carte.RemoveAt (selected);
 					inHand--;
 
@@ -700,10 +716,18 @@ namespace Core
 			winSize = mainWindow.WindowSizeInPixels;
 
 			//Setting the area when cards can be dropped
-			dropField = new CCRect (0, (int) ( winSize.Height / 4 ), (int) ( winSize.Width / 2 ), (int) ( winSize.Height / 2 ));
+			dropField = new CCRect (0, (int) (winSize.Height / 4), (int) (winSize.Width / 2), (int) (winSize.Height / 2));
 
 			//Setting the area where the cards can be re-arranged
-			cardField = new CCRect ((int) ( winSize.Width * 3.5 / 5 ), (int) ( winSize.Height / 5 ), (int) ( winSize.Width * 1.5 / 5 ), (int) ( winSize.Height * 3 / 5 ));
+			cardField = new CCRect ((int) (winSize.Width * 3.5 / 5), (int) (winSize.Height / 5), (int) (winSize.Width * 1.5 / 5), (int) (winSize.Height * 3 / 5));
+
+			//Setting the "off-Screen" position for the cards
+			offScreen = new CCPoint[5];
+			offScreen [0] = new CCPoint (winSize.Width + 200, winSize.Height / 2);
+			offScreen [1] = new CCPoint (winSize.Width / 2, winSize.Height + 100);
+			offScreen [2] = new CCPoint (-100, winSize.Height / 4);
+			offScreen [3] = new CCPoint (-100, winSize.Height * 3 / 4);
+			offScreen [4] = new CCPoint (winSize.Width / 2, -100);
 
 			inHand = 8;
 			#endregion
@@ -711,8 +735,10 @@ namespace Core
 			#region Events subscriptions
 			Board.Instance.eventAuctionStart += auctionStarted;
 			Board.Instance.eventSomeonePlaceABid += bidPlaced;
+			Board.Instance.eventPlaytimeStart += startPlaytime;
 			Board.Instance.Me.setPlaytimeControl (iPlayCard);
 			Board.Instance.eventSomeonePlayACard += playCard;
+			Board.Instance.eventPickTheBoard += clearBoard;
 			#endregion
 
 			#region Light initialization
@@ -742,7 +768,7 @@ namespace Core
 			turnLights [2].BlendFunc = CCBlendFunc.Additive;
 			turnLights [2].Rotation = 90;
 			turnLights [2].Color = CCColor3B.Yellow;
-			turnLights [2].ScaleX = ( winSize.Height / 2 ) / turnLights [2].ContentSize.Width;
+			turnLights [2].ScaleX = (winSize.Height / 2) / turnLights [2].ContentSize.Width;
 			mainLayer.AddChild (turnLights [2]);
 			turnLights [2].ZOrder = 20;
 			turnLights [2].Visible = false;
@@ -752,7 +778,7 @@ namespace Core
 			turnLights [3].BlendFunc = CCBlendFunc.Additive;
 			turnLights [3].Rotation = 90;
 			turnLights [3].Color = CCColor3B.Blue;
-			turnLights [3].ScaleX = ( winSize.Height / 2 ) / turnLights [3].ContentSize.Width;
+			turnLights [3].ScaleX = (winSize.Height / 2) / turnLights [3].ContentSize.Width;
 			mainLayer.AddChild (turnLights [3]);
 			turnLights [3].ZOrder = 20;
 			turnLights [3].Visible = false;
@@ -828,12 +854,12 @@ namespace Core
 
 
 				if (i == 0) {
-					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), winSize.Height / 4);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * (i * i - 7 * i + 12), winSize.Height / 4);
 
 				} else {
-					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * (i * i - 7 * i + 12), carte [i - 1].posBase.Y + 50);
 				}
-				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
+				rotation = -90 - 4 * (i > 3 ? 4 - i - 1 : 4 - i);
 				carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand [i].number.ToString () + "_" + Board.Instance.Me.Hand [i].seme.ToString ()), posBase, rotation, i));
 
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
@@ -864,23 +890,26 @@ namespace Core
 
 			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
 
-			float scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
+			float scale = ((winSize.Height / 2) - orzSpace * 4) / (4 * textWidth);
 
 			//FIXME : controllare le posizioni dei bottoni nel caso si cambiassero le textures
 			for (int i = 4; i > -1; i--) {
-				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 4 ) * -1 )), winSize, -90, scale);
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + (textWidth * scale + orzSpace) * ((i - 4) * -1)), winSize, -90, scale);
 			}
 			for (int i = 9; i > 4; i--) {
-				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (2 * vertSpace + 2 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 9 ) * -1 )), winSize, -90, scale);
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (2 * vertSpace + 2 * 58 * scale, winSize.Height / 4 + (textWidth * scale + orzSpace) * ((i - 9) * -1)), winSize, -90, scale);
 			}
 
-			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - ( textWidth * scale ) / 2), winSize, -90, scale);
-			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + ( textWidth * scale ) / 2), winSize, -90, scale);
+			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - (textWidth * scale) / 2), winSize, -90, scale);
+			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + (textWidth * scale) / 2), winSize, -90, scale);
 
 			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120);
 
 
 			#endregion
+
+
+			wait = 0;
 
 			Schedule (RunGameLogic);
 
@@ -898,7 +927,14 @@ namespace Core
 		/// <param name="frameTimeInSeconds">Frame time in seconds</param>
 		void RunGameLogic (float frameTimeInSeconds)
 		{
-			Board.Instance.update ();
+			if (wait > 0) {
+				wait -= frameTimeInSeconds;
+			} else {
+				wait = 0;
+				Board.Instance.update ();
+			}
+					
+			
 		}
 
 
@@ -978,7 +1014,7 @@ namespace Core
 			initializedSeme = false;
 
 			Board.Instance.Me.setAuctionControl (bidController, semiController);
-			turnLight (( Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+			turnLight ((Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
 				for (int i = 0; i < 12; i++)
@@ -1001,8 +1037,8 @@ namespace Core
 					buttons [i].Enabled = true;
 			}
 
-			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
-			turnLight (( !Board.Instance.isAuctionPhase ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+			playerBids [(bid.bidder.order - Board.Instance.Me.order + 5) % 5].Text = bidToString (bid);
+			turnLight ((!Board.Instance.isAuctionPhase ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
 
 		}
 
@@ -1011,9 +1047,9 @@ namespace Core
 			if (bid is PassBid)
 				return "Passo";
 			else if (bid is CarichiBid)
-				return "Carichi al " + ( (CarichiBid) bid ).point.ToString ();
+				return "Carichi al " + ((CarichiBid) bid).point.ToString ();
 			else
-				return ( (NormalBid) bid ).number.ToString () + " al " + ( (NormalBid) bid ).point.ToString ();
+				return ((NormalBid) bid).number.ToString () + " al " + ((NormalBid) bid).point.ToString ();
 		}
 
 		#endregion
@@ -1026,9 +1062,6 @@ namespace Core
 			touch.eventTouchBegan -= touchBeganAsta;
 			touch.eventTouchMoved -= touchMovedAsta;
 			touch.eventTouchEnded -= touchEndedAsta;
-			touch.eventTouchBegan += touchBeganGame;
-			touch.eventTouchMoved += touchMovedGame;
-			touch.eventTouchEnded += touchEndedGame;
 			for (int i = 0; i < 12; i++) {
 				buttons [i].remove ();
 			}
@@ -1043,10 +1076,28 @@ namespace Core
 		{
 
 			auctionEnded ();
-			chooseOri = new Button (mainLayer, touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 150), winSize, -90, 0.3f);
-			chooseCoppe = new Button (mainLayer, touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 50), winSize, -90, 0.3f);
-			chooseBastoni = new Button (mainLayer, touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 50), winSize, -90, 0.3f);
-			chooseSpade = new Button (mainLayer, touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 150), winSize, -90, 0.3f);
+			chooseOri = new Button (mainLayer, touch, actOri, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "ORI", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 150), winSize, -90, 0.3f);
+			chooseCoppe = new Button (mainLayer, touch, actCoppe, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "COPE", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 50), winSize, -90, 0.3f);
+			chooseBastoni = new Button (mainLayer, touch, actBastoni, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "BASTONI", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 50), winSize, -90, 0.3f);
+			chooseSpade = new Button (mainLayer, touch, actSpade, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "SPADE", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 150), winSize, -90, 0.3f);
+		}
+
+		#endregion
+
+		#region Playtime started
+
+		public void startPlaytime ()
+		{
+			touch.eventTouchBegan += touchBeganGame;
+			touch.eventTouchMoved += touchMovedGame;
+			touch.eventTouchEnded += touchEndedGame;
+
+			for (int i = 1; i < 5; i++) {
+				if (i == Board.Instance.getChiamante ().order)
+					playerBids [i].SetString (playerBids [i].Text + " di " + Board.Instance.Briscola.ToString (), true);
+				else
+					playerBids [i].SetString ("", true);
+			}
 		}
 
 		#endregion
@@ -1057,7 +1108,9 @@ namespace Core
 		{
 			if (played) {
 				played = false;
-				Card temp = Board.Instance.Me.Hand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
+				Card temp = Board.Instance.Me.InitialHand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
+				if (Board.Instance.numberOfCardOnBoard != 4)
+					turnLight (1);
 				return Board.Instance.getCard (temp.seme, temp.number);
 			}
 			return null;
@@ -1069,45 +1122,76 @@ namespace Core
 
 		public void playCard (Move m)
 		{
-			int localIndex = ( m.player.order - Board.Instance.Me.order + 5 ) % 5;
+			int localIndex = m.player.order;
 			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
 			cardSprite.Scale = 0.25f;
 			CardData cd;
 			switch (localIndex) {
 				case 1:
-					cardSprite.Position = new CCPoint (winSize.Width / 2, -100);
+					cardSprite.Position = offScreen [1];
 					cardSprite.Rotation = 180;
 					mainLayer.AddChild (cardSprite);
 					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 3 / 4, winSize.Height - dropField.MinY), 180, -1);
 					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
+					wait = 0.5f;
 				break;
 				case 2:
-					cardSprite.Position = new CCPoint (-100, winSize.Height / 4);
-					cardSprite.Rotation = 270;
-					mainLayer.AddChild (cardSprite);
-					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 2 / 5, dropField.MidY - 100), 270, -1);
-					droppedCards.Add (cd);
-					moveSprite (cd.posBase, cardSprite);
-				break;
-
-				case 3:
-					cardSprite.Position = new CCPoint (-100, winSize.Height * 3 / 4);
+					cardSprite.Position = offScreen [2];
 					cardSprite.Rotation = 270;
 					mainLayer.AddChild (cardSprite);
 					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 2 / 5, dropField.MidY + 100), 270, -1);
 					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
+					wait = 0.5f;
+				break;
+
+				case 3:
+					cardSprite.Position = offScreen [3];
+					cardSprite.Rotation = 270;
+					mainLayer.AddChild (cardSprite);
+					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 2 / 5, dropField.MidY - 100), 270, -1);
+					droppedCards.Add (cd);
+					moveSprite (cd.posBase, cardSprite);
+					wait = 0.5f;
 				break;
 
 				case 4:
-					cardSprite.Position = new CCPoint (winSize.Width / 2, winSize.Height + 100);
+					cardSprite.Position = offScreen [4];
 					mainLayer.AddChild (cardSprite);
 					cd = new CardData (cardSprite, new CCPoint (dropField.MaxX * 3 / 4, winSize.Height - dropField.MaxY), 0, -1);
 					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
+					wait = 0.5f;
 				break;
 			}
+
+			if (Board.Instance.numberOfCardOnBoard == 5) {
+				wait += 2;
+			} else
+				turnLight ((localIndex + 1) % 5);
+				
+				
+				
+
+
+
+
+		}
+
+		#endregion
+
+		#region Fine giro
+
+		public void clearBoard (Player player, List<Card> board)
+		{
+			for (int i = 4; i > -1; i--) {
+				CCMoveTo move = new CCMoveTo (0.5f, offScreen [player.order]);
+				CCRemoveSelf delete = new CCRemoveSelf ();
+				droppedCards [i].sprite.RunActions (move, delete);
+				droppedCards.RemoveAt (i);
+			}
+			turnLight (player.order);
 
 
 		}

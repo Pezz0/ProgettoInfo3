@@ -15,19 +15,24 @@ namespace Core
 
 		private float scale;
 		private int _min;
-		public int min{set{
-				if (_currentValue==_min){
+
+		public int min {
+			set {
+				if (_currentValue == _min) {
 					_currentValue = value;
 					_min = value;
-					//TODO : cambiare la label della slider per far apparire il numero giusto
+
 				}
-			}}
+			}
+		}
+
 		private int _max;
 		private int _currentValue;
-		public int currentValue{get{return _currentValue;}}
+
+		public int currentValue{ get { return _currentValue; } }
 
 
-		public Slider (CCLayer mainLayer,TouchList tl, string textureBar,string texturePoint, CCPoint position ,CCSize winSize ,int min,int max, float rot=-90,float scale=0.8f)
+		public Slider (CCLayer mainLayer, TouchList tl, string textureBar, string texturePoint, CCPoint position, CCSize winSize, int min, int max, float rot = -90, float scale = 0.8f)
 		{
 			//Defining the sprite
 			spriteBar = new CCSprite (textureBar);
@@ -39,7 +44,7 @@ namespace Core
 
 			spritePoint = new CCSprite (texturePoint);
 			spriteBar.AddChild (spritePoint);
-			spritePoint.Position = new CCPoint(0,spriteBar.ContentSize.Height/2);
+			spritePoint.Position = new CCPoint (0, spriteBar.ContentSize.Height / 2);
 			spritePoint.Scale = scale;
 
 			_min = min;
@@ -65,23 +70,26 @@ namespace Core
 			touch.eventTouchMoved += touchMoved;
 		}
 
-		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent){
-			if(spriteBar.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))){
-				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y-spriteBar.PositionY)/scale;
-				_currentValue =_min+ (int) Math.Round((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
-				lblValue.Text = _currentValue.ToString ();
-			}
-		}
-
-		private void touchMoved(List<CCTouch> touches, CCEvent touchEvent){
+		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
+		{
 			if (spriteBar.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
-				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y-spriteBar.PositionY)/scale;
-				_currentValue =_min+(int)Math.Round((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
+				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY) / scale;
+				_currentValue = _min + (int) Math.Round ((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
 				lblValue.Text = _currentValue.ToString ();
 			}
 		}
 
-		public void remove(){
+		private void touchMoved (List<CCTouch> touches, CCEvent touchEvent)
+		{
+			if (spriteBar.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
+				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY) / scale;
+				_currentValue = _min + (int) Math.Round ((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
+				lblValue.Text = _currentValue.ToString ();
+			}
+		}
+
+		public void remove ()
+		{
 			touch.eventTouchBegan -= touchBegan;
 			touch.eventTouchEnded -= touchMoved;
 			mainLayer.RemoveChild (spriteBar);
