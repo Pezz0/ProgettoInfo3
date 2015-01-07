@@ -7,43 +7,52 @@ namespace ChiamataLibrary
 	{
 		public static void Main (string [] args)
 		{
-			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);	//il mazziere è C
+			string a = Console.ReadLine ();
 
-			Board.Instance.AllPlayers.ForEach (delegate(Player p) {
-				Console.WriteLine (p.ToString () + " possiede:");
-				Board.Instance.getPlayerHand (p).ForEach (delegate(Card c) {
-					Console.WriteLine (c.ToString ());
+			if (a == "x") {
+				GameData gm = new GameData ("C:\\Users\\Matteo\\Documents\\prova.xml");
+			} else {
+				Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);	//il mazziere è C
+
+				Board.Instance.AllPlayers.ForEach (delegate(Player p) {
+					Console.WriteLine (p.ToString () + " possiede:");
+					Board.Instance.getPlayerHand (p).ForEach (delegate(Card c) {
+						Console.WriteLine (c.ToString ());
+					});
 				});
-			});
 
-			//setto me
-			Board.Instance.Me.setAuctionControl (bidChooser, semeChooser);
-			Board.Instance.Me.setPlaytimeControl (cardChooser);
+				//setto me
+				Board.Instance.Me.setAuctionControl (bidChooser, semeChooser);
+				Board.Instance.Me.setPlaytimeControl (cardChooser);
 
-			//setto le IA
-			ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ());
-			ArtificialIntelligence AI2 = new ArtificialIntelligence (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ());
-			ArtificialIntelligence AI3 = new ArtificialIntelligence (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ());
-			ArtificialIntelligence AI4 = new ArtificialIntelligence (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ());
+				//setto le IA
+				ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
+				ArtificialIntelligence AI2 = new ArtificialIntelligence (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
+				ArtificialIntelligence AI3 = new ArtificialIntelligence (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
+				ArtificialIntelligence AI4 = new ArtificialIntelligence (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
 
-			//setto gli eventi
-			Board.Instance.eventSomeonePlaceABid += someonePlaceABid;
-			Board.Instance.eventSomeonePlayACard += someonePlayACard;
-			Board.Instance.eventPickTheBoard += someonePickUp;
-			Board.Instance.eventAuctionStart += auctionStarting;
-			Board.Instance.eventPlaytimeStart += gameStarting;
-			Board.Instance.eventPlaytimeEnd += gameFinish;
+				//setto gli eventi
+				Board.Instance.eventSomeonePlaceABid += someonePlaceABid;
+				Board.Instance.eventSomeonePlayACard += someonePlayACard;
+				Board.Instance.eventPickTheBoard += someonePickUp;
+				Board.Instance.eventAuctionStart += auctionStarting;
+				Board.Instance.eventPlaytimeStart += gameStarting;
+				Board.Instance.eventPlaytimeEnd += gameFinish;
 
-			Console.WriteLine ("premere per partire...");
-			Console.ReadLine ();
+				Console.WriteLine ("premere per partire...");
+				Console.ReadLine ();
 
-			Board.Instance.start ();
+				Board.Instance.start ();
 
-			while (Board.Instance.Time < 41)
-				Board.Instance.update ();
+				while (Board.Instance.Time < 41)
+					Board.Instance.update ();
 
-			Console.WriteLine ("premere per uscire...");
-			Console.ReadLine ();
+				Archive.Instance.forEach (delegate(GameData gd) {
+					gd.writeOnXML ("C:\\Users\\Matteo\\Documents\\prova.xml");
+				});
+
+			}
+
 		}
 
 

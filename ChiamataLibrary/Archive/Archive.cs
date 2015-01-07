@@ -70,11 +70,9 @@ namespace ChiamataLibrary
 
 		#endregion
 
-
-
-		public void AddFromXML ()
+		public void AddFromXML (string path)
 		{
-
+			_listGames.Add (new GameData (path));
 		}
 
 
