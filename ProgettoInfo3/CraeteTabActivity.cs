@@ -19,32 +19,24 @@ namespace ProgettoInfo3
 	[Activity (Label = "CraeteTabActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class CraeteTabActivity : Activity
 	{
-		static Spinner spinner1;
-		static Spinner spinner2;
-		static Spinner spinner3;
-		static Spinner spinner4;
+		private static Spinner spinner1, spinner2, spinner3, spinner4;
 
-		static EditText pl0;
-		static EditText pl1;
-		static EditText pl2;
-		static EditText pl3;
-		static EditText pl4;
+		private static EditText pl0, pl1, pl2, pl3, pl4;
 
+		private static TextView add1, add2, add3, add4;
 
-		static TextView add1;
-		static TextView add2;
-		static TextView add3;
-		static TextView add4;
-
-		Button start;
-		Button back;
+		private Button start, back;
 
 		static int counter;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+
 			SetContentView (Resource.Layout.CreateTable);
+		
+			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+
 			spinner1 = FindViewById<Spinner> (Resource.Id.spinner1);
 			spinner1.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_Itemselected);
 			var adapter = ArrayAdapter.CreateFromResource (this, Resource.Array.Type, Android.Resource.Layout.SimpleSpinnerItem);
@@ -94,6 +86,7 @@ namespace ProgettoInfo3
 			counter = 4;
 
 			BTPlayService.Instance.setHandler (new MyHandler (this));
+			BTPlayService.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
 
@@ -128,7 +121,7 @@ namespace ProgettoInfo3
 						pl3.Text = Resources.GetText (Resource.String.Default3);
 						pl3.InputType = Android.Text.InputTypes.TextVariationNormal;
 
-					} else {
+					} else if (sender.ToString () == spinner4.ToString () && add4.Text != Resources.GetText (Resource.String.none_add)) {
 						BTPlayService.Instance.RemoveSlave (add4.Text);
 						add4.Text = Resources.GetText (Resource.String.none_add);
 						pl4.Text = Resources.GetText (Resource.String.Default4);

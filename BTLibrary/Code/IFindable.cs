@@ -8,17 +8,26 @@ namespace BTLibrary
 	public interface IFindable
 	{
 
-		bool isDiscovering ();
-
-		void CancelDiscovery ();
-
-		List<string> GetPaired ();
-
+		/// <summary>
+		/// Performs discovery of new device
+		/// </summary>
 		void Discovery ();
 
-		void enableBluetooth ();
+		/// <summary>
+		/// Cancel the discovery activity
+		/// </summary>
+		void CancelDiscovery ();
 
-		void makeVisible (int amount);
+		/// <summary>
+		/// Unregisters the receiever.
+		/// </summary>
+		void UnregisterReceiever ();
+
+		/// <summary>
+		/// Registers the receiver
+		/// </summary>
+		void RegisterReceiver ();
+
 	}
 }
 

@@ -4,18 +4,21 @@
     p1:minHeight="25px"
     p1:layout_width="match_parent"
     p1:layout_height="match_parent"
+    p1:background="@color/green"
     p1:id="@+id/relativeLayout1">
-     <ListView
-        p1:minWidth="25px"
-        p1:minHeight="25px"
-        p1:layout_width="200dp"
-        p1:layout_height="match_parent"
-        p1:id="@+id/paired"
-        p1:layout_alignParentTop="true"/>
     <ListView
         p1:minWidth="25px"
         p1:minHeight="25px"
         p1:layout_width="200dp"
+        p1:layout_height="match_parent"
+        style="@style/create_txt"
+        p1:id="@+id/paired"
+        p1:layout_alignParentTop="true" />
+    <ListView
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="200dp"
+        style="@style/create_txt"
         p1:layout_height="match_parent"
         p1:layout_toRightOf="@id/paired"
         p1:id="@+id/newdev"
@@ -28,10 +31,13 @@
         p1:layout_alignRight="@id/newdev"
         p1:layout_alignBottom="@id/relativeLayout1"
         p1:layout_alignParentBottom="true"
+        p1:background="@drawable/red_button"
+        style="@style/create_btn"
         p1:layout_alignLeft="@id/newdev" />
     <EditText
         p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
+        style="@style/create_txt"
         p1:layout_toRightOf="@id/newdev"
         p1:id="@+id/MyName" />
     <Button
@@ -40,6 +46,19 @@
         p1:layout_height="wrap_content"
         p1:layout_below="@id/MyName"
         p1:id="@+id/Sendname"
+        p1:background="@drawable/red_button"
+        style="@style/create_btn"
         p1:layout_alignParentRight="true"
         p1:layout_alignLeft="@id/MyName" />
+    <Button
+        p1:text="Back"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/Sendname"
+        p1:background="@drawable/red_button"
+        style="@style/create_btn"
+        p1:id="@+id/back"
+        p1:layout_alignLeft="@id/Sendname"
+        p1:layout_alignRight="@id/Sendname"
+        p1:layout_alignParentTop="false" />
 </RelativeLayout>

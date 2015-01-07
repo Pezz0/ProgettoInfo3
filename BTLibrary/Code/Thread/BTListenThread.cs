@@ -1,12 +1,11 @@
-﻿using System;
-using Java.Lang;
+﻿using Java.Lang;
 using Android.Bluetooth;
 using Java.Util;
 
 
 namespace BTLibrary
 {
-	public class BTListenThread:Thread
+	internal class BTListenThread:Thread
 	{
 		/// <summary>
 		/// The BluetoothServerSocket.
@@ -25,10 +24,8 @@ namespace BTLibrary
 
 			try {
 				tmp = _PlayService.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
-			} catch (Java.IO.IOException e) {
-				//listen failed
+			} catch (Exception e) {
 				e.ToString ();
-
 			}
 
 			_serverSocket = tmp;
@@ -43,14 +40,12 @@ namespace BTLibrary
 
 			BluetoothSocket socket = null;
 
-			//while (_PlayService.GetState () != ConnectionState.STATE_CONNECTED_MASTER) {
 			try {
 				// This is a blocking call and will only return on a
 				// successful connection or an exception
 				socket = _serverSocket.Accept ();
-			} catch (Java.IO.IOException e) {
+			} catch (Exception e) {
 				e.ToString ();
-				//accept failed
 			}
 
 			// If a connection was accepted
@@ -61,16 +56,14 @@ namespace BTLibrary
 					else {
 						try {
 							socket.Close ();
-						} catch (Java.IO.IOException e) {
-							e.ToString ();
+						} catch (Exception e) {
 							//unable to colse unwanted socket
+							e.ToString ();
 						}
 					}
-				}//end lock
-			}//end if
-			//}//end while
+				}
+			}
 		}
-		//end run
 
 		/// <summary>
 		/// try to close the server socket  .
@@ -79,9 +72,8 @@ namespace BTLibrary
 		{
 			try {
 				_serverSocket.Close ();
-			} catch (Java.IO.IOException e) {
+			} catch (Exception e) {
 				e.ToString ();
-				//close of server failed
 			}
 		}
 	}

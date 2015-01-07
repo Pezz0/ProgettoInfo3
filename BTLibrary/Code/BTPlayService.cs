@@ -21,25 +21,69 @@ namespace BTLibrary
 		//TODO: interfaccia menu
 		//TODO: controllare i readonly
 
+		#region fields
+
+		/// <summary>
+		/// The activity to register the receiver and display messages.
+		/// </summary>
 		private Activity _activity;
+
+		/// <summary>
+		/// The handler to send messages.
+		/// </summary>
 		private Handler _handler;
 
-		//Fields for finding devices
-		private BluetoothAdapter _btAdapter;
+		/// <summary>
+		/// The local BlueTooth adapter.
+		/// </summary>
+		private static readonly BluetoothAdapter _btAdapter = BluetoothAdapter.DefaultAdapter;
+
+		/// <summary>
+		/// The list of paired device addresses.
+		/// </summary>
 		private List<string> _pairedDevicesList;
+
+		/// <summary>
+		/// The receiver to register intents.
+		/// </summary>
 		private BTReceiver _receiver;
 
-		//Fields to perform connection
+		/// <summary>
+		/// The listen thread for accepting incoming connection.
+		/// </summary>
 		private BTListenThread listenThread;
-		internal BTConnectThread connectThread;
-		private BTConnectedThread connectedSlaveThread;
-		private List<BTConnectedThread> connectedMasterThread;
-		//private int counter = 0;
 
-		internal static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+		/// <summary>
+		/// The connect thread to connect to a device.
+		/// </summary>
+		internal BTConnectThread connectThread;
+
+		/// <summary>
+		/// The connected slave thread to perform communication with a master.
+		/// </summary>
+		private BTConnectedThread connectedSlaveThread;
+
+		/// <summary>
+		/// The list of connected master thread to perform communication with mutiple connected slave.
+		/// </summary>
+		private List<BTConnectedThread> connectedMasterThread;
+
+		/// <summary>
+		/// The UUID to perform connection.
+		/// </summary>
+		internal static readonly UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+
+		/// <summary>
+		/// The name to perform connection.
+		/// </summary>
 		public const string NAME = "PlayService";
 
+		/// <summary>
+		/// The state of device.
+		/// </summary>
 		private ConnectionState _state;
+
+		#endregion
 
 		#region singleton implementation
 
@@ -57,41 +101,28 @@ namespace BTLibrary
 
 		#endregion
 
-		public void Initialize (Activity activity, Handler handler)//, int maxplayer)
-		{
-			// Initialize the list of device that are already paired  
-			_pairedDevicesList = new List<string> ();
-
-			//handler to communicate the new discovered devices
-			_handler = handler;
-
-			//max number of player in the network
-			//_MAXPLAYER = maxplayer;
-
-			//activity to register the receiver
-			_activity = activity;
-
-			// Get the local Bluetooth adapter
-			_btAdapter = BluetoothAdapter.DefaultAdapter;
-
-			//sets the state to STATE_NONE
-			_state = ConnectionState.STATE_NONE;
-
-			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new List<BTConnectedThread> ();
-		}
+		#region BlueToothAdapter Management
 
 		/// <summary>
-		/// Indicate if the bluetooth exists one this device .
+		/// Indicate if the bluetooth exists.
 		/// </summary>
-		/// <returns><c>true</c>, if bluetooth existe, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if bluetooth exists, <c>false</c> otherwise.</returns>
 		public bool existBluetooth ()
 		{
 			return _btAdapter != null;
 		}
 
 		/// <summary>
-		/// Indicate if device is discovering for new device.
+		/// Gets the local BlueTooth adapter.
+		/// </summary>
+		/// <returns>The BT adapter.</returns>
+		public BluetoothAdapter getBTAdapter ()
+		{
+			return _btAdapter;
+		}
+
+		/// <summary>
+		/// Indicate if BTadapter is discovering new devices
 		/// </summary>
 		/// <returns><c>true</c>, if is discovering, <c>false</c> otherwise.</returns>
 		public bool isDiscovering ()
@@ -100,21 +131,59 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Abort unwanted discovery.
+		/// Indicate if BT is enable.
 		/// </summary>
-		public void CancelDiscovery ()
+		/// <returns><c>true</c>, if BT is enable <c>false</c> otherwise.</returns>
+		public bool isBTEnabled ()
 		{
-			_btAdapter.CancelDiscovery ();
+			return _btAdapter.IsEnabled;
 		}
 
 		/// <summary>
-		/// Unregisters the reciever.
+		/// Gets the local BlueTooth name.
+		/// </summary>
+		/// <returns>The local BlueTooth name.</returns>
+		public string GetLocalName ()
+		{
+			return _btAdapter.Name;
+		}
+
+		/// <summary>
+		/// Gets the local BlueTooth address.
+		/// </summary>
+		/// <returns>The local BlueTooth address.</returns>
+		public string GetLocalAddress ()
+		{
+			return _btAdapter.Address;
+		}
+
+		/// <summary>
+		/// Gets the remote device.
+		/// </summary>
+		/// <returns>The remote device.</returns>
+		/// <param name="address">Remote device address.</param>
+		public BluetoothDevice getRemoteDevice (string address)
+		{
+			if (address == null)
+				return null;
+			return _btAdapter.GetRemoteDevice (address);
+		}
+
+		#endregion
+
+		#region Receiver Management
+
+		/// <summary>
+		/// Unregisters the receiever.
 		/// </summary>
 		public void UnregisterReceiever ()
 		{
 			_activity.ApplicationContext.UnregisterReceiver (_receiver);
 		}
 
+		/// <summary>
+		/// Registers the receiver for when a device is discovered and when discovery is finished.
+		/// </summary>
 		public void RegisterReceiver ()
 		{
 			// Register for broadcasts when a device is discovered
@@ -127,60 +196,9 @@ namespace BTLibrary
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 		}
 
-		/// <summary>
-		/// Indicate if the Bluetooth is enabled.
-		/// </summary>
-		/// <returns><c>true</c>, if Bluetooth is enabled, <c>false</c> otherwise.</returns>
-		public bool isBTEnabled ()
-		{
-			return _btAdapter.IsEnabled;
-		}
+		#endregion
 
-		/// <summary>
-		/// Gets the remote device which as the address specified in the parameter .
-		/// </summary>
-		/// <returns>The remote device.</returns>
-		/// <param name="address">Address of the device.</param>
-		public BluetoothDevice getRemoteDevice (string address)
-		{
-			if (address == null)
-				return null;
-			return _btAdapter.GetRemoteDevice (address);
-		}
-
-		/// <summary>
-		/// Gets the paired device.
-		/// </summary>
-		/// <returns>A list of address of paired device.</returns>
-		public List<string> GetPaired ()
-		{
-			// Get a set of currently paired devices
-			var pairedDevices = _btAdapter.BondedDevices;
-			_pairedDevicesList.Clear ();
-			// If there are paired devices, add each address to the List
-			if (pairedDevices.Count > 0)
-				foreach (var device in pairedDevices) {
-					_pairedDevicesList.Add (( (BluetoothDevice) device ).Address);
-				}
-			else
-				_pairedDevicesList.Add ("No Device Paired");
-
-			return _pairedDevicesList;
-		}
-
-		/// <summary>
-		/// Perfroms the discovery for new devices
-		/// </summary>
-		public void Discovery ()
-		{
-			// If we're already discovering, stop it
-			if (_btAdapter.IsDiscovering) {
-				CancelDiscovery ();
-			}
-			// Request discover from BluetoothAdapter
-			_btAdapter.StartDiscovery ();
-
-		}
+		#region BlueTooth visibility and enable
 
 		/// <summary>
 		/// Makes the Bluetooth visible.
@@ -211,19 +229,55 @@ namespace BTLibrary
 			_activity.StartActivityForResult (enableIntent, (int) ActivityResultCode.REQUEST_ENABLE_BT);
 		}
 
+		#endregion
+
+		#region scanning and pairing
+
 		/// <summary>
-		/// Indicate if is Slave in the network.
+		/// Gets a list of paired device addresses.
 		/// </summary>
-		/// <returns><c>true</c>, if is client <c>false</c> otherwise.</returns>
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public bool isSlave ()
+		/// <returns>The paired device addresses.</returns>
+		public List<string> GetPaired ()
 		{
-			//if state is Connected_Client the caller is a client
-			if (_state == ConnectionState.STATE_CONNECTED_SLAVE)
-				return true;
+			// Get a set of currently paired devices
+			var pairedDevices = _btAdapter.BondedDevices;
+			_pairedDevicesList.Clear ();
+			// If there are paired devices, add each address to the List
+			if (pairedDevices.Count > 0)
+				foreach (var device in pairedDevices) {
+					_pairedDevicesList.Add (( (BluetoothDevice) device ).Address);
+				}
 			else
-				return false;
+				_pairedDevicesList.Add ("No Device Paired");
+
+			return _pairedDevicesList;
 		}
+
+		/// <summary>
+		/// Performs discovery of new device
+		/// </summary>
+		public void Discovery ()
+		{
+			// If we're already discovering, stop it
+			if (_btAdapter.IsDiscovering) {
+				CancelDiscovery ();
+			}
+			// Request discover from BluetoothAdapter
+			_btAdapter.StartDiscovery ();
+
+		}
+
+		/// <summary>
+		/// Cancel the discovery activity
+		/// </summary>
+		public void CancelDiscovery ()
+		{
+			_btAdapter.CancelDiscovery ();
+		}
+
+		#endregion
+
+		#region Connection Management
 
 		/// <summary>
 		/// Sets the state.
@@ -238,12 +292,6 @@ namespace BTLibrary
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
 		}
 
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void setHandler (Handler handler)
-		{
-			_handler = handler;
-		}
-
 		/// <summary>
 		/// Gets the state.
 		/// </summary>
@@ -254,24 +302,13 @@ namespace BTLibrary
 			return _state;
 		}
 
-
-		public string GetLocalName ()
-		{
-			return _btAdapter.Name;
-		}
-
-		public string GetLocalAddress ()
-		{
-			return _btAdapter.Address;
-		}
-
 		/// <summary>
-		/// Connects as master in the network.
+		/// Performs connection as master
 		/// </summary>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void ConnectAsMaster ()
 		{	
-			//stops all existing thread
+			//stops all existing listening thread
 			StopListen ();
 
 			// Start the thread to listen on a BluetoothServerSocket
@@ -283,9 +320,9 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Connects as client to the server specified in the parameter.
+		/// Performs connection as slave
 		/// </summary>
-		/// <param name="device">Master to connect.</param>
+		/// <param name="device">Device to connect.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void ConnectAsSlave (BluetoothDevice device)
 		{	
@@ -297,10 +334,11 @@ namespace BTLibrary
 
 					return;
 				}
-
 			}
+
 			//stops all existing thread
 			Stop ();
+
 			// Start the thread to connect with the given device
 			connectThread = new BTConnectThread (device, this, MY_UUID);
 			connectThread.Start ();
@@ -327,9 +365,22 @@ namespace BTLibrary
 			// Send the name of the connected device back to the Activity
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
-
 			//sets the state to CONNECTED_SLAVE
 			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
+		}
+
+		/// <summary>
+		/// Indicate if is Slave in the network.
+		/// </summary>
+		/// <returns><c>true</c>, if is client <c>false</c> otherwise.</returns>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public bool isSlave ()
+		{
+			//if state is Connected_Client the caller is a client
+			if (_state == ConnectionState.STATE_CONNECTED_SLAVE)
+				return true;
+			else
+				return false;
 		}
 
 		/// <summary>
@@ -340,40 +391,19 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
-			// Cancel the thread that completed the connection
-			if (connectThread != null) {
-				connectThread.Cancel ();
-				connectThread = null;
-			}
-				
-			// Cancel the listen thread because we only want to connect to _MAXPLAYER device
-			/*if (listenThread != null && counter >= _MAXPLAYER - 1) {
-				listenThread.Cancel ();
-				listenThread = null;
-			}*/
-
-			// Start the thread to manage the connection and perform transmissions
-			//if (counter < _MAXPLAYER) {
 			connectedMasterThread.Add (new BTConnectedThread (socket, this));
 			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
-
 
 			//sends a message to the activity indicates the connection to a device
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
 			SetState (ConnectionState.STATE_CONNECTED_MASTER);
-
-
-			//if there are _MAXPLAYER connections sets the stete to CONNECTED_MASTER, otherwise rest in LISTEN
-			/*if (counter == _MAXPLAYER)
-					SetState (ConnectionState.STATE_CONNECTED_MASTER);
-				else
-					SetState (ConnectionState.STATE_LISTEN);*/
-			//} else {
-			//ConnectionFailed ();
-			//}
 		}
 
+		/// <summary>
+		/// Gets the number of devices connected.
+		/// </summary>
+		/// <returns>The number of devices connected.</returns>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public int getNumConnected ()
 		{
@@ -403,28 +433,33 @@ namespace BTLibrary
 			connectedMasterThread.Clear ();
 
 			if (listenThread != null) {
-				BTListenThread tmp = listenThread;
-				tmp.Cancel ();
-				tmp = null;
+				listenThread.Cancel ();
+				listenThread = null;
 				listenThread = null;
 			}
-		}
 
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void StopListen ()
-		{
-
-			if (listenThread != null) {
-				BTListenThread tmp = listenThread;
-				tmp.Cancel ();
-				tmp = null;
-				listenThread = null;
-			}
-			/*if (counter > 0)
-				SetState (ConnectionState.STATE_CONNECTED_MASTER);*/
 			SetState (ConnectionState.STATE_NONE);
 		}
 
+		/// <summary>
+		/// Stops the listen Thread.
+		/// </summary>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void StopListen ()
+		{
+			if (listenThread != null) {
+				listenThread.Cancel ();
+				listenThread = null;
+				listenThread = null;
+			}
+
+			SetState (ConnectionState.STATE_NONE);
+		}
+
+		/// <summary>
+		/// Removes a slave .
+		/// </summary>
+		/// <param name="address">Address of the slave to remove.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveSlave (string address)
 		{
@@ -436,6 +471,40 @@ namespace BTLibrary
 				}
 			}
 		}
+
+		/// <summary>
+		/// Indicate that the connection attempt failed and notify the Activity.
+		/// </summary>
+		internal void ConnectionFailed (string Message)
+		{	
+			// Send a failure message back to the Activity
+			_handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device: " + Message).SendToTarget ();
+			//stops all existing thread
+			Stop ();
+			//return to initial state
+			SetState (ConnectionState.STATE_NONE);
+		}
+
+		/// <summary>
+		/// Indicate that the connection was lost and notify the UI Activity.
+		/// </summary>
+		internal void ConnectionLost (string Message)
+		{	
+			// Send a failure message back to the Activity
+			_handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: " + Message).SendToTarget ();
+
+			//if device was a slave return to initial state
+			//if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
+			Stop ();
+			SetState (ConnectionState.STATE_NONE);
+			//}
+
+			//TODO CAZZO FACCIO SE IL MASTER PERDE LA COMUNICAZIONE CON UNO SLAVE??????
+		}
+
+		#endregion
+
+		#region Communication Management
 
 		/// <summary>
 		/// Write to the Master in an unsynchronized manner
@@ -462,9 +531,14 @@ namespace BTLibrary
 
 		}
 
+		/// <summary>
+		/// Write to the Master in an unsynchronized manner
+		/// </summary>
+		/// <param name='out'>
+		/// The String to write.
+		/// </param>
 		public void WriteToMaster (byte [] bts)
 		{
-		
 			// Create temporary ConnectedThread
 			BTConnectedThread tmp;
 			// Synchronize a copy of the ConnectedThread
@@ -510,6 +584,7 @@ namespace BTLibrary
 		/// Writes to all slave except the one specified in the address.
 		/// </summary>
 		/// <param name="address">Address.</param>
+		/// <param name="bts"> the parameter to send.</param>
 		public void WriteToAllSlaveExceptOne<T> (IBTSendable<T> bts, string address)
 		{
 			byte [] msg = bts.toByteArray ();
@@ -524,6 +599,11 @@ namespace BTLibrary
 			}
 		}
 
+		/// <summary>
+		/// Writes to all slave.
+		/// </summary>
+		/// <param name="bts">the parameter to send.</param>
+		/// <typeparam name="T">The type parameter.</typeparam>
 		public void WriteToAllSlave<T> (IBTSendable<T> bts)
 		{
 			byte [] msg = bts.toByteArray ();
@@ -535,61 +615,83 @@ namespace BTLibrary
 						tmp.Write (msg);
 					}
 				}
-				
+
 			}
 		}
 
-		/// <summary>
-		/// Indicate that the connection attempt failed and notify the Activity.
-		/// </summary>
-		internal void ConnectionFailed ()
-		{	
-			// Send a failure message back to the Activity
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
-			_handler.SendMessage (msg);
-			Stop ();
-			SetState (ConnectionState.STATE_NONE);
-			//ConnectAsMaster ();
-		}
+		#endregion
+
+		#region handler Management
 
 		/// <summary>
-		/// Indicate that the connection was lost and notify the UI Activity.
+		/// Sets the handler.
 		/// </summary>
-		internal void ConnectionLost ()
-		{	
-			// Send a failure message back to the Activity
-			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost");
-			_handler.SendMessage (msg);
-
-//			if (connectThread == null) {
-//				SetState (ConnectionState.STATE_LISTEN);
-//				ConnectAsMaster ();
-//			}
-			if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
-				SetState (ConnectionState.STATE_NONE);
-				Stop ();
-			}
-
-			//TODO CAZZO FACCIO SE IL MASTER PERDE LA COMUNICAZIONE CON UNO SLAVE??????
-		}
-
-		public BluetoothAdapter getBTAdapter ()
+		/// <param name="handler">Handler.</param>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void setHandler (Handler handler)
 		{
-			return _btAdapter;
+			_handler = handler;
 		}
 
+		/// <summary>
+		/// Gets the handler.
+		/// </summary>
+		/// <returns>The handler.</returns>
 		public Handler getHandler ()
 		{
 			return _handler;
 		}
-		/// <summary>
-		/// Receiver class.
-		/// </summary>
 
+		#endregion
+
+		#region Application Management
 
 		/// <summary>
-		/// Listen thread calss.
+		/// Sets the activity.
 		/// </summary>
+		/// <param name="activity">Activity.</param>
+		public void setActivity (Activity activity)
+		{
+			_activity = activity;
+		}
+
+		/// <summary>
+		/// Gets the activity.
+		/// </summary>
+		/// <returns>The activity.</returns>
+		public Activity getActivity ()
+		{
+			return _activity;
+		}
+
+		#endregion
+
+		#region initialization
+
+		/// <summary>
+		/// Initialize the specified the Play Service.
+		/// </summary>
+		/// <param name="activity">Activity.</param>
+		/// <param name="handler">Handler.</param>
+		public void Initialize (Activity activity, Handler handler)//, int maxplayer)
+		{
+			// Initialize the list of device that are already paired  
+			_pairedDevicesList = new List<string> ();
+
+			//handler to communicate the new discovered devices
+			_handler = handler;
+
+			//activity to register the receiver
+			_activity = activity;
+
+			//sets the state to STATE_NONE
+			_state = ConnectionState.STATE_NONE;
+
+			//creates an arry of connectedThread with _MAXPLAYER elements
+			connectedMasterThread = new List<BTConnectedThread> ();
+		}
+
+		#endregion
 
 	}
 }

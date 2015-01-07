@@ -24,7 +24,7 @@
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
@@ -83,6 +83,10 @@
     <AndroidResource Include="Resources\layout\CreateTable.axml" />
     <AndroidResource Include="Resources\layout\device_name.axml" />
     <AndroidResource Include="Resources\layout\DeviceList.axml" />
+    <AndroidResource Include="Resources\drawable\red_button.xml" />
+    <AndroidResource Include="Resources\values\styles.xml" />
+    <AndroidResource Include="Resources\values\colors.xml" />
+    <AndroidResource Include="Resources\drawable\assi.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

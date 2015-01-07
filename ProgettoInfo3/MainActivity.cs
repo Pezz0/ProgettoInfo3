@@ -8,6 +8,7 @@ using Android.Content;
 using ChiamataLibrary;
 using Microsoft.Xna.Framework;
 using BTLibrary;
+using Android.Views;
 
 
 
@@ -34,6 +35,8 @@ namespace ProgettoInfo3
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Main);
+
+			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
 			create = FindViewById<Button> (Resource.Id.create);
 			join = FindViewById<Button> (Resource.Id.select);
@@ -80,6 +83,7 @@ namespace ProgettoInfo3
 				ChiamataLibrary.Board.Instance.initializeMaster (result, 2);
 				/*if (BTPlayService.Instance.getNumConnected () > 0)
 					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);*/
+
 				#region IA setup
 				ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
 				ArtificialIntelligence AI2 = new ArtificialIntelligence (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());

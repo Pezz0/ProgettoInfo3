@@ -1,4 +1,4 @@
-﻿using System;
+﻿//using System;
 using Java.Lang;
 using Android.Bluetooth;
 using System.IO;
@@ -8,7 +8,7 @@ namespace BTLibrary
 	/// <summary>
 	/// Connected thread class.
 	/// </summary>
-	public class BTConnectedThread : Thread
+	internal class BTConnectedThread : Thread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -30,8 +30,10 @@ namespace BTLibrary
 		/// </summary>
 		private BTPlayService _PlayService;
 
+		/// <summary>
+		/// The connected device address.
+		/// </summary>
 		private string Connected;
-
 
 		public BTConnectedThread (BluetoothSocket socket, BTPlayService playService)
 		{
@@ -44,9 +46,9 @@ namespace BTLibrary
 			try {
 				tmpIn = _Socket.InputStream;
 				tmpOut = _Socket.OutputStream;
-			} catch (Java.IO.IOException e) {
-				e.ToString ();
+			} catch (Exception e) {
 				//temp socket not created
+				e.ToString ();
 			}
 			_InStream = tmpIn;
 			_OutStream = tmpOut;
@@ -73,10 +75,9 @@ namespace BTLibrary
 					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
 					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer)
 						.SendToTarget ();
-				} catch (Java.IO.IOException e) {
-					e.ToString ();
+				} catch (Exception e) {
 					//disconnected
-					_PlayService.ConnectionLost ();
+					_PlayService.ConnectionLost (e.Message);
 					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
 					break;
 				}
@@ -96,7 +97,7 @@ namespace BTLibrary
 				// Share the sent message back to the UI Activity
 				_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, buffer)
 					.SendToTarget ();
-			} catch (Java.IO.IOException e) {
+			} catch (Exception e) {
 				//exception during write
 				e.ToString ();
 			}
@@ -110,9 +111,9 @@ namespace BTLibrary
 		{
 			try {
 				_Socket.Close ();
-			} catch (Java.IO.IOException e) {
-				e.ToString ();
+			} catch (Exception e) {
 				//close of connect socket failed
+				e.ToString ();
 			}
 		}
 	}

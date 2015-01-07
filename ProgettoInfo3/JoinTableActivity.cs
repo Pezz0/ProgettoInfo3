@@ -20,11 +20,13 @@ namespace ProgettoInfo3
 	{
 		private static Button scan;
 		private static Button send;
+		private static Button back;
 
 		private static EditText name;
 
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
+		private bool start;
 
 		ListView paired, newdev;
 
@@ -32,11 +34,16 @@ namespace ProgettoInfo3
 		{
 			base.OnCreate (bundle);
 
+			start = true;
 
 			BTPlayService.Instance.setHandler (new BTConnHandler (this, this));
 			BTPlayService.Instance.RegisterReceiver ();
 
+			BTPlayService.Instance.setActivity (this);
+
 			SetContentView (Resource.Layout.DeviceList);
+
+			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
 			SetTitle (Resource.String.select);
 			scan = FindViewById<Button> (Resource.Id.scan);
@@ -54,11 +61,14 @@ namespace ProgettoInfo3
 			newdev.ItemClick += devicelistClick;
 
 			scan = FindViewById<Button> (Resource.Id.scan);
-			scan.Click += (sender, e) => scanDevice (sender, e);
+			scan.Click += scanDevice;
 
 			send = FindViewById<Button> (Resource.Id.Sendname);
 			send.Enabled = false;
 			send.Click += SendName;
+
+			back = FindViewById<Button> (Resource.Id.back);
+			back.Click += Back;
 
 			name = FindViewById<EditText> (Resource.Id.MyName);
 
@@ -103,9 +113,15 @@ namespace ProgettoInfo3
 
 		private void scanDevice (object sender, EventArgs e)
 		{
-			SetTitle (Resource.String.scanning);
-			newArrayList.Clear ();
-			BTPlayService.Instance.Discovery ();
+			start = false;
+			if (BTPlayService.Instance.isBTEnabled ()) {
+				SetTitle (Resource.String.scanning);
+				newArrayList.Clear ();
+				BTPlayService.Instance.Discovery ();
+			} else
+				BTPlayService.Instance.enableBluetooth ();
+
+			
 		}
 
 		private void SendName (object sender, EventArgs e)
@@ -131,6 +147,12 @@ namespace ProgettoInfo3
 			} else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
 			
+		}
+
+		private void Back (object sender, EventArgs e)
+		{
+			BTPlayService.Instance.Stop ();
+			Finish ();
 		}
 
 		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
@@ -170,6 +192,11 @@ namespace ProgettoInfo3
 						foreach (string addr in address)
 							pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 
+						if (!start) {
+							SetTitle (Resource.String.scanning);
+							newArrayList.Clear ();
+							BTPlayService.Instance.Discovery ();
+						}
 					}
 				break;
 

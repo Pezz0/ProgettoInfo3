@@ -15,7 +15,7 @@ namespace BTLibrary
 		/// <summary>
 		/// the counter that inicate if any new device is dicovered
 		/// </summary>
-		private static int cont = 0;
+		private static int count = 0;
 
 		public BTReceiver (Handler handler)
 		{
@@ -41,7 +41,7 @@ namespace BTLibrary
 				// If it's already paired, skip it, because it's been listed already
 				if (device.BondState != Bond.Bonded) {
 					_handler.ObtainMessage ((int) MessageType.NEW_DEVICE, device.Address).SendToTarget ();
-					cont++;
+					count++;
 				}
 
 				//When discovery finish
@@ -49,7 +49,7 @@ namespace BTLibrary
 				//send to the Activity a message that indicate that the discovery is finished
 				_handler.ObtainMessage ((int) MessageType.END_SCANNING, -1, -1).SendToTarget ();
 				//if no device were found
-				if (cont == 0)
+				if (count == 0)
 					//send to the activity a message that no Device are found
 					_handler.ObtainMessage ((int) MessageType.NONE_FOUND, -1, -1).SendToTarget ();
 			}

@@ -1,4 +1,4 @@
-﻿using System;
+﻿//using System;
 using Java.Lang;
 using Android.Bluetooth;
 using Java.Util;
@@ -8,7 +8,7 @@ namespace BTLibrary
 	/// <summary>
 	/// Connect thread class.
 	/// </summary>
-	public class BTConnectThread : Thread
+	internal class BTConnectThread : Thread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -34,8 +34,8 @@ namespace BTLibrary
 			// given BluetoothDevice
 			try {
 				tmp = _device.CreateRfcommSocketToServiceRecord (MY_UUID);
-			} catch (Java.IO.IOException e) {
-				e.ToString ();//create fail
+			} catch (Exception e) {
+				e.ToString ();
 			}
 			_socket = tmp;
 		}
@@ -46,33 +46,23 @@ namespace BTLibrary
 		public override void Run ()
 		{
 			Name = "ConnectThread";
-
-			// Always cancel discovery because it will slow down a connection
-//			if(_PlayService.isDiscovering)
-//				_PlayService.getBTAdapter ().CancelDiscovery ();
-
+		
 			// Make a connection to the BluetoothSocket
 			try {
 				// This is a blocking call and will only return on a
 				// successful connection or an exception
 				_socket.Connect ();
-			} catch (Java.IO.IOException e) {
-				e.ToString ();
-				//connection failure
-				_PlayService.ConnectionFailed ();
+			} catch (Exception e) {
+				_PlayService.ConnectionFailed (e.Message);
 				// Close the socket
 				try {
 					_socket.Close ();
-				} catch (Java.IO.IOException e2) {
+				} catch (Exception e2) {
+					//close fail
 					e2.ToString ();
-					//not able to close socket during connection failure
 				}
-
-				// Start the service over to restart listening mode
-				//_PlayService.ConnectAsMaster ();
 				return;
 			}
-
 			// Reset the ConnectThread because we're done
 			lock (this) {
 				_PlayService.connectThread = null;
@@ -89,9 +79,9 @@ namespace BTLibrary
 		{
 			try {
 				_socket.Close ();
-			} catch (Java.IO.IOException e) {
-				e.ToString ();
+			} catch (Exception e) {
 				//close of connect socket failed
+				e.ToString ();
 			}
 		}
 	}
