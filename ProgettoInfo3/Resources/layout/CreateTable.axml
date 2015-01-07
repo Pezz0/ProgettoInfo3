@@ -1,197 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:minWidth="25px"
-    android:minHeight="25px">
-    <LinearLayout
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="match_parent"
-        android:layout_height="286.7dp"
-        android:id="@+id/linearLayout9">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:id="@+id/linearLayout10">
-            <TextView
-                android:text="Players"
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp" />
-            <TextView
-                android:text="Type"
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5.5dp"
-                android:layout_marginRight="33dp" />
-            <TextView
-                android:text="Names"
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="6.9dp"
-                android:layout_marginRight="103dp" />
-            <TextView
-                android:text="Addresses"
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="579.9dp"
-            android:layout_height="35dp"
-            android:id="@+id/linearLayout11">
-            <TextView
-                android:text="Player 1"
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="11dp"
-                android:layout_marginRight="80dp" />
-            <EditText
-                android:id="@+id/player1"
-                android:text="AAAAAAAAAA"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="130dp" />
-            <Button
-                android:text="Start Game"
-                android:id="@+id/Start"
-                android:layout_width="115dp"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="524.0dp"
-            android:layout_height="35dp"
-            android:id="@+id/linearLayout12">
-            <TextView
-                android:text="Player 2"
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="11dp" />
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="70.0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp" />
-            <EditText
-                android:id="@+id/player2"
-                android:layout_width="150dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/addr2"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="9dp"
-                android:layout_marginLeft="5dp" />
-            <Button
-                android:text="Back"
-                android:id="@+id/back"
-                android:layout_width="115dp"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:id="@+id/linearLayout13">
-            <TextView
-                android:text="Player 3"
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="11dp" />
-            <Spinner
-                android:id="@+id/spinner2"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp" />
-            <EditText
-                android:id="@+id/player3"
-                android:layout_width="150dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:text="Text"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:id="@+id/addr3"
-                android:layout_marginTop="9dp"
-                android:layout_marginLeft="5dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="383.0dp"
-            android:layout_height="35dp"
-            android:id="@+id/linearLayout14">
-            <TextView
-                android:text="Player 4"
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="11dp" />
-            <Spinner
-                android:id="@+id/spinner3"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp" />
-            <EditText
-                android:id="@+id/player4"
-                android:layout_width="150dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/addr4"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="9dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:id="@+id/linearLayout15">
-            <TextView
-                android:text="Player 5"
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="11dp" />
-            <Spinner
-                android:id="@+id/spinner4"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp" />
-            <EditText
-                android:id="@+id/player5"
-                android:layout_width="150dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/addr5"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="9dp" />
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+<RelativeLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:minWidth="25px"
+    p1:minHeight="25px"
+    p1:layout_width="match_parent"
+    p1:layout_height="match_parent"
+    p1:id="@+id/relativeLayout1">
+    <TextView
+        p1:text="Players"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/textView1"
+        p1:layout_marginRight="10dp"
+        p1:layout_alignParentLeft="true"
+        p1:layout_alignParentTop="true" />
+    <TextView
+        p1:text="Player 1"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/textView1"
+        p1:id="@+id/textView2"
+        p1:layout_marginTop="20dp"
+        p1:layout_alignParentLeft="true" />
+    <TextView
+        p1:text="Player 2"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/textView2"
+        p1:id="@+id/textView3"
+        p1:layout_alignParentLeft="true"
+        p1:layout_marginTop="20dp" />
+    <TextView
+        p1:text="Player 3"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/textView3"
+        p1:id="@+id/textView4"
+        p1:layout_alignParentLeft="true"
+        p1:layout_marginTop="20dp" />
+    <TextView
+        p1:text="Player 4"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/textView4"
+        p1:id="@+id/textView5"
+        p1:layout_alignParentLeft="true"
+        p1:layout_marginTop="20dp" />
+    <TextView
+        p1:text="Player 5"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/textView5"
+        p1:id="@+id/textView6"
+        p1:layout_alignParentLeft="true"
+        p1:layout_marginTop="20dp" />
+    <TextView
+        p1:text="Player Type"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView1"
+        p1:id="@+id/textView7"
+        p1:layout_marginRight="40dp" />
+    <TextView
+        p1:layout_width="105dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView2"
+        p1:id="@+id/textView8"
+        p1:layout_alignBottom="@id/textView2"
+        p1:layout_marginRight="15dp" />
+    <Spinner
+        p1:layout_width="110dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView3"
+        p1:id="@+id/spinner1"
+        p1:layout_alignBottom="@id/textView3"
+        p1:layout_marginRight="10dp" />
+    <Spinner
+        p1:layout_width="110dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView4"
+        p1:id="@+id/spinner2"
+        p1:layout_marginRight="10dp"
+        p1:layout_alignBottom="@id/textView4" />
+    <Spinner
+        p1:layout_width="110dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView5"
+        p1:id="@+id/spinner3"
+        p1:layout_alignBottom="@id/textView5"
+        p1:layout_marginRight="10dp" />
+    <Spinner
+        p1:layout_width="110dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView6"
+        p1:id="@+id/spinner4"
+        p1:layout_alignBottom="@id/textView6"
+        p1:layout_marginRight="10dp"
+        p1:layout_centerHorizontal="false" />
+    <TextView
+        p1:text="Names"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView7"
+        p1:id="@+id/textView9"
+        p1:layout_marginRight="85dp" />
+    <EditText
+        p1:layout_width="130dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView8"
+        p1:id="@+id/player1"
+        p1:layout_alignBottom="@id/textView8"
+        p1:layout_marginRight="5dp"
+        p1:text="AAAAAAAA" />
+    <EditText
+        p1:layout_width="130dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/spinner1"
+        p1:id="@+id/player2"
+        p1:layout_alignBottom="@id/spinner1"
+        p1:layout_marginRight="5dp" />
+    <EditText
+        p1:layout_width="130dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/spinner2"
+        p1:id="@+id/player3"
+        p1:layout_alignBottom="@id/spinner2"
+        p1:layout_marginRight="5dp" />
+    <EditText
+        p1:layout_width="130dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/spinner3"
+        p1:id="@+id/player4"
+        p1:layout_alignBottom="@id/spinner3"
+        p1:layout_marginRight="5dp" />
+    <EditText
+        p1:layout_width="130dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/spinner4"
+        p1:id="@+id/player5"
+        p1:layout_alignBottom="@id/spinner4"
+        p1:layout_marginRight="5dp" />
+    <TextView
+        p1:text="Addresses"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView9"
+        p1:id="@+id/textView10" />
+    <TextView
+        p1:layout_width="120dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/player1"
+        p1:id="@+id/textView11"
+        p1:layout_alignBottom="@id/player1"
+        p1:layout_marginRight="5dp" />
+    <TextView
+        p1:layout_width="120dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/player2"
+        p1:id="@+id/addr2"
+        p1:layout_alignBottom="@id/player2"
+        p1:layout_marginRight="5dp" />
+    <TextView
+        p1:layout_width="120dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/player3"
+        p1:id="@+id/addr3"
+        p1:layout_alignBottom="@id/player3"
+        p1:layout_alignParentBottom="false" />
+    <TextView
+        p1:layout_width="120dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/player4"
+        p1:id="@+id/addr4"
+        p1:layout_alignBottom="@id/player4" />
+    <TextView
+        p1:layout_width="120dp"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/player5"
+        p1:id="@+id/addr5"
+        p1:layout_alignBottom="@id/player5" />
+    <Button
+        p1:text="Play"
+        p1:layout_width="match_parent"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView11"
+        p1:id="@+id/Start"
+        p1:layout_alignBottom="@id/textView11" />
+    <Button
+        p1:text="Back"
+        p1:layout_width="match_parent"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/Start"
+        p1:id="@+id/back"
+        p1:layout_alignLeft="@id/Start" />
+</RelativeLayout>

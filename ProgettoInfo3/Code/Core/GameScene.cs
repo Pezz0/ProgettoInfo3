@@ -284,7 +284,7 @@ namespace Core
 				//5 - Swap cardData elements
 				if (cardField.ContainsPoint (pos) && inHand > 1) {
 					if (selected == 0) {
-						if ((winSize.Height - pos.Y) > carte [1].posBase.Y + 8) {
+						if (( winSize.Height - pos.Y ) > carte [1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [1].posBase;
 							carte [1].posBase = carte [0].posBase;
@@ -315,7 +315,7 @@ namespace Core
 							selected = 1;
 						}
 					} else if (selected == inHand - 1) {
-						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
+						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [inHand - 2].posBase;
 							carte [inHand - 2].posBase = carte [inHand - 1].posBase;
@@ -346,7 +346,7 @@ namespace Core
 							selected = inHand - 2;
 						}
 					} else {
-						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
+						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected - 1].posBase;
 							carte [selected - 1].posBase = carte [selected].posBase;
@@ -376,7 +376,7 @@ namespace Core
 							selected = selected - 1;
 						}
 
-						if ((winSize.Height - pos.Y) > carte [selected + 1].posBase.Y + 8) {
+						if (( winSize.Height - pos.Y ) > carte [selected + 1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected + 1].posBase;
 							carte [selected + 1].posBase = carte [selected].posBase;
@@ -497,7 +497,7 @@ namespace Core
 				//5 - Swap cardData elements
 				if (cardField.ContainsPoint (pos) && inHand > 1) {
 					if (selected == 0) {
-						if ((winSize.Height - pos.Y) > carte [1].posBase.Y + 8) {
+						if (( winSize.Height - pos.Y ) > carte [1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [1].posBase;
 							carte [1].posBase = carte [0].posBase;
@@ -528,7 +528,7 @@ namespace Core
 							selected = 1;
 						}
 					} else if (selected == inHand - 1) {
-						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
+						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [inHand - 2].posBase;
 							carte [inHand - 2].posBase = carte [inHand - 1].posBase;
@@ -559,7 +559,7 @@ namespace Core
 							selected = inHand - 2;
 						}
 					} else {
-						if ((winSize.Height - pos.Y) < carte [selected - 1].posBase.Y - 8) {
+						if (( winSize.Height - pos.Y ) < carte [selected - 1].posBase.Y - 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected - 1].posBase;
 							carte [selected - 1].posBase = carte [selected].posBase;
@@ -589,7 +589,7 @@ namespace Core
 							selected = selected - 1;
 						}
 
-						if ((winSize.Height - pos.Y) > carte [selected + 1].posBase.Y + 8) {
+						if (( winSize.Height - pos.Y ) > carte [selected + 1].posBase.Y + 8) {
 							//Swap base position
 							CCPoint tempP = carte [selected + 1].posBase;
 							carte [selected + 1].posBase = carte [selected].posBase;
@@ -700,10 +700,10 @@ namespace Core
 			winSize = mainWindow.WindowSizeInPixels;
 
 			//Setting the area when cards can be dropped
-			dropField = new CCRect (0, (int) (winSize.Height / 4), (int) (winSize.Width / 2), (int) (winSize.Height / 2));
+			dropField = new CCRect (0, (int) ( winSize.Height / 4 ), (int) ( winSize.Width / 2 ), (int) ( winSize.Height / 2 ));
 
 			//Setting the area where the cards can be re-arranged
-			cardField = new CCRect ((int) (winSize.Width * 3.5 / 5), (int) (winSize.Height / 5), (int) (winSize.Width * 1.5 / 5), (int) (winSize.Height * 3 / 5));
+			cardField = new CCRect ((int) ( winSize.Width * 3.5 / 5 ), (int) ( winSize.Height / 5 ), (int) ( winSize.Width * 1.5 / 5 ), (int) ( winSize.Height * 3 / 5 ));
 
 			inHand = 8;
 			#endregion
@@ -742,7 +742,7 @@ namespace Core
 			turnLights [2].BlendFunc = CCBlendFunc.Additive;
 			turnLights [2].Rotation = 90;
 			turnLights [2].Color = CCColor3B.Yellow;
-			turnLights [2].ScaleX = (winSize.Height / 2) / turnLights [2].ContentSize.Width;
+			turnLights [2].ScaleX = ( winSize.Height / 2 ) / turnLights [2].ContentSize.Width;
 			mainLayer.AddChild (turnLights [2]);
 			turnLights [2].ZOrder = 20;
 			turnLights [2].Visible = false;
@@ -752,7 +752,7 @@ namespace Core
 			turnLights [3].BlendFunc = CCBlendFunc.Additive;
 			turnLights [3].Rotation = 90;
 			turnLights [3].Color = CCColor3B.Blue;
-			turnLights [3].ScaleX = (winSize.Height / 2) / turnLights [3].ContentSize.Width;
+			turnLights [3].ScaleX = ( winSize.Height / 2 ) / turnLights [3].ContentSize.Width;
 			mainLayer.AddChild (turnLights [3]);
 			turnLights [3].ZOrder = 20;
 			turnLights [3].Visible = false;
@@ -828,12 +828,12 @@ namespace Core
 
 
 				if (i == 0) {
-					posBase = new CCPoint (winSize.Width - 50 + 3 * (i * i - 7 * i + 12), winSize.Height / 4);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), winSize.Height / 4);
 
 				} else {
-					posBase = new CCPoint (winSize.Width - 50 + 3 * (i * i - 7 * i + 12), carte [i - 1].posBase.Y + 50);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
 				}
-				rotation = -90 - 4 * (i > 3 ? 4 - i - 1 : 4 - i);
+				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
 				carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand [i].number.ToString () + "_" + Board.Instance.Me.Hand [i].seme.ToString ()), posBase, rotation, i));
 
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
@@ -864,18 +864,18 @@ namespace Core
 
 			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
 
-			float scale = ((winSize.Height / 2) - orzSpace * 4) / (4 * textWidth);
+			float scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
 
 			//FIXME : controllare le posizioni dei bottoni nel caso si cambiassero le textures
 			for (int i = 4; i > -1; i--) {
-				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + (textWidth * scale + orzSpace) * ((i - 4) * -1)), winSize, -90, scale);
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 4 ) * -1 )), winSize, -90, scale);
 			}
 			for (int i = 9; i > 4; i--) {
-				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (2 * vertSpace + 2 * 58 * scale, winSize.Height / 4 + (textWidth * scale + orzSpace) * ((i - 9) * -1)), winSize, -90, scale);
+				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (2 * vertSpace + 2 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 9 ) * -1 )), winSize, -90, scale);
 			}
 
-			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - (textWidth * scale) / 2), winSize, -90, scale);
-			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + (textWidth * scale) / 2), winSize, -90, scale);
+			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - ( textWidth * scale ) / 2), winSize, -90, scale);
+			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + ( textWidth * scale ) / 2), winSize, -90, scale);
 
 			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120);
 
@@ -978,7 +978,7 @@ namespace Core
 			initializedSeme = false;
 
 			Board.Instance.Me.setAuctionControl (bidController, semiController);
-			turnLight ((Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
+			turnLight (( Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
 				for (int i = 0; i < 12; i++)
@@ -1001,8 +1001,8 @@ namespace Core
 					buttons [i].Enabled = true;
 			}
 
-			playerBids [(bid.bidder.order - Board.Instance.Me.order + 5) % 5].Text = bidToString (bid);
-			turnLight ((!Board.Instance.isAuctionPhase ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5) % 5);
+			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
+			turnLight (( !Board.Instance.isAuctionPhase ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
 
 		}
 
@@ -1011,9 +1011,9 @@ namespace Core
 			if (bid is PassBid)
 				return "Passo";
 			else if (bid is CarichiBid)
-				return "Carichi al " + ((CarichiBid) bid).point.ToString ();
+				return "Carichi al " + ( (CarichiBid) bid ).point.ToString ();
 			else
-				return ((NormalBid) bid).number.ToString () + " al " + ((NormalBid) bid).point.ToString ();
+				return ( (NormalBid) bid ).number.ToString () + " al " + ( (NormalBid) bid ).point.ToString ();
 		}
 
 		#endregion
@@ -1043,10 +1043,10 @@ namespace Core
 		{
 
 			auctionEnded ();
-			chooseOri = new Button (mainLayer, touch, actOri, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "ORI", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 150), winSize, -90, 0.3f);
-			chooseCoppe = new Button (mainLayer, touch, actCoppe, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "COPE", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 50), winSize, -90, 0.3f);
-			chooseBastoni = new Button (mainLayer, touch, actBastoni, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "BASTONI", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 50), winSize, -90, 0.3f);
-			chooseSpade = new Button (mainLayer, touch, actSpade, ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "SPADE", ((NormalBid) Board.Instance.currentAuctionWinningBid).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 150), winSize, -90, 0.3f);
+			chooseOri = new Button (mainLayer, touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 150), winSize, -90, 0.3f);
+			chooseCoppe = new Button (mainLayer, touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 50), winSize, -90, 0.3f);
+			chooseBastoni = new Button (mainLayer, touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 50), winSize, -90, 0.3f);
+			chooseSpade = new Button (mainLayer, touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 150), winSize, -90, 0.3f);
 		}
 
 		#endregion
@@ -1069,7 +1069,7 @@ namespace Core
 
 		public void playCard (Move m)
 		{
-			int localIndex = (m.player.order - Board.Instance.Me.order + 5) % 5;
+			int localIndex = ( m.player.order - Board.Instance.Me.order + 5 ) % 5;
 			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
 			cardSprite.Scale = 0.25f;
 			CardData cd;

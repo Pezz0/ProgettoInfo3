@@ -77,6 +77,7 @@ namespace BTLibrary
 					e.ToString ();
 					//disconnected
 					_PlayService.ConnectionLost ();
+					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
 					break;
 				}
 			}

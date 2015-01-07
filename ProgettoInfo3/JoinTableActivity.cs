@@ -48,7 +48,7 @@ namespace ProgettoInfo3
 			pairedArrayList.Clear ();
 			paired.Adapter = pairedArrayList; 
 
-			paired.ItemClick += (sender, e) => devicelistClick (sender, e);
+			paired.ItemClick += devicelistClick;
 
 			newdev.Adapter = newArrayList;
 			newdev.ItemClick += devicelistClick;
@@ -101,14 +101,14 @@ namespace ProgettoInfo3
 		}
 
 
-		void scanDevice (object sender, EventArgs e)
+		private void scanDevice (object sender, EventArgs e)
 		{
 			SetTitle (Resource.String.scanning);
 			newArrayList.Clear ();
 			BTPlayService.Instance.Discovery ();
 		}
 
-		void SendName (object sender, EventArgs e)
+		private void SendName (object sender, EventArgs e)
 		{
 			if (name.Text.CompareTo ("") != 0) {
 				if (name.Text.Length > 10) {
@@ -133,7 +133,7 @@ namespace ProgettoInfo3
 			
 		}
 
-		void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
+		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			if (BTPlayService.Instance.isDiscovering ())
 				BTPlayService.Instance.CancelDiscovery ();

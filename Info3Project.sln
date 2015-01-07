@@ -36,5 +36,22 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = ProgettoInfo3\AndroidProject.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = Mono
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.IndentSwitchBody = True
+		$2.IndentBreakStatements = False
+		$2.AfterDelegateDeclarationParameterComma = True
+		$2.WithinParentheses = True
+		$2.BeforeSizeOfParentheses = True
+		$2.BeforeTypeOfParentheses = True
+		$2.SpacesAfterTypecast = True
+		$2.SpacesBeforeArrayDeclarationBrackets = True
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
 	EndGlobalSection
 EndGlobal

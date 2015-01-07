@@ -23,7 +23,6 @@ namespace BTLibrary
 
 		private Activity _activity;
 		private Handler _handler;
-		//private int _MAXPLAYER;
 
 		//Fields for finding devices
 		private BluetoothAdapter _btAdapter;
@@ -32,13 +31,14 @@ namespace BTLibrary
 
 		//Fields to perform connection
 		private BTListenThread listenThread;
-		public BTConnectThread connectThread;
+		internal BTConnectThread connectThread;
 		private BTConnectedThread connectedSlaveThread;
 		private List<BTConnectedThread> connectedMasterThread;
 		//private int counter = 0;
 
-		public static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
-		public const string NAME = "Play";
+		internal static UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+		public const string NAME = "PlayService";
+
 		private ConnectionState _state;
 
 		#region singleton implementation
@@ -121,7 +121,7 @@ namespace BTLibrary
 			_receiver = new BTReceiver (_handler);
 			var filter = new IntentFilter (BluetoothDevice.ActionFound);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
-
+		
 			// Register for broadcasts when discovery has finished
 			filter = new IntentFilter (BluetoothAdapter.ActionDiscoveryFinished);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
@@ -215,6 +215,7 @@ namespace BTLibrary
 		/// Indicate if is Slave in the network.
 		/// </summary>
 		/// <returns><c>true</c>, if is client <c>false</c> otherwise.</returns>
+		[MethodImpl (MethodImplOptions.Synchronized)]
 		public bool isSlave ()
 		{
 			//if state is Connected_Client the caller is a client
@@ -237,6 +238,7 @@ namespace BTLibrary
 			_handler.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
 		}
 
+		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void setHandler (Handler handler)
 		{
 			_handler = handler;
@@ -313,7 +315,7 @@ namespace BTLibrary
 		/// <param name="socket">Socket.</param>
 		/// <param name="device">Device.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
+		internal void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
 		{
 			//stops all existing thread
 			Stop ();
@@ -336,7 +338,7 @@ namespace BTLibrary
 		/// <param name="socket">Socket.</param>
 		/// <param name="device">Device.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
+		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
 			// Cancel the thread that completed the connection
 			if (connectThread != null) {
@@ -540,7 +542,7 @@ namespace BTLibrary
 		/// <summary>
 		/// Indicate that the connection attempt failed and notify the Activity.
 		/// </summary>
-		public void ConnectionFailed ()
+		internal void ConnectionFailed ()
 		{	
 			// Send a failure message back to the Activity
 			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
@@ -553,7 +555,7 @@ namespace BTLibrary
 		/// <summary>
 		/// Indicate that the connection was lost and notify the UI Activity.
 		/// </summary>
-		public void ConnectionLost ()
+		internal void ConnectionLost ()
 		{	
 			// Send a failure message back to the Activity
 			var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost");
