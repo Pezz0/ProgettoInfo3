@@ -15,7 +15,7 @@ namespace ChiamataLibrary
 
 		public abstract byte[] toByteArray ();
 
-		public IBid ricreateFromByteArray (byte [] bytes)
+		public IBid recreateFromByteArray (byte [] bytes)
 		{
 			if (bytes [1] == 255)
 				return new PassBid (Board.Instance.getPlayer (bytes [0]));

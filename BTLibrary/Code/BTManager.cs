@@ -10,17 +10,16 @@ namespace BTLibrary
 	public class BTManager
 	{
 	
-
 		private static readonly BTManager _instance = new BTManager ();
 
-		public static BTManager Instance{ get { return _instance; } }
+		//public static BTManager Instance{ get { return _instance; } }
 
 		static BTManager ()
 		{
 
 		}
 
-		public BTManager ()
+		private BTManager ()
 		{
 			Board.Instance.eventIPlaceABid += bidPlaced;
 

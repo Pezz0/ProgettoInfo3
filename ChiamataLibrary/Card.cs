@@ -207,10 +207,10 @@ namespace ChiamataLibrary
 			return BitConverter.GetBytes (( (int) seme ) * Enum.GetValues (typeof (EnNumbers)).GetLength (0) + ( (int) number ));
 		}
 
-		public Card ricreateFromByteArray (byte [] bytes)
+		public Card recreateFromByteArray (byte [] bytes)
 		{
 			EnSemi s = (EnSemi) ( BitConverter.ToChar (bytes, 0) / Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
-			EnNumbers n = (EnNumbers) ( BitConverter.ToChar (bytes, 0) % Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
+			EnNumbers n = (EnNumbers) ( BitConverter.ToChar (bytes, 1) % Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
 
 			return Board.Instance.getCard (s, n);
 		}

@@ -267,7 +267,7 @@ namespace ProgettoInfo3
 					break;
 					case (int)MessageType.MESSAGE_READ:
 						send.Enabled = false;
-						Board.Instance.ricreateFromByteArray ((byte []) msg.Obj);
+						Board.Instance.recreateFromByteArray ((byte []) msg.Obj);
 						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
 						a.Finish ();

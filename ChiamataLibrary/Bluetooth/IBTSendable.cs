@@ -24,7 +24,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns>The class.</returns>
 		/// <param name="bytes">the bytes array.</param>
-		T ricreateFromByteArray (Byte [] bytes);
+		T recreateFromByteArray (Byte [] bytes);
 	}
 }
 

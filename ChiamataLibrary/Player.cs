@@ -166,7 +166,7 @@ namespace ChiamataLibrary
 			return BitConverter.GetBytes (order);
 		}
 
-		public Player ricreateFromByteArray (byte [] bytes)
+		public Player recreateFromByteArray (byte [] bytes)
 		{
 			return Board.Instance.getPlayer ((int) bytes [0]);
 		}

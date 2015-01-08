@@ -156,7 +156,7 @@ namespace ChiamataLibrary
 			return _bytes.ToArray ();
 		}
 
-		public Board ricreateFromByteArray (byte [] bytes)
+		public Board recreateFromByteArray (byte [] bytes)
 		{
 			if (!isCreationPhase)
 				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
@@ -168,7 +168,8 @@ namespace ChiamataLibrary
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
 				char [] c = new char[MAX_NAME_LENGHT];
 				for (int j = 0; j < MAX_NAME_LENGHT; j++) {
-					c [j] = BitConverter.ToChar (new byte[]{ bytes [index] }, 0);
+
+					c [j] = BitConverter.ToChar (bytes, index);
 					index++;
 				}
 				_players [i] = new Player (new string (c), i);
@@ -295,7 +296,7 @@ namespace ChiamataLibrary
 		/// <param name="bytes">The byte's array.</param>
 		public Card getCard (byte [] bytes)
 		{
-			return _cardGrid [0, 0].ricreateFromByteArray (bytes);
+			return _cardGrid [0, 0].recreateFromByteArray (bytes);
 		}
 
 		/// <summary>
@@ -339,7 +340,7 @@ namespace ChiamataLibrary
 		/// <param name="bytes">The byte's array.</param>
 		public Player getPlayer (Byte [] bytes)
 		{
-			return _players [0].ricreateFromByteArray (bytes);
+			return _players [0].recreateFromByteArray (bytes);
 		}
 
 		/// <summary>

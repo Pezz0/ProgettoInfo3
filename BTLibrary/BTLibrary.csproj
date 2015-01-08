@@ -53,8 +53,8 @@
     <Compile Include="Code\BTReceiver.cs" />
     <Compile Include="Code\IConnectable.cs" />
     <Compile Include="Code\IFindable.cs" />
-    <Compile Include="Code\Handler\BTManager.cs" />
     <Compile Include="Code\BTPlayer.cs" />
+    <Compile Include="Code\BTManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -67,6 +67,5 @@
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Code\Thread\" />
-    <Folder Include="Code\Handler\" />
   </ItemGroup>
 </Project>

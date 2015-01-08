@@ -98,9 +98,9 @@ namespace ProgettoInfo3
 					string [] type = data.GetStringArrayExtra ("types");
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
-						if (type [i] == "AI")
+						if (type [i - 1] == "AI")
 							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ()));
-						else if (type [i] == "BlueTooth") {
+						else if (type [i - 1] == "BlueTooth") {
 							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
 							BTPlayService.Instance.AddHandler (bt);
 						}

@@ -30,7 +30,7 @@ namespace ChiamataLibrary
 			return b;
 		}
 
-		public Move ricreateFromByteArray (byte [] bytes)
+		public Move recreateFromByteArray (byte [] bytes)
 		{
 			return new Move (Board.Instance.getCard (bytes [1]), Board.Instance.getPlayer (bytes [0]));
 		}

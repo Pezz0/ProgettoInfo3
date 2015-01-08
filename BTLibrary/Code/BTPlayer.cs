@@ -33,7 +33,7 @@ namespace BTLibrary
 				if (sender == _player) {
 					if (Board.Instance.isAuctionPhase) {
 						_ready = true;
-						_bid = Board.Instance.DefBid.ricreateFromByteArray (data);
+						_bid = Board.Instance.DefBid.recreateFromByteArray (data);
 					}
 					if (Board.Instance.isFinalizePhase) {
 						_ready = true;
