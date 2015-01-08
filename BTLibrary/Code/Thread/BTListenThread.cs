@@ -12,18 +12,14 @@ namespace BTLibrary
 		/// </summary>
 		private BluetoothServerSocket _serverSocket;
 
-		/// <summary>
-		/// The BluetoothPlayService.
-		/// </summary>
-		private BTPlayService _PlayService;
 
-		public BTListenThread (BTPlayService playService, string NAME, UUID MY_UUID)
+
+		public BTListenThread (string NAME, UUID MY_UUID)
 		{
-			_PlayService = playService;
 			BluetoothServerSocket tmp = null;
 
 			try {
-				tmp = _PlayService.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
+				tmp = BTPlayService.Instance.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
 			} catch (Exception e) {
 				e.ToString ();
 			}
@@ -51,8 +47,8 @@ namespace BTLibrary
 			// If a connection was accepted
 			if (socket != null) {
 				lock (this) {
-					if (_PlayService.GetState () == ConnectionState.STATE_LISTEN)
-						_PlayService.ConnectedToSlave (socket, socket.RemoteDevice);
+					if (BTPlayService.Instance.GetState () == ConnectionState.STATE_LISTEN)
+						BTPlayService.Instance.ConnectedToSlave (socket, socket.RemoteDevice);
 					else {
 						try {
 							socket.Close ();

@@ -8,7 +8,7 @@ using Android.Content;
 using ChiamataLibrary;
 using Microsoft.Xna.Framework;
 using BTLibrary;
-using Android.Views;
+using System.Collections.Generic;
 
 
 
@@ -36,8 +36,6 @@ namespace ProgettoInfo3
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Main);
 
-			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
-
 			create = FindViewById<Button> (Resource.Id.create);
 			join = FindViewById<Button> (Resource.Id.select);
 
@@ -47,7 +45,8 @@ namespace ProgettoInfo3
 			join.Click += (sender, e) => joinClick (sender, e);
 			settings.Click += (sender, e) => settingClick (sender, e);
 
-			BTPlayService.Instance.Initialize (this, new BTManager ());
+
+			BTPlayService.Instance.Initialize (this);
 
 
 
@@ -75,22 +74,38 @@ namespace ProgettoInfo3
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
 			if (requestCode == 1 && resultCode == Result.Ok) {
-				string [] result = data.GetStringArrayExtra ("Names");
+				string [] name = data.GetStringArrayExtra ("Names");
 				var application = new CCApplication ();
 				application.ApplicationDelegate = new Core.GameAppDelegate ();
 				SetContentView (application.AndroidContentView);
 
-				ChiamataLibrary.Board.Instance.initializeMaster (result, 2);
-				/*if (BTPlayService.Instance.getNumConnected () > 0)
-					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);*/
+				ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
+				if (BTPlayService.Instance.getNumConnected () > 0)
+					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
 
-				#region IA setup
-				ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
-				ArtificialIntelligence AI2 = new ArtificialIntelligence (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
-				ArtificialIntelligence AI3 = new ArtificialIntelligence (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
-				ArtificialIntelligence AI4 = new ArtificialIntelligence (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
+				List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
 
-				#endregion
+				if (BTPlayService.Instance.isSlave ()) {
+
+					for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
+						if (Board.Instance.Me.order != i) {
+							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
+							BTPlayService.Instance.AddHandler (bt);
+						}
+					}
+
+				} else {
+					string [] type = data.GetStringArrayExtra ("types");
+
+					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
+						if (type [i] == "AI")
+							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ()));
+						else if (type [i] == "BlueTooth") {
+							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
+							BTPlayService.Instance.AddHandler (bt);
+						}
+					}
+				}
 
 				application.StartGame ();
 

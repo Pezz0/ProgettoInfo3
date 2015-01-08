@@ -4,11 +4,10 @@ using ChiamataLibrary;
 using Android.Widget;
 using Android.App;
 
-//using BTLibrary;
 
 namespace BTLibrary
 {
-	public class BTManager:Handler
+	public class BTManager
 	{
 	
 
@@ -18,52 +17,54 @@ namespace BTLibrary
 
 		static BTManager ()
 		{
+
 		}
 
 		public BTManager ()
 		{
+			Board.Instance.eventIPlaceABid += bidPlaced;
 
+			if (!BTPlayService.Instance.isSlave ())
+				Board.Instance.eventSomeonePlaceABid += bidPlaced;
+
+			Board.Instance.eventPlaytimeStart += semeChosen;
+
+			Board.Instance.eventIPlayACard += cardPlayed;
+
+			if (!BTPlayService.Instance.isSlave ())
+				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}
 
-		public void WriteToAllSlave<T> (IBTSendable<T> bts)
+
+		public void bidPlaced (IBid bid)
 		{
-			BTPlayService.Instance.WriteToAllSlave (bts);
+			if (BTPlayService.Instance.isSlave ())
+				BTPlayService.Instance.WriteToMaster (bid);
+			else
+				BTPlayService.Instance.WriteToAllSlave (bid);
 		}
 
-		public void WriteToMaster<T> (IBTSendable<T> bts)
+		public void semeChosen ()
 		{
-			BTPlayService.Instance.WriteToMaster (bts);
+			Byte [] msg = new Byte[2];
+			msg [0] = Board.Instance.getChiamante ().toByteArray () [0];
+			msg [1] = (Byte) Board.Instance.Briscola;
+
+			if (BTPlayService.Instance.isSlave ()) {
+				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
+					BTPlayService.Instance.WriteToMaster (msg);
+			} else
+				BTPlayService.Instance.WriteToAllSlave (msg);
 		}
 
-		public override void HandleMessage (Message msg)
+		public void cardPlayed (Move m)
 		{
-			switch (msg.What) {
 
-				case (int)MessageType.MESSAGE_READ:
-
-					if (Board.Instance.isAuctionPhase)
-						//Board.Instance.auctionPlaceABid ((byte []) msg.Obj);
-
-					if (Board.Instance.isPlayTime)
-						;
-						//Board.Instance.PlayACard ((byte []) msg.Obj);
-
-					Player sender = Board.Instance.getPlayer ((byte []) msg.Obj);
-
-					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short);
-
-				break;
-				case (int)MessageType.MESSAGE_DEVICE_ADDR:
-					Toast.MakeText (Application.Context, "Connected to " + BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name, ToastLength.Short).Show ();
-
-				break;
-				case (int)MessageType.MESSAGE_TOAST:
-					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
-				break;
-
-			}
+			if (BTPlayService.Instance.isSlave ())
+				BTPlayService.Instance.WriteToMaster (m);
+			else
+				BTPlayService.Instance.WriteToAllSlave (m);
 		}
-
 	}
 }
 

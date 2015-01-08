@@ -85,7 +85,7 @@ namespace ProgettoInfo3
 
 			counter = 4;
 
-			BTPlayService.Instance.setHandler (new MyHandler (this));
+			BTPlayService.Instance.AddHandler (new MyHandler (this));
 			BTPlayService.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
@@ -150,10 +150,25 @@ namespace ProgettoInfo3
 		{
 			if (counter - BTPlayService.Instance.getNumConnected () == 0) {
 				Intent returnIntent = new Intent ();
-				String [] result = { pl0.Text, pl1.Text, pl2.Text, pl3.Text, pl4.Text };
-				returnIntent.PutExtra ("Names", result);
+
+				returnIntent.PutExtra ("Names", new string[5] {
+					pl0.Text,
+					pl1.Text,
+					pl2.Text,
+					pl3.Text,
+					pl4.Text
+				});
+
+				returnIntent.PutExtra ("types", new string[4] {
+					spinner1.SelectedItem.ToString (),
+					spinner2.SelectedItem.ToString (),
+					spinner3.SelectedItem.ToString (),
+					spinner4.SelectedItem.ToString ()
+				});
+
 				SetResult (Result.Ok, returnIntent);
-				BTPlayService.Instance.setHandler (new BTManager ());
+				//FIXME roba da mettere il BTPlayer
+				BTPlayService.Instance.ResetHandler ();
 				BTPlayService.Instance.StopListen ();
 				Finish ();
 			} else
@@ -166,6 +181,7 @@ namespace ProgettoInfo3
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
 			BTPlayService.Instance.Stop ();
+			BTPlayService.Instance.ResetHandler ();
 			Finish ();
 		}
 

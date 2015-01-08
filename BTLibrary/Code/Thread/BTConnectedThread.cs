@@ -2,6 +2,7 @@
 using Java.Lang;
 using Android.Bluetooth;
 using System.IO;
+using Android.OS;
 
 namespace BTLibrary
 {
@@ -25,20 +26,15 @@ namespace BTLibrary
 		/// </summary>
 		private Stream _OutStream;
 
-		/// <summary>
-		/// The BluetoothPlayService.
-		/// </summary>
-		private BTPlayService _PlayService;
 
 		/// <summary>
 		/// The connected device address.
 		/// </summary>
 		private string Connected;
 
-		public BTConnectedThread (BluetoothSocket socket, BTPlayService playService)
+		public BTConnectedThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
-			_PlayService = playService;
 			Stream tmpIn = null;
 			Stream tmpOut = null;
 
@@ -72,13 +68,22 @@ namespace BTLibrary
 					bytes = _InStream.Read (buffer, 0, buffer.Length);
 
 					// Send the obtained bytes to the UI Activity
-					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
-					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer)
-						.SendToTarget ();
+
+					BTPlayService.Instance.forEachHandler (delegate(Handler h) {
+
+						h.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
+						h.ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
+
+
+					});
+
+
 				} catch (Exception e) {
 					//disconnected
-					_PlayService.ConnectionLost (e.Message);
-					_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
+					BTPlayService.Instance.ConnectionLost (e.Message);
+					BTPlayService.Instance.forEachHandler (delegate(Handler h) {
+						h.ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
+					});
 					break;
 				}
 			}
@@ -95,8 +100,9 @@ namespace BTLibrary
 			try {
 				_OutStream.Write (buffer, 0, buffer.Length);
 				// Share the sent message back to the UI Activity
-				_PlayService.getHandler ().ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, buffer)
-					.SendToTarget ();
+				BTPlayService.Instance.forEachHandler (delegate(Handler h) {
+					h.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, buffer).SendToTarget ();
+				});
 			} catch (Exception e) {
 				//exception during write
 				e.ToString ();

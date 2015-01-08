@@ -20,15 +20,10 @@ namespace BTLibrary
 		/// </summary>
 		private BluetoothDevice _device;
 
-		/// <summary>
-		/// The BluetoothPlayService
-		/// </summary>
-		private BTPlayService _PlayService;
-
-		public BTConnectThread (BluetoothDevice device, BTPlayService playService, UUID MY_UUID)
+		public BTConnectThread (BluetoothDevice device, UUID MY_UUID)
 		{
 			_device = device;
-			_PlayService = playService;
+			;
 			BluetoothSocket tmp = null;
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
@@ -53,7 +48,7 @@ namespace BTLibrary
 				// successful connection or an exception
 				_socket.Connect ();
 			} catch (Exception e) {
-				_PlayService.ConnectionFailed (e.Message);
+				BTPlayService.Instance.ConnectionFailed (e.Message);
 				// Close the socket
 				try {
 					_socket.Close ();
@@ -65,11 +60,11 @@ namespace BTLibrary
 			}
 			// Reset the ConnectThread because we're done
 			lock (this) {
-				_PlayService.connectThread = null;
+				BTPlayService.Instance.connectThread = null;
 			}
 
 			// Start the connected thread
-			_PlayService.ConnectedToMaster (_socket, _device);
+			BTPlayService.Instance.ConnectedToMaster (_socket, _device);
 		}
 
 		/// <summary>

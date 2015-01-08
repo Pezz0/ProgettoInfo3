@@ -36,7 +36,7 @@ namespace ProgettoInfo3
 
 			start = true;
 
-			BTPlayService.Instance.setHandler (new BTConnHandler (this, this));
+			BTPlayService.Instance.AddHandler (new BTConnHandler (this, this));
 			BTPlayService.Instance.RegisterReceiver ();
 
 			BTPlayService.Instance.setActivity (this);
@@ -107,6 +107,7 @@ namespace ProgettoInfo3
 		{
 			base.OnBackPressed ();
 			BTPlayService.Instance.Stop ();
+			BTPlayService.Instance.ResetHandler ();
 			Finish ();
 		}
 
@@ -152,6 +153,7 @@ namespace ProgettoInfo3
 		private void Back (object sender, EventArgs e)
 		{
 			BTPlayService.Instance.Stop ();
+			BTPlayService.Instance.ResetHandler ();
 			Finish ();
 		}
 
@@ -246,8 +248,10 @@ namespace ProgettoInfo3
 					break;
 					case (int)MessageType.MESSAGE_READ:
 						send.Enabled = false;
-						Board.Instance.ricreateFromByteArray ((Byte []) msg.Obj);
+						Board.Instance.ricreateFromByteArray ((byte []) msg.Obj);
 						Board.Instance.initializeSlave (name.Text);
+						BTPlayService.Instance.ResetHandler ();
+						a.Finish ();
 					break;
 					case (int)MessageType.MESSAGE_TOAST:
 						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();

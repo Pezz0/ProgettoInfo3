@@ -9,6 +9,7 @@ using Android.Widget;
 using Java.Lang;
 using Java.Util;
 using ChiamataLibrary;
+using System;
 
 
 namespace BTLibrary
@@ -31,7 +32,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The handler to send messages.
 		/// </summary>
-		private Handler _handler;
+		private readonly List<Handler> _handlers = new List<Handler> (4);
 
 		/// <summary>
 		/// The local BlueTooth adapter.
@@ -187,7 +188,7 @@ namespace BTLibrary
 		public void RegisterReceiver ()
 		{
 			// Register for broadcasts when a device is discovered
-			_receiver = new BTReceiver (_handler);
+			_receiver = new BTReceiver (_handlers [0]);
 			var filter = new IntentFilter (BluetoothDevice.ActionFound);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 		
@@ -289,7 +290,11 @@ namespace BTLibrary
 			//sets the state
 			_state = state;
 			// Give the new state to the Handler so the UI Activity can update
-			_handler.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
+
+			_handlers.ForEach (delegate(Handler h) {
+				h.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
+			});
+
 		}
 
 		/// <summary>
@@ -312,7 +317,7 @@ namespace BTLibrary
 			StopListen ();
 
 			// Start the thread to listen on a BluetoothServerSocket
-			listenThread = new BTListenThread (this, NAME, MY_UUID);
+			listenThread = new BTListenThread (NAME, MY_UUID);
 			listenThread.Start ();
 
 			//sets the state on STATE_LISTEN
@@ -329,9 +334,6 @@ namespace BTLibrary
 			//if the device we want to connect is a slave connected to this device the connection is not performed
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
-					var msg = _handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device");
-					_handler.SendMessage (msg);
-
 					return;
 				}
 			}
@@ -340,7 +342,7 @@ namespace BTLibrary
 			Stop ();
 
 			// Start the thread to connect with the given device
-			connectThread = new BTConnectThread (device, this, MY_UUID);
+			connectThread = new BTConnectThread (device, MY_UUID);
 			connectThread.Start ();
 
 			//sets the state to CONNECTING
@@ -359,11 +361,11 @@ namespace BTLibrary
 			Stop ();
 
 			// Start the thread to manage the connection and perform transmissions
-			connectedSlaveThread = new BTConnectedThread (socket, this);
+			connectedSlaveThread = new BTConnectedThread (socket);
 			connectedSlaveThread.Start ();
 
 			// Send the name of the connected device back to the Activity
-			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
 			//sets the state to CONNECTED_SLAVE
 			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
@@ -377,10 +379,8 @@ namespace BTLibrary
 		public bool isSlave ()
 		{
 			//if state is Connected_Client the caller is a client
-			if (_state == ConnectionState.STATE_CONNECTED_SLAVE)
-				return true;
-			else
-				return false;
+			return _state == ConnectionState.STATE_CONNECTED_SLAVE;
+
 		}
 
 		/// <summary>
@@ -391,11 +391,11 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
-			connectedMasterThread.Add (new BTConnectedThread (socket, this));
+			connectedMasterThread.Add (new BTConnectedThread (socket));
 			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
 
 			//sends a message to the activity indicates the connection to a device
-			_handler.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
 			SetState (ConnectionState.STATE_CONNECTED_MASTER);
 		}
@@ -478,7 +478,7 @@ namespace BTLibrary
 		internal void ConnectionFailed (string Message)
 		{	
 			// Send a failure message back to the Activity
-			_handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device: " + Message).SendToTarget ();
+			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device: " + Message).SendToTarget ();
 			//stops all existing thread
 			Stop ();
 			//return to initial state
@@ -491,7 +491,9 @@ namespace BTLibrary
 		internal void ConnectionLost (string Message)
 		{	
 			// Send a failure message back to the Activity
-			_handler.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: " + Message).SendToTarget ();
+			_handlers.ForEach (delegate(Handler h) {
+				h.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: " + Message).SendToTarget ();
+			});
 
 			//if device was a slave return to initial state
 			//if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
@@ -514,21 +516,7 @@ namespace BTLibrary
 		/// </param>
 		public void WriteToMaster<T> (IBTSendable<T> bts)
 		{
-
-			byte [] msg = bts.toByteArray ();
-
-			// Create temporary ConnectedThread
-			BTConnectedThread tmp;
-			// Synchronize a copy of the ConnectedThread
-			lock (this) {
-				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
-					return;
-
-				tmp = connectedSlaveThread;
-			}
-			// Perform the write unsynchronized
-			tmp.Write (msg);
-
+			WriteToMaster (bts.toByteArray ());
 		}
 
 		/// <summary>
@@ -564,7 +552,12 @@ namespace BTLibrary
 		/// </param>
 		public void WriteToSlave<T> (IBTSendable<T> bts, int player)
 		{
-			byte [] msg = bts.toByteArray ();
+			WriteToSlave (bts.toByteArray (), player);
+		}
+
+		public void WriteToSlave (byte [] bts, int player)
+		{
+
 			// Create temporary ConnectedThread
 			BTConnectedThread tmp;
 			// Synchronize a copy of the ConnectedThread
@@ -577,7 +570,7 @@ namespace BTLibrary
 				tmp = connectedMasterThread [player];
 			}
 			// Perform the write unsynchronized
-			tmp.Write (msg);
+			tmp.Write (bts);
 		}
 
 		/// <summary>
@@ -587,7 +580,11 @@ namespace BTLibrary
 		/// <param name="bts"> the parameter to send.</param>
 		public void WriteToAllSlaveExceptOne<T> (IBTSendable<T> bts, string address)
 		{
-			byte [] msg = bts.toByteArray ();
+			WriteToAllSlaveExceptOne (bts.toByteArray (), address);
+		}
+
+		public void WriteToAllSlaveExceptOne (byte [] bts, string address)
+		{
 			BTConnectedThread tmp;
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				lock (this) {
@@ -595,7 +592,7 @@ namespace BTLibrary
 						return;
 					tmp = connectedMasterThread [i];
 				}
-				tmp.Write (msg);
+				tmp.Write (bts);
 			}
 		}
 
@@ -606,13 +603,18 @@ namespace BTLibrary
 		/// <typeparam name="T">The type parameter.</typeparam>
 		public void WriteToAllSlave<T> (IBTSendable<T> bts)
 		{
-			byte [] msg = bts.toByteArray ();
+			WriteToAllSlave (bts.toByteArray ());
+		}
+
+		public void WriteToAllSlave (byte [] bts)
+		{
+
 			BTConnectedThread tmp;
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				lock (this) {
 					if (connectedMasterThread [i] != null) {
 						tmp = connectedMasterThread [i];
-						tmp.Write (msg);
+						tmp.Write (bts);
 					}
 				}
 
@@ -627,19 +629,24 @@ namespace BTLibrary
 		/// Sets the handler.
 		/// </summary>
 		/// <param name="handler">Handler.</param>
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void setHandler (Handler handler)
+		public void AddHandler (Handler handler)
 		{
-			_handler = handler;
+			_handlers.Add (handler);
 		}
 
-		/// <summary>
-		/// Gets the handler.
-		/// </summary>
-		/// <returns>The handler.</returns>
-		public Handler getHandler ()
+		public void RemoveHandler (Handler handler)
 		{
-			return _handler;
+			_handlers.Remove (handler);
+		}
+
+		public void ResetHandler ()
+		{
+			_handlers.Clear ();
+		}
+
+		public void forEachHandler (Action<Handler> action)
+		{
+			_handlers.ForEach (action);
 		}
 
 		#endregion
@@ -673,13 +680,10 @@ namespace BTLibrary
 		/// </summary>
 		/// <param name="activity">Activity.</param>
 		/// <param name="handler">Handler.</param>
-		public void Initialize (Activity activity, Handler handler)//, int maxplayer)
+		public void Initialize (Activity activity)//, int maxplayer)
 		{
 			// Initialize the list of device that are already paired  
 			_pairedDevicesList = new List<string> ();
-
-			//handler to communicate the new discovered devices
-			_handler = handler;
 
 			//activity to register the receiver
 			_activity = activity;
