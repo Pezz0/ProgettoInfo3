@@ -93,6 +93,8 @@ namespace ChiamataLibrary
 
 			_me = 0;	
 
+			_bytes = new List<byte> ();
+
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
 				_players [i] = new Player (playerName [i], i);
 
@@ -100,7 +102,7 @@ namespace ChiamataLibrary
 				char [] n = playerName [i].ToCharArray ();
 				for (int j = 0; j < MAX_NAME_LENGHT; j++)
 					if (j < n.Length)
-						_bytes.AddRange (BitConverter.GetBytes (n [j]));
+						_bytes.Add (BitConverter.GetBytes (n [j]) [0]);
 					else
 						_bytes.Add (0);
 			}
@@ -182,7 +184,7 @@ namespace ChiamataLibrary
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
 				for (int j = 0; j < nNumber; j++) {
 
-					int assignedPlayer = BitConverter.ToInt16 (new Byte[] { bytes [index], 0 }, 0);
+					int assignedPlayer = BitConverter.ToInt16 (new byte[2]{ bytes [index], 0 }, 0);
 
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					index++;
