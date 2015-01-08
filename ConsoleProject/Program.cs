@@ -12,7 +12,13 @@ namespace ChiamataLibrary
 			if (a == "x") {
 				GameData gm = new GameData ("C:\\Users\\Matteo\\Documents\\prova.xml");
 			} else if (a == "b") {
-				Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);
+				Board.Instance.initializeMaster (new string[] {
+					"Bono",
+					"Pezzo",
+					"Scandi",
+					"Tizio",
+					"Caio"
+				}, 2);
 
 				byte [] bs = Board.Instance.toByteArray ();
 				Board.Instance.recreateFromByteArray (bs);

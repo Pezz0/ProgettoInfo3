@@ -1,6 +1,7 @@
 ﻿using System;
 using MyRandom;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ChiamataLibrary
 {
@@ -13,11 +14,6 @@ namespace ChiamataLibrary
 		/// The numbe of player
 		/// </summary>
 		public const int PLAYER_NUMBER = 5;
-
-		/// <summary>
-		/// the name's player max lenght
-		/// </summary>
-		public const int MAX_NAME_LENGHT = 10;
 
 		/// <summary>
 		/// The number of semi
@@ -99,12 +95,11 @@ namespace ChiamataLibrary
 				_players [i] = new Player (playerName [i], i);
 
 				//add the player's name at the bytes array
-				char [] n = playerName [i].ToCharArray ();
-				for (int j = 0; j < MAX_NAME_LENGHT; j++)
-					if (j < n.Length)
-						_bytes.Add (BitConverter.GetBytes (n [j]) [0]);
-					else
-						_bytes.Add (0);
+
+				byte [] bs = Encoding.ASCII.GetBytes (playerName [i]);
+				_bytes.Add (( BitConverter.GetBytes (bs.GetLength (0)) ) [0]);
+				_bytes.AddRange (bs);
+
 			}
 
 			_lastWinner = indexDealer + 1;	//the last winner is the player that have to play first in the next turn
@@ -168,13 +163,17 @@ namespace ChiamataLibrary
 			int index = 0;
 
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
-				char [] c = new char[MAX_NAME_LENGHT];
-				for (int j = 0; j < MAX_NAME_LENGHT; j++) {
+			
+				int lenght = BitConverter.ToInt16 (new byte[2]{ bytes [index], 0 }, 0);
+				index = index + 1;
 
-					c [j] = BitConverter.ToChar (bytes, index);
-					index++;
+				byte [] bs = new byte[lenght];
+				for (int j = 0; j < lenght; j++) {
+					bs [j] = bytes [index + j];
 				}
-				_players [i] = new Player (new string (c), i);
+
+				index = index + lenght;
+				_players [i] = new Player (Encoding.ASCII.GetString (bs), i);
 			}
 
 			_lastWinner = _bytes [index];	//the last winner is the player that have to play first in the next turn
