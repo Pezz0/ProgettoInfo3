@@ -14,6 +14,7 @@ namespace Core
 
 		//Sprites and position variables
 		private List<CardData> carte;
+		private float _cardScale;
 		private List<CardData> droppedCards;
 		private CCPoint [] offScreen;
 		private bool played;
@@ -654,6 +655,7 @@ namespace Core
 							moveSprite (carte [i].posBase, carte [i].sprite, 0.3f, carte [i].rotation);
 						}
 					}
+					carte [selected].sprite.Scale = _cardScale * 0.75f;
 					carte [selected].posBase = new CCPoint (dropField.MaxX, winSize.Height - dropField.Center.Y);
 					moveSprite (new CCPoint (carte [selected].posBase.X, carte [selected].posBase.Y), carte [selected].sprite);
 					droppedCards.Add (carte [selected]);
@@ -690,6 +692,8 @@ namespace Core
 
 		#endregion
 
+		private bool written;
+
 		/// <summary>
 		/// Gamescene constructor, initializes sprites to their default position
 		/// </summary>
@@ -699,7 +703,7 @@ namespace Core
 
 
 			//Instancing the layer and setting him as a child of the mainWindow
-			mainLayer = new CCLayer ();
+			mainLayer = new CCLayerColor ();
 			AddChild (mainLayer);
 
 
@@ -799,23 +803,22 @@ namespace Core
 
 			playerNames.Add (new CCLabel ("", "Arial", 12));
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [1].name, "Arial", 20));
-			playerNames [1].Position = new CCPoint (winSize.Width / 2, winSize.Height - 15);
-			playerNames [1].Rotation = 180;
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [1].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames [1].Position = new CCPoint (winSize.Width / 2, winSize.Height - winSize.Height / 40);
 			mainLayer.AddChild (playerNames [1]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [2].name, "Arial", 20));
-			playerNames [2].Position = new CCPoint (15, winSize.Height * 3 / 4);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [2].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames [2].Position = new CCPoint (winSize.Height / 40, winSize.Height * 3 / 4);
 			playerNames [2].Rotation = -90;
 			mainLayer.AddChild (playerNames [2]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [3].name, "Arial", 20));
-			playerNames [3].Position = new CCPoint (15, winSize.Height / 4);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [3].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames [3].Position = new CCPoint (winSize.Height / 40, winSize.Height / 4);
 			playerNames [3].Rotation = -90;
 			mainLayer.AddChild (playerNames [3]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [4].name, "Arial", 20));
-			playerNames [4].Position = new CCPoint (winSize.Width / 2, 15);
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [4].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames [4].Position = new CCPoint (winSize.Width / 2, winSize.Height / 40);
 			playerNames [4].Rotation = 180;
 			mainLayer.AddChild (playerNames [4]);
 			#endregion
@@ -857,7 +860,7 @@ namespace Core
 					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), winSize.Height / 4);
 
 				} else {
-					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + 50);
+					posBase = new CCPoint (winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), carte [i - 1].posBase.Y + ( winSize.Height / carte [0].sprite.Texture.PixelsWide ) * 21f);
 				}
 				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
 				carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand [i].number.ToString () + "_" + Board.Instance.Me.Hand [i].seme.ToString ()), posBase, rotation, i));
@@ -865,7 +868,8 @@ namespace Core
 				//Positioning the cards in an arc shape, using a parabola constructed with the for index
 				carte [i].sprite.Position = carte [i].posBase;
 				carte [i].sprite.Rotation = carte [i].rotation;
-				carte [i].sprite.Scale = 0.3f;
+				_cardScale = ( winSize.Height / carte [i].sprite.Texture.PixelsWide ) * 0.12f;
+				carte [i].sprite.Scale = _cardScale;
 
 				mainLayer.AddChild (carte [i].sprite, i);
 			}
@@ -903,7 +907,7 @@ namespace Core
 			buttons [10] = new Button (mainLayer, touch, actButtons [10], pathButtons [10], pathButtonsPressed [10], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 - orzSpace / 2 - ( textWidth * scale ) / 2), winSize, -90, scale);
 			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + ( textWidth * scale ) / 2), winSize, -90, scale);
 
-			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120);
+			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120, -90, _cardScale * 3f);
 
 
 			#endregion
@@ -912,10 +916,10 @@ namespace Core
 			wait = 0;
 
 			Schedule (RunGameLogic);
-
 			Board.Instance.start ();
-
-
+			mainLayer.Color = new CCColor3B (6, 117, 21);
+			mainLayer.Opacity = 255;
+			written = false;
 
 
 		}
@@ -932,6 +936,19 @@ namespace Core
 			} else {
 				wait = 0;
 				Board.Instance.update ();
+			}
+
+			if (Board.Instance.isGameFinish && !written) {
+				String a = "";
+				Archive.Instance.forEach (delegate(GameData gd) {
+					a = a + "Chiamate : " + gd.getChiamante ().ToString () + " " + gd.getChiamantePointCount ().ToString ();
+				});
+				CCLabel victory = new CCLabel (a, "Arial", 18);
+				victory.Rotation = -90;
+				victory.Scale = 3f;
+				victory.Position = new CCPoint (winSize.Width / 2, winSize.Height / 2);
+				mainLayer.AddChild (victory);
+				written = true;
 			}
 					
 			
@@ -1076,10 +1093,10 @@ namespace Core
 		{
 
 			auctionEnded ();
-			chooseOri = new Button (mainLayer, touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 150), winSize, -90, 0.3f);
-			chooseCoppe = new Button (mainLayer, touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + 50), winSize, -90, 0.3f);
-			chooseBastoni = new Button (mainLayer, touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 50), winSize, -90, 0.3f);
-			chooseSpade = new Button (mainLayer, touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - 150), winSize, -90, 0.3f);
+			chooseOri = new Button (mainLayer, touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (winSize.Width / 2, winSize.Height / 2 + _cardScale * carte [0].sprite.Texture.PixelsWide * 1.5f), winSize, -90, _cardScale * 0.7f);
+			chooseCoppe = new Button (mainLayer, touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (winSize.Width / 2, winSize.Height / 2 + _cardScale * carte [0].sprite.Texture.PixelsWide * 0.5f), winSize, -90, _cardScale * 0.7f);
+			chooseBastoni = new Button (mainLayer, touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (winSize.Width / 2, winSize.Height / 2 - _cardScale * carte [0].sprite.Texture.PixelsWide * 0.5f), winSize, -90, _cardScale * 0.7f);
+			chooseSpade = new Button (mainLayer, touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (winSize.Width / 2, winSize.Height / 2 - _cardScale * carte [0].sprite.Texture.PixelsWide * 1.5f), winSize, -90, _cardScale * 0.7f);
 		}
 
 		#endregion
@@ -1111,6 +1128,16 @@ namespace Core
 				Card temp = Board.Instance.Me.InitialHand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
 				if (Board.Instance.numberOfCardOnBoard != 4)
 					turnLight (1);
+
+
+				touch.eventTouchBegan -= touchBeganGame;
+				touch.eventTouchMoved -= touchMovedGame;
+				touch.eventTouchEnded -= touchEndedGame;
+
+				touch.eventTouchBegan += touchBeganAsta;
+				touch.eventTouchMoved += touchMovedAsta;
+				touch.eventTouchEnded += touchEndedAsta;
+
 				return Board.Instance.getCard (temp.seme, temp.number);
 			}
 			return null;
@@ -1122,9 +1149,9 @@ namespace Core
 
 		public void playCard (Move m)
 		{
-			int localIndex = m.player.order;
+			int localIndex = ( m.player.order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
 			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
-			cardSprite.Scale = 0.25f;
+			cardSprite.Scale = _cardScale * 0.7f;
 			CardData cd;
 			switch (localIndex) {
 				case 1:
@@ -1163,6 +1190,13 @@ namespace Core
 					droppedCards.Add (cd);
 					moveSprite (cd.posBase, cardSprite);
 					wait = 0.5f;
+
+					touch.eventTouchBegan += touchBeganGame;
+					touch.eventTouchMoved += touchMovedGame;
+					touch.eventTouchEnded += touchEndedGame;
+					touch.eventTouchBegan -= touchBeganAsta;
+					touch.eventTouchMoved -= touchMovedAsta;
+					touch.eventTouchEnded -= touchEndedAsta;
 				break;
 			}
 
@@ -1192,6 +1226,15 @@ namespace Core
 				droppedCards.RemoveAt (i);
 			}
 			turnLight (player.order);
+			if (player == Board.Instance.Me) {
+				touch.eventTouchBegan += touchBeganGame;
+				touch.eventTouchMoved += touchMovedGame;
+				touch.eventTouchEnded += touchEndedGame;
+				touch.eventTouchBegan -= touchBeganAsta;
+				touch.eventTouchMoved -= touchMovedAsta;
+				touch.eventTouchEnded -= touchEndedAsta;
+			}
+
 
 
 		}

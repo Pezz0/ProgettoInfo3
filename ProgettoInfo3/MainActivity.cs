@@ -62,7 +62,7 @@ namespace ProgettoInfo3
 		void joinClick (object sender, EventArgs e)
 		{
 			var serverIntent = new Intent (this, typeof (JoinTableActivity));
-			StartActivity (serverIntent);
+			StartActivityForResult (serverIntent, 1);
 		}
 
 		void settingClick (object sender, EventArgs e)
@@ -78,11 +78,7 @@ namespace ProgettoInfo3
 				var application = new CCApplication ();
 				application.ApplicationDelegate = new Core.GameAppDelegate ();
 				SetContentView (application.AndroidContentView);
-
-				ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
-				if (BTPlayService.Instance.getNumConnected () > 0)
-					BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
-
+			
 				List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
 
 				if (BTPlayService.Instance.isSlave ()) {
@@ -95,11 +91,15 @@ namespace ProgettoInfo3
 					}
 
 				} else {
+					ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
+					if (BTPlayService.Instance.getNumConnected () > 0)
+						BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
+
 					string [] type = data.GetStringArrayExtra ("types");
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (type [i - 1] == "AI")
-							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ()));
+							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
 						else if (type [i - 1] == "BlueTooth") {
 							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
 							BTPlayService.Instance.AddHandler (bt);

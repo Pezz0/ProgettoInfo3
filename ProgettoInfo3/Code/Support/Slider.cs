@@ -45,7 +45,7 @@ namespace Core
 			spritePoint = new CCSprite (texturePoint);
 			spriteBar.AddChild (spritePoint);
 			spritePoint.Position = new CCPoint (0, spriteBar.ContentSize.Height / 2);
-			spritePoint.Scale = scale;
+			spritePoint.Scale = scale * 0.7f;
 
 			_min = min;
 			_max = max;
@@ -73,8 +73,8 @@ namespace Core
 		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			if (spriteBar.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
-				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY) / scale;
-				_currentValue = _min + (int) Math.Round ((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
+				spritePoint.PositionX = ( winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY ) / scale;
+				_currentValue = _min + (int) Math.Round (( spritePoint.PositionX / spriteBar.ContentSize.Width ) * ( _max - _min ));
 				lblValue.Text = _currentValue.ToString ();
 			}
 		}
@@ -82,8 +82,8 @@ namespace Core
 		private void touchMoved (List<CCTouch> touches, CCEvent touchEvent)
 		{
 			if (spriteBar.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
-				spritePoint.PositionX = (winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY) / scale;
-				_currentValue = _min + (int) Math.Round ((spritePoint.PositionX / spriteBar.ContentSize.Width) * (_max - _min));
+				spritePoint.PositionX = ( winSize.Height - touches [0].LocationOnScreen.Y - spriteBar.PositionY ) / scale;
+				_currentValue = _min + (int) Math.Round (( spritePoint.PositionX / spriteBar.ContentSize.Width ) * ( _max - _min ));
 				lblValue.Text = _currentValue.ToString ();
 			}
 		}

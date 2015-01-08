@@ -270,6 +270,11 @@ namespace ProgettoInfo3
 						Board.Instance.recreateFromByteArray ((byte []) msg.Obj);
 						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
+
+						Intent returnIntent = new Intent ();
+
+						a.SetResult (Result.Ok, returnIntent);
+
 						a.Finish ();
 					break;
 					case (int)MessageType.MESSAGE_TOAST:

@@ -22,7 +22,7 @@ namespace ChiamataLibrary
 		{
 			this._me = me;
 			if (me.Role == EnRole.CHIAMANTE)
-				_cardChooser = new AICChiamanteTakeAll (10, 20, 5);
+				_cardChooser = new AICChiamanteTakeAll (10, 25, 3);
 			else if (me.Role == EnRole.SOCIO)
 				_cardChooser = new AICSocioNascosto ();
 			else
