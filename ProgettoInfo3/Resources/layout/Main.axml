@@ -28,40 +28,50 @@
             android:layout_marginTop="50dp"
             android:layout_marginBottom="10dp" />
     </RelativeLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2">
-        <Button
-            android:text="Create Table"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/create"
-            android:background="@drawable/red_button"
-            style="@style/button_text" />
-        <Button
-            android:text="Select Table"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/select"
-            android:background="@drawable/red_button"
-            style="@style/button_text" />
-        <Button
-            android:text="Settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/settings"
-            android:background="@drawable/red_button"
-            style="@style/button_text" />
-    </LinearLayout>
     <RelativeLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/assi"
-        android:id="@+id/relativeLayout2" />
+        android:id="@+id/relativeLayout3">
+        <RelativeLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:background="@drawable/assi"
+            android:id="@+id/ImageLayout"
+            android:layout_width="328.9dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true" />
+        <RelativeLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/ImageLayout"
+            android:id="@+id/relativeLayout4">
+            <Button
+                android:text="Create Table"
+                android:id="@+id/create"
+                android:background="@drawable/red_button"
+                style="@style/button_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:text="Select Table"
+                android:id="@+id/select"
+                android:background="@drawable/red_button"
+                style="@style/button_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/create" />
+            <Button
+                android:text="Settings"
+                android:id="@+id/settings"
+                android:background="@drawable/red_button"
+                style="@style/button_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/select" />
+        </RelativeLayout>
+    </RelativeLayout>
 </LinearLayout>

@@ -8,7 +8,9 @@ using Android.Content;
 using ChiamataLibrary;
 using Microsoft.Xna.Framework;
 using BTLibrary;
-using System.Collections.Generic;
+
+//using System.Collections.Generic;
+using Android.Views;
 
 
 
@@ -16,16 +18,10 @@ namespace ProgettoInfo3
 {
 	[Activity (
 		Label = "ProgettoInfo3",
-		AlwaysRetainTaskState = true,
-		Icon = "@drawable/icon",
 		Theme = "@android:style/Theme.NoTitleBar",
-		LaunchMode = LaunchMode.SingleTop,
-		ScreenOrientation = ScreenOrientation.Portrait,
-		MainLauncher = true,
-		ConfigurationChanges = ConfigChanges.Keyboard |
-		ConfigChanges.KeyboardHidden)
+		ScreenOrientation = ScreenOrientation.ReverseLandscape)
 	]
-	public class MainActivity : AndroidGameActivity
+	public class MainActivity : Activity
 	{
 		Button create;
 		Button join;
@@ -35,6 +31,7 @@ namespace ProgettoInfo3
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Main);
+			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
 			create = FindViewById<Button> (Resource.Id.create);
 			join = FindViewById<Button> (Resource.Id.select);
@@ -50,6 +47,12 @@ namespace ProgettoInfo3
 
 
 
+		}
+
+		private int ConvertPixelsToDp (float pixelValue)
+		{
+			var dp = (int) ( ( pixelValue ) / Resources.DisplayMetrics.Density );
+			return dp;
 		}
 
 		void createClick (object sender, EventArgs e)
@@ -73,46 +76,14 @@ namespace ProgettoInfo3
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
+
 			if (requestCode == 1 && resultCode == Result.Ok) {
-				string [] name = data.GetStringArrayExtra ("Names");
-				var application = new CCApplication ();
-				application.ApplicationDelegate = new Core.GameAppDelegate ();
-				SetContentView (application.AndroidContentView);
-			
-				List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
 
-				if (BTPlayService.Instance.isSlave ()) {
-
-					for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
-						if (Board.Instance.Me.order != i) {
-							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
-							BTPlayService.Instance.AddHandler (bt);
-						}
-					}
-
-				} else {
-					ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
-					if (BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
-
-					string [] type = data.GetStringArrayExtra ("types");
-
-					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
-						if (type [i - 1] == "AI")
-							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
-						else if (type [i - 1] == "BlueTooth") {
-							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
-							BTPlayService.Instance.AddHandler (bt);
-						}
-					}
-				}
-
-				application.StartGame ();
+				Intent returnIntent = data;
+				SetResult (Result.Ok, returnIntent);
+				Finish ();
 
 			}
-
-
-
 
 		}
 

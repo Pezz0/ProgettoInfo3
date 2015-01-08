@@ -26,7 +26,8 @@ namespace ProgettoInfo3
 
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
-		private static bool start, normalEnd;
+		private static bool start, normalEnd, connecting;
+		private static string address = "";
 
 		private static ListView paired, newdev;
 
@@ -35,6 +36,7 @@ namespace ProgettoInfo3
 			base.OnCreate (bundle);
 
 			start = normalEnd = true;
+			connecting = false;
 
 			BTPlayService.Instance.AddHandler (new BTConnHandler (this, this));
 			BTPlayService.Instance.RegisterReceiver ();
@@ -166,13 +168,24 @@ namespace ProgettoInfo3
 
 		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
+			connecting = true;
+			var info = ( e.View as TextView ).Text.ToString ();
+			address = info.Substring (info.Length - 17);
+
 			if (BTPlayService.Instance.isDiscovering ()) {
 				BTPlayService.Instance.CancelDiscovery ();
 				normalEnd = false;
 			}
-				
-			var info = ( e.View as TextView ).Text.ToString ();
-			var address = info.Substring (info.Length - 17);
+
+			if (BTPlayService.Instance.isBTEnabled ()) {
+				connection ();
+			} else {
+				BTPlayService.Instance.enableBluetooth ();
+			}
+		}
+
+		private void connection ()
+		{
 
 			AlertDialog.Builder connect = new AlertDialog.Builder (this);
 			connect.SetTitle ("Connection");
@@ -181,16 +194,16 @@ namespace ProgettoInfo3
 				SetTitle (Resource.String.connecting);
 				pb.Visibility = ViewStates.Visible;
 				BTPlayService.Instance.ConnectAsSlave (BTPlayService.Instance.getRemoteDevice (address));
+				address = "";
+				connecting = false;
 			});
 			connect.SetNegativeButton ("NO", delegate {
-				//Finish ();
+				address = "";
+				connecting = false;
 			});
 			connect.Show ();
-
-
-		
-
 		}
+
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
@@ -209,6 +222,8 @@ namespace ProgettoInfo3
 							newArrayList.Clear ();
 							BTPlayService.Instance.Discovery ();
 						}
+						if (connecting)
+							connection ();
 					}
 				break;
 
