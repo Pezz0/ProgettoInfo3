@@ -14,31 +14,48 @@
         style="@style/create_txt"
         p1:id="@+id/paired"
         p1:layout_alignParentTop="true" />
-    <ListView
+    <RelativeLayout
+        p1:orientation="vertical"
         p1:minWidth="25px"
         p1:minHeight="25px"
         p1:layout_width="200dp"
-        style="@style/create_txt"
-        p1:layout_height="match_parent"
+        p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/paired"
-        p1:id="@+id/newdev"
-        p1:layout_alignBottom="@id/paired" />
+        p1:id="@+id/Layout"
+        p1:layout_above="@+id/scan"
+        p1:layout_alignParentTop="true">
+        <ListView
+            p1:minWidth="25px"
+            p1:minHeight="25px"
+            style="@style/create_txt"
+            p1:layout_height="match_parent"
+            p1:layout_width="match_parent"
+            p1:id="@+id/newdev"
+            p1:layout_centerInParent="true" />
+        <ProgressBar
+			p1:indeterminateDrawable="@drawable/indeterminate"
+            style="?android:attr/progressBarStyleSmall"
+            p1:layout_width="50dp"
+            p1:layout_height="50dp"
+            p1:id="@+id/progress"
+            p1:layout_centerInParent="true" />
+    </RelativeLayout>
     <Button
         p1:text="Scan For New Device"
         p1:layout_width="wrap_content"
         p1:layout_height="wrap_content"
         p1:id="@+id/scan"
-        p1:layout_alignRight="@id/newdev"
+        p1:layout_alignRight="@id/Layout"
         p1:layout_alignBottom="@id/relativeLayout1"
         p1:layout_alignParentBottom="true"
         p1:background="@drawable/red_button"
         style="@style/create_btn"
-        p1:layout_alignLeft="@id/newdev" />
+        p1:layout_alignLeft="@id/Layout" />
     <EditText
         p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         style="@style/create_txt"
-        p1:layout_toRightOf="@id/newdev"
+        p1:layout_toRightOf="@id/Layout"
         p1:id="@+id/MyName" />
     <Button
         p1:text="Send Name"

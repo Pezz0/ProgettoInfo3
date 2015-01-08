@@ -21,20 +21,20 @@ namespace ProgettoInfo3
 		private static Button scan;
 		private static Button send;
 		private static Button back;
-
+		private static ProgressBar pb;
 		private static EditText name;
 
 		private ArrayAdapter<string> pairedArrayList;
 		private static ArrayAdapter<string> newArrayList;
-		private bool start;
+		private static bool start, normalEnd;
 
-		ListView paired, newdev;
+		private static ListView paired, newdev;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 
-			start = true;
+			start = normalEnd = true;
 
 			BTPlayService.Instance.AddHandler (new BTConnHandler (this, this));
 			BTPlayService.Instance.RegisterReceiver ();
@@ -52,6 +52,9 @@ namespace ProgettoInfo3
 			pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 			newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 
+			pb = FindViewById<ProgressBar> (Resource.Id.progress);
+			pb.Visibility = ViewStates.Invisible;
+
 			pairedArrayList.Clear ();
 			paired.Adapter = pairedArrayList; 
 
@@ -62,6 +65,7 @@ namespace ProgettoInfo3
 
 			scan = FindViewById<Button> (Resource.Id.scan);
 			scan.Click += scanDevice;
+			scan.Enabled = true;
 
 			send = FindViewById<Button> (Resource.Id.Sendname);
 			send.Enabled = false;
@@ -115,10 +119,13 @@ namespace ProgettoInfo3
 		private void scanDevice (object sender, EventArgs e)
 		{
 			start = false;
+			normalEnd = true;
+			scan.Enabled = false;
 			if (BTPlayService.Instance.isBTEnabled ()) {
 				SetTitle (Resource.String.scanning);
 				newArrayList.Clear ();
 				BTPlayService.Instance.Discovery ();
+				pb.Visibility = ViewStates.Visible;
 			} else
 				BTPlayService.Instance.enableBluetooth ();
 
@@ -159,8 +166,10 @@ namespace ProgettoInfo3
 
 		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
-			if (BTPlayService.Instance.isDiscovering ())
+			if (BTPlayService.Instance.isDiscovering ()) {
 				BTPlayService.Instance.CancelDiscovery ();
+				normalEnd = false;
+			}
 				
 			var info = ( e.View as TextView ).Text.ToString ();
 			var address = info.Substring (info.Length - 17);
@@ -169,8 +178,9 @@ namespace ProgettoInfo3
 			connect.SetTitle ("Connection");
 			connect.SetMessage ("Do you really want to connect with " + BTPlayService.Instance.getRemoteDevice (address).Name + "?");
 			connect.SetPositiveButton ("YES", delegate {
+				SetTitle (Resource.String.connecting);
+				pb.Visibility = ViewStates.Visible;
 				BTPlayService.Instance.ConnectAsSlave (BTPlayService.Instance.getRemoteDevice (address));
-
 			});
 			connect.SetNegativeButton ("NO", delegate {
 				//Finish ();
@@ -228,23 +238,32 @@ namespace ProgettoInfo3
 					break;
 
 					case (int) MessageType.END_SCANNING:
-						AlertDialog.Builder connect = new AlertDialog.Builder (c);
-						connect.SetTitle ("End Scanning");
-						connect.SetMessage ("Scanning For New Device Finished");
-						connect.SetNeutralButton ("OK", delegate {
-						});
-						connect.Show ();
+						if (normalEnd) {
+							AlertDialog.Builder connect = new AlertDialog.Builder (c);
+							connect.SetTitle ("End Scanning");
+							connect.SetMessage ("Scanning For New Device Finished");
+							connect.SetNeutralButton ("OK", delegate {
+							});
+							connect.Show ();
+
+						}
+						scan.Enabled = true;
+						pb.Visibility = ViewStates.Invisible;
 						a.SetTitle (Resource.String.select);
 					break;
 					case (int)MessageType.NONE_FOUND:
-						newArrayList.Add ("No Device Found");
+						if (normalEnd) {
+							newArrayList.Add ("No Device Found");
+						}
 					break;
 					case (int) MessageType.MESSAGE_STATE_CHANGE:
 						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE) {
+							pb.Visibility = ViewStates.Invisible;
 							send.Enabled = true;
 							Toast.MakeText (Application.Context, "Connected to " + conn, ToastLength.Short).Show ();
 							a.SetTitle (Resource.String.change_name);
 						}
+
 					break;
 					case (int)MessageType.MESSAGE_READ:
 						send.Enabled = false;
@@ -254,7 +273,9 @@ namespace ProgettoInfo3
 						a.Finish ();
 					break;
 					case (int)MessageType.MESSAGE_TOAST:
+						pb.Visibility = ViewStates.Invisible;
 						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
+						a.SetTitle (Resource.String.select);
 					break;
 					case (int) MessageType.MESSAGE_DEVICE_ADDR:
 						conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
