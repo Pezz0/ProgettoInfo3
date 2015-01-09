@@ -719,6 +719,8 @@ namespace BTLibrary
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
 			connectedMasterThread = new List<BTConnectedThread> ();
+
+			writeSlaveThread = new List<WriteThread> ();
 		}
 
 		#endregion
