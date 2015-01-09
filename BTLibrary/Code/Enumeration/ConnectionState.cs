@@ -4,7 +4,6 @@ namespace BTLibrary
 {
 	public enum ConnectionState
 	{
-		//TODO : togliere "= numero"
 		STATE_NONE,
 		STATE_LISTEN,
 		STATE_CONNECTING,

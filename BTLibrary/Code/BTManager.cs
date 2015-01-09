@@ -38,27 +38,41 @@ namespace BTLibrary
 
 		public void imReady ()
 		{
-			if (BTPlayService.Instance.isSlave ()) {
-				BTPlayService.Instance.WriteToMaster (Board.Instance.Me);
-			} else {
-				BTPlayService.Instance.WriteToAllSlave (Board.Instance.Me);
-			}
+			byte [] msg = new byte[2];
+			msg [0] = (int) EnContentType.READY;
+			msg [1] = Board.Instance.Me.toByteArray () [0];
+
+
+			if (BTPlayService.Instance.isSlave ())
+				BTPlayService.Instance.WriteToMaster (msg);
+			else
+				BTPlayService.Instance.WriteToAllSlave (msg);
 				
 		}
 
 		public void bidPlaced (IBid bid)
 		{
+			byte [] msg = new byte[4];
+			msg [0] = (int) EnContentType.BID;
+
+			byte [] bs = bid.toByteArray ();
+
+			msg [1] = bs [0];
+			msg [2] = bs [1];
+			msg [3] = bs [2];
+
 			if (BTPlayService.Instance.isSlave ())
-				BTPlayService.Instance.WriteToMaster (bid);
+				BTPlayService.Instance.WriteToMaster (msg);
 			else
-				BTPlayService.Instance.WriteToAllSlave (bid);
+				BTPlayService.Instance.WriteToAllSlave (msg);
 		}
 
 		public void semeChosen ()
 		{
-			Byte [] msg = new Byte[2];
-			msg [0] = Board.Instance.getChiamante ().toByteArray () [0];
-			msg [1] = (Byte) Board.Instance.Briscola;
+			Byte [] msg = new Byte[3];
+			msg [0] = (int) EnContentType.SEME;
+			msg [1] = Board.Instance.getChiamante ().toByteArray () [0];
+			msg [2] = (Byte) Board.Instance.Briscola;
 
 			if (BTPlayService.Instance.isSlave ()) {
 				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
@@ -67,13 +81,19 @@ namespace BTLibrary
 				BTPlayService.Instance.WriteToAllSlave (msg);
 		}
 
-		public void cardPlayed (Move m)
+		public void cardPlayed (Move move)
 		{
+			byte [] msg = new byte[3];
+			msg [0] = (int) EnContentType.MOVE;
+
+			byte [] ms = move.toByteArray ();
+			msg [1] = ms [0];
+			msg [2] = ms [1];
 
 			if (BTPlayService.Instance.isSlave ())
-				BTPlayService.Instance.WriteToMaster (m);
+				BTPlayService.Instance.WriteToMaster (msg);
 			else
-				BTPlayService.Instance.WriteToAllSlave (m);
+				BTPlayService.Instance.WriteToAllSlave (msg);
 		}
 	}
 }

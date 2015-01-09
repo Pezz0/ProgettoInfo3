@@ -28,27 +28,34 @@ namespace BTLibrary
 		{
 			if (msg.What == (int) MessageType.MESSAGE_READ) {
 
-				if (Board.Instance.isWaitingPhase && BTPlayService.Instance.isSlave ())
-					_readyToStart = true;
-
 				byte [] data = (byte []) msg.Obj;
-				Player sender = Board.Instance.getPlayer (data [0]);
 
+				EnContentType type = (EnContentType) data [0];
+				Player sender = Board.Instance.getPlayer (data [1]);
+
+				if (type == EnContentType.READY && BTPlayService.Instance.isSlave ())
+					_readyToStart = true;
+					
 				if (sender == _player) {
-					if (Board.Instance.isWaitingPhase && !BTPlayService.Instance.isSlave ())
+					if (type == EnContentType.READY && !BTPlayService.Instance.isSlave ())
 						_readyToStart = true;
 
-					if (Board.Instance.isAuctionPhase) {
+					if (type == EnContentType.BID) {
 						_ready = true;
-						_bid = Board.Instance.DefBid.recreateFromByteArray (data);
+
+						_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[3] {
+							data [1],
+							data [2],
+							data [3]
+						});
 					}
-					if (Board.Instance.isFinalizePhase) {
+					if (type == EnContentType.SEME) {
 						_ready = true;
-						_seme = (EnSemi) ( data [1] );
+						_seme = (EnSemi) ( data [2] );
 					}
-					if (Board.Instance.isPlayTime) {
+					if (type == EnContentType.MOVE) {
 						_ready = true;
-						_card = Board.Instance.getCard (data [1]);
+						_card = Board.Instance.getCard (data [2]);
 					}
 				}
 			}

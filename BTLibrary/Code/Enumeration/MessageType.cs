@@ -4,7 +4,6 @@ namespace BTLibrary
 {
 	public enum MessageType
 	{
-		//TODO : togliere "= numero" DONE
 		MESSAGE_STATE_CHANGE,
 		MESSAGE_READ,
 		MESSAGE_DEVICE_READ,

@@ -38,6 +38,7 @@
     <Compile Include="AuctionSystemTest.cs" />
     <Compile Include="IBidTest.cs" />
     <Compile Include="CardTest.cs" />
+    <Compile Include="BytesConversionTest.cs" />
   </ItemGroup>
   <Import Project="..\ChiamataLibrary\ChiamataLibrary.projitems" Label="Shared" Condition="Exists('..\ChiamataLibrary\ChiamataLibrary.projitems')" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

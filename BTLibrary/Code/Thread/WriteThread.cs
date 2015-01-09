@@ -71,8 +71,7 @@ namespace BTLibrary
 					}
 
 					Sleep (100);
-				} else
-					this.Wait ();
+				} 
 			}
 		}
 
@@ -80,7 +79,6 @@ namespace BTLibrary
 		{
 			pippo.Push (a);
 
-			this.Notify ();
 		}
 
 		/// <summary>
