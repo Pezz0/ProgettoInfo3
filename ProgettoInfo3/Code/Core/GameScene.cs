@@ -747,7 +747,7 @@ namespace Core
 			turnLights [0].Position = new CCPoint (winSize.Width - turnLights [0].ContentSize.Height / 2, winSize.Height / 2);
 			turnLights [0].BlendFunc = CCBlendFunc.Additive;
 			turnLights [0].Rotation = -90;
-			turnLights [0].Color = CCColor3B.Green;
+			turnLights [0].Color = CCColor3B.Red;
 			turnLights [0].ScaleX = winSize.Height / turnLights [0].ContentSize.Width;
 			mainLayer.AddChild (turnLights [0]);
 			turnLights [0].ZOrder = -1;
@@ -767,7 +767,7 @@ namespace Core
 			turnLights [2].Position = new CCPoint (-5 + turnLights [2].ContentSize.Height / 2, winSize.Height * 3 / 4);
 			turnLights [2].BlendFunc = CCBlendFunc.Additive;
 			turnLights [2].Rotation = 90;
-			turnLights [2].Color = CCColor3B.Yellow;
+			turnLights [2].Color = CCColor3B.Red;
 			turnLights [2].ScaleX = ( winSize.Height / 2 ) / turnLights [2].ContentSize.Width;
 			mainLayer.AddChild (turnLights [2]);
 			turnLights [2].ZOrder = 20;
@@ -777,7 +777,7 @@ namespace Core
 			turnLights [3].Position = new CCPoint (-5 + turnLights [3].ContentSize.Height / 2, winSize.Height / 4);
 			turnLights [3].BlendFunc = CCBlendFunc.Additive;
 			turnLights [3].Rotation = 90;
-			turnLights [3].Color = CCColor3B.Blue;
+			turnLights [3].Color = CCColor3B.Red;
 			turnLights [3].ScaleX = ( winSize.Height / 2 ) / turnLights [3].ContentSize.Width;
 			mainLayer.AddChild (turnLights [3]);
 			turnLights [3].ZOrder = 20;
@@ -786,7 +786,7 @@ namespace Core
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [4].Position = new CCPoint (winSize.Width / 2, -5 + turnLights [1].ContentSize.Height / 2);
 			turnLights [4].BlendFunc = CCBlendFunc.Additive;
-			turnLights [4].Color = CCColor3B.Orange;
+			turnLights [4].Color = CCColor3B.Red;
 			turnLights [4].ScaleX = winSize.Width / turnLights [4].ContentSize.Width;
 			mainLayer.AddChild (turnLights [4]);
 			turnLights [4].ZOrder = 20;
