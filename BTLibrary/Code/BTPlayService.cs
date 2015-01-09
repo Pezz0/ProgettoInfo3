@@ -475,10 +475,10 @@ namespace BTLibrary
 		/// <summary>
 		/// Indicate that the connection attempt failed and notify the Activity.
 		/// </summary>
-		internal void ConnectionFailed (string Message)
+		internal void ConnectionFailed ()
 		{	
 			// Send a failure message back to the Activity
-			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Unable to connect device: " + Message).SendToTarget ();
+			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_TOAST, "I don't find any BlueTooth game opened on this device, Please retry").SendToTarget ();
 			//stops all existing thread
 			Stop ();
 			//return to initial state
@@ -488,11 +488,11 @@ namespace BTLibrary
 		/// <summary>
 		/// Indicate that the connection was lost and notify the UI Activity.
 		/// </summary>
-		internal void ConnectionLost (string Message)
+		internal void ConnectionLost ()
 		{	
 			// Send a failure message back to the Activity
 			_handlers.ForEach (delegate(Handler h) {
-				h.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: " + Message).SendToTarget ();
+				h.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: ").SendToTarget ();
 			});
 
 			//if device was a slave return to initial state

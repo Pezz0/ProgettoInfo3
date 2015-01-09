@@ -1,12 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using BTLibrary;
@@ -18,15 +15,18 @@ namespace ProgettoInfo3
 	[Activity (Label = "JoinTableActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class JoinTableActivity : Activity
 	{
-		private static Button scan;
-		private static Button send;
-		private static Button back;
+		public const int MAX_NAME_LENGHT = 10, DEVICE_ADDRESS_LENGHT = 17;
+
+		private static Button scan, send, back;
+
 		private static ProgressBar pb;
+
 		private static EditText name;
 
-		private ArrayAdapter<string> pairedArrayList;
-		private static ArrayAdapter<string> newArrayList;
+		private static ArrayAdapter<string> pairedArrayList, newArrayList;
+
 		private static bool start, normalEnd, connecting;
+
 		private static string address = "";
 
 		private static ListView paired, newdev;
@@ -80,8 +80,8 @@ namespace ProgettoInfo3
 
 
 			string namedev = BTPlayService.Instance.GetLocalName ();
-			if (namedev.Length > 10)
-				name.Text = namedev.Substring (0, 10);
+			if (namedev.Length > MAX_NAME_LENGHT)
+				name.Text = namedev.Substring (0, MAX_NAME_LENGHT);
 			else
 				name.Text = namedev;
 
@@ -93,14 +93,10 @@ namespace ProgettoInfo3
 			if (!BTPlayService.Instance.isBTEnabled ())
 				BTPlayService.Instance.enableBluetooth ();
 			else {
-
 				List<string> address = BTPlayService.Instance.GetPaired ();
 				foreach (string addr in address)
 					pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
-
-
 			}
-
 		}
 
 		protected override void OnDestroy ()
@@ -137,8 +133,8 @@ namespace ProgettoInfo3
 		private void SendName (object sender, EventArgs e)
 		{
 			if (name.Text.CompareTo ("") != 0) {
-				if (name.Text.Length > 10) {
-					string sub = name.Text.Substring (0, 10);
+				if (name.Text.Length > MAX_NAME_LENGHT) {
+					string sub = name.Text.Substring (0, MAX_NAME_LENGHT);
 					AlertDialog.Builder setName = new AlertDialog.Builder (this);
 					setName.SetTitle ("Name Too Long");
 					setName.SetMessage ("Your name is too long\nDo you want to be registered on master with this name: " + sub + "?");
@@ -170,7 +166,7 @@ namespace ProgettoInfo3
 		{
 			connecting = true;
 			var info = ( e.View as TextView ).Text.ToString ();
-			address = info.Substring (info.Length - 17);
+			address = info.Substring (info.Length - DEVICE_ADDRESS_LENGHT);
 
 			if (BTPlayService.Instance.isDiscovering ()) {
 				BTPlayService.Instance.CancelDiscovery ();
@@ -294,7 +290,7 @@ namespace ProgettoInfo3
 					break;
 					case (int)MessageType.MESSAGE_TOAST:
 						pb.Visibility = ViewStates.Invisible;
-						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
+						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Long).Show ();
 						a.SetTitle (Resource.String.select);
 					break;
 					case (int) MessageType.MESSAGE_DEVICE_ADDR:

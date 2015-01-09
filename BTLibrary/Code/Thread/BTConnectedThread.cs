@@ -80,7 +80,8 @@ namespace BTLibrary
 
 				} catch (Exception e) {
 					//disconnected
-					BTPlayService.Instance.ConnectionLost (e.Message);
+					e.ToString ();
+					BTPlayService.Instance.ConnectionLost ();
 					BTPlayService.Instance.forEachHandler (delegate(Handler h) {
 						h.ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
 					});

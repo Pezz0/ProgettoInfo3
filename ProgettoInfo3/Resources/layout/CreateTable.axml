@@ -12,7 +12,7 @@
         p1:layout_height="wrap_content"
         p1:id="@+id/textView1"
         style="@style/create_txt"
-        p1:layout_marginRight="10dp"
+        p1:layout_marginRight="30dp"
         p1:layout_alignParentLeft="true"
         p1:layout_alignParentTop="true" />
     <TextView
@@ -23,7 +23,8 @@
         style="@style/create_txt"
         p1:id="@+id/textView2"
         p1:layout_marginTop="20dp"
-        p1:layout_alignParentLeft="true" />
+        p1:layout_alignParentLeft="true"
+        p1:layout_marginRight="20dp" />
     <TextView
         p1:text="Player 2"
         p1:layout_width="wrap_content"
@@ -32,7 +33,8 @@
         style="@style/create_txt"
         p1:id="@+id/textView3"
         p1:layout_alignParentLeft="true"
-        p1:layout_marginTop="20dp" />
+        p1:layout_marginTop="20dp"
+        p1:layout_marginRight="20dp" />
     <TextView
         p1:text="Player 3"
         p1:layout_width="wrap_content"
@@ -41,7 +43,8 @@
         style="@style/create_txt"
         p1:id="@+id/textView4"
         p1:layout_alignParentLeft="true"
-        p1:layout_marginTop="20dp" />
+        p1:layout_marginTop="20dp"
+        p1:layout_marginRight="20dp" />
     <TextView
         p1:text="Player 4"
         p1:layout_width="wrap_content"
@@ -50,7 +53,8 @@
         style="@style/create_txt"
         p1:id="@+id/textView5"
         p1:layout_alignParentLeft="true"
-        p1:layout_marginTop="20dp" />
+        p1:layout_marginTop="20dp"
+        p1:layout_marginRight="20dp" />
     <TextView
         p1:text="Player 5"
         p1:layout_width="wrap_content"
@@ -59,7 +63,8 @@
         style="@style/create_txt"
         p1:id="@+id/textView6"
         p1:layout_alignParentLeft="true"
-        p1:layout_marginTop="20dp" />
+        p1:layout_marginTop="20dp"
+        p1:layout_marginRight="20dp" />
     <TextView
         p1:text="Player Type"
         p1:layout_width="wrap_content"
@@ -67,9 +72,9 @@
         p1:layout_toRightOf="@id/textView1"
         style="@style/create_txt"
         p1:id="@+id/textView7"
-        p1:layout_marginRight="40dp" />
+        p1:layout_marginRight="55dp" />
     <TextView
-        p1:layout_width="105dp"
+        p1:layout_width="115dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView2"
         style="@style/create_txt"
@@ -77,36 +82,40 @@
         p1:layout_alignBottom="@id/textView2"
         p1:layout_marginRight="15dp" />
     <Spinner
-        p1:layout_width="110dp"
+        p1:layout_width="120dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView3"
         style="@style/create_txt"
         p1:id="@+id/spinner1"
         p1:layout_alignBottom="@id/textView3"
+        p1:textSize="16sp"
         p1:layout_marginRight="10dp" />
     <Spinner
-        p1:layout_width="110dp"
+        p1:layout_width="120dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView4"
         style="@style/create_txt"
         p1:id="@+id/spinner2"
         p1:layout_marginRight="10dp"
+        p1:textSize="16sp"
         p1:layout_alignBottom="@id/textView4" />
     <Spinner
-        p1:layout_width="110dp"
+        p1:layout_width="120dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView5"
         style="@style/create_txt"
         p1:id="@+id/spinner3"
         p1:layout_alignBottom="@id/textView5"
+        p1:textSize="16sp"
         p1:layout_marginRight="10dp" />
     <Spinner
-        p1:layout_width="110dp"
+        p1:layout_width="120dp"
         p1:layout_height="wrap_content"
         style="@style/create_txt"
         p1:layout_toRightOf="@id/textView6"
         p1:id="@+id/spinner4"
         p1:layout_alignBottom="@id/textView6"
+        p1:textSize="16sp"
         p1:layout_marginRight="10dp"
         p1:layout_centerHorizontal="false" />
     <TextView
@@ -118,7 +127,7 @@
         p1:id="@+id/textView9"
         p1:layout_marginRight="85dp" />
     <EditText
-        p1:layout_width="130dp"
+        p1:layout_width="170dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView8"
         style="@style/create_txt"
@@ -127,7 +136,7 @@
         p1:layout_marginRight="5dp"
         p1:text="AAAAAAAA" />
     <EditText
-        p1:layout_width="130dp"
+        p1:layout_width="170dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner1"
         style="@style/create_txt"
@@ -135,7 +144,7 @@
         p1:layout_alignBottom="@id/spinner1"
         p1:layout_marginRight="5dp" />
     <EditText
-        p1:layout_width="130dp"
+        p1:layout_width="170dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner2"
         style="@style/create_txt"
@@ -143,7 +152,7 @@
         p1:layout_alignBottom="@id/spinner2"
         p1:layout_marginRight="5dp" />
     <EditText
-        p1:layout_width="130dp"
+        p1:layout_width="170dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner3"
         style="@style/create_txt"
@@ -151,7 +160,7 @@
         p1:layout_alignBottom="@id/spinner3"
         p1:layout_marginRight="5dp" />
     <EditText
-        p1:layout_width="130dp"
+        p1:layout_width="170dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner4"
         style="@style/create_txt"
@@ -159,14 +168,7 @@
         p1:layout_alignBottom="@id/spinner4"
         p1:layout_marginRight="5dp" />
     <TextView
-        p1:text="Addresses"
-        p1:layout_width="wrap_content"
-        p1:layout_height="wrap_content"
-        style="@style/create_txt"
-        p1:layout_toRightOf="@id/textView9"
-        p1:id="@+id/textView10" />
-    <TextView
-        p1:layout_width="120dp"
+        p1:layout_width="0dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/player1"
         style="@style/create_txt"

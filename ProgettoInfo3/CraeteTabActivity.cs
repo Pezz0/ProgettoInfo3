@@ -29,6 +29,8 @@ namespace ProgettoInfo3
 
 		static int counter;
 
+		public const int MAX_NAME_LENGHT = 10;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -79,6 +81,11 @@ namespace ProgettoInfo3
 			add2.Text = Resources.GetText (Resource.String.none_add);
 			add3.Text = Resources.GetText (Resource.String.none_add);
 			add4.Text = Resources.GetText (Resource.String.none_add);
+
+			add1.Visibility = ViewStates.Invisible;
+			add2.Visibility = ViewStates.Invisible;
+			add3.Visibility = ViewStates.Invisible;
+			add4.Visibility = ViewStates.Invisible;
 		
 			start.Click += Start_Game;
 			back.Click += Back;
@@ -91,8 +98,8 @@ namespace ProgettoInfo3
 			SetTitle (Resource.String.create_title);
 
 			string name = BTPlayService.Instance.GetLocalName ();
-			if (name.Length > 10)
-				pl0.Text = name.Substring (0, 10);
+			if (name.Length > MAX_NAME_LENGHT)
+				pl0.Text = name.Substring (0, MAX_NAME_LENGHT);
 			else
 				pl0.Text = name;
 		}
@@ -218,38 +225,26 @@ namespace ProgettoInfo3
 			{
 				switch (msg.What) {
 					case (int) MessageType.MESSAGE_DEVICE_ADDR:
-						
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						if (name.Length > MAX_NAME_LENGHT)
+							name = name.Substring (0, MAX_NAME_LENGHT);
 						if (spinner1.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add1.Text.CompareTo ("None") == 0) {
 							add1.Text = (string) msg.Obj;
-							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							if (name.Length > 10)
-								pl1.Text = name.Substring (0, 10);
-							else
-								pl1.Text = name;
+							pl1.Text = name;
 							pl1.InputType = Android.Text.InputTypes.Null;
 						} else if (spinner2.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add2.Text.CompareTo ("None") == 0) {
 							add2.Text = (string) msg.Obj;
-							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							if (name.Length > 10)
-								pl2.Text = name.Substring (0, 10);
-							else
-								pl2.Text = name;
+							pl2.Text = name;
 							pl2.InputType = Android.Text.InputTypes.Null;
 						} else if (spinner3.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add3.Text.CompareTo ("None") == 0) {
 							add3.Text = (string) msg.Obj;
 							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							if (name.Length > 10)
-								pl3.Text = name.Substring (0, 10);
-							else
-								pl3.Text = name;
+							pl3.Text = name;
 							pl3.InputType = Android.Text.InputTypes.Null;
 						} else if (spinner4.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add4.Text.CompareTo ("None") == 0) {
 							add4.Text = (string) msg.Obj;
 							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							if (name.Length > 10)
-								pl4.Text = name.Substring (0, 10);
-							else
-								pl4.Text = name;
+							pl4.Text = name;
 							pl4.InputType = Android.Text.InputTypes.Null;
 						} 
 
@@ -257,8 +252,8 @@ namespace ProgettoInfo3
 
 					case (int)MessageType.MESSAGE_READ:
 						string Player = Encoding.ASCII.GetString ((byte []) msg.Obj);
-						if (Player.Length > 10)
-							Player = Player.Substring (0, 10);
+						if (Player.Length > MAX_NAME_LENGHT)
+							Player = Player.Substring (0, MAX_NAME_LENGHT);
 						if (address.CompareTo (add1.Text) == 0) {
 							Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + Player, ToastLength.Short).Show (); 
 							pl1.Text = Player;

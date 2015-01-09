@@ -48,7 +48,8 @@ namespace BTLibrary
 				// successful connection or an exception
 				_socket.Connect ();
 			} catch (Exception e) {
-				BTPlayService.Instance.ConnectionFailed (e.Message);
+				e.ToString ();
+				BTPlayService.Instance.ConnectionFailed ();
 				// Close the socket
 				try {
 					_socket.Close ();
