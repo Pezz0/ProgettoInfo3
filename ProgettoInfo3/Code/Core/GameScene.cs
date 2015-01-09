@@ -805,21 +805,21 @@ namespace Core
 
 			playerNames.Add (new CCLabel ("", "Arial", 12));
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [1].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 1 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [1].Position = new CCPoint (winSize.Width / 2, winSize.Height - winSize.Height / 40);
 			mainLayer.AddChild (playerNames [1]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [2].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 2 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [2].Position = new CCPoint (winSize.Height / 40, winSize.Height * 3 / 4);
 			playerNames [2].Rotation = -90;
 			mainLayer.AddChild (playerNames [2]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [3].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 3 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [3].Position = new CCPoint (winSize.Height / 40, winSize.Height / 4);
 			playerNames [3].Rotation = -90;
 			mainLayer.AddChild (playerNames [3]);
 
-			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [4].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 4 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [4].Position = new CCPoint (winSize.Width / 2, winSize.Height / 40);
 			playerNames [4].Rotation = 180;
 			mainLayer.AddChild (playerNames [4]);
@@ -830,23 +830,22 @@ namespace Core
 
 			playerBids.Add (new CCLabel ("", "Arial", 12));
 
-			playerBids.Add (new CCLabel ("", "Arial", 20));
-			playerBids [1].Position = new CCPoint (playerNames [1].PositionX, playerNames [1].PositionY - 15);
-			playerBids [1].Rotation = 180;
+			playerBids.Add (new CCLabel ("", "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerBids [1].Position = new CCPoint (playerNames [1].PositionX, playerNames [1].PositionY - 30);
 			mainLayer.AddChild (playerBids [1]);
 
-			playerBids.Add (new CCLabel ("", "Arial", 20));
-			playerBids [2].Position = new CCPoint (playerNames [2].PositionX + 15, playerNames [2].PositionY);
+			playerBids.Add (new CCLabel ("", "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerBids [2].Position = new CCPoint (playerNames [2].PositionX + 30, playerNames [2].PositionY);
 			playerBids [2].Rotation = -90;
 			mainLayer.AddChild (playerBids [2]);
 
-			playerBids.Add (new CCLabel ("", "Arial", 20));
-			playerBids [3].Position = new CCPoint (playerNames [3].PositionX + 15, playerNames [3].PositionY);
+			playerBids.Add (new CCLabel ("", "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerBids [3].Position = new CCPoint (playerNames [3].PositionX + 30, playerNames [3].PositionY);
 			playerBids [3].Rotation = -90;
 			mainLayer.AddChild (playerBids [3]);
 
-			playerBids.Add (new CCLabel ("", "Arial", 20));
-			playerBids [4].Position = new CCPoint (playerNames [4].PositionX, playerNames [4].PositionY + 15);
+			playerBids.Add (new CCLabel ("", "Arial", ( winSize.Width / 12 ) * 0.5f));
+			playerBids [4].Position = new CCPoint (playerNames [4].PositionX, playerNames [4].PositionY + 30);
 			playerBids [4].Rotation = 180;
 			mainLayer.AddChild (playerBids [4]);
 			#endregion
@@ -1018,6 +1017,11 @@ namespace Core
 
 		#endregion
 
+		private int playerToOrder (Player p)
+		{
+			return ( p.order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
+		}
+
 		#region Event responses
 
 		#region Auction started
@@ -1032,7 +1036,7 @@ namespace Core
 			bidded = false;
 			initializedSeme = false;
 
-			turnLight (( Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+			turnLight (playerToOrder (Board.Instance.ActiveAuctionPlayer));
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
 				for (int i = 0; i < 12; i++)
@@ -1056,7 +1060,7 @@ namespace Core
 			}
 
 			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
-			turnLight (( !Board.Instance.isAuctionPhase ? Board.Instance.currentAuctionWinningBid.bidder.order : Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
+			turnLight (( !Board.Instance.isAuctionPhase ? playerToOrder (Board.Instance.currentAuctionWinningBid.bidder) : playerToOrder (Board.Instance.ActiveAuctionPlayer) ));
 
 		}
 
