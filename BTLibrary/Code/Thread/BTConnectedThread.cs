@@ -73,10 +73,7 @@ namespace BTLibrary
 
 						h.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
 						h.ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
-
-
 					});
-
 
 				} catch (Exception e) {
 					//disconnected

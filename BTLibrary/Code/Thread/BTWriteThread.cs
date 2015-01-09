@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using Android.OS;
 using Java.Lang;
+using System.Runtime.CompilerServices;
 
 namespace BTLibrary
 {
@@ -31,6 +32,8 @@ namespace BTLibrary
 
 		private Queue<byte []> _buffer;
 
+		public const int SLEEP_TIME = 200;
+
 		public BTWriteThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
@@ -54,6 +57,7 @@ namespace BTLibrary
 
 		}
 
+
 		public override void Run ()
 		{
 			while (true) {
@@ -71,9 +75,9 @@ namespace BTLibrary
 						e.ToString ();
 					}
 
-					Sleep (200);
-
+					Sleep (SLEEP_TIME);
 				}
+				
 			}
 		}
 
