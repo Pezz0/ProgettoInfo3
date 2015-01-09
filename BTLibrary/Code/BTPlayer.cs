@@ -10,6 +10,8 @@ namespace BTLibrary
 	{
 		private readonly Player _player;
 		private bool _ready;
+
+		private bool _readyToStart;
 		private IBid _bid;
 		private EnSemi? _seme;
 		private Card _card;
@@ -18,9 +20,8 @@ namespace BTLibrary
 		{
 			_player = player;
 			_ready = false;
+			_readyToStart = false;
 			player.Controller = this;
-
-
 		}
 
 		public override void HandleMessage (Message msg)
@@ -30,6 +31,9 @@ namespace BTLibrary
 				Player sender = Board.Instance.getPlayer (data [0]);
 
 				if (sender == _player) {
+					if (Board.Instance.isWaitingPhase)
+						_readyToStart = true;
+
 					if (Board.Instance.isAuctionPhase) {
 						_ready = true;
 						_bid = Board.Instance.DefBid.recreateFromByteArray (data);
@@ -47,11 +51,7 @@ namespace BTLibrary
 
 		}
 
-		public bool isReady {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
+		public bool isReady { get { return _readyToStart; } }
 
 		public IBid chooseBid ()
 		{

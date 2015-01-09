@@ -695,7 +695,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// Occurs when i'm ready start.
 		/// </summary>
-		public event eventHandlerChangePhase eventImReadyStart;
+		public event eventHandlerChangePhase eventImReady;
 
 		/// <summary>
 		/// Occurs when the auction start.
@@ -737,9 +737,9 @@ namespace ChiamataLibrary
 		public void update ()
 		{
 			if (isWaitingPhase) {	//waiting phase
-				if (Me.isReady && !_imReady && eventImReadyStart != null) {
+				if (Me.isReady && !_imReady && eventImReady != null) {
 					_imReady = true;
-					eventImReadyStart ();
+					eventImReady ();
 				}
 
 				bool r = true;

@@ -21,6 +21,8 @@ namespace BTLibrary
 
 		private BTManager ()
 		{
+			Board.Instance.eventImReady += imReady;
+
 			Board.Instance.eventIPlaceABid += bidPlaced;
 
 			if (!BTPlayService.Instance.isSlave ())
@@ -36,16 +38,11 @@ namespace BTLibrary
 
 		public void imReady ()
 		{
-			Byte [] msg = new Byte[1];
-			msg [0] = Board.Instance.Me.toByteArray () [0];
-
 			if (BTPlayService.Instance.isSlave ()) {
-				BTPlayService.Instance.WriteToMaster (msg);
+				BTPlayService.Instance.WriteToMaster (Board.Instance.Me);
 			} else
-				BTPlayService.Instance.WriteToAllSlave (msg);
+				BTPlayService.Instance.WriteToAllSlave (Board.Instance.Me);
 		}
-
-
 
 		public void bidPlaced (IBid bid)
 		{
