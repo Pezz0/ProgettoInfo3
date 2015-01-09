@@ -745,7 +745,7 @@ namespace Core
 			turnLights = new List<CCSprite> (5);
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [0].Position = new CCPoint (winSize.Width - turnLights [0].ContentSize.Height / 2, winSize.Height / 2);
-			turnLights [0].BlendFunc = CCBlendFunc.Additive;
+			turnLights [0].BlendFunc = CCBlendFunc.NonPremultiplied;
 			turnLights [0].Rotation = -90;
 			turnLights [0].Color = CCColor3B.Red;
 			turnLights [0].ScaleX = winSize.Height / turnLights [0].ContentSize.Width;
@@ -755,7 +755,7 @@ namespace Core
 
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [1].Position = new CCPoint (winSize.Width / 2, winSize.Height + 5 - turnLights [1].ContentSize.Height / 2);
-			turnLights [1].BlendFunc = CCBlendFunc.Additive;
+			turnLights [1].BlendFunc = CCBlendFunc.NonPremultiplied;
 			turnLights [1].Rotation = 180;
 			turnLights [1].Color = CCColor3B.Red;
 			turnLights [1].ScaleX = winSize.Width / turnLights [1].ContentSize.Width;
@@ -765,7 +765,7 @@ namespace Core
 
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [2].Position = new CCPoint (-5 + turnLights [2].ContentSize.Height / 2, winSize.Height * 3 / 4);
-			turnLights [2].BlendFunc = CCBlendFunc.Additive;
+			turnLights [2].BlendFunc = CCBlendFunc.NonPremultiplied;
 			turnLights [2].Rotation = 90;
 			turnLights [2].Color = CCColor3B.Red;
 			turnLights [2].ScaleX = ( winSize.Height / 2 ) / turnLights [2].ContentSize.Width;
@@ -775,7 +775,7 @@ namespace Core
 
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [3].Position = new CCPoint (-5 + turnLights [3].ContentSize.Height / 2, winSize.Height / 4);
-			turnLights [3].BlendFunc = CCBlendFunc.Additive;
+			turnLights [3].BlendFunc = CCBlendFunc.NonPremultiplied;
 			turnLights [3].Rotation = 90;
 			turnLights [3].Color = CCColor3B.Red;
 			turnLights [3].ScaleX = ( winSize.Height / 2 ) / turnLights [3].ContentSize.Width;
@@ -785,7 +785,7 @@ namespace Core
 
 			turnLights.Add (new CCSprite ("turnLight2"));
 			turnLights [4].Position = new CCPoint (winSize.Width / 2, -5 + turnLights [1].ContentSize.Height / 2);
-			turnLights [4].BlendFunc = CCBlendFunc.Additive;
+			turnLights [4].BlendFunc = CCBlendFunc.NonPremultiplied;
 			turnLights [4].Color = CCColor3B.Red;
 			turnLights [4].ScaleX = winSize.Width / turnLights [4].ContentSize.Width;
 			mainLayer.AddChild (turnLights [4]);
@@ -904,6 +904,10 @@ namespace Core
 
 			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120, -90, _cardScale * 3f);
 
+			for (int i = 0; i < 12; i++) {
+				buttons [i].Enabled = false;
+			}
+
 
 			#endregion
 
@@ -1011,10 +1015,19 @@ namespace Core
 
 		#endregion
 
+		#region Convert to localIndex
+
 		private int playerToOrder (Player p)
 		{
 			return ( p.order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
 		}
+
+		private int playerToOrder (int i)
+		{
+			return( Board.Instance.getPlayer (i).order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
+		}
+
+		#endregion
 
 		#region Event responses
 
@@ -1054,6 +1067,7 @@ namespace Core
 			}
 
 			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
+			wait = 0.4f;
 			turnLight (( !Board.Instance.isAuctionPhase ? playerToOrder (Board.Instance.currentAuctionWinningBid.bidder) : playerToOrder (Board.Instance.ActiveAuctionPlayer) ));
 
 		}
@@ -1108,12 +1122,14 @@ namespace Core
 			touch.eventTouchMoved += touchMovedGame;
 			touch.eventTouchEnded += touchEndedGame;
 
-			for (int i = 1; i < 5; i++) {
+			for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 				if (Board.Instance.getPlayer (i).Role == EnRole.CHIAMANTE)
-					playerBids [i].SetString (playerBids [i].Text + " di " + Board.Instance.Briscola.ToString (), true);
+					playerBids [playerToOrder (i)].SetString (playerBids [playerToOrder (i)].Text + " di " + Board.Instance.Briscola.ToString (), true);
 				else
-					playerBids [i].SetString ("", true);
+					playerBids [playerToOrder (i)].SetString ("", true);
 			}
+
+			turnLight (playerToOrder (Board.Instance.ActivePlayer.order));
 		}
 
 		#endregion
@@ -1148,7 +1164,7 @@ namespace Core
 
 		public void playCard (Move m)
 		{
-			int localIndex = ( m.player.order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
+			int localIndex = playerToOrder (m.player);
 			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
 			cardSprite.Scale = _cardScale * 0.7f;
 			CardData cd;
@@ -1199,10 +1215,10 @@ namespace Core
 				break;
 			}
 
-			if (Board.Instance.numberOfCardOnBoard == 5) {
+			if (Board.Instance.numberOfCardOnBoard == Board.PLAYER_NUMBER) {
 				wait += 2;
 			} else
-				turnLight (( localIndex + 1 ) % 5);
+				turnLight (( localIndex + 1 ) % Board.PLAYER_NUMBER);
 				
 				
 				
