@@ -26,7 +26,7 @@ namespace BTLibrary
 
 		public override void HandleMessage (Message msg)
 		{
-			if (msg.What == (int) MessageType.MESSAGE_READ) {
+			if (msg.What == (int) MessageType.MESSAGE_READ && !Board.Instance.isCreationPhase) {
 
 				byte [] data = (byte []) msg.Obj;
 

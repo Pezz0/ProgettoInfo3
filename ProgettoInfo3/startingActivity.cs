@@ -63,8 +63,14 @@ namespace ProgettoInfo3
 					string [] name = data.GetStringArrayExtra ("Names");
 					List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
 					ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
+
+					List<byte> bs = new List<byte> ();
+					bs.Add ((byte) EnContentType.BOARD);
+
+					bs.AddRange (Board.Instance.toByteArray ());
+
 					if (BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
+						BTPlayService.Instance.WriteToAllSlave (bs.ToArray ());
 
 					BTManager.Instance.initialize ();
 

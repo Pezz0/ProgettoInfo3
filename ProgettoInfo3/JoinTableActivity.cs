@@ -279,7 +279,14 @@ namespace ProgettoInfo3
 					case (int)MessageType.MESSAGE_READ:
 						a.SetTitle (Resource.String.starting);
 						send.Enabled = false;
-						Board.Instance.recreateFromByteArray ((byte []) msg.Obj);
+
+						List<byte> bs = new List<byte> ();
+						byte [] m = (byte []) msg.Obj;
+
+						for (int i = 1; i < m.GetLength (0); i++)
+							bs.Add (m [i]);
+
+						Board.Instance.recreateFromByteArray (m);
 						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
 						Intent returnIntent = new Intent ();
