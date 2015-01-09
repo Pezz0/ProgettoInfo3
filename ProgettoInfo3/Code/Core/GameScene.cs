@@ -686,9 +686,8 @@ namespace Core
 
 		public int gameState{ get { return _gameState; } set { _gameState = value; } }
 
-		private bool _ready = false;
 
-		public bool isReady { get { return _ready; } }
+		public bool isReady { get { return true; } }
 
 		#region Bluetooth
 
@@ -925,9 +924,6 @@ namespace Core
 			written = false;
 
 			Board.Instance.Me.Controller = this;
-
-			_ready = true;
-
 		}
 
 

@@ -61,9 +61,7 @@ namespace ChiamataLibrary
 			return mano [int.Parse (Console.ReadLine ())];
 		}
 
-		private static bool _ready = false;
-
-		public bool isReady { get { return _ready; } set { _ready = value; } }
+		public bool isReady { get { return true; } }
 
 	}
 
@@ -123,7 +121,6 @@ namespace ChiamataLibrary
 				Console.ReadLine ();
 
 				Board.Instance.start ();
-
 
 				while (Board.Instance.Time < 41)
 					Board.Instance.update ();
