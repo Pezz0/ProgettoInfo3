@@ -189,6 +189,7 @@ namespace ChiamataLibrary
 
 		public bool isReady{ get { return _controller.isReady; } }
 
+
 		public IBid invokeChooseBid ()
 		{
 			if (!Board.Instance.isAuctionPhase)

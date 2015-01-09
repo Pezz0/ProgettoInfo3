@@ -111,6 +111,12 @@ namespace ChiamataLibrary
 
 		public bool isReady { get { return true; } }
 
+		public bool isActive {
+			get {
+				return true;
+			}
+		}
+
 		private void startAuction ()
 		{
 			_semeChooser.setup (me);

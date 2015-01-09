@@ -63,6 +63,7 @@ namespace ChiamataLibrary
 
 		public bool isReady { get { return true; } }
 
+		public bool isActive { get { return true; } }
 	}
 
 

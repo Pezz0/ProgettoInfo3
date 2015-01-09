@@ -678,13 +678,7 @@ namespace Core
 
 		#endregion
 
-		//GameState variable
-		//0 : Asta
-		//10 : Game
-		//20 : Punteggi
-		private int _gameState;
 
-		public int gameState{ get { return _gameState; } set { _gameState = value; } }
 
 
 		public bool isReady { get { return true; } }

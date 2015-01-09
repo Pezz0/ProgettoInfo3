@@ -67,7 +67,7 @@ namespace ChiamataLibrary
 			eventPlaytimeStart = null;
 			eventPlaytimeEnd = null;
 
-			_t = -4;
+			_t = -5;
 		}
 
 		#endregion
@@ -201,8 +201,9 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Variable that rappresent the current discrete time
-		/// 	-4 = creation time
-		/// 	-3 = waiting phase
+		/// 	-5 = creation time
+		/// 	-4 = waiting phase
+		/// 	-3 = activation phase
 		/// 	-2 = auction time
 		/// 	-1 = finalize
 		/// 	 0 = first play
@@ -213,19 +214,20 @@ namespace ChiamataLibrary
 		/// 	 39 = last play
 		/// 	 40 = point counting e conclusion
 		/// </summary>
-		private int _t = -4;
+		private int _t = -5;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
-		public bool isCreationPhase{ get { return _t == -4; } }
+		public bool isCreationPhase{ get { return _t == -5; } }
 
 		/// <summary>
 		/// /*Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is waiting phase.*/
 		/// </summary>
 		/// <value><c>true</c> if is waiting phase; otherwise, <c>false</c>.</value>
-		public bool isWaitingPhase{ get { return _t == -3; } }
+		public bool isWaitingPhase{ get { return _t == -4; } }
+
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
@@ -698,6 +700,11 @@ namespace ChiamataLibrary
 		public event eventHandlerChangePhase eventImReady;
 
 		/// <summary>
+		/// Occurs when i'm active.
+		/// </summary>
+		public event eventHandlerChangePhase eventImActive;
+
+		/// <summary>
 		/// Occurs when the auction start.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStart;
@@ -751,13 +758,12 @@ namespace ChiamataLibrary
 						_t = -2;
 					}
 										
-
 				} else {	//slave
 					if (eventImReady != null)
 						eventImReady ();
 
-					if (_players [0].isReady)
-						_t = -2;
+					/*if (_players [0].isReady)*/
+					_t = -2;
 
 				}
 

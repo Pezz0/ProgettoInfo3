@@ -6,6 +6,7 @@ namespace ChiamataLibrary
 	{
 		bool isReady{ get; }
 
+
 		IBid chooseBid ();
 
 		EnSemi? chooseSeme ();

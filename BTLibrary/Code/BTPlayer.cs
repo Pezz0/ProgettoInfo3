@@ -57,6 +57,7 @@ namespace BTLibrary
 
 		public bool isReady { get { return _readyToStart; } }
 
+
 		public IBid chooseBid ()
 		{
 			if (_ready) {
