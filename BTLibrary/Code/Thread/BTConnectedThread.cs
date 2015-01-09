@@ -96,19 +96,7 @@ namespace BTLibrary
 		/// <param name='buffer'>
 		/// The bytes to write
 		/// </param>
-		public void Write (byte [] buffer)
-		{
-			try {
-				_OutStream.Write (buffer, 0, buffer.Length);
-				// Share the sent message back to the UI Activity
-				BTPlayService.Instance.forEachHandler (delegate(Handler h) {
-					h.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, buffer).SendToTarget ();
-				});
-			} catch (Exception e) {
-				//exception during write
-				e.ToString ();
-			}
-		}
+
 
 		/// <summary>
 		/// Try to close the socket
