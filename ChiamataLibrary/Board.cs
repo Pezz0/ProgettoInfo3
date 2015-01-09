@@ -104,9 +104,6 @@ namespace ChiamataLibrary
 			_lastWinner = indexDealer + 1;	//the last winner is the player that have to play first in the next turn
 			_bytes.Add (BitConverter.GetBytes (indexDealer) [0]);	//add the dealer at the bytes array
 
-			_defBid = new PassBid (_players [0]);
-			_defMove = new Move ();
-
 			int nCard = nSemi * nNumber;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
 
@@ -138,9 +135,6 @@ namespace ChiamataLibrary
 					_me = p.order;
 					return;
 				}
-
-			_defBid = new PassBid (_players [0]);
-			_defMove = new Move ();
 		}
 
 		#region Bluetooth
@@ -175,7 +169,7 @@ namespace ChiamataLibrary
 				_players [i] = new Player (Encoding.ASCII.GetString (bs), i);
 			}
 
-			_lastWinner = _bytes [index];	//the last winner is the player that have to play first in the next turn
+			_lastWinner = _bytes [index] + 1;	//the last winner is the player that have to play first in the next turn
 			index++;
 
 
@@ -542,7 +536,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The default bid.
 		/// </summary>
-		private IBid _defBid;
+		private IBid _defBid = new PassBid ();
 
 		/// <summary>
 		/// Gets the default bid.
@@ -587,7 +581,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The default move.
 		/// </summary>
-		private Move _defMove;
+		private Move _defMove = new Move ();
 
 		/// <summary>
 		/// Gets the default move.
@@ -725,7 +719,7 @@ namespace ChiamataLibrary
 
 		public void start ()
 		{
-			_t = -3;
+			_t = -4;
 
 			if (eventAuctionStart != null)
 				eventAuctionStart ();
@@ -752,8 +746,8 @@ namespace ChiamataLibrary
 						r = r && _players [i].isReady;
 					
 					if (r) {
-						if (eventImReady != null)
-							eventImReady ();
+//						if (eventImReady != null)
+//							eventImReady ();
 
 						_t = -2;
 					}
