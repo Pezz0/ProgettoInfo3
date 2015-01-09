@@ -732,13 +732,13 @@ namespace ChiamataLibrary
 
 		#region Update
 
-		private bool _imReady = false;
+		//private bool _imReady = false;
 
 		public void update ()
 		{
 			if (isWaitingPhase) {	//waiting phase
-				if (Me.isReady && !_imReady && eventImReady != null) {
-					_imReady = true;
+				if (Me.isReady /*&& !_imReady*/ && eventImReady != null) {
+					//_imReady = true;
 					eventImReady ();
 				}
 

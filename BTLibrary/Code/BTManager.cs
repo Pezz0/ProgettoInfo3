@@ -12,7 +12,7 @@ namespace BTLibrary
 	
 		private static readonly BTManager _instance = new BTManager ();
 
-		//public static BTManager Instance{ get { return _instance; } }
+		public static BTManager Instance{ get { return _instance; } }
 
 		static BTManager ()
 		{
@@ -21,17 +21,17 @@ namespace BTLibrary
 
 		private BTManager ()
 		{
+
+		}
+
+		public void initialize ()
+		{
 			Board.Instance.eventImReady += imReady;
-
 			Board.Instance.eventIPlaceABid += bidPlaced;
-
 			if (!BTPlayService.Instance.isSlave ())
 				Board.Instance.eventSomeonePlaceABid += bidPlaced;
-
 			Board.Instance.eventPlaytimeStart += semeChosen;
-
 			Board.Instance.eventIPlayACard += cardPlayed;
-
 			if (!BTPlayService.Instance.isSlave ())
 				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}

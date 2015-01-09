@@ -49,6 +49,8 @@ namespace ProgettoInfo3
 
 				if (BTPlayService.Instance.isSlave ()) {
 
+					BTManager.Instance.initialize ();
+
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
 						if (Board.Instance.Me.order != i) {
 							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
@@ -56,12 +58,15 @@ namespace ProgettoInfo3
 						}
 					}
 
+
 				} else {
 					string [] name = data.GetStringArrayExtra ("Names");
 					List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
 					ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
 					if (BTPlayService.Instance.getNumConnected () > 0)
 						BTPlayService.Instance.WriteToAllSlave<Board> (Board.Instance);
+
+					BTManager.Instance.initialize ();
 
 					string [] type = data.GetStringArrayExtra ("types");
 
@@ -74,6 +79,7 @@ namespace ProgettoInfo3
 						}
 					}
 				}
+
 
 				application.StartGame ();
 
