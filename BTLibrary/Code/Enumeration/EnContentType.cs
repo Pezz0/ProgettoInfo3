@@ -8,6 +8,7 @@ namespace BTLibrary
 		BID,
 		SEME,
 		MOVE,
+		ACK,
 	}
 }
 

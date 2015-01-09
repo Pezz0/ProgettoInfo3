@@ -563,7 +563,7 @@ namespace BTLibrary
 				tmp = WriteToMasterThread;
 			}
 			// Perform the write unsynchronized
-			tmp.AddQueue (bts);
+			tmp.Add (bts);
 
 		}
 
@@ -596,7 +596,7 @@ namespace BTLibrary
 				tmp = WriteToSlaveThread [player];
 			}
 			// Perform the write unsynchronized
-			tmp.AddQueue (bts);
+			tmp.Add (bts);
 		}
 
 		/// <summary>
@@ -617,10 +617,21 @@ namespace BTLibrary
 				lock (this) {
 					if (WriteToSlaveThread [i] != null) {
 						tmp = WriteToSlaveThread [i];
-						tmp.AddQueue (bts);
+						tmp.Add (bts);
 					}
 				}
 
+			}
+		}
+
+		public void ackRecieved (byte [] elem)
+		{
+			if (isSlave ()) {
+				WriteToMasterThread.Remove (elem);
+			} else {
+				WriteToSlaveThread.ForEach (delegate(BTWriteThread obj) {
+					obj.Remove (elem);
+				});
 			}
 		}
 

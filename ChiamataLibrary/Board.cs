@@ -550,6 +550,12 @@ namespace ChiamataLibrary
 		private List<IBid> _listBid;
 
 		/// <summary>
+		/// Gets the number of bid.
+		/// </summary>
+		/// <value>The number of bid.</value>
+		public int NumberOfBid{ get { return _listBid.Count; } }
+
+		/// <summary>
 		///  Gets the player that have to do a bid or pass.
 		/// </summary>
 		private int _activeAuctionPlayer;

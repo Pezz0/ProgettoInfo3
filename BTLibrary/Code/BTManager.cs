@@ -42,7 +42,6 @@ namespace BTLibrary
 			msg [0] = (int) EnContentType.READY;
 			msg [1] = Board.Instance.Me.toByteArray () [0];
 
-
 			if (BTPlayService.Instance.isSlave ())
 				BTPlayService.Instance.WriteToMaster (msg);
 			else
@@ -52,14 +51,16 @@ namespace BTLibrary
 
 		public void bidPlaced (IBid bid)
 		{
-			byte [] msg = new byte[4];
+			byte [] msg = new byte[5];
 			msg [0] = (int) EnContentType.BID;
 
 			byte [] bs = bid.toByteArray ();
 
 			msg [1] = bs [0];
-			msg [2] = bs [1];
-			msg [3] = bs [2];
+			msg [3] = bs [1];
+			msg [4] = bs [2];
+
+			msg [2] = (byte) Board.Instance.NumberOfBid;
 
 			if (BTPlayService.Instance.isSlave ())
 				BTPlayService.Instance.WriteToMaster (msg);
@@ -88,7 +89,9 @@ namespace BTLibrary
 
 			byte [] ms = move.toByteArray ();
 			msg [1] = ms [0];
-			msg [2] = ms [1];
+			msg [3] = ms [1];
+
+			msg [2] = (byte) Board.Instance.Time;
 
 			if (BTPlayService.Instance.isSlave ())
 				BTPlayService.Instance.WriteToMaster (msg);

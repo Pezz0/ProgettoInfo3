@@ -30,9 +30,9 @@ namespace BTLibrary
 		/// </summary>
 		private string Connected;
 
-		private Queue<byte []> _buffer;
+		private List<byte []> _buffer;
 
-		public const int SLEEP_TIME = 200;
+		public const int SLEEP_TIME = 500;
 
 		public BTWriteThread (BluetoothSocket socket)
 		{
@@ -53,7 +53,7 @@ namespace BTLibrary
 
 			Connected = _Socket.RemoteDevice.Address;
 
-			_buffer = new Queue<byte []> ();
+			_buffer = new List<byte []> ();
 
 		}
 
@@ -63,7 +63,7 @@ namespace BTLibrary
 			while (true) {
 				if (_buffer.Count > 0) {
 
-					byte [] msg = _buffer.Dequeue ();
+					byte [] msg = _buffer [0];
 					try {
 						_OutStream.Write (msg, 0, msg.Length);
 						// Share the sent message back to the UI Activity
@@ -81,9 +81,16 @@ namespace BTLibrary
 			}
 		}
 
-		public void AddQueue (byte [] elem)
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void Add (byte [] elem)
 		{
-			_buffer.Enqueue (elem);
+			_buffer.Add (elem);
+		}
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void Remove (byte [] elem)
+		{
+			_buffer.Remove (elem);
 		}
 
 		/// <summary>

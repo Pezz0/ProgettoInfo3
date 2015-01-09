@@ -40,22 +40,22 @@ namespace BTLibrary
 					if (type == EnContentType.READY && !BTPlayService.Instance.isSlave ())
 						_readyToStart = true;
 
-					if (type == EnContentType.BID) {
+					if (type == EnContentType.BID && data [2] > Board.Instance.NumberOfBid) {
 						_ready = true;
 
 						_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[3] {
 							data [1],
-							data [2],
-							data [3]
+							data [3],
+							data [4]
 						});
 					}
 					if (type == EnContentType.SEME) {
 						_ready = true;
 						_seme = (EnSemi) ( data [2] );
 					}
-					if (type == EnContentType.MOVE) {
+					if (type == EnContentType.MOVE && data [2] > Board.Instance.Time) {
 						_ready = true;
-						_card = Board.Instance.getCard (data [2]);
+						_card = Board.Instance.getCard (data [3]);
 					}
 				}
 			}
