@@ -277,15 +277,13 @@ namespace ProgettoInfo3
 
 					break;
 					case (int)MessageType.MESSAGE_READ:
+						a.SetTitle (Resource.String.starting);
 						send.Enabled = false;
 						Board.Instance.recreateFromByteArray ((byte []) msg.Obj);
 						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
-
 						Intent returnIntent = new Intent ();
-
 						a.SetResult (Result.Ok, returnIntent);
-
 						a.Finish ();
 					break;
 					case (int)MessageType.MESSAGE_TOAST:

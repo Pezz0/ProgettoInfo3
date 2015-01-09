@@ -156,6 +156,8 @@ namespace ProgettoInfo3
 		void Start_Game (object sender, EventArgs e)
 		{
 			if (counter - BTPlayService.Instance.getNumConnected () == 0) {
+				SetTitle (Resource.String.starting);
+
 				Intent returnIntent = new Intent ();
 
 				returnIntent.PutExtra ("Names", new string[5] {

@@ -308,6 +308,9 @@ namespace ProgettoInfo3
 			// aapt resource value: 0x7f040008
 			public const int select = 2130968584;
 			
+			// aapt resource value: 0x7f04000d
+			public const int starting = 2130968589;
+			
 			static String()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
