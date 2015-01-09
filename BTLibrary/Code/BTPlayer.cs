@@ -6,7 +6,7 @@ using Android.App;
 
 namespace BTLibrary
 {
-	public class BTPlayer:Handler
+	public class BTPlayer:Handler,IPlayerController
 	{
 		private readonly Player _player;
 		private bool _ready;
@@ -18,8 +18,7 @@ namespace BTLibrary
 		{
 			_player = player;
 			_ready = false;
-			player.setAuctionControl (placeABid, chooseSeme);
-			player.setPlaytimeControl (playACard);
+			player.Controller = this;
 
 
 		}
@@ -48,7 +47,13 @@ namespace BTLibrary
 
 		}
 
-		public IBid placeABid ()
+		public bool isReady {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public IBid chooseBid ()
 		{
 			if (_ready) {
 				_ready = false;
@@ -66,7 +71,7 @@ namespace BTLibrary
 			return null;
 		}
 
-		public Card playACard ()
+		public Card chooseCard ()
 		{
 			if (_ready) {
 				_ready = false;
@@ -74,6 +79,8 @@ namespace BTLibrary
 			}
 			return null;
 		}
+
+
 	}
 }
 

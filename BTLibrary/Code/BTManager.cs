@@ -34,6 +34,18 @@ namespace BTLibrary
 				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}
 
+		public void imReady ()
+		{
+			Byte [] msg = new Byte[1];
+			msg [0] = Board.Instance.Me.toByteArray () [0];
+
+			if (BTPlayService.Instance.isSlave ()) {
+				BTPlayService.Instance.WriteToMaster (msg);
+			} else
+				BTPlayService.Instance.WriteToAllSlave (msg);
+		}
+
+
 
 		public void bidPlaced (IBid bid)
 		{

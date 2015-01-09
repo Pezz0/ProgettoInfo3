@@ -5,7 +5,7 @@ using ChiamataLibrary;
 
 namespace Core
 {
-	public class GameScene : CCScene
+	public class GameScene : CCScene,IPlayerController
 	{
 		//TODO: controllare i readonly
 
@@ -180,9 +180,9 @@ namespace Core
 
 		#endregion
 
-		#region Delegate controller bid and seme
+		#region controller bid and seme
 
-		public IBid bidController ()
+		public IBid chooseBid ()
 		{
 			if (bidded) {
 				bidded = false;
@@ -191,7 +191,7 @@ namespace Core
 			return null;
 		}
 
-		public EnSemi? semiController ()
+		public EnSemi? chooseSeme ()
 		{
 			if (!initializedSeme) {
 				chooseSemeButtons ();
@@ -686,6 +686,10 @@ namespace Core
 
 		public int gameState{ get { return _gameState; } set { _gameState = value; } }
 
+		private bool _ready = false;
+
+		public bool isReady { get { return _ready; } }
+
 		#region Bluetooth
 
 
@@ -740,7 +744,6 @@ namespace Core
 			Board.Instance.eventAuctionStart += auctionStarted;
 			Board.Instance.eventSomeonePlaceABid += bidPlaced;
 			Board.Instance.eventPlaytimeStart += startPlaytime;
-			Board.Instance.Me.setPlaytimeControl (iPlayCard);
 			Board.Instance.eventSomeonePlayACard += playCard;
 			Board.Instance.eventPickTheBoard += clearBoard;
 			#endregion
@@ -921,6 +924,9 @@ namespace Core
 			mainLayer.Opacity = 255;
 			written = false;
 
+			Board.Instance.Me.Controller = this;
+
+			_ready = true;
 
 		}
 
@@ -1030,7 +1036,6 @@ namespace Core
 			bidded = false;
 			initializedSeme = false;
 
-			Board.Instance.Me.setAuctionControl (bidController, semiController);
 			turnLight (( Board.Instance.ActiveAuctionPlayer.order - Board.Instance.Me.order + 5 ) % 5);
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
@@ -1121,7 +1126,7 @@ namespace Core
 
 		#region I play a card
 
-		public Card iPlayCard ()
+		public Card chooseCard ()
 		{
 			if (played) {
 				played = false;

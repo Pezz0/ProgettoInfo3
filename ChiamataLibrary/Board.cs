@@ -67,7 +67,7 @@ namespace ChiamataLibrary
 			eventPlaytimeStart = null;
 			eventPlaytimeEnd = null;
 
-			_t = -3;
+			_t = -4;
 		}
 
 		#endregion
@@ -95,7 +95,6 @@ namespace ChiamataLibrary
 				_players [i] = new Player (playerName [i], i);
 
 				//add the player's name at the bytes array
-
 				byte [] bs = Encoding.ASCII.GetBytes (playerName [i]);
 				_bytes.Add (( BitConverter.GetBytes (bs.GetLength (0)) ) [0]);
 				_bytes.AddRange (bs);
@@ -202,7 +201,8 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Variable that rappresent the current discrete time
-		/// 	-3 = creation time
+		/// 	-4 = creation time
+		/// 	-3 = waiting phase
 		/// 	-2 = auction time
 		/// 	-1 = finalize
 		/// 	 0 = first play
@@ -213,13 +213,19 @@ namespace ChiamataLibrary
 		/// 	 39 = last play
 		/// 	 40 = point counting e conclusion
 		/// </summary>
-		private int _t = -3;
+		private int _t = -4;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
-		public bool isCreationPhase{ get { return _t == -3; } }
+		public bool isCreationPhase{ get { return _t == -4; } }
+
+		/// <summary>
+		/// /*Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is waiting phase.*/
+		/// </summary>
+		/// <value><c>true</c> if is waiting phase; otherwise, <c>false</c>.</value>
+		public bool isWaitingPhase{ get { return _t == -3; } }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
@@ -647,15 +653,14 @@ namespace ChiamataLibrary
 		public delegate void eventHandlerPlaceABid (IBid bid);
 
 		/// <summary>
-		/// Occurs when event I place A bid.
+		/// Occurs when I place A bid.
 		/// </summary>
 		public event eventHandlerPlaceABid eventIPlaceABid;
 
 		/// <summary>
-		/// Occurs when event someone place A bid.
+		/// Occurs when someone else place A bid.
 		/// </summary>
 		public event eventHandlerPlaceABid eventSomeonePlaceABid;
-
 
 		/// <summary>
 		/// Event handler play A card.
@@ -663,12 +668,12 @@ namespace ChiamataLibrary
 		public delegate void eventHandlerPlayACard (Move move);
 
 		/// <summary>
-		/// Occurs when event I play A card.
+		/// Occurs when I play A card.
 		/// </summary>
 		public event eventHandlerPlayACard eventIPlayACard;
 
 		/// <summary>
-		/// Occurs when event someone else play A card.
+		/// Occurs when someone else play A card.
 		/// </summary>
 		public event eventHandlerPlayACard eventSomeonePlayACard;
 
@@ -678,7 +683,7 @@ namespace ChiamataLibrary
 		public delegate void eventHandlerPickTheBoard (Player player, List<Card> board);
 
 		/// <summary>
-		/// Occurs when event pick the board.
+		/// Occurs when someone pick the board.
 		/// </summary>
 		public event eventHandlerPickTheBoard eventPickTheBoard;
 
@@ -688,17 +693,22 @@ namespace ChiamataLibrary
 		public delegate void eventHandlerChangePhase ();
 
 		/// <summary>
-		/// Occurs when event auction start.
+		/// Occurs when i'm ready start.
+		/// </summary>
+		public event eventHandlerChangePhase eventImReadyStart;
+
+		/// <summary>
+		/// Occurs when the auction start.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStart;
 
 		/// <summary>
-		/// Occurs when event playtime start.
+		/// Occurs when the playtime start.
 		/// </summary>
 		public event eventHandlerChangePhase eventPlaytimeStart;
 
 		/// <summary>
-		/// Occurs when event playtime end.
+		/// Occurs when the playtime end.
 		/// </summary>
 		public event eventHandlerChangePhase eventPlaytimeEnd;
 
@@ -708,7 +718,7 @@ namespace ChiamataLibrary
 
 		public void start ()
 		{
-			_t = -2;
+			_t = -3;
 
 			if (eventAuctionStart != null)
 				eventAuctionStart ();
@@ -722,9 +732,25 @@ namespace ChiamataLibrary
 
 		#region Update
 
+		private bool _imReady = false;
+
 		public void update ()
 		{
-			if (isAuctionPhase) {	//auction
+			if (isWaitingPhase) {	//waiting phase
+				if (Me.isReady && !_imReady && eventImReadyStart != null) {
+					_imReady = true;
+					eventImReadyStart ();
+				}
+
+				bool r = true;
+
+				for (int i = 0; i < PLAYER_NUMBER && r; i++)
+					r = r && _players [i].isReady;
+
+				if (r)
+					_t = -2;
+
+			} else if (isAuctionPhase) {	//auction
 				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
 
 				if (bid != null) {
@@ -761,7 +787,7 @@ namespace ChiamataLibrary
 						_t = -1;
 						if (_currentWinningBid == null) {
 							_gameType = EnGameType.MONTE;
-							_t = 40;
+							_t = 41;
 						} else if (_currentWinningBid is CarichiBid) {	//carichi
 							_gameType = EnGameType.CARICHI;
 

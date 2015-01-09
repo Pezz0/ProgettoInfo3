@@ -178,33 +178,23 @@ namespace ChiamataLibrary
 
 		#region Control
 
-		public delegate IBid chooseBid ();
+		private IPlayerController _controller;
 
-		public delegate EnSemi? chooseSeme ();
+		public IPlayerController Controller { set { _controller = value; } }
 
-		public delegate Card chooseCard ();
-
-		private chooseBid _placeABid;
-		private chooseSeme _chooseSeme;
-		private chooseCard _playAcard;
-
-		public void setAuctionControl (chooseBid pab, chooseSeme cs)
+		public void setController (IPlayerController controller)
 		{
-			_placeABid = pab;
-			_chooseSeme = cs;
+			_controller = controller;
 		}
 
-		public void setPlaytimeControl (chooseCard pac)
-		{
-			_playAcard = pac;
-		}
+		public bool isReady{ get { return _controller.isReady; } }
 
 		public IBid invokeChooseBid ()
 		{
 			if (!Board.Instance.isAuctionPhase)
 				throw new WrongPhaseException ("A player can place a bid only during the auction phase", "Auction");
 				
-			IBid bid = _placeABid ();
+			IBid bid = _controller.chooseBid ();
 
 			if (bid != null && bid < Board.Instance.currentAuctionWinningBid && bid is NotPassBid)
 				throw new BidNotEnoughException ("The new bid is not enough to beat the winning one", bid);
@@ -222,15 +212,15 @@ namespace ChiamataLibrary
 			if (Board.Instance.currentAuctionWinningBid.bidder != this)
 				throw new WrongPlayerException ("This player can't choose the seme because he doesn't win", Board.Instance.currentAuctionWinningBid.bidder);
 
-			return _chooseSeme ();
+			return _controller.chooseSeme ();
 		}
 
 		public Move invokeChooseCard ()
 		{
 			if (!Board.Instance.isPlayTime)
-				throw new WrongPhaseException ("A player can play a card during the playtime phase", "Playtime");
+				throw new WrongPhaseException ("A player can play a card only during the playtime phase", "Playtime");
 
-			Card card = _playAcard ();
+			Card card = _controller.chooseCard ();
 			if (card == null)
 				return null;
 			return new Move (card, this);

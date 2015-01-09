@@ -65,7 +65,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Artificial intelligence.
 	/// </summary>
-	public class ArtificialIntelligence
+	public class ArtificialIntelligence:IPlayerController
 	{
 		/// <summary>
 		/// The bid chooser.
@@ -103,13 +103,13 @@ namespace ChiamataLibrary
 			this._semeChooser = seme;
 			this._bidChooser = bid;
 
-			me.setAuctionControl (chooseBid, chooseSeme);
-			me.setPlaytimeControl (chooseCard);
+			me.Controller = this;
 
 			Board.Instance.eventAuctionStart += startAuction;
 			Board.Instance.eventPlaytimeStart += startGame;
 		}
 
+		public bool isReady { get { return true; } }
 
 		private void startAuction ()
 		{
@@ -123,33 +123,21 @@ namespace ChiamataLibrary
 			_cardChooser.setup (me);
 		}
 
-		/// <summary>
-		/// Chooses the bid.
-		/// </summary>
-		/// <returns>The bid.</returns>
-		private IBid chooseBid ()
+
+		public IBid chooseBid ()
 		{
 			return _bidChooser.chooseABid ();
 		}
 
-		/// <summary>
-		/// Chooses the seme.
-		/// </summary>
-		/// <returns>The seme.</returns>
-		private EnSemi? chooseSeme ()
+		public EnSemi? chooseSeme ()
 		{
 			return _semeChooser.chooseSeme ();
 		}
 
-		/// <summary>
-		/// Chooses the card.
-		/// </summary>
-		/// <returns>The card.</returns>
-		private Card chooseCard ()
+		public Card chooseCard ()
 		{
 			return _cardChooser.chooseCard ();
 		}
-
 	}
 	#endregion
 }

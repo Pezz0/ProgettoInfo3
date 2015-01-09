@@ -1,10 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using ChiamataLibrary;
 
 namespace ChiamataLibrary
 {
+	class ConsoleController:IPlayerController
+	{
+		public IBid chooseBid ()
+		{
+			Console.WriteLine ("******************************");
+
+			IBid wb = Board.Instance.currentAuctionWinningBid;
+
+			if (wb == null)
+				Console.WriteLine ("Non c'è nessuna bid");
+			else
+				Console.WriteLine ("Offerta vincente:" + wb.ToString ());
+
+			Console.WriteLine ("Devi fare una offerta [passo=p; carichi=c, normale=qualsiasi altra cosa]");
+
+			string a = Console.ReadLine ();
+
+			if (a == "p")
+				return new PassBid ();
+			else if (a == "c") {
+				Console.Write ("Punti: ");
+				return  new CarichiBid (int.Parse (Console.ReadLine ()));
+			} else {
+				Console.Write ("Numero[0=due,...,8=tre,9=asse]: ");
+				EnNumbers n = (EnNumbers) int.Parse (Console.ReadLine ());
+				Console.Write ("Punti: ");
+				int p = int.Parse (Console.ReadLine ());
+				return new NormalBid (n, p);
+			}
+		}
+
+		public EnSemi? chooseSeme ()
+		{
+			Console.WriteLine ("******************************");
+
+			Console.WriteLine ("Hai vinto l'asta e devi scegliere il seme[0=ori ,1=cope 2=bastoni , 3=spade]");
+			return (EnSemi) int.Parse (Console.ReadLine ());
+		}
+
+		public Card chooseCard ()
+		{
+			Console.WriteLine ("******************************");
+
+			Console.WriteLine ("carte in banco:");
+			Board.Instance.CardOnTheBoard.ForEach (delegate(Card c) {
+				Console.WriteLine (c.ToString ());
+			});
+			Console.WriteLine ("");
+
+			List<Card> mano = Board.Instance.Me.Hand;
+
+			for (int i = 0; i < mano.Count; i++)
+				Console.WriteLine ("premere " + i.ToString () + " per giocare " + mano [i].ToString ());
+
+			return mano [int.Parse (Console.ReadLine ())];
+		}
+
+		private static bool _ready = false;
+
+		public bool isReady { get { return _ready; } set { _ready = value; } }
+
+	}
+
+
+
+
 	class MainClass
 	{
+
+
 		public static void Main (string [] args)
 		{
 			string a = Console.ReadLine ();
@@ -34,8 +103,7 @@ namespace ChiamataLibrary
 				});
 
 				//setto me
-				Board.Instance.Me.setAuctionControl (bidChooser, semeChooser);
-				Board.Instance.Me.setPlaytimeControl (cardChooser);
+				Board.Instance.Me.Controller = new ConsoleController ();
 
 				//setto le IA
 				ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICStupid ());
@@ -56,6 +124,7 @@ namespace ChiamataLibrary
 
 				Board.Instance.start ();
 
+
 				while (Board.Instance.Time < 41)
 					Board.Instance.update ();
 
@@ -64,64 +133,6 @@ namespace ChiamataLibrary
 				});
 
 			}
-
-		}
-
-
-		public static IBid bidChooser ()
-		{
-			Console.WriteLine ("******************************");
-
-			IBid wb = Board.Instance.currentAuctionWinningBid;
-
-			if (wb == null)
-				Console.WriteLine ("Non c'è nessuna bid");
-			else
-				Console.WriteLine ("Offerta vincente:" + wb.ToString ());
-
-			Console.WriteLine ("Devi fare una offerta [passo=p; carichi=c, normale=qualsiasi altra cosa]");
-
-			string a = Console.ReadLine ();
-
-			if (a == "p")
-				return new PassBid ();
-			else if (a == "c") {
-				Console.Write ("Punti: ");
-				return  new CarichiBid (int.Parse (Console.ReadLine ()));
-			} else {
-				Console.Write ("Numero[0=due,...,8=tre,9=asse]: ");
-				EnNumbers n = (EnNumbers) int.Parse (Console.ReadLine ());
-				Console.Write ("Punti: ");
-				int p = int.Parse (Console.ReadLine ());
-				return new NormalBid (n, p);
-			}
-		}
-
-		public static EnSemi? semeChooser ()
-		{
-			Console.WriteLine ("******************************");
-
-			Console.WriteLine ("Hai vinto l'asta e devi scegliere il seme[0=ori ,1=cope 2=bastoni , 3=spade]");
-			return (EnSemi) int.Parse (Console.ReadLine ());
-
-		}
-
-		public static Card cardChooser ()
-		{
-			Console.WriteLine ("******************************");
-
-			Console.WriteLine ("carte in banco:");
-			Board.Instance.CardOnTheBoard.ForEach (delegate(Card c) {
-				Console.WriteLine (c.ToString ());
-			});
-			Console.WriteLine ("");
-
-			List<Card> mano = Board.Instance.Me.Hand;
-
-			for (int i = 0; i < mano.Count; i++)
-				Console.WriteLine ("premere " + i.ToString () + " per giocare " + mano [i].ToString ());
-
-			return mano [int.Parse (Console.ReadLine ())];
 
 		}
 

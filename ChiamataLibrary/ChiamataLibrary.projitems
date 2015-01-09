@@ -42,5 +42,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnRole.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\IRandomGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\NormalRandom.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
   </ItemGroup>
 </Project>
