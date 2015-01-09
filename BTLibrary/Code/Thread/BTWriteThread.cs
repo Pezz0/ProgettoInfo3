@@ -1,15 +1,13 @@
-﻿//using System;
-using Java.Lang;
+﻿using System;
 using Android.Bluetooth;
 using System.IO;
+using System.Collections.Generic;
 using Android.OS;
+using Java.Lang;
 
 namespace BTLibrary
 {
-	/// <summary>
-	/// Connected thread class.
-	/// </summary>
-	internal class BTConnectedThread : Thread
+	public class BTWriteThread:Thread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -26,13 +24,14 @@ namespace BTLibrary
 		/// </summary>
 		private Stream _OutStream;
 
-
 		/// <summary>
 		/// The connected device address.
 		/// </summary>
 		private string Connected;
 
-		public BTConnectedThread (BluetoothSocket socket)
+		private Queue<byte []> _buffer;
+
+		public BTWriteThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
 			Stream tmpIn = null;
@@ -42,7 +41,7 @@ namespace BTLibrary
 			try {
 				tmpIn = _Socket.InputStream;
 				tmpOut = _Socket.OutputStream;
-			} catch (Exception e) {
+			} catch (System.Exception e) {
 				//temp socket not created
 				e.ToString ();
 			}
@@ -50,46 +49,38 @@ namespace BTLibrary
 			_OutStream = tmpOut;
 
 			Connected = _Socket.RemoteDevice.Address;
+
+			_buffer = new Queue<byte []> ();
+
 		}
 
-		/// <summary>
-		/// Starts executing the active part of the Connected thread.
-		/// </summary>
 		public override void Run ()
 		{
-			byte [] buffer = new byte[1024];
-			int bytes;
-
-			// Keep listening to the InputStream while connected
 			while (true) {
-				try {
-					buffer = new byte[1024];
-					// Read from the InputStream
-					bytes = _InStream.Read (buffer, 0, buffer.Length);
+				if (_buffer.Count > 0) {
 
-					// Send the obtained bytes to the UI Activity
+					byte [] msg = _buffer.Dequeue ();
+					try {
+						_OutStream.Write (msg, 0, msg.Length);
+						// Share the sent message back to the UI Activity
+						BTPlayService.Instance.forEachHandler (delegate(Handler h) {
+							h.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
+						});
+					} catch (System.Exception e) {
+						//exception during write
+						e.ToString ();
+					}
 
-					BTPlayService.Instance.forEachHandler (delegate(Handler h) {
+					Sleep (200);
 
-						h.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, Connected).SendToTarget ();
-						h.ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
-
-
-					});
-
-
-				} catch (Exception e) {
-					//disconnected
-					e.ToString ();
-					BTPlayService.Instance.ConnectionLost ();
-					BTPlayService.Instance.forEachHandler (delegate(Handler h) {
-						h.ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, Connected).SendToTarget ();
-					});
-					break;
 				}
 			}
 		}
 
+		public void AddQueue (byte [] elem)
+		{
+			_buffer.Enqueue (elem);
+		}
 
 		/// <summary>
 		/// Try to close the socket
@@ -99,10 +90,11 @@ namespace BTLibrary
 		{
 			try {
 				_Socket.Close ();
-			} catch (Exception e) {
+			} catch (System.Exception e) {
 				//close of connect socket failed
 				e.ToString ();
 			}
 		}
 	}
 }
+

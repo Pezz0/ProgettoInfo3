@@ -694,11 +694,6 @@ namespace ChiamataLibrary
 		public event eventHandlerChangePhase eventImReady;
 
 		/// <summary>
-		/// Occurs when i'm active.
-		/// </summary>
-		public event eventHandlerChangePhase eventImActive;
-
-		/// <summary>
 		/// Occurs when the auction start.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStart;

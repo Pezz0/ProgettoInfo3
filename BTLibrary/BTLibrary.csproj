@@ -56,6 +56,7 @@
     <Compile Include="Code\BTPlayer.cs" />
     <Compile Include="Code\BTManager.cs" />
     <Compile Include="Code\Enumeration\EnContentType.cs" />
+    <Compile Include="Code\Thread\BTWriteThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

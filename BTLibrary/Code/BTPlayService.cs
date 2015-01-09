@@ -64,10 +64,16 @@ namespace BTLibrary
 		/// </summary>
 		private BTConnectedThread connectedSlaveThread;
 
+		public const int MAX_BT_PLAYER = 4;
+
+		private BTWriteThread WriteToMasterThread;
+
 		/// <summary>
 		/// The list of connected master thread to perform communication with mutiple connected slave.
 		/// </summary>
 		private List<BTConnectedThread> connectedMasterThread;
+
+		private List<BTWriteThread> WriteToSlaveThread;
 
 		/// <summary>
 		/// The UUID to perform connection.
@@ -364,6 +370,9 @@ namespace BTLibrary
 			connectedSlaveThread = new BTConnectedThread (socket);
 			connectedSlaveThread.Start ();
 
+			WriteToMasterThread = new BTWriteThread (socket);
+			WriteToMasterThread.Start ();
+
 			// Send the name of the connected device back to the Activity
 			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
@@ -393,6 +402,9 @@ namespace BTLibrary
 		{	
 			connectedMasterThread.Add (new BTConnectedThread (socket));
 			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
+
+			WriteToSlaveThread.Add (new BTWriteThread (socket));
+			WriteToSlaveThread [WriteToSlaveThread.Count - 1].Start ();
 
 			//sends a message to the activity indicates the connection to a device
 			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
@@ -425,6 +437,17 @@ namespace BTLibrary
 				connectedSlaveThread.Cancel ();
 				connectedSlaveThread = null;
 			}
+
+			if (WriteToMasterThread != null) {
+				WriteToMasterThread.Cancel ();
+				WriteToMasterThread = null;
+			}
+
+			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
+				WriteToSlaveThread [i].Cancel ();
+				WriteToSlaveThread.RemoveAt (i);
+			}
+			WriteToSlaveThread.Clear ();
 
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
 				connectedMasterThread [i].Cancel ();
@@ -467,6 +490,9 @@ namespace BTLibrary
 				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (address) == 0) {
 					connectedMasterThread [i].Cancel ();
 					connectedMasterThread.RemoveAt (i);
+
+					WriteToSlaveThread [i].Cancel ();
+					WriteToSlaveThread.RemoveAt (i);
 					return;
 				}
 			}
@@ -528,16 +554,16 @@ namespace BTLibrary
 		public void WriteToMaster (byte [] bts)
 		{
 			// Create temporary ConnectedThread
-			BTConnectedThread tmp;
+			BTWriteThread tmp;
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
 				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
 
-				tmp = connectedSlaveThread;
+				tmp = WriteToMasterThread;
 			}
 			// Perform the write unsynchronized
-			tmp.Write (bts);
+			tmp.AddQueue (bts);
 
 		}
 
@@ -559,41 +585,18 @@ namespace BTLibrary
 		{
 
 			// Create temporary ConnectedThread
-			BTConnectedThread tmp;
+			BTWriteThread tmp;
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
 
-				if (connectedMasterThread [player] == null) {
+				if (WriteToSlaveThread [player] == null) {
 					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
 					return;
 				}
-				tmp = connectedMasterThread [player];
+				tmp = WriteToSlaveThread [player];
 			}
 			// Perform the write unsynchronized
-			tmp.Write (bts);
-		}
-
-		/// <summary>
-		/// Writes to all slave except the one specified in the address.
-		/// </summary>
-		/// <param name="address">Address.</param>
-		/// <param name="bts"> the parameter to send.</param>
-		public void WriteToAllSlaveExceptOne<T> (IBTSendable<T> bts, string address)
-		{
-			WriteToAllSlaveExceptOne (bts.toByteArray (), address);
-		}
-
-		public void WriteToAllSlaveExceptOne (byte [] bts, string address)
-		{
-			BTConnectedThread tmp;
-			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				lock (this) {
-					if (connectedMasterThread [i]._Socket.RemoteDevice.Address == address || connectedMasterThread [i] == null)
-						return;
-					tmp = connectedMasterThread [i];
-				}
-				tmp.Write (bts);
-			}
+			tmp.AddQueue (bts);
 		}
 
 		/// <summary>
@@ -609,12 +612,12 @@ namespace BTLibrary
 		public void WriteToAllSlave (byte [] bts)
 		{
 
-			BTConnectedThread tmp;
-			for (int i = 0; i < connectedMasterThread.Count; i++) {
+			BTWriteThread tmp;
+			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
 				lock (this) {
-					if (connectedMasterThread [i] != null) {
-						tmp = connectedMasterThread [i];
-						tmp.Write (bts);
+					if (WriteToSlaveThread [i] != null) {
+						tmp = WriteToSlaveThread [i];
+						tmp.AddQueue (bts);
 					}
 				}
 
@@ -692,7 +695,9 @@ namespace BTLibrary
 			_state = ConnectionState.STATE_NONE;
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new List<BTConnectedThread> ();
+			connectedMasterThread = new List<BTConnectedThread> (MAX_BT_PLAYER);
+
+			WriteToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 		}
 
 		#endregion
