@@ -184,7 +184,10 @@ namespace Core
 
 		public IBid chooseBid ()
 		{
+			turnLight (0);
+
 			if (bidded) {
+				turnLight (1);
 				bidded = false;
 				return myBid;
 			}
@@ -193,6 +196,7 @@ namespace Core
 
 		public EnSemi? chooseSeme ()
 		{
+			turnLight (0);
 			if (!initializedSeme) {
 				chooseSemeButtons ();
 				initializedSeme = true;
@@ -703,7 +707,6 @@ namespace Core
 			mainLayer = new CCLayerColor ();
 			AddChild (mainLayer);
 
-
 			//Instancing the touch listener
 			touch = new TouchList (this);
 
@@ -750,7 +753,7 @@ namespace Core
 			turnLights [0].Color = CCColor3B.Red;
 			turnLights [0].ScaleX = winSize.Height / turnLights [0].ContentSize.Width;
 			mainLayer.AddChild (turnLights [0]);
-			turnLights [0].ZOrder = -1;
+			turnLights [0].ZOrder = 0;
 			turnLights [0].Visible = false;
 
 			turnLights.Add (new CCSprite ("turnLight2"));
@@ -1138,11 +1141,11 @@ namespace Core
 
 		public Card chooseCard ()
 		{
+			turnLight (0);
 			if (played) {
 				played = false;
 				Card temp = Board.Instance.Me.InitialHand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
-				if (Board.Instance.numberOfCardOnBoard != 4)
-					turnLight (1);
+
 
 
 				touch.eventTouchBegan -= touchBeganGame;
@@ -1152,7 +1155,7 @@ namespace Core
 				touch.eventTouchBegan += touchBeganAsta;
 				touch.eventTouchMoved += touchMovedAsta;
 				touch.eventTouchEnded += touchEndedAsta;
-
+				turnLight (1);
 				return Board.Instance.getCard (temp.seme, temp.number);
 			}
 			return null;
@@ -1235,12 +1238,12 @@ namespace Core
 		public void clearBoard (Player player, List<Card> board)
 		{
 			for (int i = 4; i > -1; i--) {
-				CCMoveTo move = new CCMoveTo (0.5f, offScreen [player.order]);
+				CCMoveTo move = new CCMoveTo (0.5f, offScreen [playerToOrder (player)]);
 				CCRemoveSelf delete = new CCRemoveSelf ();
 				droppedCards [i].sprite.RunActions (move, delete);
 				droppedCards.RemoveAt (i);
 			}
-			turnLight (player.order);
+			turnLight (playerToOrder (player));
 			if (player == Board.Instance.Me) {
 				touch.eventTouchBegan += touchBeganGame;
 				touch.eventTouchMoved += touchMovedGame;
