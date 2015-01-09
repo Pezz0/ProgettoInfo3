@@ -40,8 +40,10 @@ namespace BTLibrary
 		{
 			if (BTPlayService.Instance.isSlave ()) {
 				BTPlayService.Instance.WriteToMaster (Board.Instance.Me);
-			} else
+			} else {
 				BTPlayService.Instance.WriteToAllSlave (Board.Instance.Me);
+			}
+				
 		}
 
 		public void bidPlaced (IBid bid)

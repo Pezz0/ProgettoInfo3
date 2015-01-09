@@ -27,11 +27,15 @@ namespace BTLibrary
 		public override void HandleMessage (Message msg)
 		{
 			if (msg.What == (int) MessageType.MESSAGE_READ) {
+
+				if (Board.Instance.isWaitingPhase && BTPlayService.Instance.isSlave ())
+					_readyToStart = true;
+
 				byte [] data = (byte []) msg.Obj;
 				Player sender = Board.Instance.getPlayer (data [0]);
 
 				if (sender == _player) {
-					if (Board.Instance.isWaitingPhase)
+					if (Board.Instance.isWaitingPhase && !BTPlayService.Instance.isSlave ())
 						_readyToStart = true;
 
 					if (Board.Instance.isAuctionPhase) {

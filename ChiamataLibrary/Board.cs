@@ -737,18 +737,30 @@ namespace ChiamataLibrary
 		public void update ()
 		{
 			if (isWaitingPhase) {	//waiting phase
-				if (Me.isReady /*&& !_imReady*/ && eventImReady != null) {
-					//_imReady = true;
-					eventImReady ();
+
+				if (_me == 0) {	//master
+					bool r = true;
+					
+					for (int i = 0; i < PLAYER_NUMBER && r; i++)
+						r = r && _players [i].isReady;
+					
+					if (r) {
+						if (eventImReady != null)
+							eventImReady ();
+
+						_t = -2;
+					}
+										
+
+				} else {	//slave
+					if (eventImReady != null)
+						eventImReady ();
+
+					if (_players [0].isReady)
+						_t = -2;
+
 				}
 
-				bool r = true;
-
-				for (int i = 0; i < PLAYER_NUMBER && r; i++)
-					r = r && _players [i].isReady;
-
-				if (r)
-					_t = -2;
 
 			} else if (isAuctionPhase) {	//auction
 				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
