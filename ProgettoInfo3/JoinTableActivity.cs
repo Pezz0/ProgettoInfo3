@@ -39,6 +39,7 @@ namespace ProgettoInfo3
 			connecting = false;
 
 			BTPlayService.Instance.AddHandler (new BTConnHandler (this, this));
+			//BTPlayService.Instance.AddHandler (new BTAckHandler ());
 			BTPlayService.Instance.RegisterReceiver ();
 
 			BTPlayService.Instance.setActivity (this);
@@ -279,17 +280,10 @@ namespace ProgettoInfo3
 					case (int)MessageType.MESSAGE_READ:
 						a.SetTitle (Resource.String.starting);
 						send.Enabled = false;
-
-						List<byte> bs = new List<byte> ();
-						byte [] m = (byte []) msg.Obj;
-
-						for (int i = 1; i < m.GetLength (0); i++)
-							bs.Add (m [i]);
-
-						Board.Instance.recreateFromByteArray (bs.ToArray ());
-						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
 						Intent returnIntent = new Intent ();
+						returnIntent.PutExtra ("Board", (byte []) msg.Obj);
+						returnIntent.PutExtra ("Name", name.Text.ToCharArray ());
 						a.SetResult (Result.Ok, returnIntent);
 						a.Finish ();
 					break;

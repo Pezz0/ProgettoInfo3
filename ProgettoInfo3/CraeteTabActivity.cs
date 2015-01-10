@@ -93,6 +93,7 @@ namespace ProgettoInfo3
 			counter = 4;
 
 			BTPlayService.Instance.AddHandler (new MyHandler (this));
+			//BTPlayService.Instance.AddHandler (new BTAckHandler ());
 			BTPlayService.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
@@ -253,24 +254,24 @@ namespace ProgettoInfo3
 					break;
 
 					case (int)MessageType.MESSAGE_READ:
-						string Player = Encoding.ASCII.GetString ((byte []) msg.Obj);
-						if (Player.Length > MAX_NAME_LENGHT)
-							Player = Player.Substring (0, MAX_NAME_LENGHT);
+						string player = Encoding.ASCII.GetString ((byte []) msg.Obj);
+						if (player.Length > MAX_NAME_LENGHT)
+							player = player.Substring (0, MAX_NAME_LENGHT);
 						if (address.CompareTo (add1.Text) == 0) {
-							Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + Player, ToastLength.Short).Show (); 
-							pl1.Text = Player;
+							Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+							pl1.Text = player;
 						}
 						if (address.CompareTo (add2.Text) == 0) {
-							Toast.MakeText (Application.Context, pl2.Text + " changed his/her name to " + Player, ToastLength.Short).Show (); 
-							pl2.Text = Player;
+							Toast.MakeText (Application.Context, pl2.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+							pl2.Text = player;
 						}
 						if (address.CompareTo (add3.Text) == 0) {
-							Toast.MakeText (Application.Context, pl3.Text + " changed his/her name to " + Player, ToastLength.Short).Show (); 
-							pl3.Text = Player;
+							Toast.MakeText (Application.Context, pl3.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+							pl3.Text = player;
 						}
 						if (address.CompareTo (add4.Text) == 0) {
-							Toast.MakeText (Application.Context, pl4.Text + " changed his/her name to " + Player, ToastLength.Short).Show (); 
-							pl4.Text = Player;
+							Toast.MakeText (Application.Context, pl4.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+							pl4.Text = player;
 						}
 						address = "";
 					break;

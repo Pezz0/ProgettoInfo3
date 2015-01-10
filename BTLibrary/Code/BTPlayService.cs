@@ -553,17 +553,15 @@ namespace BTLibrary
 		/// </param>
 		public void WriteToMaster (byte [] bts)
 		{
-			// Create temporary ConnectedThread
-			BTWriteThread tmp;
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
 				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
 
-				tmp = WriteToMasterThread;
+				WriteToMasterThread.Add (bts);
 			}
 			// Perform the write unsynchronized
-			tmp.Add (bts);
+
 
 		}
 
@@ -583,20 +581,17 @@ namespace BTLibrary
 
 		public void WriteToSlave (byte [] bts, int player)
 		{
-
-			// Create temporary ConnectedThread
-			BTWriteThread tmp;
-			// Synchronize a copy of the ConnectedThread
+			// Synchronize the ConnectedThread
 			lock (this) {
 
 				if (WriteToSlaveThread [player] == null) {
 					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
 					return;
 				}
-				tmp = WriteToSlaveThread [player];
+				WriteToSlaveThread [player].Add (bts);
 			}
 			// Perform the write unsynchronized
-			tmp.Add (bts);
+
 		}
 
 		/// <summary>
@@ -612,12 +607,12 @@ namespace BTLibrary
 		public void WriteToAllSlave (byte [] bts)
 		{
 
-			BTWriteThread tmp;
+			//BTWriteThread tmp;
 			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
 				lock (this) {
 					if (WriteToSlaveThread [i] != null) {
-						tmp = WriteToSlaveThread [i];
-						tmp.Add (bts);
+						WriteToSlaveThread [i].Add (bts);
+
 					}
 				}
 

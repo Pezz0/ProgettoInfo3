@@ -32,7 +32,7 @@ namespace BTLibrary
 
 		private List<byte []> _buffer;
 
-		public const int SLEEP_TIME = 500;
+		public const int SLEEP_TIME = 50;
 
 		public BTWriteThread (BluetoothSocket socket)
 		{
@@ -78,8 +78,10 @@ namespace BTLibrary
 					if (msg [0] == (int) EnContentType.ACK)
 						_buffer.RemoveAt (0);
 
-					Sleep (SLEEP_TIME);
+
 				}
+
+				Sleep (SLEEP_TIME);
 				
 			}
 		}

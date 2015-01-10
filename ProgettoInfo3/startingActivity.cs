@@ -47,7 +47,23 @@ namespace ProgettoInfo3
 				application.ApplicationDelegate = new Core.GameAppDelegate ();
 				SetContentView (application.AndroidContentView);
 
+				BTPlayService.Instance.AddHandler (new BTAckHandler ());
+
 				if (BTPlayService.Instance.isSlave ()) {
+
+					byte [] board = data.GetByteArrayExtra ("Board");
+
+					List<byte> bs = new List<byte> ();
+					//byte [] m = (byte []) msg.Obj;
+
+					for (int i = 1; i < board.GetLength (0); i++)
+						bs.Add (board [i]);
+
+					Board.Instance.recreateFromByteArray (bs.ToArray ());
+
+					char [] Me = data.GetCharArrayExtra ("Name");
+
+					Board.Instance.initializeSlave (new string (Me));
 
 					BTManager.Instance.initialize ();
 
@@ -86,7 +102,7 @@ namespace ProgettoInfo3
 					}
 				}
 
-				BTPlayService.Instance.AddHandler (new BTAckHandler ());
+
 
 				application.StartGame ();
 
