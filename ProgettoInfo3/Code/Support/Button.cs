@@ -15,21 +15,19 @@ namespace Core
 		private CCLayer mainLayer;
 
 		private bool _Enabled;
+
 		public bool Enabled {
-			get{return _Enabled;}
-			set{
-				if(value==true){
+			get{ return _Enabled; }
+			set {
+				if (value == true) {
 					//TODO : aggiungere la texture di disabled
-					spritePressed.Visible = false;
-					spriteNorm.Visible = true;
+					spriteNorm.Color = CCColor3B.White;
 					touch.eventTouchBegan += touchBegan;
 					touch.eventTouchEnded += touchEnded;
 					_Enabled = true;
-				}
-				else {
+				} else {
 					//TODO : aggiungere la texture di disabled
-					spritePressed.Visible = true;
-					spriteNorm.Visible = false;
+					spriteNorm.Color = CCColor3B.Gray;
 					touch.eventTouchBegan -= touchBegan;
 					touch.eventTouchEnded -= touchEnded;
 					_Enabled = false;
@@ -37,7 +35,7 @@ namespace Core
 			}
 		}
 
-		public Button (CCLayer mainLayer,TouchList tl, TouchList.eventHandlerTouch method, string textureDefault,string texturePressed, CCPoint position,CCSize winSize, float rot=-90,float scale=0.55f)
+		public Button (CCLayer mainLayer, TouchList tl, TouchList.eventHandlerTouch method, string textureDefault, string texturePressed, CCPoint position, CCSize winSize, float rot = -90, float scale = 0.55f)
 		{
 
 			//Defining the sprite
@@ -67,7 +65,7 @@ namespace Core
 
 		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			if (spriteNorm.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))){
+			if (spriteNorm.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
 				pressed = true;
 				spritePressed.Visible = true;
 				spriteNorm.Visible = false;
@@ -75,11 +73,12 @@ namespace Core
 				
 		}
 
-		private void touchEnded(List<CCTouch> touches, CCEvent touchEvent){
+		private void touchEnded (List<CCTouch> touches, CCEvent touchEvent)
+		{
 			spriteNorm.Visible = true;
 			spritePressed.Visible = false;
 			if (spriteNorm.BoundingBoxTransformedToParent.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y)) && pressed == true) {
-				onButtonPressed(touches, touchEvent);
+				onButtonPressed (touches, touchEvent);
 				pressed = false;
 
 			}
@@ -87,7 +86,8 @@ namespace Core
 		}
 
 
-		public void remove(){
+		public void remove ()
+		{
 			touch.eventTouchBegan -= touchBegan;
 			touch.eventTouchEnded -= touchEnded;
 			mainLayer.RemoveChild (spriteNorm);

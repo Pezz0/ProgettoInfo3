@@ -21,6 +21,7 @@ namespace Core
 				if (_currentValue == _min) {
 					_currentValue = value;
 					_min = value;
+					lblValue.SetString (value.ToString (), true);
 
 				}
 			}
@@ -28,6 +29,13 @@ namespace Core
 
 		private int _max;
 		private int _currentValue;
+
+		public void resetRange ()
+		{
+			_min = 61;
+			_currentValue = 61;
+			lblValue.SetString ("61", true);
+		}
 
 		public int currentValue{ get { return _currentValue; } }
 
@@ -40,12 +48,14 @@ namespace Core
 			spriteBar.Position = position;
 			spriteBar.Rotation = rot;
 			spriteBar.Scale = scale;
+			spriteBar.BlendFunc = CCBlendFunc.AlphaBlend;
 			mainLayer.AddChild (spriteBar);
 
 			spritePoint = new CCSprite (texturePoint);
 			spriteBar.AddChild (spritePoint);
 			spritePoint.Position = new CCPoint (0, spriteBar.ContentSize.Height / 2);
-			spritePoint.Scale = scale * 0.7f;
+			spritePoint.Scale = scale * 0.77f;
+			spritePoint.BlendFunc = CCBlendFunc.AlphaBlend;
 
 			_min = min;
 			_max = max;

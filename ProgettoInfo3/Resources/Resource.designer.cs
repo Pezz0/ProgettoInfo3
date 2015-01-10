@@ -96,10 +96,7 @@ namespace ProgettoInfo3
 			public const int indeterminate = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int monoandroidsplash = 2130837508;
-			
-			// aapt resource value: 0x7f020005
-			public const int red_button = 2130837509;
+			public const int red_button = 2130837508;
 			
 			static Drawable()
 			{
@@ -323,9 +320,6 @@ namespace ProgettoInfo3
 		
 		public partial class Style
 		{
-			
-			// aapt resource value: 0x7f070004
-			public const int Mono_Android_Theme_Splash = 2131165188;
 			
 			// aapt resource value: 0x7f070001
 			public const int Text = 2131165185;

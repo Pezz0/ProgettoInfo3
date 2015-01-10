@@ -8,6 +8,9 @@ namespace Core
 	public class GameScene : CCScene,IPlayerController
 	{
 		//TODO: controllare i readonly
+		//TODO : sistemare i colori della slider e trovare la texture per i pulsanti disabilitati
+		//TODO : sistemare la turnlight per farla più sfumata
+		//TODO : allargare rettangolo drop cards
 
 		//Core variables
 		private CCLayer mainLayer;
@@ -78,6 +81,25 @@ namespace Core
 
 		private Slider slider;
 
+		private void disableAllButtons ()
+		{
+			for (int i = 0; i < 12; i++)
+				buttons [i].Enabled = false;
+		}
+
+		private void enableAvaiableButtons ()
+		{
+			disableAllButtons ();
+			if (Board.Instance.currentAuctionWinningBid is NormalBid) {
+				NormalBid b = (NormalBid) ( Board.Instance.currentAuctionWinningBid );
+				for (int i = (int) b.number; i >= 0; i--)
+					buttons [i].Enabled = true;
+
+				buttons [10].Enabled = true;
+				slider.min = b.point + 1;
+			}
+		}
+
 		#region Buttons actions
 
 		private void actLascio (List<CCTouch> touches, CCEvent touchEvent)
@@ -89,6 +111,8 @@ namespace Core
 
 		private void actCarichi (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			myBid = new CarichiBid (Board.Instance.Me, slider.currentValue);
 			bidded = true;
 
@@ -96,84 +120,141 @@ namespace Core
 
 		private void actAsse (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.ASSE, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actTre (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [9].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.TRE, slider.currentValue);
+
 			bidded = true;
 		}
 
 		private void actDieci (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [8].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.RE, slider.currentValue);
+
 			bidded = true;
 		}
 
 		private void actNove (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [7].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actOtto (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [6].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.FANTE, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actSette (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [5].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SETTE, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actSei (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [4].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SEI, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actCinque (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [3].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CINQUE, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actQuattro (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [2].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.QUATTRO, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actDue (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			if (buttons [1].Enabled)
+				slider.resetRange ();
+
+			disableAllButtons ();
+
 			myBid = new NormalBid (Board.Instance.Me, EnNumbers.DUE, slider.currentValue);
 			bidded = true;
 		}
 
 		private void actOri (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			mySeme = EnSemi.ORI;
 			bidded = true;
 		}
 
 		private void actBastoni (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			mySeme = EnSemi.BASTONI;
 			bidded = true;
 		}
 
 		private void actCoppe (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			mySeme = EnSemi.COPE;
 			bidded = true;
 		}
 
 		private void actSpade (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			disableAllButtons ();
+
 			mySeme = EnSemi.SPADE;
 			bidded = true;
 		}
@@ -693,6 +774,7 @@ namespace Core
 
 		#endregion
 
+		//Boolean value that says if the debug label has already been written
 		private bool written;
 
 		/// <summary>
@@ -804,21 +886,25 @@ namespace Core
 
 			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 1 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [1].Position = new CCPoint (winSize.Width / 2, winSize.Height - winSize.Height / 40);
+			playerNames [1].Color = CCColor3B.Black;
 			mainLayer.AddChild (playerNames [1]);
 
 			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 2 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [2].Position = new CCPoint (winSize.Height / 40, winSize.Height * 3 / 4);
 			playerNames [2].Rotation = -90;
+			playerNames [2].Color = CCColor3B.Black;
 			mainLayer.AddChild (playerNames [2]);
 
 			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 3 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [3].Position = new CCPoint (winSize.Height / 40, winSize.Height / 4);
 			playerNames [3].Rotation = -90;
+			playerNames [3].Color = CCColor3B.Black;
 			mainLayer.AddChild (playerNames [3]);
 
 			playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 4 ) % Board.PLAYER_NUMBER].name, "Arial", ( winSize.Width / 12 ) * 0.5f));
 			playerNames [4].Position = new CCPoint (winSize.Width / 2, winSize.Height / 40);
 			playerNames [4].Rotation = 180;
+			playerNames [4].Color = CCColor3B.Black;
 			mainLayer.AddChild (playerNames [4]);
 			#endregion
 
@@ -907,9 +993,7 @@ namespace Core
 
 			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120, -90, _cardScale * 3f);
 
-			for (int i = 0; i < 12; i++) {
-				buttons [i].Enabled = false;
-			}
+			disableAllButtons ();
 
 
 			#endregion
@@ -1049,8 +1133,8 @@ namespace Core
 			turnLight (playerToOrder (Board.Instance.ActiveAuctionPlayer));
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
-				for (int i = 0; i < 12; i++)
-					buttons [i].Enabled = false;
+				disableAllButtons ();
+
 
 		}
 
@@ -1062,11 +1146,9 @@ namespace Core
 		{
 			//TODO : disabilitare i pulsanti che non posso cliccare perchè puntano roba troppo alta
 			if (!Board.Instance.isAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
-				for (int i = 0; i < 12; i++)
-					buttons [i].Enabled = false;
+				disableAllButtons ();
 			} else {
-				for (int i = 0; i < 12; i++)
-					buttons [i].Enabled = true;
+				enableAvaiableButtons ();
 			}
 
 			playerBids [( bid.bidder.order - Board.Instance.Me.order + 5 ) % 5].Text = bidToString (bid);
@@ -1121,9 +1203,15 @@ namespace Core
 
 		public void startPlaytime ()
 		{
-			touch.eventTouchBegan += touchBeganGame;
-			touch.eventTouchMoved += touchMovedGame;
-			touch.eventTouchEnded += touchEndedGame;
+			if (Board.Instance.ActivePlayer == Board.Instance.Me) {
+				touch.eventTouchBegan += touchBeganGame;
+				touch.eventTouchMoved += touchMovedGame;
+				touch.eventTouchEnded += touchEndedGame;
+			} else {
+				touch.eventTouchBegan += touchBeganAsta;
+				touch.eventTouchMoved += touchMovedAsta;
+				touch.eventTouchEnded += touchEndedAsta;
+			}
 
 			for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 				if (Board.Instance.getPlayer (i).Role == EnRole.CHIAMANTE)
@@ -1244,6 +1332,7 @@ namespace Core
 				droppedCards.RemoveAt (i);
 			}
 			turnLight (playerToOrder (player));
+
 			if (player == Board.Instance.Me) {
 				touch.eventTouchBegan += touchBeganGame;
 				touch.eventTouchMoved += touchMovedGame;
