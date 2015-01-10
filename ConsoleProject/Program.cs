@@ -76,11 +76,6 @@ namespace ChiamataLibrary
 
 			if (a == "x") {
 				GameData gm = new GameData ("C:\\Users\\Matteo\\Documents\\prova.xml");
-			} else if (a == "b") {
-
-
-
-
 			} else {
 				Board.Instance.reset ();
 				Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);	//il mazziere è C
