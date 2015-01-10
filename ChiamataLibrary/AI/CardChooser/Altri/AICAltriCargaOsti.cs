@@ -35,13 +35,6 @@ namespace ChiamataLibrary
 					}
 				
 				case 1:
-
-					temp = _me.getCarico ();
-					if (temp == null)
-						return _me.getScartino ();
-					else
-						return temp;
-			
 				case 2:
 					temp = _me.getCarico ();
 					if (temp == null)
@@ -60,13 +53,14 @@ namespace ChiamataLibrary
 						temp = _me.getBriscolaNotCarico ();
 					} else
 						temp = _me.getBriscolaCarico ();
-					if (Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
+
+					if (temp != null && ( Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
 						return c.seme == Board.Instance.CalledCard.seme;
 					}).TrueForAll (delegate (Card c) {
-						return temp > c;
-					})) {
+						return temp >= c;
+					}) ))
 						return temp;
-					} else
+					else
 						return _me.getScartino ();
 						
 				case 4:
@@ -90,13 +84,14 @@ namespace ChiamataLibrary
 							temp = _me.getBriscolaNotCarico ();
 						} else
 							temp = _me.getBriscolaCarico ();
-						if (Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
+
+						if (temp != null && ( Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
 							return c.seme == Board.Instance.CalledCard.seme;
 						}).TrueForAll (delegate (Card c) {
-							return temp > c;
-						})) {
+							return temp >= c;
+						}) ))
 							return temp;
-						} else
+						else
 							return _me.getScartino ();
 					}
 			}

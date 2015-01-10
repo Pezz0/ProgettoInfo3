@@ -138,7 +138,10 @@ namespace ChiamataLibrary
 		public Card getBriscolaCarico ()
 		{
 			List<Card> temp = getBriscole ();
-			return temp [temp.Count - 1];
+			if (temp.Count > 0)
+				return temp [temp.Count - 1];
+			else
+				return null;
 
 		}
 

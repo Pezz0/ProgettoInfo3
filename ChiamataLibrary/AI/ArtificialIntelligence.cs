@@ -132,7 +132,11 @@ namespace ChiamataLibrary
 
 		public IBid chooseBid ()
 		{
-			return _bidChooser.chooseABid ();
+			IBid bid = _bidChooser.chooseABid ();
+			if (bid == null)
+				throw new Exception ("Null bid");
+
+			return bid;
 		}
 
 		public EnSemi? chooseSeme ()
@@ -142,7 +146,11 @@ namespace ChiamataLibrary
 
 		public Card chooseCard ()
 		{
-			return _cardChooser.chooseCard ();
+			Card card = _cardChooser.chooseCard ();
+			if (card == null)
+				throw new Exception ("Null card");
+
+			return card;
 		}
 	}
 	#endregion
