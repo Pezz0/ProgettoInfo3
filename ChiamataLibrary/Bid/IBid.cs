@@ -23,7 +23,7 @@ namespace ChiamataLibrary
 			if (bytes [1] == 255)
 				return new CarichiBid ((int) bytes [1]);
 
-			return new NormalBid ((EnNumbers) bytes [2], (int) bytes [1]);
+			return new NormalBid ((EnNumbers) bytes [1], (int) bytes [0]);
 		}
 
 		#endregion

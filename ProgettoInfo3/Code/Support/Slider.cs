@@ -27,6 +27,20 @@ namespace Core
 			}
 		}
 
+		private bool _visible;
+
+		public bool visible {
+			set {
+				if (value) {
+					spriteBar.Visible = true;
+					spritePoint.Visible = true;
+				} else {
+					spriteBar.Visible = false;
+					spritePoint.Visible = false;
+				}
+			}
+		}
+
 		private int _max;
 		private int _currentValue;
 
