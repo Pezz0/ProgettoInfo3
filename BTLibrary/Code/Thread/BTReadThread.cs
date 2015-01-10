@@ -36,7 +36,7 @@ namespace BTLibrary
 			_socket = socket;
 			Stream tmpIn = null;
 			Stream tmpOut = null;
-
+			//gujyhjv
 			// Get the BluetoothSocket input and output streams
 			try {
 				tmpIn = _socket.InputStream;
