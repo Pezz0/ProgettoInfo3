@@ -75,6 +75,9 @@ namespace BTLibrary
 						e.ToString ();
 					}
 
+					if (msg [0] == (int) EnContentType.ACK)
+						_buffer.RemoveAt (0);
+
 					Sleep (SLEEP_TIME);
 				}
 				
@@ -84,13 +87,27 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Add (byte [] elem)
 		{
-			_buffer.Add (elem);
+			byte [] bs = new byte[1024];
+			for (int i = 0; i < elem.GetLength (0); i++)
+				bs [i] = elem [i];
+	
+			if (bs [0] == (int) EnContentType.ACK)
+				_buffer.Insert (0, bs);
+			else
+				_buffer.Add (bs);
 		}
 
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Remove (byte [] elem)
 		{
-			_buffer.Remove (elem);
+			_buffer.RemoveAll (delegate(byte [] b) {
+				bool temp = true;
+				for (int i = 0; i < b.Length; i++)
+					temp = temp && b [i] == elem [i];
+
+				return temp;
+			});
+
 		}
 
 		/// <summary>

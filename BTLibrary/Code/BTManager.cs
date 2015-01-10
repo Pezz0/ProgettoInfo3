@@ -84,7 +84,7 @@ namespace BTLibrary
 
 		public void cardPlayed (Move move)
 		{
-			byte [] msg = new byte[3];
+			byte [] msg = new byte[4];
 			msg [0] = (int) EnContentType.MOVE;
 
 			byte [] ms = move.toByteArray ();

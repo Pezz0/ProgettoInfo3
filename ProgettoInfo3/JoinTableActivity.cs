@@ -286,7 +286,7 @@ namespace ProgettoInfo3
 						for (int i = 1; i < m.GetLength (0); i++)
 							bs.Add (m [i]);
 
-						Board.Instance.recreateFromByteArray (m);
+						Board.Instance.recreateFromByteArray (bs.ToArray ());
 						Board.Instance.initializeSlave (name.Text);
 						BTPlayService.Instance.ResetHandler ();
 						Intent returnIntent = new Intent ();

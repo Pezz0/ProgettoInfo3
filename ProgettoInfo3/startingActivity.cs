@@ -86,6 +86,7 @@ namespace ProgettoInfo3
 					}
 				}
 
+				BTPlayService.Instance.AddHandler (new BTAckHandler ());
 
 				application.StartGame ();
 

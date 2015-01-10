@@ -26,36 +26,39 @@ namespace BTLibrary
 
 		public override void HandleMessage (Message msg)
 		{
-			if (msg.What == (int) MessageType.MESSAGE_READ && !Board.Instance.isCreationPhase) {
+			if (msg.What == (int) MessageType.MESSAGE_READ) {
 
 				byte [] data = (byte []) msg.Obj;
 
 				EnContentType type = (EnContentType) data [0];
-				Player sender = Board.Instance.getPlayer (data [1]);
+				if (type != EnContentType.BOARD && type != EnContentType.ACK && type != EnContentType.NONE) {
 
-				if (type == EnContentType.READY && BTPlayService.Instance.isSlave ())
-					_readyToStart = true;
-					
-				if (sender == _player) {
-					if (type == EnContentType.READY && !BTPlayService.Instance.isSlave ())
+					Player sender = Board.Instance.getPlayer (data [1]);
+
+					if (type == EnContentType.READY && BTPlayService.Instance.isSlave ())
 						_readyToStart = true;
+					
+					if (sender == _player) {
+						if (type == EnContentType.READY && !BTPlayService.Instance.isSlave ())
+							_readyToStart = true;
 
-					if (type == EnContentType.BID && data [2] > Board.Instance.NumberOfBid) {
-						_ready = true;
+						if (type == EnContentType.BID && data [2] > Board.Instance.NumberOfBid) {
+							_ready = true;
 
-						_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[3] {
-							data [1],
-							data [3],
-							data [4]
-						});
-					}
-					if (type == EnContentType.SEME) {
-						_ready = true;
-						_seme = (EnSemi) ( data [2] );
-					}
-					if (type == EnContentType.MOVE && data [2] > Board.Instance.Time) {
-						_ready = true;
-						_card = Board.Instance.getCard (data [3]);
+							_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[3] {
+								data [1],
+								data [3],
+								data [4]
+							});
+						}
+						if (type == EnContentType.SEME) {
+							_ready = true;
+							_seme = (EnSemi) ( data [2] );
+						}
+						if (type == EnContentType.MOVE && data [2] >= Board.Instance.Time) {
+							_ready = true;
+							_card = Board.Instance.getCard (data [3]);
+						}
 					}
 				}
 			}
