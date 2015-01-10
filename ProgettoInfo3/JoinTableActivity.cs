@@ -141,7 +141,7 @@ namespace ProgettoInfo3
 					setName.SetTitle ("Name Too Long");
 					setName.SetMessage ("Your name is too long\nDo you want to be registered on master with this name: " + sub + "?");
 					setName.SetPositiveButton ("YES", delegate {
-						BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (sub));
+						BTPlayService.Instance.WriteToMaster (EnContentType.NAME, Encoding.ASCII.GetBytes (sub));
 
 					});
 					setName.SetNegativeButton ("NO", delegate {
@@ -150,7 +150,7 @@ namespace ProgettoInfo3
 					setName.Show ();
 
 				} else
-					BTPlayService.Instance.WriteToMaster (Encoding.ASCII.GetBytes (name.Text));
+					BTPlayService.Instance.WriteToMaster (EnContentType.NAME, Encoding.ASCII.GetBytes (name.Text));
 
 			} else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();

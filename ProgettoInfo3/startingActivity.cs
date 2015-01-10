@@ -39,14 +39,13 @@ namespace ProgettoInfo3
 
 		}
 
+		private readonly List<IPlayerController> _PlayerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER - 1);
+
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
+			_PlayerControllerList.Clear ();
+
 			if (requestCode == 2 && resultCode == Result.Ok) {
-
-				var application = new CCApplication ();
-				application.ApplicationDelegate = new Core.GameAppDelegate ();
-				SetContentView (application.AndroidContentView);
-
 				Board.Instance.reset ();
 
 				if (BTPlayService.Instance.isSlave ()) {
@@ -54,9 +53,8 @@ namespace ProgettoInfo3
 					byte [] board = data.GetByteArrayExtra ("Board");
 
 					List<byte> bs = new List<byte> ();
-					//byte [] m = (byte []) msg.Obj;
 
-					for (int i = 18; i < board.GetLength (0); i++)
+					for (int i = 1; i < board.GetLength (0); i++)
 						bs.Add (board [i]);
 
 					Board.Instance.recreateFromByteArray (bs.ToArray ());
@@ -66,25 +64,18 @@ namespace ProgettoInfo3
 					Board.Instance.initializeSlave (new string (Me));
 
 					BTManager.Instance.initialize ();
+				
+					for (int i = 0; i < Board.PLAYER_NUMBER; i++)
+						if (Board.Instance.Me.order != i)
+							_PlayerControllerList.Add (new BTPlayer (Board.Instance.getPlayer (i)));
 
-					for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
-						if (Board.Instance.Me.order != i) {
-							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
-						}
-					}
-						
 				} else {
 					string [] name = data.GetStringArrayExtra ("Names");
-					List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
-					ChiamataLibrary.Board.Instance.initializeMaster (name, 2);
 
-					List<byte> bs = new List<byte> ();
-					bs.Add ((byte) EnContentType.BOARD);
-
-					bs.AddRange (Board.Instance.toByteArray ());
+					ChiamataLibrary.Board.Instance.initializeMaster (name, data.GetIntExtra ("Dealer", 0));
 
 					if (BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.WriteToAllSlave (bs.ToArray ());
+						BTPlayService.Instance.WriteToAllSlave (EnContentType.BOARD, Board.Instance.toByteArray ());
 
 					BTManager.Instance.initialize ();
 
@@ -92,14 +83,17 @@ namespace ProgettoInfo3
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (type [i - 1] == "AI")
-							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
+							_PlayerControllerList.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
 						else if (type [i - 1] == "BlueTooth") {
-							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
+							_PlayerControllerList.Add (new BTPlayer (Board.Instance.getPlayer (i)));
 						
 						}
 					}
 				}
 					
+				var application = new CCApplication ();
+				application.ApplicationDelegate = new Core.GameAppDelegate ();
+				SetContentView (application.AndroidContentView);
 				application.StartGame ();
 
 			}

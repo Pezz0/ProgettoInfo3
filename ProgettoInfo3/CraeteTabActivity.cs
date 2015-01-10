@@ -172,6 +172,8 @@ namespace ProgettoInfo3
 					spinner4.SelectedItem.ToString ()
 				});
 
+				returnIntent.PutExtra ("Dealer", 2);
+
 				SetResult (Result.Ok, returnIntent);
 			
 				BTPlayService.Instance.StopListen ();

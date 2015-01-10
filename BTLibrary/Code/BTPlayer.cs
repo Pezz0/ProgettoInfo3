@@ -27,7 +27,6 @@ namespace BTLibrary
 
 		private void handleMessage (EnContentType type, Player sender, List<byte> msg)
 		{
-
 			if (type == EnContentType.READY && BTPlayService.Instance.isSlave ())
 				_readyToStart = true;
 
@@ -38,11 +37,10 @@ namespace BTLibrary
 				if (type == EnContentType.BID && msg [0] > Board.Instance.NumberOfBid) {
 					_ready = true;
 
-					_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[3] {
-						(byte) sender.order,
+					_bid = Board.Instance.DefBid.recreateFromByteArray (new byte[2] {
 						msg [1],
 						msg [2]
-					});
+					}).changeBidder (sender);
 				}
 				if (type == EnContentType.SEME) {
 					_ready = true;

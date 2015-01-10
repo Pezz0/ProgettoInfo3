@@ -20,10 +20,9 @@ namespace ChiamataLibrary
 
 		public override byte[] toByteArray ()
 		{
-			byte [] b = new Byte[3];
-			b [0] = this.bidder.toByteArray () [0];
-			b [1] = BitConverter.GetBytes (point) [0];
-			b [2] = BitConverter.GetBytes ((int) number) [0];
+			byte [] b = new Byte[2];
+			b [0] = BitConverter.GetBytes (point) [0];
+			b [1] = BitConverter.GetBytes ((int) number) [0];
 
 			return b;
 		}

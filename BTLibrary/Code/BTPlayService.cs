@@ -525,121 +525,83 @@ namespace BTLibrary
 
 		#region Communication Management
 
-		/// <summary>
-		/// Write to the Master in an unsynchronized manner
-		/// </summary>
-		/// <param name='out'>
-		/// The String to write.
-		/// </param>
-		public void WriteToMaster<T> (IBTSendable<T> bts)
-		{
-			WriteToMaster (bts.toByteArray ());
-		}
-
-		/// <summary>
-		/// Write to the Master in an unsynchronized manner
-		/// </summary>
-		/// <param name='out'>
-		/// The String to write.
-		/// </param>
-		public void WriteToMaster (byte [] bts)
+		private byte[] createMsg (EnContentType type, byte [] msg)
 		{
 			List<byte> bs = new List<byte> ();
 
-			bs.Add (bts [0]);
+			bs.Add ((byte) type);
 
-			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
+			if (type == EnContentType.ACK) {
+				byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
+				bs.AddRange (bAddress);
+			}
 
-			bs.AddRange (bAddress);
+			bs.AddRange (msg);
+			return bs.ToArray ();
+		}
 
-			for (int i = 1; i < bts.GetLength (0); i++)
-				bs.Add (bts [i]);
+		private byte[] createMsgPlaytime (Player sender, byte [] msg)
+		{
+			List<byte> bs = new List<byte> ();
+			bs.Add (sender.toByteArray () [0]);
+			bs.AddRange (msg);
+			return bs.ToArray ();
+		}
 
+		public void WriteToMaster (EnContentType type, byte [] msg)
+		{
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
 				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
-
-				WriteToMasterThread.Buffer.Add (bs.ToArray ());
+			
+				WriteToMasterThread.Buffer.Add (createMsg (type, msg));
 			}
 			// Perform the write unsynchronized
-
-
 		}
 
-		/// <summary>
-		/// Write to the Slave in an unsynchronized manner
-		/// </summary>
-		/// <param name='out'>
-		/// The String to write.
-		/// </param>
-		/// <param name="player">
-		/// The slave we want to write
-		/// </param>
-		public void WriteToSlave<T> (IBTSendable<T> bts, int player)
+		public void WriteToMaster (EnContentType type, Player sender, byte [] msg)
 		{
-			WriteToSlave (bts.toByteArray (), player);
+			WriteToMaster (type, createMsgPlaytime (sender, msg));
 		}
 
-		public void WriteToSlave (byte [] bts, int player)
+		private void WriteToSlave (EnContentType type, byte [] msg, int slave)
 		{
-			List<byte> bs = new List<byte> ();
-
-			bs.Add (bts [0]);
-
-			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
-
-			bs.AddRange (bAddress);
-
-			for (int i = 1; i < bts.GetLength (0); i++)
-				bs.Add (bts [i]);
-
-			// Synchronize the ConnectedThread
+			//Synchronize the ConnectedThread
 			lock (this) {
-
-				if (WriteToSlaveThread [player] == null) {
+			
+				if (WriteToSlaveThread [slave] == null) {
 					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
 					return;
 				}
-				WriteToSlaveThread [player].Buffer.Add (bts);
+				WriteToSlaveThread [slave].Buffer.Add (createMsg (type, msg));
 			}
 			// Perform the write unsynchronized
-
 		}
 
-		/// <summary>
-		/// Writes to all slave.
-		/// </summary>
-		/// <param name="bts">the parameter to send.</param>
-		/// <typeparam name="T">The type parameter.</typeparam>
-		public void WriteToAllSlave<T> (IBTSendable<T> bts)
+		private void WriteToSlave (EnContentType type, Player sender, byte [] msg, int slave)
 		{
-			WriteToAllSlave (bts.toByteArray ());
+			WriteToSlave (type, createMsgPlaytime (sender, msg), slave);
 		}
 
-		public void WriteToAllSlave (byte [] bts)
+		public void WriteToAllSlave (EnContentType type, byte [] msg)
 		{
-			List<byte> bs = new List<byte> ();
 
-			bs.Add (bts [0]);
-
-			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
-
-			bs.AddRange (bAddress);
-
-			for (int i = 1; i < bts.GetLength (0); i++)
-				bs.Add (bts [i]);
-
-			//BTWriteThread tmp;
+			byte [] message = createMsg (type, msg);
 			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
 				lock (this) {
 					if (WriteToSlaveThread [i] != null) {
-						WriteToSlaveThread [i].Buffer.Add (bs.ToArray ());
-
+						WriteToSlaveThread [i].Buffer.Add (message);
+			
 					}
 				}
-
+			
 			}
+		}
+
+		public void WriteToAllSlave (EnContentType type, Player sender, byte [] msg)
+		{
+			WriteToAllSlave (type, createMsgPlaytime (sender, msg));
 		}
 
 		#endregion
@@ -737,27 +699,20 @@ namespace BTLibrary
 						eventMsgInitilizationRecieved (msg);	
 
 					if (type == EnContentType.READY || type == EnContentType.BID || type == EnContentType.SEME || type == EnContentType.MOVE) {
-						Player sender = Board.Instance.getPlayer (data [18]);
+						Player sender = Board.Instance.getPlayer (data [1]);
 
 						List<byte> bs = new List<byte> ();
-						for (int i = 19; i < data.GetLength (0); i++)
+						for (int i = 2; i < data.GetLength (0); i++)
 							bs.Add (data [i]);
 
 						if (eventMsgPlaytimeReceived != null)
 							eventMsgPlaytimeReceived (type, sender, bs);
-					}
-						
-					byte [] bs2 = new byte[1024];
-
-					for (int i = 0; i < data.Length - 1; i++)
-						bs2 [i + 1] = data [i];
-
-					bs2 [0] = (byte) EnContentType.ACK;
+					}	
 
 					if (BTPlayService.Instance.isSlave ())
-						BTPlayService.Instance.WriteToMaster (bs2);
+						BTPlayService.Instance.WriteToMaster (EnContentType.ACK, data);
 					else
-						BTPlayService.Instance.WriteToAllSlave (bs2);
+						BTPlayService.Instance.WriteToAllSlave (EnContentType.ACK, data);
 				}
 			} else if (eventMsgInitilizationRecieved != null)
 				eventMsgInitilizationRecieved (msg);

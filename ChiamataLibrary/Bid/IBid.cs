@@ -11,19 +11,19 @@ namespace ChiamataLibrary
 
 		#region Bluetooth
 
-		public  int ByteArrayLenght { get { return 3; } }
+		public int ByteArrayLenght { get { return 3; } }
 
 		public abstract byte[] toByteArray ();
 
 		public IBid recreateFromByteArray (byte [] bytes)
 		{
+			if (bytes [0] == 255)
+				return new PassBid ();
+
 			if (bytes [1] == 255)
-				return new PassBid (Board.Instance.getPlayer (bytes [0]));
+				return new CarichiBid ((int) bytes [1]);
 
-			if (bytes [2] == 255)
-				return new CarichiBid (Board.Instance.getPlayer (bytes [0]), (int) bytes [1]);
-
-			return new NormalBid (Board.Instance.getPlayer (bytes [0]), (EnNumbers) bytes [2], (int) bytes [1]);
+			return new NormalBid ((EnNumbers) bytes [2], (int) bytes [1]);
 		}
 
 		#endregion

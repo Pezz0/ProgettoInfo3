@@ -80,7 +80,6 @@ namespace BTLibrary
 				}
 
 				Sleep (SLEEP_TIME);
-				
 			}
 		}
 
@@ -104,7 +103,7 @@ namespace BTLibrary
 	{
 		private readonly List<byte []> _buffer = new List<byte []> ();
 
-		public bool isEmpty{ get { return _buffer.Count > 0; } }
+		public bool isEmpty{ get { return _buffer.Count == 0; } }
 
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public byte[] getValue ()
