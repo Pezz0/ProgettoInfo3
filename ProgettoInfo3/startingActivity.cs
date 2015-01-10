@@ -56,7 +56,7 @@ namespace ProgettoInfo3
 					List<byte> bs = new List<byte> ();
 					//byte [] m = (byte []) msg.Obj;
 
-					for (int i = 1; i < board.GetLength (0); i++)
+					for (int i = 18; i < board.GetLength (0); i++)
 						bs.Add (board [i]);
 
 					Board.Instance.recreateFromByteArray (bs.ToArray ());

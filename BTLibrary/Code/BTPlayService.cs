@@ -552,7 +552,7 @@ namespace BTLibrary
 
 			bs.AddRange (bAddress);
 
-			for (int i = 0; i < bts.GetLength (0); i++)
+			for (int i = 1; i < bts.GetLength (0); i++)
 				bs.Add (bts [i]);
 
 			// Synchronize a copy of the ConnectedThread
@@ -560,7 +560,7 @@ namespace BTLibrary
 				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
 
-				WriteToMasterThread.Add (bs.ToArray ());
+				WriteToMasterThread.Buffer.Add (bs.ToArray ());
 			}
 			// Perform the write unsynchronized
 
@@ -591,7 +591,7 @@ namespace BTLibrary
 
 			bs.AddRange (bAddress);
 
-			for (int i = 0; i < bts.GetLength (0); i++)
+			for (int i = 1; i < bts.GetLength (0); i++)
 				bs.Add (bts [i]);
 
 			// Synchronize the ConnectedThread
@@ -601,7 +601,7 @@ namespace BTLibrary
 					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
 					return;
 				}
-				WriteToSlaveThread [player].Add (bts);
+				WriteToSlaveThread [player].Buffer.Add (bts);
 			}
 			// Perform the write unsynchronized
 
@@ -627,14 +627,14 @@ namespace BTLibrary
 
 			bs.AddRange (bAddress);
 
-			for (int i = 0; i < bts.GetLength (0); i++)
+			for (int i = 1; i < bts.GetLength (0); i++)
 				bs.Add (bts [i]);
 
 			//BTWriteThread tmp;
 			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
 				lock (this) {
 					if (WriteToSlaveThread [i] != null) {
-						WriteToSlaveThread [i].Add (bs.ToArray ());
+						WriteToSlaveThread [i].Buffer.Add (bs.ToArray ());
 
 					}
 				}
@@ -723,11 +723,11 @@ namespace BTLibrary
 						bs.Add (data [i]);
 
 					if (isSlave ()) {
-						WriteToMasterThread.Remove (bs.ToArray ());
+						WriteToMasterThread.Buffer.Remove (bs.ToArray ());
 					} else {
 						WriteToSlaveThread.ForEach (delegate(BTWriteThread thred) {
 							if (thred.Connected == address)
-								thred.Remove (bs.ToArray ());
+								thred.Buffer.Remove (bs.ToArray ());
 						});
 					}
 
@@ -749,7 +749,7 @@ namespace BTLibrary
 						
 					byte [] bs2 = new byte[1024];
 
-					for (int i = 0; i < data.Length; i++)
+					for (int i = 0; i < data.Length - 1; i++)
 						bs2 [i + 1] = data [i];
 
 					bs2 [0] = (byte) EnContentType.ACK;

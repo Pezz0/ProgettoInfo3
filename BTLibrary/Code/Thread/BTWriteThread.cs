@@ -32,9 +32,11 @@ namespace BTLibrary
 
 		public string Connected { get { return _connected; } }
 
-		private List<byte []> _buffer;
-
 		public const int SLEEP_TIME = 50;
+
+		BTBuffer _buffer = new BTBuffer ();
+
+		public BTBuffer Buffer { get { return _buffer; } }
 
 		public BTWriteThread (BluetoothSocket socket)
 		{
@@ -54,20 +56,15 @@ namespace BTLibrary
 			_OutStream = tmpOut;
 
 			_connected = _Socket.RemoteDevice.Address;
-
-			_buffer = new List<byte []> ();
-
 		}
-
 
 		public override void Run ()
 		{
 			while (true) {
-				if (_buffer.Count > 0) {
+				if (!_buffer.isEmpty) {
 
-					byte [] msg = _buffer [0];
-					if (msg [0] == (int) EnContentType.ACK)
-						_buffer.RemoveAt (0);
+					byte [] msg = _buffer.getValue ();
+
 					try {
 						_OutStream.Write (msg, 0, msg.Length);
 						// Share the sent message back to the UI Activity
@@ -77,11 +74,42 @@ namespace BTLibrary
 						//exception during write
 						e.ToString ();
 					}
+
+					if (msg [0] == (int) EnContentType.ACK)
+						_buffer.Remove (msg);
 				}
 
 				Sleep (SLEEP_TIME);
 				
 			}
+		}
+
+
+		/// <summary>
+		/// Try to close the socket
+		/// </summary>
+		/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
+		public void Cancel ()
+		{
+			try {
+				_Socket.Close ();
+			} catch (System.Exception e) {
+				//close of connect socket failed
+				e.ToString ();
+			}
+		}
+	}
+
+	public class BTBuffer
+	{
+		private readonly List<byte []> _buffer = new List<byte []> ();
+
+		public bool isEmpty{ get { return _buffer.Count > 0; } }
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public byte[] getValue ()
+		{
+			return _buffer [0];
 		}
 
 		[MethodImpl (MethodImplOptions.Synchronized)]
@@ -106,19 +134,13 @@ namespace BTLibrary
 
 		}
 
-		/// <summary>
-		/// Try to close the socket
-		/// </summary>
-		/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
-		public void Cancel ()
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void DiscardBuffer ()
 		{
-			try {
-				_Socket.Close ();
-			} catch (System.Exception e) {
-				//close of connect socket failed
-				e.ToString ();
-			}
+			_buffer.Clear ();
 		}
 	}
+
+
 }
 
