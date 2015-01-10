@@ -89,7 +89,10 @@ namespace Core
 
 		private void enableAvaiableButtons ()
 		{
+
+
 			disableAllButtons ();
+			//TODO : mettere anche la logica per i carichi
 			if (Board.Instance.currentAuctionWinningBid is NormalBid) {
 				NormalBid b = (NormalBid) ( Board.Instance.currentAuctionWinningBid );
 				for (int i = (int) b.number; i >= 0; i--)
@@ -98,6 +101,9 @@ namespace Core
 				buttons [10].Enabled = true;
 				slider.min = b.point + 1;
 			}
+
+
+
 		}
 
 		#region Buttons actions
@@ -1134,6 +1140,9 @@ namespace Core
 
 			if (Board.Instance.ActiveAuctionPlayer != Board.Instance.Me)
 				disableAllButtons ();
+			else
+				for (int i = 0; i < 12; i++)
+					buttons [i].Enabled = true;
 
 
 		}
