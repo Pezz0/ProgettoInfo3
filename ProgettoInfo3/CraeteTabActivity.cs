@@ -91,9 +91,7 @@ namespace ProgettoInfo3
 			back.Click += Back;
 
 			counter = 4;
-
-			BTPlayService.Instance.AddHandler (new MyHandler (this));
-			//BTPlayService.Instance.AddHandler (new BTAckHandler ());
+		
 			BTPlayService.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
@@ -103,6 +101,8 @@ namespace ProgettoInfo3
 				pl0.Text = name.Substring (0, MAX_NAME_LENGHT);
 			else
 				pl0.Text = name;
+
+			BTPlayService.Instance.eventMsgInitilizationRecieved += handleMessage;
 		}
 
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
@@ -147,11 +147,7 @@ namespace ProgettoInfo3
 						BTPlayService.Instance.enableBluetooth ();
 				}
 				counter++;
-
-
-
 			}
-
 		}
 
 		void Start_Game (object sender, EventArgs e)
@@ -177,8 +173,7 @@ namespace ProgettoInfo3
 				});
 
 				SetResult (Result.Ok, returnIntent);
-				//FIXME roba da mettere il BTPlayer
-				BTPlayService.Instance.ResetHandler ();
+			
 				BTPlayService.Instance.StopListen ();
 				Finish ();
 			} else
@@ -191,7 +186,7 @@ namespace ProgettoInfo3
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
 			BTPlayService.Instance.Stop ();
-			BTPlayService.Instance.ResetHandler ();
+
 			Finish ();
 		}
 
@@ -210,119 +205,107 @@ namespace ProgettoInfo3
 				break;
 					
 			}
+
 		}
 
-
-		private class MyHandler:Handler
+		private void handleMessage (Message msg)
 		{
-			string address = "";
 			string name = "";
-			private static Context _context;
+			string address = "";
 
-			public MyHandler (Context context)
-			{
-				_context = context;
-			}
-
-			public override void HandleMessage (Message msg)
-			{
-				switch (msg.What) {
-					case (int) MessageType.MESSAGE_DEVICE_ADDR:
+			switch (msg.What) {
+				case (int) MessageType.MESSAGE_DEVICE_ADDR:
+					name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+					if (name.Length > MAX_NAME_LENGHT)
+						name = name.Substring (0, MAX_NAME_LENGHT);
+					if (spinner1.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add1.Text.CompareTo ("None") == 0) {
+						add1.Text = (string) msg.Obj;
+						pl1.Text = name;
+						pl1.InputType = Android.Text.InputTypes.Null;
+					} else if (spinner2.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add2.Text.CompareTo ("None") == 0) {
+						add2.Text = (string) msg.Obj;
+						pl2.Text = name;
+						pl2.InputType = Android.Text.InputTypes.Null;
+					} else if (spinner3.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add3.Text.CompareTo ("None") == 0) {
+						add3.Text = (string) msg.Obj;
 						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-						if (name.Length > MAX_NAME_LENGHT)
-							name = name.Substring (0, MAX_NAME_LENGHT);
-						if (spinner1.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add1.Text.CompareTo ("None") == 0) {
-							add1.Text = (string) msg.Obj;
-							pl1.Text = name;
-							pl1.InputType = Android.Text.InputTypes.Null;
-						} else if (spinner2.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add2.Text.CompareTo ("None") == 0) {
-							add2.Text = (string) msg.Obj;
-							pl2.Text = name;
-							pl2.InputType = Android.Text.InputTypes.Null;
-						} else if (spinner3.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add3.Text.CompareTo ("None") == 0) {
-							add3.Text = (string) msg.Obj;
-							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							pl3.Text = name;
-							pl3.InputType = Android.Text.InputTypes.Null;
-						} else if (spinner4.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add4.Text.CompareTo ("None") == 0) {
-							add4.Text = (string) msg.Obj;
-							name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-							pl4.Text = name;
-							pl4.InputType = Android.Text.InputTypes.Null;
-						} 
+						pl3.Text = name;
+						pl3.InputType = Android.Text.InputTypes.Null;
+					} else if (spinner4.SelectedItem.ToString ().CompareTo ("BlueTooth") == 0 && add4.Text.CompareTo ("None") == 0) {
+						add4.Text = (string) msg.Obj;
+						name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						pl4.Text = name;
+						pl4.InputType = Android.Text.InputTypes.Null;
+					} 
 
-					break;
+				break;
 
-					case (int)MessageType.MESSAGE_READ:
-						string player = Encoding.ASCII.GetString ((byte []) msg.Obj);
-						if (player.Length > MAX_NAME_LENGHT)
-							player = player.Substring (0, MAX_NAME_LENGHT);
-						if (address.CompareTo (add1.Text) == 0) {
-							Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-							pl1.Text = player;
-						}
-						if (address.CompareTo (add2.Text) == 0) {
-							Toast.MakeText (Application.Context, pl2.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-							pl2.Text = player;
-						}
-						if (address.CompareTo (add3.Text) == 0) {
-							Toast.MakeText (Application.Context, pl3.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-							pl3.Text = player;
-						}
-						if (address.CompareTo (add4.Text) == 0) {
-							Toast.MakeText (Application.Context, pl4.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-							pl4.Text = player;
-						}
-						address = "";
-					break;
+				case (int) MessageType.MESSAGE_READ:
+					string player = Encoding.ASCII.GetString ((byte []) msg.Obj);
+					if (player.Length > MAX_NAME_LENGHT)
+						player = player.Substring (0, MAX_NAME_LENGHT);
+					if (address.CompareTo (add1.Text) == 0) {
+						Toast.MakeText (Application.Context, pl1.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+						pl1.Text = player;
+					}
+					if (address.CompareTo (add2.Text) == 0) {
+						Toast.MakeText (Application.Context, pl2.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+						pl2.Text = player;
+					}
+					if (address.CompareTo (add3.Text) == 0) {
+						Toast.MakeText (Application.Context, pl3.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+						pl3.Text = player;
+					}
+					if (address.CompareTo (add4.Text) == 0) {
+						Toast.MakeText (Application.Context, pl4.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
+						pl4.Text = player;
+					}
+					address = "";
+				break;
 
-					case (int) MessageType.MESSAGE_DEVICE_READ:
-						address = (string) msg.Obj;
-					break;
-					case (int) MessageType.MESSAGE_TOAST:
-						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
-					break;
-			
-					case (int) MessageType.MESSAGE_STATE_CHANGE:
-						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_MASTER)
-							Toast.MakeText (Application.Context, "Connected to " + name, ToastLength.Short).Show ();
+				case (int) MessageType.MESSAGE_DEVICE_READ:
+					address = (string) msg.Obj;
+				break;
+				case (int) MessageType.MESSAGE_TOAST:
+					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Short).Show ();
+				break;
 
-					break;
-					case (int) MessageType.MESSAGE_CONNECTION_LOST:
-						address = (string) msg.Obj;
-						BTPlayService.Instance.RemoveSlave (address);
-						if (address.CompareTo (add1.Text) == 0) {
-							pl1.Text = _context.Resources.GetText (Resource.String.Default1);
-							add1.Text = _context.Resources.GetText (Resource.String.none_add);
-						}
-						if (address.CompareTo (add2.Text) == 0) {
-							pl2.Text = _context.Resources.GetText (Resource.String.Default2);
-							add2.Text = _context.Resources.GetText (Resource.String.none_add);
+				case (int) MessageType.MESSAGE_STATE_CHANGE:
+					if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_MASTER)
+						Toast.MakeText (Application.Context, "Connected to " + name, ToastLength.Short).Show ();
 
-						}
-						if (address.CompareTo (add3.Text) == 0) {
-							pl3.Text = _context.Resources.GetText (Resource.String.Default3);
-							add3.Text = _context.Resources.GetText (Resource.String.none_add);
+				break;
+				case (int) MessageType.MESSAGE_CONNECTION_LOST:
+					address = (string) msg.Obj;
+					BTPlayService.Instance.RemoveSlave (address);
+					if (address.CompareTo (add1.Text) == 0) {
+						pl1.Text = this.Resources.GetText (Resource.String.Default1);
+						add1.Text = this.Resources.GetText (Resource.String.none_add);
+					}
+					if (address.CompareTo (add2.Text) == 0) {
+						pl2.Text = this.Resources.GetText (Resource.String.Default2);
+						add2.Text = this.Resources.GetText (Resource.String.none_add);
+
+					}
+					if (address.CompareTo (add3.Text) == 0) {
+						pl3.Text = this.Resources.GetText (Resource.String.Default3);
+						add3.Text = this.Resources.GetText (Resource.String.none_add);
 
 
-						}
-						if (address.CompareTo (add4.Text) == 0) {
-							pl4.Text = _context.Resources.GetText (Resource.String.Default4);
-							add4.Text = _context.Resources.GetText (Resource.String.none_add);
-
-
-						}
-					break;
-				}
-				if (msg.What != (int) MessageType.MESSAGE_STATE_CHANGE) {
-					if (counter - BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.ConnectAsMaster ();
-					else
-						BTPlayService.Instance.StopListen ();
-				}
+					}
+					if (address.CompareTo (add4.Text) == 0) {
+						pl4.Text = this.Resources.GetText (Resource.String.Default4);
+						add4.Text = this.Resources.GetText (Resource.String.none_add);
+					}
+				break;
+			}
+			if (msg.What != (int) MessageType.MESSAGE_STATE_CHANGE) {
+				if (counter - BTPlayService.Instance.getNumConnected () > 0)
+					BTPlayService.Instance.ConnectAsMaster ();
+				else
+					BTPlayService.Instance.StopListen ();
 			}
 		}
-			
+
 	}
 }
-

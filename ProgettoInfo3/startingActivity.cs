@@ -47,7 +47,7 @@ namespace ProgettoInfo3
 				application.ApplicationDelegate = new Core.GameAppDelegate ();
 				SetContentView (application.AndroidContentView);
 
-				BTPlayService.Instance.AddHandler (new BTAckHandler ());
+				Board.Instance.reset ();
 
 				if (BTPlayService.Instance.isSlave ()) {
 
@@ -70,11 +70,9 @@ namespace ProgettoInfo3
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
 						if (Board.Instance.Me.order != i) {
 							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
-							BTPlayService.Instance.AddHandler (bt);
 						}
 					}
-
-
+						
 				} else {
 					string [] name = data.GetStringArrayExtra ("Names");
 					List<ArtificialIntelligence> AIs = new List<ArtificialIntelligence> (4);
@@ -97,13 +95,11 @@ namespace ProgettoInfo3
 							AIs.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
 						else if (type [i - 1] == "BlueTooth") {
 							BTPlayer bt = new BTPlayer (Board.Instance.getPlayer (i));
-							BTPlayService.Instance.AddHandler (bt);
+						
 						}
 					}
 				}
-
-
-
+					
 				application.StartGame ();
 
 			}

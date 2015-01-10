@@ -722,8 +722,6 @@ namespace ChiamataLibrary
 		{
 			_t = -4;
 
-			if (eventAuctionStart != null)
-				eventAuctionStart ();
 				
 			_listBid = new List<IBid> ();
 			_activeAuctionPlayer = _lastWinner;	//dealer+1
@@ -747,18 +745,19 @@ namespace ChiamataLibrary
 						r = r && _players [i].isReady;
 					
 					if (r) {
-//						if (eventImReady != null)
-//							eventImReady ();
-
 						_t = -2;
+						if (eventAuctionStart != null)
+							eventAuctionStart ();
 					}
 										
 				} else {	//slave
 					if (eventImReady != null)
 						eventImReady ();
 
-					/*if (_players [0].isReady)*/
+
 					_t = -2;
+					if (eventAuctionStart != null)
+						eventAuctionStart ();
 
 				}
 

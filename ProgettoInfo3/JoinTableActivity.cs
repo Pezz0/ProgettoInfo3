@@ -38,7 +38,6 @@ namespace ProgettoInfo3
 			start = normalEnd = true;
 			connecting = false;
 
-			BTPlayService.Instance.AddHandler (new BTConnHandler (this, this));
 			//BTPlayService.Instance.AddHandler (new BTAckHandler ());
 			BTPlayService.Instance.RegisterReceiver ();
 
@@ -98,6 +97,8 @@ namespace ProgettoInfo3
 				foreach (string addr in address)
 					pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 			}
+
+			BTPlayService.Instance.eventMsgInitilizationRecieved += handleMessage;
 		}
 
 		protected override void OnDestroy ()
@@ -110,7 +111,7 @@ namespace ProgettoInfo3
 		{
 			base.OnBackPressed ();
 			BTPlayService.Instance.Stop ();
-			BTPlayService.Instance.ResetHandler ();
+
 			Finish ();
 		}
 
@@ -159,7 +160,7 @@ namespace ProgettoInfo3
 		private void Back (object sender, EventArgs e)
 		{
 			BTPlayService.Instance.Stop ();
-			BTPlayService.Instance.ResetHandler ();
+
 			Finish ();
 		}
 
@@ -227,79 +228,67 @@ namespace ProgettoInfo3
 			}
 		}
 
-		private class BTConnHandler:Handler
+		private void handleMessage (Message msg)
 		{
-			Context c;
-			Activity a;
 			string conn = "";
 
-			public BTConnHandler (Context co, Activity ac)
-			{
-				c = co;
-				a = ac;
-			}
+			switch (msg.What) {
 
-			public override void HandleMessage (Message msg)
-			{
-				switch (msg.What) {
+				case (int)MessageType.NEW_DEVICE:
+					string address = (string) msg.Obj;
+					newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address).Name + "\n" + address);
 
-					case (int)MessageType.NEW_DEVICE:
-						string address = (string) msg.Obj;
-						newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address).Name + "\n" + address);
+				break;
 
-					break;
+				case (int) MessageType.END_SCANNING:
+					if (normalEnd) {
+						AlertDialog.Builder connect = new AlertDialog.Builder (this);
+						connect.SetTitle ("End Scanning");
+						connect.SetMessage ("Scanning For New Device Finished");
+						connect.SetNeutralButton ("OK", delegate {
+						});
+						connect.Show ();
 
-					case (int) MessageType.END_SCANNING:
-						if (normalEnd) {
-							AlertDialog.Builder connect = new AlertDialog.Builder (c);
-							connect.SetTitle ("End Scanning");
-							connect.SetMessage ("Scanning For New Device Finished");
-							connect.SetNeutralButton ("OK", delegate {
-							});
-							connect.Show ();
-
-						}
-						scan.Enabled = true;
+					}
+					scan.Enabled = true;
+					pb.Visibility = ViewStates.Invisible;
+					this.SetTitle (Resource.String.select);
+				break;
+				case (int)MessageType.NONE_FOUND:
+					if (normalEnd) {
+						newArrayList.Add ("No Device Found");
+					}
+				break;
+				case (int) MessageType.MESSAGE_STATE_CHANGE:
+					if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE) {
 						pb.Visibility = ViewStates.Invisible;
-						a.SetTitle (Resource.String.select);
-					break;
-					case (int)MessageType.NONE_FOUND:
-						if (normalEnd) {
-							newArrayList.Add ("No Device Found");
-						}
-					break;
-					case (int) MessageType.MESSAGE_STATE_CHANGE:
-						if (msg.Arg1 == (int) ConnectionState.STATE_CONNECTED_SLAVE) {
-							pb.Visibility = ViewStates.Invisible;
-							send.Enabled = true;
-							Toast.MakeText (Application.Context, "Connected to " + conn, ToastLength.Short).Show ();
-							a.SetTitle (Resource.String.change_name);
-						}
+						send.Enabled = true;
+						Toast.MakeText (Application.Context, "Connected to " + conn, ToastLength.Short).Show ();
+						this.SetTitle (Resource.String.change_name);
+					}
 
-					break;
-					case (int)MessageType.MESSAGE_READ:
-						a.SetTitle (Resource.String.starting);
-						send.Enabled = false;
-						BTPlayService.Instance.ResetHandler ();
-						Intent returnIntent = new Intent ();
-						returnIntent.PutExtra ("Board", (byte []) msg.Obj);
-						returnIntent.PutExtra ("Name", name.Text.ToCharArray ());
-						a.SetResult (Result.Ok, returnIntent);
-						a.Finish ();
-					break;
-					case (int)MessageType.MESSAGE_TOAST:
-						pb.Visibility = ViewStates.Invisible;
-						Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Long).Show ();
-						a.SetTitle (Resource.String.select);
-					break;
-					case (int) MessageType.MESSAGE_DEVICE_ADDR:
-						conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
-					break;
-					
-				}
+				break;
+				case (int)MessageType.MESSAGE_READ:
+					this.SetTitle (Resource.String.starting);
+					send.Enabled = false;
+					Intent returnIntent = new Intent ();
+					returnIntent.PutExtra ("Board", (byte []) msg.Obj);
+					returnIntent.PutExtra ("Name", name.Text.ToCharArray ());
+					this.SetResult (Result.Ok, returnIntent);
+					this.Finish ();
+				break;
+				case (int)MessageType.MESSAGE_TOAST:
+					pb.Visibility = ViewStates.Invisible;
+					Toast.MakeText (Application.Context, (string) msg.Obj, ToastLength.Long).Show ();
+					this.SetTitle (Resource.String.select);
+				break;
+				case (int) MessageType.MESSAGE_DEVICE_ADDR:
+					conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+				break;
+
 			}
-		
 		}
+
 	}
 }
 

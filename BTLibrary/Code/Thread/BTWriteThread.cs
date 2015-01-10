@@ -28,7 +28,9 @@ namespace BTLibrary
 		/// <summary>
 		/// The connected device address.
 		/// </summary>
-		private string Connected;
+		private string _connected;
+
+		public string Connected { get { return _connected; } }
 
 		private List<byte []> _buffer;
 
@@ -51,7 +53,7 @@ namespace BTLibrary
 			_InStream = tmpIn;
 			_OutStream = tmpOut;
 
-			Connected = _Socket.RemoteDevice.Address;
+			_connected = _Socket.RemoteDevice.Address;
 
 			_buffer = new List<byte []> ();
 
@@ -64,21 +66,17 @@ namespace BTLibrary
 				if (_buffer.Count > 0) {
 
 					byte [] msg = _buffer [0];
+					if (msg [0] == (int) EnContentType.ACK)
+						_buffer.RemoveAt (0);
 					try {
 						_OutStream.Write (msg, 0, msg.Length);
 						// Share the sent message back to the UI Activity
-						BTPlayService.Instance.forEachHandler (delegate(Handler h) {
-							h.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
-						});
+						BTPlayService.Instance.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
+						
 					} catch (System.Exception e) {
 						//exception during write
 						e.ToString ();
 					}
-
-					if (msg [0] == (int) EnContentType.ACK)
-						_buffer.RemoveAt (0);
-
-
 				}
 
 				Sleep (SLEEP_TIME);
@@ -89,14 +87,10 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Add (byte [] elem)
 		{
-			byte [] bs = new byte[1024];
-			for (int i = 0; i < elem.GetLength (0); i++)
-				bs [i] = elem [i];
-	
-			if (bs [0] == (int) EnContentType.ACK)
-				_buffer.Insert (0, bs);
+			if (elem [0] == (int) EnContentType.ACK)
+				_buffer.Insert (0, elem);
 			else
-				_buffer.Add (bs);
+				_buffer.Add (elem);
 		}
 
 		[MethodImpl (MethodImplOptions.Synchronized)]

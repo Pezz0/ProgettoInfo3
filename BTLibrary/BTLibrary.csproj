@@ -46,7 +46,6 @@
     <Compile Include="Code\Enumeration\ActivityResultCode.cs" />
     <Compile Include="Code\Enumeration\ConnectionState.cs" />
     <Compile Include="Code\Enumeration\MessageType.cs" />
-    <Compile Include="Code\Thread\BTConnectedThread.cs" />
     <Compile Include="Code\Thread\BTConnectThread.cs" />
     <Compile Include="Code\Thread\BTListenThread.cs" />
     <Compile Include="Code\BTPlayService.cs" />
@@ -57,7 +56,7 @@
     <Compile Include="Code\BTManager.cs" />
     <Compile Include="Code\Enumeration\EnContentType.cs" />
     <Compile Include="Code\Thread\BTWriteThread.cs" />
-    <Compile Include="Code\BTAckHandler.cs" />
+    <Compile Include="c:\Users\Matteo\Documents\Projects\ProgettoInfo3\BTLibrary\Code\Thread\BTReadThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

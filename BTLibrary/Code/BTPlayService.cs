@@ -10,11 +10,12 @@ using Java.Lang;
 using Java.Util;
 using ChiamataLibrary;
 using System;
+using System.Text;
 
 
 namespace BTLibrary
 {
-	public class BTPlayService: IConnectable, IFindable
+	public class BTPlayService: Handler,IConnectable, IFindable
 	{
 		//TODO: rinominare tutte le classi come BT...  DONE
 		//TODO: BTPlayService è un singleton(vedi board per copiare) DONE
@@ -28,11 +29,6 @@ namespace BTLibrary
 		/// The activity to register the receiver and display messages.
 		/// </summary>
 		private Activity _activity;
-
-		/// <summary>
-		/// The handler to send messages.
-		/// </summary>
-		private readonly List<Handler> _handlers = new List<Handler> (4);
 
 		/// <summary>
 		/// The local BlueTooth adapter.
@@ -62,7 +58,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The connected slave thread to perform communication with a master.
 		/// </summary>
-		private BTConnectedThread connectedSlaveThread;
+		private BTReadThread connectedSlaveThread;
 
 		public const int MAX_BT_PLAYER = 4;
 
@@ -71,7 +67,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The list of connected master thread to perform communication with mutiple connected slave.
 		/// </summary>
-		private List<BTConnectedThread> connectedMasterThread;
+		private List<BTReadThread> connectedMasterThread;
 
 		private List<BTWriteThread> WriteToSlaveThread;
 
@@ -194,7 +190,7 @@ namespace BTLibrary
 		public void RegisterReceiver ()
 		{
 			// Register for broadcasts when a device is discovered
-			_receiver = new BTReceiver (_handlers [0]);
+			_receiver = new BTReceiver (this);
 			var filter = new IntentFilter (BluetoothDevice.ActionFound);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 
@@ -297,10 +293,7 @@ namespace BTLibrary
 			_state = state;
 			// Give the new state to the Handler so the UI Activity can update
 
-			_handlers.ForEach (delegate(Handler h) {
-				h.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
-			});
-
+			this.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
 		}
 
 		/// <summary>
@@ -339,7 +332,7 @@ namespace BTLibrary
 		{	
 			//if the device we want to connect is a slave connected to this device the connection is not performed
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
+				if (connectedMasterThread [i]._socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
 					return;
 				}
 			}
@@ -367,14 +360,14 @@ namespace BTLibrary
 			Stop ();
 
 			// Start the thread to manage the connection and perform transmissions
-			connectedSlaveThread = new BTConnectedThread (socket);
+			connectedSlaveThread = new BTReadThread (socket);
 			connectedSlaveThread.Start ();
 
 			WriteToMasterThread = new BTWriteThread (socket);
 			WriteToMasterThread.Start ();
 
 			// Send the name of the connected device back to the Activity
-			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+			this.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
 			//sets the state to CONNECTED_SLAVE
 			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
@@ -400,14 +393,14 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
-			connectedMasterThread.Add (new BTConnectedThread (socket));
+			connectedMasterThread.Add (new BTReadThread (socket));
 			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
 
 			WriteToSlaveThread.Add (new BTWriteThread (socket));
 			WriteToSlaveThread [WriteToSlaveThread.Count - 1].Start ();
 
 			//sends a message to the activity indicates the connection to a device
-			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+			this.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
 
 			SetState (ConnectionState.STATE_CONNECTED_MASTER);
 		}
@@ -487,7 +480,7 @@ namespace BTLibrary
 		public void RemoveSlave (string address)
 		{
 			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				if (connectedMasterThread [i]._Socket.RemoteDevice.Address.CompareTo (address) == 0) {
+				if (connectedMasterThread [i]._socket.RemoteDevice.Address.CompareTo (address) == 0) {
 					connectedMasterThread [i].Cancel ();
 					connectedMasterThread.RemoveAt (i);
 
@@ -504,7 +497,7 @@ namespace BTLibrary
 		internal void ConnectionFailed ()
 		{	
 			// Send a failure message back to the Activity
-			_handlers [0].ObtainMessage ((int) MessageType.MESSAGE_TOAST, "I don't find any BlueTooth game opened on this device, Please retry").SendToTarget ();
+			this.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "I don't find any BlueTooth game opened on this device, Please retry").SendToTarget ();
 			//stops all existing thread
 			Stop ();
 			//return to initial state
@@ -517,9 +510,7 @@ namespace BTLibrary
 		internal void ConnectionLost ()
 		{	
 			// Send a failure message back to the Activity
-			_handlers.ForEach (delegate(Handler h) {
-				h.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: ").SendToTarget ();
-			});
+			this.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: ").SendToTarget ();
 
 			//if device was a slave return to initial state
 			//if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
@@ -553,12 +544,23 @@ namespace BTLibrary
 		/// </param>
 		public void WriteToMaster (byte [] bts)
 		{
+			List<byte> bs = new List<byte> ();
+
+			bs.Add (bts [0]);
+
+			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
+
+			bs.AddRange (bAddress);
+
+			for (int i = 0; i < bts.GetLength (0); i++)
+				bs.Add (bts [i]);
+
 			// Synchronize a copy of the ConnectedThread
 			lock (this) {
 				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
 					return;
 
-				WriteToMasterThread.Add (bts);
+				WriteToMasterThread.Add (bs.ToArray ());
 			}
 			// Perform the write unsynchronized
 
@@ -581,6 +583,17 @@ namespace BTLibrary
 
 		public void WriteToSlave (byte [] bts, int player)
 		{
+			List<byte> bs = new List<byte> ();
+
+			bs.Add (bts [0]);
+
+			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
+
+			bs.AddRange (bAddress);
+
+			for (int i = 0; i < bts.GetLength (0); i++)
+				bs.Add (bts [i]);
+
 			// Synchronize the ConnectedThread
 			lock (this) {
 
@@ -606,56 +619,27 @@ namespace BTLibrary
 
 		public void WriteToAllSlave (byte [] bts)
 		{
+			List<byte> bs = new List<byte> ();
+
+			bs.Add (bts [0]);
+
+			byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
+
+			bs.AddRange (bAddress);
+
+			for (int i = 0; i < bts.GetLength (0); i++)
+				bs.Add (bts [i]);
 
 			//BTWriteThread tmp;
 			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
 				lock (this) {
 					if (WriteToSlaveThread [i] != null) {
-						WriteToSlaveThread [i].Add (bts);
+						WriteToSlaveThread [i].Add (bs.ToArray ());
 
 					}
 				}
 
 			}
-		}
-
-		public void ackRecieved (byte [] elem)
-		{
-			if (isSlave ()) {
-				WriteToMasterThread.Remove (elem);
-			} else {
-				WriteToSlaveThread.ForEach (delegate(BTWriteThread obj) {
-					obj.Remove (elem);
-				});
-			}
-		}
-
-		#endregion
-
-		#region handler Management
-
-		/// <summary>
-		/// Sets the handler.
-		/// </summary>
-		/// <param name="handler">Handler.</param>
-		public void AddHandler (Handler handler)
-		{
-			_handlers.Add (handler);
-		}
-
-		public void RemoveHandler (Handler handler)
-		{
-			_handlers.Remove (handler);
-		}
-
-		public void ResetHandler ()
-		{
-			_handlers.Clear ();
-		}
-
-		public void forEachHandler (Action<Handler> action)
-		{
-			_handlers.ForEach (action);
 		}
 
 		#endregion
@@ -701,9 +685,83 @@ namespace BTLibrary
 			_state = ConnectionState.STATE_NONE;
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new List<BTConnectedThread> (MAX_BT_PLAYER);
+			connectedMasterThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
 			WriteToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
+		}
+
+		#endregion
+
+		#region Handler
+
+		public delegate void eventHandlerMsgPlaytimeRecieved (EnContentType type, Player sender, List<byte> msg);
+
+		public event eventHandlerMsgPlaytimeRecieved eventMsgPlaytimeReceived;
+
+		public delegate void eventHandlerMsgInitilizationRecieved (Message msg);
+
+		public event eventHandlerMsgInitilizationRecieved eventMsgInitilizationRecieved;
+
+		public override void HandleMessage (Message msg)
+		{
+			if (msg.What == (int) MessageType.MESSAGE_READ) {
+				byte [] data = (byte []) msg.Obj;
+
+				EnContentType type = (EnContentType) data [0];
+
+				if (type == EnContentType.ACK) {
+
+					char [] adr = new char[17];
+
+					for (int i = 1; i < 18; i++)
+						adr [i - 1] = (char) data [i];
+
+					string address = new string (adr);
+
+					List<byte> bs = new List<byte> ();
+					for (int i = 18; i < data.GetLength (0); i++)
+						bs.Add (data [i]);
+
+					if (isSlave ()) {
+						WriteToMasterThread.Remove (bs.ToArray ());
+					} else {
+						WriteToSlaveThread.ForEach (delegate(BTWriteThread thred) {
+							if (thred.Connected == address)
+								thred.Remove (bs.ToArray ());
+						});
+					}
+
+				} else if (type != EnContentType.NONE) {
+
+					if (eventMsgInitilizationRecieved != null)
+						eventMsgInitilizationRecieved (msg);	
+
+					if (type == EnContentType.READY || type == EnContentType.BID || type == EnContentType.SEME || type == EnContentType.MOVE) {
+						Player sender = Board.Instance.getPlayer (data [18]);
+
+						List<byte> bs = new List<byte> ();
+						for (int i = 19; i < data.GetLength (0); i++)
+							bs.Add (data [i]);
+
+						if (eventMsgPlaytimeReceived != null)
+							eventMsgPlaytimeReceived (type, sender, bs);
+					}
+						
+					byte [] bs2 = new byte[1024];
+
+					for (int i = 0; i < data.Length; i++)
+						bs2 [i + 1] = data [i];
+
+					bs2 [0] = (byte) EnContentType.ACK;
+
+					if (BTPlayService.Instance.isSlave ())
+						BTPlayService.Instance.WriteToMaster (bs2);
+					else
+						BTPlayService.Instance.WriteToAllSlave (bs2);
+				}
+			} else if (eventMsgInitilizationRecieved != null)
+				eventMsgInitilizationRecieved (msg);
+
 		}
 
 		#endregion

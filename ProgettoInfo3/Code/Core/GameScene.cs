@@ -1009,6 +1009,7 @@ namespace Core
 
 			Schedule (RunGameLogic);
 			Board.Instance.start ();
+
 			mainLayer.Color = new CCColor3B (6, 117, 21);
 			mainLayer.Opacity = 255;
 			written = false;
