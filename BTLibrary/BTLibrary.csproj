@@ -57,7 +57,9 @@
     <Compile Include="Code\Enumeration\EnContentType.cs" />
     <Compile Include="Code\Thread\BTWriteThread.cs" />
     <Compile Include="c:\Users\Matteo\Documents\Projects\ProgettoInfo3\BTLibrary\Code\Thread\BTReadThread.cs" />
-    <Compile Include="Code\Thread\BTReadThread.cs" />
+    <Compile Include="Code\Thread\BTReadThread.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
