@@ -7,7 +7,6 @@ namespace MyRandom
 	{
 		private RandomNumberGenerator _rnd;
 
-
 		public int getRandomNumber (int maxValue)
 		{
 			byte [] b = new byte[4];

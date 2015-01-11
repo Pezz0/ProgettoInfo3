@@ -79,7 +79,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="playerName">Players' name.</param>
 		/// <param name="indexDealer">dealer's index.</param>
-		public void initializeMaster (string [] playerName, int indexDealer)
+		public void initializeMaster (string [] playerName, int indexDealer, IRandomGenerator rnd)
 		{
 			if (!isCreationPhase)
 				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
@@ -108,13 +108,12 @@ namespace ChiamataLibrary
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
 
 			int [] cardAssign = { 0, 0, 0, 0, 0 };	//counter for the card distribution
-			IRandomGenerator rand = new NormalRandom ();	//instantiate the random generator
 
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
 				for (int j = 0; j < nNumber; j++) {
-					int assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	
+					int assignedPlayer = rnd.getRandomNumber (PLAYER_NUMBER);	
 					while (cardAssign [assignedPlayer] == nCardForPlayer)
-						assignedPlayer = rand.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
+						assignedPlayer = rnd.getRandomNumber (PLAYER_NUMBER);	//continue to change the assigned player until isn't a full player
 
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					cardAssign [assignedPlayer]++;
@@ -122,6 +121,11 @@ namespace ChiamataLibrary
 					//add the assigned player to the bytes array
 					_bytes.Add (BitConverter.GetBytes (assignedPlayer) [0]);
 				}
+		}
+
+		public void initializeMaster (string [] playerName, int indexDealer)
+		{
+			initializeMaster (playerName, indexDealer, new NormalRandom ());
 		}
 
 		/// <summary>
