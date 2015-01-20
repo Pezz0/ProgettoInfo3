@@ -8,33 +8,34 @@
     p1:id="@+id/relativeLayout1">
     <TextView
         p1:text="Players"
-        p1:layout_width="wrap_content"
+        p1:layout_width="70dp"
         p1:layout_height="wrap_content"
         p1:id="@+id/textView1"
         style="@style/create_txt"
-        p1:layout_marginRight="30dp"
         p1:layout_alignParentLeft="true"
         p1:layout_alignParentTop="true" />
     <TextView
         p1:text="Player 1"
-        p1:layout_width="wrap_content"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_below="@id/textView1"
         style="@style/create_txt"
         p1:id="@+id/textView2"
         p1:layout_marginTop="20dp"
         p1:layout_alignParentLeft="true"
-        p1:layout_marginRight="20dp" />
+        p1:layout_alignLeft="@id/textView1"
+        p1:layout_alignRight="@id/textView1" />
     <TextView
         p1:text="Player 2"
-        p1:layout_width="wrap_content"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_below="@id/textView2"
         style="@style/create_txt"
         p1:id="@+id/textView3"
         p1:layout_alignParentLeft="true"
         p1:layout_marginTop="20dp"
-        p1:layout_marginRight="20dp" />
+        p1:layout_alignLeft="@id/textView1"
+        p1:layout_alignRight="@id/textView1" />
     <TextView
         p1:text="Player 3"
         p1:layout_width="wrap_content"
@@ -44,7 +45,8 @@
         p1:id="@+id/textView4"
         p1:layout_alignParentLeft="true"
         p1:layout_marginTop="20dp"
-        p1:layout_marginRight="20dp" />
+        p1:layout_alignLeft="@id/textView1"
+        p1:layout_alignRight="@id/textView1" />
     <TextView
         p1:text="Player 4"
         p1:layout_width="wrap_content"
@@ -54,7 +56,8 @@
         p1:id="@+id/textView5"
         p1:layout_alignParentLeft="true"
         p1:layout_marginTop="20dp"
-        p1:layout_marginRight="20dp" />
+        p1:layout_alignLeft="@id/textView1"
+        p1:layout_alignRight="@id/textView1" />
     <TextView
         p1:text="Player 5"
         p1:layout_width="wrap_content"
@@ -64,109 +67,118 @@
         p1:id="@+id/textView6"
         p1:layout_alignParentLeft="true"
         p1:layout_marginTop="20dp"
-        p1:layout_marginRight="20dp" />
+        p1:layout_alignLeft="@id/textView1"
+        p1:layout_alignRight="@id/textView1" />
     <TextView
         p1:text="Player Type"
-        p1:layout_width="wrap_content"
+        p1:layout_width="115dp"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView1"
         style="@style/create_txt"
-        p1:id="@+id/textView7"
-        p1:layout_marginRight="55dp" />
+        p1:id="@+id/textView7" />
     <TextView
-        p1:layout_width="115dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView2"
         style="@style/create_txt"
         p1:id="@+id/textView8"
         p1:layout_alignBottom="@id/textView2"
-        p1:layout_marginRight="15dp" />
+        p1:layout_alignLeft="@id/textView7"
+        p1:layout_alignRight="@id/textView7" />
     <Spinner
-        p1:layout_width="120dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView3"
         style="@style/create_txt"
         p1:id="@+id/spinner1"
         p1:layout_alignBottom="@id/textView3"
-        p1:textSize="16sp"
-        p1:layout_marginRight="10dp" />
+        p1:textSize="25sp"
+        p1:layout_alignLeft="@+id/textView7"
+        p1:layout_alignRight="@+id/textView7" />
     <Spinner
-        p1:layout_width="120dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView4"
         style="@style/create_txt"
         p1:id="@+id/spinner2"
-        p1:layout_marginRight="10dp"
-        p1:textSize="16sp"
-        p1:layout_alignBottom="@id/textView4" />
+        p1:textSize="25sp"
+        p1:layout_alignBottom="@id/textView4"
+        p1:layout_alignLeft="@+id/textView7"
+        p1:layout_alignRight="@+id/textView7" />
     <Spinner
-        p1:layout_width="120dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView5"
         style="@style/create_txt"
         p1:id="@+id/spinner3"
         p1:layout_alignBottom="@id/textView5"
-        p1:textSize="16sp"
-        p1:layout_marginRight="10dp" />
+        p1:textSize="25sp"
+        p1:layout_alignLeft="@+id/textView7"
+        p1:layout_alignRight="@+id/textView7" />
     <Spinner
-        p1:layout_width="120dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         style="@style/create_txt"
         p1:layout_toRightOf="@id/textView6"
         p1:id="@+id/spinner4"
         p1:layout_alignBottom="@id/textView6"
-        p1:textSize="16sp"
-        p1:layout_marginRight="10dp"
-        p1:layout_centerHorizontal="false" />
+        p1:textSize="25sp"
+        p1:layout_centerHorizontal="false"
+        p1:layout_alignLeft="@+id/textView7"
+        p1:layout_alignRight="@+id/textView7" />
     <TextView
         p1:text="Names"
-        p1:layout_width="wrap_content"
+        p1:layout_width="160dp"
         p1:layout_height="wrap_content"
         style="@style/create_txt"
         p1:layout_toRightOf="@id/textView7"
-        p1:id="@+id/textView9"
-        p1:layout_marginRight="85dp" />
+        p1:id="@+id/textView9" />
     <EditText
-        p1:layout_width="170dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/textView8"
         style="@style/create_txt"
         p1:id="@+id/player1"
         p1:layout_alignBottom="@id/textView8"
-        p1:layout_marginRight="5dp"
-        p1:text="AAAAAAAA" />
+        p1:text="AAAAAAAA"
+        p1:layout_alignLeft="@id/textView9"
+        p1:layout_alignRight="@id/textView9" />
     <EditText
-        p1:layout_width="170dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner1"
         style="@style/create_txt"
         p1:id="@+id/player2"
         p1:layout_alignBottom="@id/spinner1"
-        p1:layout_marginRight="5dp" />
+        p1:layout_alignLeft="@id/textView9"
+        p1:layout_alignRight="@id/textView9" />
     <EditText
-        p1:layout_width="170dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner2"
         style="@style/create_txt"
         p1:id="@+id/player3"
         p1:layout_alignBottom="@id/spinner2"
-        p1:layout_marginRight="5dp" />
+        p1:layout_alignLeft="@id/textView9"
+        p1:layout_alignRight="@id/textView9" />
     <EditText
-        p1:layout_width="170dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner3"
         style="@style/create_txt"
         p1:id="@+id/player4"
         p1:layout_alignBottom="@id/spinner3"
-        p1:layout_marginRight="5dp" />
+        p1:layout_alignLeft="@id/textView9"
+        p1:layout_alignRight="@id/textView9" />
     <EditText
-        p1:layout_width="170dp"
+        p1:layout_width="match_parent"
         p1:layout_height="wrap_content"
         p1:layout_toRightOf="@id/spinner4"
         style="@style/create_txt"
         p1:id="@+id/player5"
         p1:layout_alignBottom="@id/spinner4"
-        p1:layout_marginRight="5dp" />
+        p1:layout_alignLeft="@id/textView9"
+        p1:layout_alignRight="@id/textView9" />
     <TextView
         p1:layout_width="0dp"
         p1:layout_height="wrap_content"
@@ -205,15 +217,22 @@
         p1:layout_toRightOf="@id/player5"
         p1:id="@+id/addr5"
         p1:layout_alignBottom="@id/player5" />
+    <TextView
+        p1:text="Dealer"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_toRightOf="@id/textView9"
+        p1:id="@+id/textView12" />
     <Button
         p1:text="Play"
-        p1:layout_width="match_parent"
+        p1:layout_width="160dp"
         style="@style/create_btn"
         p1:background="@drawable/red_button"
         p1:layout_height="wrap_content"
-        p1:layout_toRightOf="@id/textView11"
         p1:id="@+id/Start"
-        p1:layout_alignBottom="@id/textView11" />
+        p1:layout_alignBottom="@id/textView11"
+        p1:layout_alignParentRight="true"
+        p1:layout_toRightOf="@id/textView12" />
     <Button
         p1:text="Back"
         p1:layout_width="match_parent"
@@ -223,4 +242,39 @@
         p1:layout_below="@id/Start"
         p1:id="@+id/back"
         p1:layout_alignLeft="@id/Start" />
+    <RadioGroup
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="wrap_content"
+        p1:layout_height="match_parent"
+        p1:layout_toRightOf="@id/player2"
+        p1:id="@+id/DealerGroup"
+        p1:layout_alignTop="@+id/player1">
+        <RadioButton
+            p1:layout_width="match_parent"
+            p1:layout_height="wrap_content"
+            p1:checked="true"
+            p1:id="@+id/Dealer1"
+            p1:layout_marginTop="5dp" />
+        <RadioButton
+            p1:layout_width="wrap_content"
+            p1:layout_height="wrap_content"
+            p1:id="@+id/Dealer2"
+            p1:layout_marginTop="6dp" />
+        <RadioButton
+            p1:layout_width="wrap_content"
+            p1:layout_height="wrap_content"
+            p1:id="@+id/Dealer3"
+            p1:layout_marginTop="6dp" />
+        <RadioButton
+            p1:layout_width="wrap_content"
+            p1:layout_height="wrap_content"
+            p1:id="@+id/Dealer4"
+            p1:layout_marginTop="6dp" />
+        <RadioButton
+            p1:layout_width="match_parent"
+            p1:layout_height="wrap_content"
+            p1:id="@+id/Dealer5"
+            p1:layout_marginTop="6dp" />
+    </RadioGroup>
 </RelativeLayout>

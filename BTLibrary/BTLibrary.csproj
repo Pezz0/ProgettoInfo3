@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>BTLibrary</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,9 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="Code\Enumeration\ActivityResultCode.cs" />
-    <Compile Include="Code\Enumeration\ConnectionState.cs" />
-    <Compile Include="Code\Enumeration\MessageType.cs" />
     <Compile Include="Code\Thread\BTConnectThread.cs" />
     <Compile Include="Code\Thread\BTListenThread.cs" />
     <Compile Include="Code\BTPlayService.cs" />
@@ -57,6 +54,9 @@
     <Compile Include="Code\Enumeration\EnContentType.cs" />
     <Compile Include="Code\Thread\BTWriteThread.cs" />
     <Compile Include="Code\Thread\BTReadThread.cs" />
+    <Compile Include="Code\Enumeration\EnMessageType.cs" />
+    <Compile Include="Code\Enumeration\EnConnectionState.cs" />
+    <Compile Include="Code\Enumeration\EnActivityResultCode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

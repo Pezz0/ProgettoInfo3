@@ -1,14 +1,14 @@
-﻿//using System;
-using Java.Lang;
+﻿using System;
 using Android.Bluetooth;
 using Java.Util;
+using System.Threading;
 
 namespace BTLibrary
 {
 	/// <summary>
 	/// Connect thread class.
 	/// </summary>
-	internal class BTConnectThread : Thread
+	internal class BTConnectThread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -19,6 +19,8 @@ namespace BTLibrary
 		/// The BluetoothDevice we want to connect.
 		/// </summary>
 		private BluetoothDevice _device;
+
+		private Thread _connecter;
 
 		public BTConnectThread (BluetoothDevice device, UUID MY_UUID)
 		{
@@ -33,15 +35,16 @@ namespace BTLibrary
 				e.ToString ();
 			}
 			_socket = tmp;
+			_connecter = new Thread (Connect);
+			_connecter.Name = "ConnectThread";
+			_connecter.Start ();
 		}
 
 		/// <summary>
 		/// Starts executing the active part of ConnectThread.
 		/// </summary>
-		public override void Run ()
+		private void Connect ()
 		{
-			Name = "ConnectThread";
-		
 			// Make a connection to the BluetoothSocket
 			try {
 				// This is a blocking call and will only return on a
@@ -49,7 +52,9 @@ namespace BTLibrary
 				_socket.Connect ();
 			} catch (Exception e) {
 				e.ToString ();
+				BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_FAILED, -1, -1).SendToTarget ();
 				BTPlayService.Instance.ConnectionFailed ();
+
 				// Close the socket
 				try {
 					_socket.Close ();
@@ -58,10 +63,6 @@ namespace BTLibrary
 					e2.ToString ();
 				}
 				return;
-			}
-			// Reset the ConnectThread because we're done
-			lock (this) {
-				BTPlayService.Instance.connectThread = null;
 			}
 
 			// Start the connected thread
@@ -79,6 +80,7 @@ namespace BTLibrary
 				//close of connect socket failed
 				e.ToString ();
 			}
+			_connecter.Abort ();
 		}
 	}
 }

@@ -3,22 +3,20 @@ using Android.Bluetooth;
 using System.IO;
 using System.Collections.Generic;
 using Android.OS;
-using Java.Lang;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace BTLibrary
 {
-	public class BTWriteThread:Thread
+	/// <summary>
+	/// BT write thread.
+	/// </summary>
+	public class BTWriteThread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
 		/// </summary>
 		public BluetoothSocket _Socket;
-
-		/// <summary>
-		/// The input stream.
-		/// </summary>
-		private Stream _InStream;
 
 		/// <summary>
 		/// The output stream.
@@ -32,57 +30,86 @@ namespace BTLibrary
 
 		public string Connected { get { return _connected; } }
 
-		public const int SLEEP_TIME = 50;
+		/// <summary>
+		/// The sleep time of the thread.
+		/// </summary>
+		private const int _SLEEP_TIME = 100;
 
-		BTBuffer _buffer = new BTBuffer ();
+		/// <summary>
+		/// The buffer to store out messages.
+		/// </summary>
+		private BTBuffer _buffer = new BTBuffer ();
 
-		public BTBuffer Buffer { get { return _buffer; } }
+		/// <summary>
+		/// The writer thread.
+		/// </summary>
+		private Thread _writer;
 
 		public BTWriteThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
-			Stream tmpIn = null;
 			Stream tmpOut = null;
 
 			// Get the BluetoothSocket input and output streams
 			try {
-				tmpIn = _Socket.InputStream;
 				tmpOut = _Socket.OutputStream;
 			} catch (System.Exception e) {
 				//temp socket not created
 				e.ToString ();
 			}
-			_InStream = tmpIn;
 			_OutStream = tmpOut;
 
+			//start the thread
 			_connected = _Socket.RemoteDevice.Address;
+			_writer = new Thread (Write);
+			_writer.Name = "Writer";
+			_writer.Start ();
 		}
 
-		public override void Run ()
+		private void Write ()
 		{
 			while (true) {
-				if (!_buffer.isEmpty) {
+				lock (_buffer) {
+					if (!_buffer.isEmpty) {
+						byte [] msg = _buffer.getValue ();
 
-					byte [] msg = _buffer.getValue ();
-
-					try {
-						_OutStream.Write (msg, 0, msg.Length);
-						// Share the sent message back to the UI Activity
-						BTPlayService.Instance.ObtainMessage ((int) MessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
+						try {
+							_OutStream.Write (msg, 0, msg.Length);
+							// Share the sent message back 
+							BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
 						
-					} catch (System.Exception e) {
-						//exception during write
-						e.ToString ();
-					}
+						} catch (System.Exception e) {
+							//exception during write
+							e.ToString ();
+							BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+							BTPlayService.Instance.ConnectionLost ();
 
-					if (msg [0] == (int) EnContentType.ACK)
-						_buffer.Remove (msg);
+						}
+
+						if (msg [0] == (int) EnContentType.ACK || msg [0] == (int) EnContentType.NAME)
+							_buffer.Remove (msg);
+					} else
+						Monitor.Wait (_buffer);
 				}
 
-				Sleep (SLEEP_TIME);
+				Thread.Sleep (_SLEEP_TIME);
 			}
 		}
 
+		public void Add (byte [] elem)
+		{
+			lock (_buffer) {
+				_buffer.Add (elem);
+				Monitor.Pulse (_buffer);
+			}
+		}
+
+		public void Remove (byte [] elem)
+		{
+			lock (_buffer) {
+				_buffer.Remove (elem);
+			}
+		}
 
 		/// <summary>
 		/// Try to close the socket
@@ -96,9 +123,13 @@ namespace BTLibrary
 				//close of connect socket failed
 				e.ToString ();
 			}
+			_writer.Abort ();
 		}
 	}
 
+	/// <summary>
+	/// Buffer object to store output messages.
+	/// </summary>
 	public class BTBuffer
 	{
 		private readonly List<byte []> _buffer = new List<byte []> ();

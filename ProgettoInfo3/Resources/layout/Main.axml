@@ -10,23 +10,14 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout1">
+        android:id="@+id/TitleLayout">
         <TextView
-            android:text="BRISCOLA"
+            android:text="BRISCOLA CHIAMATA"
             android:id="@+id/textView1"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:layout_centerHorizontal="true" />
-        <TextView
-            android:text="CHIAMATA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2"
-            style="@style/Text"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_centerInParent="true" />
     </RelativeLayout>
     <RelativeLayout
         android:minWidth="25px"
@@ -41,14 +32,18 @@
             android:id="@+id/ImageLayout"
             android:layout_width="328.9dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp" />
         <RelativeLayout
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/ImageLayout"
-            android:id="@+id/relativeLayout4">
+            android:id="@+id/ButtonLatout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true">
             <Button
                 android:text="Create Table"
                 android:id="@+id/create"

@@ -33,7 +33,7 @@
             p1:id="@+id/newdev"
             p1:layout_centerInParent="true" />
         <ProgressBar
-			p1:indeterminateDrawable="@drawable/indeterminate"
+            p1:indeterminateDrawable="@drawable/indeterminate"
             style="?android:attr/progressBarStyleSmall"
             p1:layout_width="50dp"
             p1:layout_height="50dp"
@@ -71,11 +71,21 @@
         p1:text="Back"
         p1:layout_width="wrap_content"
         p1:layout_height="wrap_content"
-        p1:layout_below="@id/Sendname"
         p1:background="@drawable/red_button"
         style="@style/create_btn"
         p1:id="@+id/back"
-        p1:layout_alignLeft="@id/Sendname"
-        p1:layout_alignRight="@id/Sendname"
-        p1:layout_alignParentTop="false" />
+        p1:layout_alignLeft="@id/MyName"
+        p1:layout_alignParentTop="false"
+        p1:layout_alignParentBottom="true"
+        p1:layout_alignParentRight="true" />
+    <Button
+        p1:text="Disconnect"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:layout_below="@id/Sendname"
+        p1:id="@+id/Disconnect"
+         p1:background="@drawable/red_button"
+        style="@style/create_btn"
+        p1:layout_alignParentRight="true"
+        p1:layout_alignLeft="@id/MyName" />
 </RelativeLayout>

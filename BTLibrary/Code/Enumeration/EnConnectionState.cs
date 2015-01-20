@@ -2,7 +2,7 @@
 
 namespace BTLibrary
 {
-	public enum ConnectionState
+	public enum EnConnectionState
 	{
 		STATE_NONE,
 		STATE_LISTEN,

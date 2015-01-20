@@ -1,18 +1,22 @@
-﻿using Java.Lang;
+﻿using System;
 using Android.Bluetooth;
 using Java.Util;
+using System.Threading;
 
 
 namespace BTLibrary
 {
-	internal class BTListenThread:Thread
+	internal class BTListenThread
 	{
 		/// <summary>
 		/// The BluetoothServerSocket.
 		/// </summary>
 		private BluetoothServerSocket _serverSocket;
 
-
+		/// <summary>
+		/// The listener thread.
+		/// </summary>
+		private Thread _Listener;
 
 		public BTListenThread (string NAME, UUID MY_UUID)
 		{
@@ -24,18 +28,19 @@ namespace BTLibrary
 				e.ToString ();
 			}
 
+			//start the thread
 			_serverSocket = tmp;
+			_Listener = new Thread (Listen);
+			_Listener.Name = "ListenThread";
+			_Listener.Start ();
 		}
 
 		/// <summary>
 		/// Starts executing the active part of ListenThread.
 		/// </summary>
-		public override void Run ()
-		{
-			Name = "ListenThread";
-
+		private void Listen ()
+		{ 
 			BluetoothSocket socket = null;
-
 			try {
 				// This is a blocking call and will only return on a
 				// successful connection or an exception
@@ -47,7 +52,7 @@ namespace BTLibrary
 			// If a connection was accepted
 			if (socket != null) {
 				lock (this) {
-					if (BTPlayService.Instance.GetState () == ConnectionState.STATE_LISTEN)
+					if (BTPlayService.Instance.GetState () == EnConnectionState.STATE_LISTEN)
 						BTPlayService.Instance.ConnectedToSlave (socket, socket.RemoteDevice);
 					else {
 						try {

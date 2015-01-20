@@ -19,11 +19,6 @@ namespace BTLibrary
 		void CancelDiscovery ();
 
 		/// <summary>
-		/// Unregisters the receiever.
-		/// </summary>
-		void UnregisterReceiever ();
-
-		/// <summary>
 		/// Registers the receiver
 		/// </summary>
 		void RegisterReceiver ();

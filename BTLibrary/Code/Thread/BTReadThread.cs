@@ -1,15 +1,15 @@
-﻿//using System;
-using Java.Lang;
+﻿using System;
 using Android.Bluetooth;
 using System.IO;
 using Android.OS;
+using System.Threading;
 
 namespace BTLibrary
 {
 	/// <summary>
-	/// Connected thread class.
+	/// BlueTooth read thread.
 	/// </summary>
-	internal class BTReadThread : Thread
+	internal class BTReadThread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
@@ -22,39 +22,41 @@ namespace BTLibrary
 		private Stream _inStream;
 
 		/// <summary>
-		/// The output stream.
-		/// </summary>
-		private Stream _outStream;
-
-		/// <summary>
 		/// The connected device address.
 		/// </summary>
 		private string _connected;
+
+		/// <summary>
+		/// The reader Thread.
+		/// </summary>
+		private Thread _reader;
 
 		public BTReadThread (BluetoothSocket socket)
 		{
 			_socket = socket;
 			Stream tmpIn = null;
-			Stream tmpOut = null;
-			//gujyhjv
-			// Get the BluetoothSocket input and output streams
+
+			// Get the BluetoothSocket input stream.
 			try {
 				tmpIn = _socket.InputStream;
-				tmpOut = _socket.OutputStream;
 			} catch (Exception e) {
 				//temp socket not created
 				e.ToString ();
 			}
 			_inStream = tmpIn;
-			_outStream = tmpOut;
 
 			_connected = _socket.RemoteDevice.Address;
+
+			//start the reader thread
+			_reader = new Thread (Read);
+			_reader.Name = "Reader";
+			_reader.Start ();
 		}
 
 		/// <summary>
-		/// Starts executing the active part of the Connected thread.
+		/// Starts executing the active part of the reader thread.
 		/// </summary>
-		public override void Run ()
+		private void Read ()
 		{
 			byte [] buffer = new byte[1024];
 			int bytes;
@@ -66,15 +68,14 @@ namespace BTLibrary
 					// Read from the InputStream
 					bytes = _inStream.Read (buffer, 0, buffer.Length);
 
-					// Send the obtained bytes to the UI Activity
-
-					BTPlayService.Instance.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
-					BTPlayService.Instance.ObtainMessage ((int) MessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
+					// Send the obtained bytes to the BTPlayservice
+					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
+					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
 
 				} catch (Exception e) {
-
-					BTPlayService.Instance.ObtainMessage ((int) MessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
-
+					e.ToString ();
+					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+					BTPlayService.Instance.ConnectionLost ();
 					break;
 				}
 			}
@@ -93,6 +94,8 @@ namespace BTLibrary
 				//close of connect socket failed
 				e.ToString ();
 			}
+
+			_reader.Abort ();
 		}
 	}
 }

@@ -17,77 +17,6 @@ namespace BTLibrary
 {
 	public class BTPlayService: Handler,IConnectable, IFindable
 	{
-		//TODO: rinominare tutte le classi come BT...  DONE
-		//TODO: BTPlayService è un singleton(vedi board per copiare) DONE
-		//TODO: aggiungere invia a tutti tranne a 1(solo da un master) TO TEST
-		//TODO: interfaccia menu
-		//TODO: controllare i readonly
-
-		#region fields
-
-		/// <summary>
-		/// The activity to register the receiver and display messages.
-		/// </summary>
-		private Activity _activity;
-
-		/// <summary>
-		/// The local BlueTooth adapter.
-		/// </summary>
-		private static readonly BluetoothAdapter _btAdapter = BluetoothAdapter.DefaultAdapter;
-
-		/// <summary>
-		/// The list of paired device addresses.
-		/// </summary>
-		private List<string> _pairedDevicesList;
-
-		/// <summary>
-		/// The receiver to register intents.
-		/// </summary>
-		private BTReceiver _receiver;
-
-		/// <summary>
-		/// The listen thread for accepting incoming connection.
-		/// </summary>
-		private BTListenThread listenThread;
-
-		/// <summary>
-		/// The connect thread to connect to a device.
-		/// </summary>
-		internal BTConnectThread connectThread;
-
-		/// <summary>
-		/// The connected slave thread to perform communication with a master.
-		/// </summary>
-		private BTReadThread connectedSlaveThread;
-
-		public const int MAX_BT_PLAYER = 4;
-
-		private BTWriteThread WriteToMasterThread;
-
-		/// <summary>
-		/// The list of connected master thread to perform communication with mutiple connected slave.
-		/// </summary>
-		private List<BTReadThread> connectedMasterThread;
-
-		private List<BTWriteThread> WriteToSlaveThread;
-
-		/// <summary>
-		/// The UUID to perform connection.
-		/// </summary>
-		internal static readonly UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
-
-		/// <summary>
-		/// The name to perform connection.
-		/// </summary>
-		public const string NAME = "PlayService";
-
-		/// <summary>
-		/// The state of device.
-		/// </summary>
-		private ConnectionState _state;
-
-		#endregion
-
 		#region singleton implementation
 
 		private static readonly BTPlayService _instance = new BTPlayService ();
@@ -105,6 +34,11 @@ namespace BTLibrary
 		#endregion
 
 		#region BlueToothAdapter Management
+
+		/// <summary>
+		/// The local BlueTooth adapter.
+		/// </summary>
+		private static readonly BluetoothAdapter _btAdapter = BluetoothAdapter.DefaultAdapter;
 
 		/// <summary>
 		/// Indicate if the bluetooth exists.
@@ -177,12 +111,14 @@ namespace BTLibrary
 		#region Receiver Management
 
 		/// <summary>
-		/// Unregisters the receiever.
+		/// The activity to register the receiver and display messages.
 		/// </summary>
-		public void UnregisterReceiever ()
-		{
-			_activity.ApplicationContext.UnregisterReceiver (_receiver);
-		}
+		private Activity _activity;
+
+		/// <summary>
+		/// The receiver to register intents.
+		/// </summary>
+		private BTReceiver _receiver;
 
 		/// <summary>
 		/// Registers the receiver for when a device is discovered and when discovery is finished.
@@ -214,7 +150,7 @@ namespace BTLibrary
 			//insert in the intent the duration of visibility
 			visibleIntent.PutExtra (BluetoothAdapter.ExtraDiscoverableDuration, amount);
 			//Start the VisibilityRequest activity
-			_activity.StartActivityForResult (visibleIntent, (int) ActivityResultCode.VISIBILITY_REQUEST);
+			_activity.StartActivityForResult (visibleIntent, (int) EnActivityResultCode.VISIBILITY_REQUEST);
 		}
 
 
@@ -229,12 +165,17 @@ namespace BTLibrary
 			//else creates an Intent with action ActionRequestEnable
 			Intent enableIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
 			//Starts the EnableRequest activity
-			_activity.StartActivityForResult (enableIntent, (int) ActivityResultCode.REQUEST_ENABLE_BT);
+			_activity.StartActivityForResult (enableIntent, (int) EnActivityResultCode.REQUEST_ENABLE_BT);
 		}
 
 		#endregion
 
 		#region scanning and pairing
+
+		/// <summary>
+		/// The list of paired device addresses.
+		/// </summary>
+		private List<string> _pairedDevicesList;
 
 		/// <summary>
 		/// Gets a list of paired device addresses.
@@ -283,17 +224,60 @@ namespace BTLibrary
 		#region Connection Management
 
 		/// <summary>
+		/// The listen thread for accepting incoming connection.
+		/// </summary>
+		private BTListenThread _listenThread;
+
+		/// <summary>
+		/// The connect thread to connect to a device.
+		/// </summary>
+		private BTConnectThread _connectThread;
+
+		/// <summary>
+		/// The thread to perform slave read from a master device
+		/// </summary>
+		private BTReadThread _readFromMasterThread;
+
+		/// <summary>
+		/// The thread to perform slave write to a master device
+		/// </summary>
+		private BTWriteThread _writeToMasterThread;
+
+		/// <summary>
+		/// The list of thread to perform master read with mutiple connected slave.
+		/// </summary>
+		private List<BTReadThread> _readFromSlaveThread;
+
+		/// <summary>
+		/// The list of thread to perform master write with multiple connected slave
+		/// </summary>
+		private List<BTWriteThread> _writeToSlaveThread;
+
+		/// <summary>
+		/// The UUID to perform connection.
+		/// </summary>
+		internal static readonly UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+
+		/// <summary>
+		/// The name to perform connection.
+		/// </summary>
+		internal const string NAME = "PlayService";
+
+		/// <summary>
+		/// The state of device.
+		/// </summary>
+		private EnConnectionState _state;
+
+		/// <summary>
 		/// Sets the state.
 		/// </summary>
 		/// <param name="state">State.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		private void SetState (ConnectionState state)
+		private void SetState (EnConnectionState state)
 		{
 			//sets the state
 			_state = state;
-			// Give the new state to the Handler so the UI Activity can update
 
-			this.ObtainMessage ((int) MessageType.MESSAGE_STATE_CHANGE, (int) state, -1).SendToTarget ();
 		}
 
 		/// <summary>
@@ -301,7 +285,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <returns>The state.</returns>
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		public ConnectionState GetState ()
+		public EnConnectionState GetState ()
 		{
 			return _state;
 		}
@@ -312,15 +296,15 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void ConnectAsMaster ()
 		{	
-			//stops all existing listening thread
+			//stops listening thread
 			StopListen ();
 
 			// Start the thread to listen on a BluetoothServerSocket
-			listenThread = new BTListenThread (NAME, MY_UUID);
-			listenThread.Start ();
+			_listenThread = new BTListenThread (NAME, MY_UUID);
 
-			//sets the state on STATE_LISTEN
-			SetState (ConnectionState.STATE_LISTEN);
+			//sets the state on STATE_LISTEN and send message to indicate this change
+			SetState (EnConnectionState.STATE_LISTEN);
+			this.ObtainMessage ((int) EnMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_LISTEN, -1).SendToTarget ();
 		}
 
 		/// <summary>
@@ -330,22 +314,15 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void ConnectAsSlave (BluetoothDevice device)
 		{	
-			//if the device we want to connect is a slave connected to this device the connection is not performed
-			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				if (connectedMasterThread [i]._socket.RemoteDevice.Address.CompareTo (device.Address) == 0) {
-					return;
-				}
-			}
-
 			//stops all existing thread
 			Stop ();
 
-			// Start the thread to connect with the given device
-			connectThread = new BTConnectThread (device, MY_UUID);
-			connectThread.Start ();
+			//sets the state to CONNECTING and send message to indicate this change
+			SetState (EnConnectionState.STATE_CONNECTING);
+			this.ObtainMessage ((int) EnMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_CONNECTING, -1).SendToTarget ();
 
-			//sets the state to CONNECTING
-			SetState (ConnectionState.STATE_CONNECTING);
+			// Start the thread to connect with the given device
+			_connectThread = new BTConnectThread (device, MY_UUID);
 		}
 
 		/// <summary>
@@ -356,21 +333,18 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
 		{
-			//stops all existing thread
-			Stop ();
-
-			// Start the thread to manage the connection and perform transmissions
-			connectedSlaveThread = new BTReadThread (socket);
-			connectedSlaveThread.Start ();
-
-			WriteToMasterThread = new BTWriteThread (socket);
-			WriteToMasterThread.Start ();
-
-			// Send the name of the connected device back to the Activity
-			this.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
-
 			//sets the state to CONNECTED_SLAVE
-			SetState (ConnectionState.STATE_CONNECTED_SLAVE);
+			SetState (EnConnectionState.STATE_CONNECTED_SLAVE);
+
+			// Start the thread to perform read service
+			_readFromMasterThread = new BTReadThread (socket);
+
+			// Start the thread to perform write service
+			_writeToMasterThread = new BTWriteThread (socket);
+
+			//sends a message to the indicate the slave connection to a device
+			this.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_SLAVE, -1, device.Address).SendToTarget ();
+
 		}
 
 		/// <summary>
@@ -381,7 +355,7 @@ namespace BTLibrary
 		public bool isSlave ()
 		{
 			//if state is Connected_Client the caller is a client
-			return _state == ConnectionState.STATE_CONNECTED_SLAVE;
+			return _state == EnConnectionState.STATE_CONNECTED_SLAVE;
 
 		}
 
@@ -393,16 +367,20 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
-			connectedMasterThread.Add (new BTReadThread (socket));
-			connectedMasterThread [connectedMasterThread.Count - 1].Start ();
+			//sets the state to CONNECTED_MASTER
+			SetState (EnConnectionState.STATE_CONNECTED_MASTER);
 
-			WriteToSlaveThread.Add (new BTWriteThread (socket));
-			WriteToSlaveThread [WriteToSlaveThread.Count - 1].Start ();
+			// Start the thread to perform read service
+			_readFromSlaveThread.Add (new BTReadThread (socket));
 
-			//sends a message to the activity indicates the connection to a device
-			this.ObtainMessage ((int) MessageType.MESSAGE_DEVICE_ADDR, device.Address).SendToTarget ();
+			// Start the thread to perform write service
+			_writeToSlaveThread.Add (new BTWriteThread (socket));
 
-			SetState (ConnectionState.STATE_CONNECTED_MASTER);
+			//sends a message to the indicate the master connection to a device
+			this.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_MASTER, -1, device.Address).SendToTarget ();
+
+			//stop listen thread 
+			StopListen ();
 		}
 
 		/// <summary>
@@ -412,7 +390,7 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public int getNumConnected ()
 		{
-			return connectedMasterThread.Count;
+			return _readFromSlaveThread.Count;
 		}
 
 		/// <summary>
@@ -421,40 +399,35 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Stop ()
 		{
-			if (connectThread != null) {
-				connectThread.Cancel ();
-				connectThread = null;
+			if (_connectThread != null) {
+				_connectThread.Cancel ();
+				_connectThread = null;
 			}
 
-			if (connectedSlaveThread != null) {
-				connectedSlaveThread.Cancel ();
-				connectedSlaveThread = null;
+			if (_readFromMasterThread != null) {
+				_readFromMasterThread.Cancel ();
+				_readFromMasterThread = null;
 			}
 
-			if (WriteToMasterThread != null) {
-				WriteToMasterThread.Cancel ();
-				WriteToMasterThread = null;
+			if (_writeToMasterThread != null) {
+				_writeToMasterThread.Cancel ();
+				_writeToMasterThread = null;
 			}
 
-			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
-				WriteToSlaveThread [i].Cancel ();
-				WriteToSlaveThread.RemoveAt (i);
-			}
-			WriteToSlaveThread.Clear ();
-
-			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				connectedMasterThread [i].Cancel ();
-				connectedMasterThread.RemoveAt (i);
-			}
-			connectedMasterThread.Clear ();
-
-			if (listenThread != null) {
-				listenThread.Cancel ();
-				listenThread = null;
-				listenThread = null;
+			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
+				_writeToSlaveThread [i].Cancel ();
+				_writeToSlaveThread.RemoveAt (i);
 			}
 
-			SetState (ConnectionState.STATE_NONE);
+			for (int i = 0; i < _readFromSlaveThread.Count; i++) {
+				_readFromSlaveThread [i].Cancel ();
+				_readFromSlaveThread.RemoveAt (i);
+			}
+
+			if (_listenThread != null) {
+				_listenThread.Cancel ();
+				_listenThread = null;
+			}
 		}
 
 		/// <summary>
@@ -463,13 +436,11 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void StopListen ()
 		{
-			if (listenThread != null) {
-				listenThread.Cancel ();
-				listenThread = null;
-				listenThread = null;
+			if (_listenThread != null) {
+				_listenThread.Cancel ();
+				_listenThread = null;
+				_listenThread = null;
 			}
-
-			SetState (ConnectionState.STATE_NONE);
 		}
 
 		/// <summary>
@@ -479,13 +450,14 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveSlave (string address)
 		{
-			for (int i = 0; i < connectedMasterThread.Count; i++) {
-				if (connectedMasterThread [i]._socket.RemoteDevice.Address.CompareTo (address) == 0) {
-					connectedMasterThread [i].Cancel ();
-					connectedMasterThread.RemoveAt (i);
+			for (int i = 0; i < _readFromSlaveThread.Count; i++) {
 
-					WriteToSlaveThread [i].Cancel ();
-					WriteToSlaveThread.RemoveAt (i);
+				if (_readFromSlaveThread [i]._socket.RemoteDevice.Address.CompareTo (address) == 0) {
+					_readFromSlaveThread [i].Cancel ();
+					_readFromSlaveThread.RemoveAt (i);
+
+					_writeToSlaveThread [i].Cancel ();
+					_writeToSlaveThread.RemoveAt (i);
 					return;
 				}
 			}
@@ -496,12 +468,9 @@ namespace BTLibrary
 		/// </summary>
 		internal void ConnectionFailed ()
 		{	
-			// Send a failure message back to the Activity
-			this.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "I don't find any BlueTooth game opened on this device, Please retry").SendToTarget ();
 			//stops all existing thread
 			Stop ();
-			//return to initial state
-			SetState (ConnectionState.STATE_NONE);
+
 		}
 
 		/// <summary>
@@ -509,24 +478,32 @@ namespace BTLibrary
 		/// </summary>
 		internal void ConnectionLost ()
 		{	
-			// Send a failure message back to the Activity
-			this.ObtainMessage ((int) MessageType.MESSAGE_TOAST, "Device connection was lost: ").SendToTarget ();
-
-			//if device was a slave return to initial state
-			//if (_state == ConnectionState.STATE_CONNECTED_SLAVE) {
+			//stops all existing thread
 			Stop ();
-			SetState (ConnectionState.STATE_NONE);
-			//}
 
-			//TODO CAZZO FACCIO SE IL MASTER PERDE LA COMUNICAZIONE CON UNO SLAVE??????
 		}
 
 		#endregion
 
 		#region Communication Management
 
+		/// <summary>
+		/// Creates the message.
+		/// </summary>
+		/// <returns>The message.</returns>
+		/// <param name="type">Type.</param>
+		/// <param name="msg">Message.</param>
 		private byte[] createMsg (EnContentType type, byte [] msg)
 		{
+			// Normal messages:
+			//
+			//  |  type  |       msg       |
+			//    1 byte   1023 bytes max
+			//
+			// ACK messages:
+			//
+			//  |  type  |  Local Address  |       msg        |
+			//    1 byte       17 bytes       1006 bytes max
 			List<byte> bs = new List<byte> ();
 
 			bs.Add ((byte) type);
@@ -535,70 +512,114 @@ namespace BTLibrary
 				byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
 				bs.AddRange (bAddress);
 			}
-
+				
 			bs.AddRange (msg);
 			return bs.ToArray ();
 		}
 
+		/// <summary>
+		/// Creates the message in playtime.
+		/// </summary>
+		/// <returns>The message.</returns>
+		/// <param name="sender">Sender.</param>
+		/// <param name="msg">Message.</param>
 		private byte[] createMsgPlaytime (Player sender, byte [] msg)
 		{
+			//A Playtime message is composed of the player who makes the bid or move and the message.
+			// after this phase it will be inserted in a normal message:
+			//
+			// Normal messages:
+			//
+			//  |  type  | sender |       msg       |
+			//    1 byte   1 byte    1022 bytes max
+			//
+			// ACK messages:
+			//
+			//  |  type  |  Local Address  | sender |       msg        |
+			//    1 byte      17 bytes       1 byte    1005 bytes max
+
 			List<byte> bs = new List<byte> ();
 			bs.Add (sender.toByteArray () [0]);
 			bs.AddRange (msg);
 			return bs.ToArray ();
 		}
 
+		/// <summary>
+		/// Writes to master a message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="msg">Message.</param>
 		public void WriteToMaster (EnContentType type, byte [] msg)
 		{
-			// Synchronize a copy of the ConnectedThread
-			lock (this) {
-				if (_state != ConnectionState.STATE_CONNECTED_SLAVE)
-					return;
+			if (_writeToMasterThread == null)
+				return;
 			
-				WriteToMasterThread.Buffer.Add (createMsg (type, msg));
-			}
-			// Perform the write unsynchronized
+			_writeToMasterThread.Add (createMsg (type, msg));
+
 		}
 
+		/// <summary>
+		/// Writes to master a playtime message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="sender">Sender.</param>
+		/// <param name="msg">Message.</param>
 		public void WriteToMaster (EnContentType type, Player sender, byte [] msg)
 		{
 			WriteToMaster (type, createMsgPlaytime (sender, msg));
 		}
 
+		/// <summary>
+		/// Writes to a single slave a message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="msg">Message.</param>
+		/// <param name="slave">Slave.</param>
 		private void WriteToSlave (EnContentType type, byte [] msg, int slave)
 		{
-			//Synchronize the ConnectedThread
-			lock (this) {
-			
-				if (WriteToSlaveThread [slave] == null) {
-					Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
-					return;
-				}
-				WriteToSlaveThread [slave].Buffer.Add (createMsg (type, msg));
+			if (_writeToSlaveThread [slave] == null) {
+				Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
+				return;
 			}
-			// Perform the write unsynchronized
+			_writeToSlaveThread [slave].Add (createMsg (type, msg));
+
 		}
 
+		/// <summary>
+		/// Writes to a single slave a playtime message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="sender">Sender.</param>
+		/// <param name="msg">Message.</param>
+		/// <param name="slave">Slave.</param>
 		private void WriteToSlave (EnContentType type, Player sender, byte [] msg, int slave)
 		{
 			WriteToSlave (type, createMsgPlaytime (sender, msg), slave);
 		}
 
+		/// <summary>
+		/// Writes to all slave a message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="msg">Message.</param>
 		public void WriteToAllSlave (EnContentType type, byte [] msg)
 		{
-
 			byte [] message = createMsg (type, msg);
-			for (int i = 0; i < WriteToSlaveThread.Count; i++) {
-				lock (this) {
-					if (WriteToSlaveThread [i] != null) {
-						WriteToSlaveThread [i].Buffer.Add (message);
+			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
+
+				if (_writeToSlaveThread [i] != null) {
+					_writeToSlaveThread [i].Add (message);
 			
-					}
 				}
-			
 			}
 		}
 
+		/// <summary>
+		/// Writes to all slave a playtime message.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="sender">Sender.</param>
+		/// <param name="msg">Message.</param>
 		public void WriteToAllSlave (EnContentType type, Player sender, byte [] msg)
 		{
 			WriteToAllSlave (type, createMsgPlaytime (sender, msg));
@@ -631,6 +652,11 @@ namespace BTLibrary
 		#region initialization
 
 		/// <summary>
+		/// The Max player bluetooth.
+		/// </summary>
+		public const int MAX_BT_PLAYER = 4;
+
+		/// <summary>
 		/// Initialize the specified the Play Service.
 		/// </summary>
 		/// <param name="activity">Activity.</param>
@@ -644,61 +670,95 @@ namespace BTLibrary
 			_activity = activity;
 
 			//sets the state to STATE_NONE
-			_state = ConnectionState.STATE_NONE;
+			_state = EnConnectionState.STATE_NONE;
 
 			//creates an arry of connectedThread with _MAXPLAYER elements
-			connectedMasterThread = new List<BTReadThread> (MAX_BT_PLAYER);
+			_readFromSlaveThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
-			WriteToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
+			_writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 		}
 
 		#endregion
 
 		#region Handler
 
+		/// <summary>
+		/// delegate to handle a playtime message.
+		/// </summary>
 		public delegate void eventHandlerMsgPlaytimeRecieved (EnContentType type, Player sender, List<byte> msg);
 
+		/// <summary>
+		/// Occurs when a playtime message is received.
+		/// </summary>
 		public event eventHandlerMsgPlaytimeRecieved eventMsgPlaytimeReceived;
 
+		/// <summary>
+		/// delegate to handle an initialization message. 
+		/// </summary>
 		public delegate void eventHandlerMsgInitilizationRecieved (Message msg);
 
+		/// <summary>
+		/// Occurs when an initilization message is recieved.
+		/// </summary>
 		public event eventHandlerMsgInitilizationRecieved eventMsgInitilizationRecieved;
 
+		/// <summary>
+		/// Handle the messages.
+		/// </summary>
 		public override void HandleMessage (Message msg)
 		{
-			if (msg.What == (int) MessageType.MESSAGE_READ) {
+			if (msg.What == (int) EnMessageType.MESSAGE_READ) {
 				byte [] data = (byte []) msg.Obj;
 
+				//Get the type of the message from the firs byte of the message
 				EnContentType type = (EnContentType) data [0];
 
 				if (type == EnContentType.ACK) {
-
+				
 					char [] adr = new char[17];
 
+					//the next 17 bytes indicete the address of the device who sends message
 					for (int i = 1; i < 18; i++)
 						adr [i - 1] = (char) data [i];
 
 					string address = new string (adr);
 
+
 					List<byte> bs = new List<byte> ();
+					//the other bytes indicate the message (normal or playtime)
 					for (int i = 18; i < data.GetLength (0); i++)
 						bs.Add (data [i]);
-
+						
 					if (isSlave ()) {
-						WriteToMasterThread.Buffer.Remove (bs.ToArray ());
+						//if i am a slave i remove the message from the list of the message to send
+						_writeToMasterThread.Remove (bs.ToArray ());
 					} else {
-						WriteToSlaveThread.ForEach (delegate(BTWriteThread thred) {
+						//otherwise i am the master so i remove the message only from the list of the sender
+						_writeToSlaveThread.ForEach (delegate(BTWriteThread thred) {
 							if (thred.Connected == address)
-								thred.Buffer.Remove (bs.ToArray ());
+								thred.Remove (bs.ToArray ());
 						});
 					}
 
+				
+				} else if (type == EnContentType.NAME) {
+					//the name does not expect an ACK, so remove the type from the message and send it to the handler	
+					List<byte> bs = new List<byte> ();
+					for (int i = 1; data [i] != '\0'; i++)
+						bs.Add (data [i]);
+
+					msg.Obj = bs.ToArray ();
+					if (eventMsgInitilizationRecieved != null)
+						eventMsgInitilizationRecieved (msg);
+
 				} else if (type != EnContentType.NONE) {
 
+					// all other messages (Board,bid,move,seme,ready) needs an ACK 
 					if (eventMsgInitilizationRecieved != null)
 						eventMsgInitilizationRecieved (msg);	
 
 					if (type == EnContentType.READY || type == EnContentType.BID || type == EnContentType.SEME || type == EnContentType.MOVE) {
+						//ready, bid, seme, move are playtime events, so we need type, sender and message
 						Player sender = Board.Instance.getPlayer (data [1]);
 
 						List<byte> bs = new List<byte> ();
@@ -709,11 +769,13 @@ namespace BTLibrary
 							eventMsgPlaytimeReceived (type, sender, bs);
 					}	
 
+					//ACK consists of the type ACK followed by the message received 
 					if (BTPlayService.Instance.isSlave ())
 						BTPlayService.Instance.WriteToMaster (EnContentType.ACK, data);
 					else
 						BTPlayService.Instance.WriteToAllSlave (EnContentType.ACK, data);
 				}
+				// all other messages that are not message_read (STATE_CHANGE, DEVICE_ADDRESS ecc) are initializing events
 			} else if (eventMsgInitilizationRecieved != null)
 				eventMsgInitilizationRecieved (msg);
 

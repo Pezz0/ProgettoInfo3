@@ -46,7 +46,6 @@ namespace ProgettoInfo3
 			_PlayerControllerList.Clear ();
 
 			if (requestCode == 2 && resultCode == Result.Ok) {
-				Board.Instance.reset ();
 
 				if (BTPlayService.Instance.isSlave ()) {
 

@@ -2,7 +2,7 @@
 
 namespace BTLibrary
 {
-	public enum MessageType
+	public enum EnMessageType
 	{
 		MESSAGE_STATE_CHANGE,
 		MESSAGE_READ,
@@ -10,7 +10,7 @@ namespace BTLibrary
 		MESSAGE_WRITE,
 		MESSAGE_DEVICE_ADDR,
 		MESSAGE_CONNECTION_LOST,
-		MESSAGE_TOAST,
+		MESSAGE_CONNECTION_FAILED,
 		NEW_DEVICE,
 		END_SCANNING,
 		NONE_FOUND,
