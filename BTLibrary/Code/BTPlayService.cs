@@ -19,13 +19,9 @@ namespace BTLibrary
 	{
 		#region singleton implementation
 
-		private static readonly BTPlayService _instance = new BTPlayService ();
+		private static readonly Lazy<BTPlayService> _instance = new Lazy<BTPlayService> (() => new BTPlayService ());
 
-		public static BTPlayService Instance{ get { return _instance; } }
-
-		static BTPlayService ()
-		{
-		}
+		public static BTPlayService Instance{ get { return _instance.Value; } }
 
 		private BTPlayService ()
 		{
