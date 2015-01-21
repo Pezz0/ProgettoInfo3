@@ -723,7 +723,7 @@ namespace ChiamataLibrary
 
 		public void start ()
 		{
-			_t = -4;
+			_t = -3;
 
 				
 			_listBid = new List<IBid> ();

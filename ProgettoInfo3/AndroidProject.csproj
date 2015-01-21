@@ -14,7 +14,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>ProgettoInfo3</AssemblyName>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -165,6 +165,7 @@
     <AndroidAsset Include="Assets\Content\TRE_COPE.png" />
     <AndroidAsset Include="Assets\Content\TRE_ORI.png" />
     <AndroidAsset Include="Assets\Content\TRE_SPADE.png" />
+    <AndroidAsset Include="Assets\Content\turnLight3.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">

@@ -594,7 +594,7 @@ namespace Core
 			winSize = mainWindow.WindowSizeInPixels;
 
 			//Setting the area when cards can be dropped
-			dropField = new CCRect (0, (int) ( winSize.Height / 5 ), (int) ( winSize.Width / 2 ), (int) ( winSize.Height * 4 / 5 ));
+			dropField = new CCRect (0, (int) ( winSize.Height / 5 ), (int) ( winSize.Width / 2 ), (int) ( winSize.Height * 3 / 5 ));
 
 			//Setting the area where the cards can be re-arranged
 			cardField = new CCRect ((int) ( winSize.Width * 3.5 / 5 ), (int) ( winSize.Height / 5 ), (int) ( winSize.Width * 1.5 / 5 ), (int) ( winSize.Height * 3 / 5 ));
@@ -796,6 +796,8 @@ namespace Core
 
 
 			wait = 0;
+			touchAsta = true;
+			slider.visible = false;
 
 			Schedule (RunGameLogic);
 			Board.Instance.start ();
