@@ -972,7 +972,7 @@ namespace Core
 
 		#region Auction ended
 
-		//TODO: i touch del game non vanno qui
+
 		public void auctionEnded ()
 		{
 			touchAsta = false;
@@ -1008,7 +1008,7 @@ namespace Core
 				touchAsta = true;
 
 
-			for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
+			for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
 				if (Board.Instance.getPlayer (i).Role == EnRole.CHIAMANTE)
 					playerBids [playerToOrder (i)].SetString (playerBids [playerToOrder (i)].Text + " di " + Board.Instance.Briscola.ToString (), true);
 				else
