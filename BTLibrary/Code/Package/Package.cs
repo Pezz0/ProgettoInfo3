@@ -55,7 +55,7 @@ namespace BTLibrary
 
 			msg.Add ((byte) EnPackageType.ACK);
 
-			byte [] bAddress = Encoding.ASCII.GetBytes (BTPlayService.Instance.GetLocalAddress ());
+			byte [] bAddress = Encoding.ASCII.GetBytes (BTManager.Instance.GetLocalAddress ());
 			msg.AddRange (bAddress);
 
 			msg.AddRange (getMessage ());

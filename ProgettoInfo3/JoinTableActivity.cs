@@ -44,9 +44,9 @@ namespace ProgettoInfo3
 			_start = _normalEnd = true;
 			_connecting = false;
 
-			BTPlayService.Instance.RegisterReceiver ();
+			BTManager.Instance.RegisterReceiver ();
 
-			BTPlayService.Instance.setActivity (this);
+			BTManager.Instance.setActivity (this);
 
 			SetContentView (Resource.Layout.DeviceList);
 
@@ -96,32 +96,33 @@ namespace ProgettoInfo3
 
 			#endregion
 
-			string namedev = BTPlayService.Instance.GetLocalName ();
+			string namedev = BTManager.Instance.GetLocalName ();
 			if (namedev.Length > MainActivity.MAX_NAME_LENGHT)
 				_name.Text = namedev.Substring (0, MainActivity.MAX_NAME_LENGHT);
 			else
 				_name.Text = namedev;
 
-			if (!BTPlayService.Instance.existBluetooth ()) {
+			if (!BTManager.Instance.existBluetooth ()) {
 				Toast.MakeText (this, "BlueTooth not supported", ToastLength.Short);
 				Finish ();
 			}
 
-			if (!BTPlayService.Instance.isBTEnabled ())
-				BTPlayService.Instance.enableBluetooth ();
+			if (!BTManager.Instance.isBTEnabled ())
+				BTManager.Instance.enableBluetooth ();
 			else {
-				List<string> address = BTPlayService.Instance.GetPaired ();
+				List<string> address = BTManager.Instance.GetPaired ();
 				foreach (string addr in address)
-					_pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
+					_pairedArrayList.Add (BTManager.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 			}
 
-			BTPlayService.Instance.eventMessageInitialization += handleMessage;
+			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
+			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
 
 		public override void OnBackPressed ()
 		{
 			base.OnBackPressed ();
-			BTPlayService.Instance.Stop ();
+			BTManager.Instance.Stop ();
 			Finish ();
 		}
 
@@ -131,13 +132,13 @@ namespace ProgettoInfo3
 			_start = false;
 			_normalEnd = true;
 			_scan.Enabled = false;
-			if (BTPlayService.Instance.isBTEnabled ()) {
+			if (BTManager.Instance.isBTEnabled ()) {
 				SetTitle (Resource.String.scanning);
 				_newArrayList.Clear ();
-				BTPlayService.Instance.Discovery ();
+				BTManager.Instance.Discovery ();
 				_pb.Visibility = ViewStates.Visible;
 			} else
-				BTPlayService.Instance.enableBluetooth ();
+				BTManager.Instance.enableBluetooth ();
 
 			
 		}
@@ -151,7 +152,7 @@ namespace ProgettoInfo3
 					setName.SetTitle ("Name Too Long");
 					setName.SetMessage ("Your name is too long\nDo you want to be registered on master with this name: " + sub + "?");
 					setName.SetPositiveButton ("YES", delegate {
-						BTPlayService.Instance.WriteToMaster (new PackageName (sub));
+						BTManager.Instance.WriteToMaster (new PackageName (sub));
 
 					});
 					setName.SetNegativeButton ("NO", delegate {
@@ -160,7 +161,7 @@ namespace ProgettoInfo3
 					setName.Show ();
 
 				} else
-					BTPlayService.Instance.WriteToMaster (new PackageName (_name.Text));
+					BTManager.Instance.WriteToMaster (new PackageName (_name.Text));
 
 			} else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
@@ -169,7 +170,7 @@ namespace ProgettoInfo3
 
 		private void Disconnect (object sender, EventArgs e)
 		{
-			BTPlayService.Instance.Stop ();
+			BTManager.Instance.Stop ();
 			_send.Enabled = false;
 			_name.Enabled = false;
 			_paired.Enabled = true;
@@ -181,7 +182,7 @@ namespace ProgettoInfo3
 
 		private void Back (object sender, EventArgs e)
 		{
-			BTPlayService.Instance.Stop ();
+			BTManager.Instance.Stop ();
 			Finish ();
 		}
 
@@ -191,15 +192,15 @@ namespace ProgettoInfo3
 			var info = ( e.View as TextView ).Text.ToString ();
 			_address = info.Substring (info.Length - _DEVICE_ADDRESS_LENGHT);
 
-			if (BTPlayService.Instance.isDiscovering ()) {
-				BTPlayService.Instance.CancelDiscovery ();
+			if (BTManager.Instance.isDiscovering ()) {
+				BTManager.Instance.CancelDiscovery ();
 				_normalEnd = false;
 			}
 
-			if (BTPlayService.Instance.isBTEnabled ()) {
+			if (BTManager.Instance.isBTEnabled ()) {
 				connection ();
 			} else {
-				BTPlayService.Instance.enableBluetooth ();
+				BTManager.Instance.enableBluetooth ();
 			}
 		}
 
@@ -208,11 +209,11 @@ namespace ProgettoInfo3
 
 			AlertDialog.Builder connect = new AlertDialog.Builder (this);
 			connect.SetTitle ("Connection");
-			connect.SetMessage ("Do you really want to connect with " + BTPlayService.Instance.getRemoteDevice (_address).Name + "?");
+			connect.SetMessage ("Do you really want to connect with " + BTManager.Instance.getRemoteDevice (_address).Name + "?");
 			connect.SetPositiveButton ("YES", delegate {
 				SetTitle (Resource.String.connecting);
 				_pb.Visibility = ViewStates.Visible;
-				BTPlayService.Instance.ConnectAsSlave (BTPlayService.Instance.getRemoteDevice (_address));
+				BTManager.Instance.ConnectAsSlave (BTManager.Instance.getRemoteDevice (_address));
 				_address = "";
 				_connecting = false;
 			});
@@ -232,14 +233,14 @@ namespace ProgettoInfo3
 					// When the request to enable Bluetooth returns
 					if (resultCode == Result.Ok) {
 						// Bluetooth is now enabled, so set up a chat session
-						List<string> address = BTPlayService.Instance.GetPaired ();
+						List<string> address = BTManager.Instance.GetPaired ();
 						foreach (string addr in address)
-							_pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
+							_pairedArrayList.Add (BTManager.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 
 						if (!_start) {
 							SetTitle (Resource.String.scanning);
 							_newArrayList.Clear ();
-							BTPlayService.Instance.Discovery ();
+							BTManager.Instance.Discovery ();
 						}
 						if (_connecting)
 							connection ();
@@ -249,14 +250,32 @@ namespace ProgettoInfo3
 			}
 		}
 
+		private void handlePackage (Package pkg)
+		{
+			if (pkg == EnPackageType.BOARD) {
+				this.SetTitle (Resource.String.starting);
+				_send.Enabled = false;
+				_name.Enabled = false;
+
+				Intent returnIntent = new Intent ();
+				returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
+				this.SetResult (Result.Ok, returnIntent);
+
+				BTManager.Instance.eventLocalMessageReceived -= handleLocalMessage;
+				BTManager.Instance.eventPackageReceived -= handlePackage;
+
+				Finish ();
+			}
+		}
+
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		private void handleMessage (Message msg)
+		private void handleLocalMessage (Message msg)
 		{
 			switch (msg.What) {
 
 				case (int)EnLocalMessageType.NEW_DEVICE:
 					string address = (string) msg.Obj;
-					_newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address).Name + "\n" + address);
+					_newArrayList.Add (BTManager.Instance.getRemoteDevice (address).Name + "\n" + address);
 					_newdev.Enabled = true;
 
 				break;
@@ -281,22 +300,6 @@ namespace ProgettoInfo3
 						_newdev.Enabled = false;
 					}
 				break;
-				
-				case (int)EnLocalMessageType.MESSAGE_READ:
-
-					if (Package.createPackage ((byte []) ( msg.Obj )) == EnPackageType.BOARD) {
-						this.SetTitle (Resource.String.starting);
-						_send.Enabled = false;
-						_name.Enabled = false;
-
-						Intent returnIntent = new Intent ();
-						returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
-						this.SetResult (Result.Ok, returnIntent);
-						BTPlayService.Instance.eventMessageInitialization -= handleMessage;
-						Finish ();
-					}
-
-				break;
 
 				case (int) EnLocalMessageType.MESSAGE_CONNECTION_LOST:
 					_send.Enabled = false;
@@ -315,7 +318,7 @@ namespace ProgettoInfo3
 				break;
 				case (int) EnLocalMessageType.MESSAGE_DEVICE_ADDR:
 					if (msg.Arg1 == (int) EnConnectionState.STATE_CONNECTED_SLAVE) {
-						_conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						_conn = BTManager.Instance.getRemoteDevice ((string) msg.Obj).Name;
 						_pb.Visibility = ViewStates.Invisible;
 						_send.Enabled = true;
 						_name.Enabled = true;

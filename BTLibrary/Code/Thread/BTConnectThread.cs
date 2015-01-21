@@ -49,8 +49,8 @@ namespace BTLibrary
 				// successful connection or an exception
 				_socket.Connect ();
 			} catch {
-				BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_FAILED, -1, -1).SendToTarget ();
-				BTPlayService.Instance.ConnectionFailed ();
+				BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_FAILED, -1, -1).SendToTarget ();
+				BTManager.Instance.ConnectionFailed ();
 
 				// Close the socket
 				try {
@@ -61,7 +61,7 @@ namespace BTLibrary
 			}
 
 			// Start the connected thread
-			BTPlayService.Instance.ConnectedToMaster (_socket, _device);
+			BTManager.Instance.ConnectedToMaster (_socket, _device);
 		}
 
 		/// <summary>

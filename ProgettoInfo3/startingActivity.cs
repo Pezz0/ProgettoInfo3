@@ -46,7 +46,7 @@ namespace ProgettoInfo3
 
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
-				if (BTPlayService.Instance.isSlave ()) {
+				if (BTManager.Instance.isSlave ()) {
 
 					char [] Me = data.GetCharArrayExtra ("Name");
 
@@ -61,8 +61,8 @@ namespace ProgettoInfo3
 
 					ChiamataLibrary.Board.Instance.initializeMaster (name, data.GetIntExtra ("Dealer", 0));
 
-					if (BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.WriteToAllSlave (new PackageBoard ());
+					if (BTManager.Instance.getNumConnected () > 0)
+						BTManager.Instance.WriteToAllSlave (new PackageBoard ());
 
 					string [] type = data.GetStringArrayExtra ("types");
 

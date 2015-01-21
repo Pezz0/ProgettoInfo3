@@ -26,7 +26,7 @@ namespace BTLibrary
 
 		public PackageSeme (byte [] bs) : base (EnPackageType.SEME)
 		{
-			if (bs [0] == (byte) type)
+			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
 			player = Board.Instance.getPlayer ((int) bs [1]);

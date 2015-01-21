@@ -17,7 +17,7 @@ namespace BTLibrary
 
 		public PackageBid (byte [] bs) : base (EnPackageType.BID)
 		{
-			if (bs [0] == (byte) type)
+			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
 			Player bidder = Board.Instance.getPlayer ((int) bs [1]);

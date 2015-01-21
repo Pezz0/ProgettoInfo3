@@ -35,18 +35,18 @@ namespace BTLibrary
 
 				// If it's already paired, skip it, because it's been listed already
 				if (device.BondState != Bond.Bonded) {
-					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.NEW_DEVICE, device.Address).SendToTarget ();
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.NEW_DEVICE, device.Address).SendToTarget ();
 					count++;
 				}
 
 				//When discovery finish
 			} else if (action == BluetoothAdapter.ActionDiscoveryFinished) {
 				//send to the Activity a message that indicate that the discovery is finished
-				BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.END_SCANNING, -1, -1).SendToTarget ();
+				BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.END_SCANNING, -1, -1).SendToTarget ();
 				//if no device were found
 				if (count == 0)
 					//send to the activity a message that no Device are found
-					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.NONE_FOUND, -1, -1).SendToTarget ();
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.NONE_FOUND, -1, -1).SendToTarget ();
 			}
 		}
 	}

@@ -23,7 +23,7 @@ namespace BTLibrary
 			BluetoothServerSocket tmp = null;
 
 			try {
-				tmp = BTPlayService.Instance.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
+				tmp = BTManager.Instance.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
 			} catch {
 			}
 
@@ -51,8 +51,8 @@ namespace BTLibrary
 			// If a connection was accepted
 			if (socket != null) {
 				lock (this) {
-					if (BTPlayService.Instance.GetState () == EnConnectionState.STATE_LISTEN)
-						BTPlayService.Instance.ConnectedToSlave (socket, socket.RemoteDevice);
+					if (BTManager.Instance.GetState () == EnConnectionState.STATE_LISTEN)
+						BTManager.Instance.ConnectedToSlave (socket, socket.RemoteDevice);
 					else {
 						try {
 							socket.Close ();

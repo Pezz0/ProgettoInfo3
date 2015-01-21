@@ -61,7 +61,7 @@ namespace ProgettoInfo3
 			_join.Click += joinClick;
 			_settings.Click += settingClick;
 
-			BTPlayService.Instance.Initialize (this);
+			BTManager.Instance.Initialize (this);
 
 
 

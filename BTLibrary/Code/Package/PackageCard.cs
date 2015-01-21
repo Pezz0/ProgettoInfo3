@@ -17,7 +17,7 @@ namespace BTLibrary
 
 		public PackageCard (byte [] bs) : base (EnPackageType.MOVE)
 		{
-			if (bs [0] == (byte) type)
+			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
 			EnSemi s = (EnSemi) ( bs [2] / Board.Instance.nNumber );

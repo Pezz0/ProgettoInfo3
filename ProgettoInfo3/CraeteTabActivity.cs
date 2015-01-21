@@ -125,59 +125,60 @@ namespace ProgettoInfo3
 			_counter = 4;
 			_dealer = 0;
 		
-			BTPlayService.Instance.setActivity (this);
+			BTManager.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
 
-			string name = BTPlayService.Instance.GetLocalName ();
+			string name = BTManager.Instance.GetLocalName ();
 			if (name.Length > MainActivity.MAX_NAME_LENGHT)
 				_pl0.Text = name.Substring (0, MainActivity.MAX_NAME_LENGHT);
 			else
 				_pl0.Text = name;
 
-			BTPlayService.Instance.eventMessageInitialization += handleMessage;
+			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
+			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
 
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			//se scelgo AI
 			if (e.Id == 0) {
-				if (_counter - BTPlayService.Instance.getNumConnected () >= 0) {
+				if (_counter - BTManager.Instance.getNumConnected () >= 0) {
 					_counter--;
 					if (sender.ToString () == _spinner1.ToString () && _add1.Text != Resources.GetText (Resource.String.none_add)) {
-						BTPlayService.Instance.RemoveSlave (_add1.Text);
+						BTManager.Instance.RemoveSlave (_add1.Text);
 						_add1.Text = Resources.GetText (Resource.String.none_add);
 						_pl1.Text = Resources.GetText (Resource.String.Default1);
 						_pl1.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else if (sender.ToString () == _spinner2.ToString () && _add2.Text != Resources.GetText (Resource.String.none_add)) {
-						BTPlayService.Instance.RemoveSlave (_add2.Text);
+						BTManager.Instance.RemoveSlave (_add2.Text);
 						_add2.Text = Resources.GetText (Resource.String.none_add);
 						_pl2.Text = Resources.GetText (Resource.String.Default2);
 						_pl2.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else if (sender.ToString () == _spinner3.ToString () && _add3.Text != Resources.GetText (Resource.String.none_add)) {
-						BTPlayService.Instance.RemoveSlave (_add3.Text);
+						BTManager.Instance.RemoveSlave (_add3.Text);
 						_add3.Text = Resources.GetText (Resource.String.none_add);
 						_pl3.Text = Resources.GetText (Resource.String.Default3);
 						_pl3.InputType = Android.Text.InputTypes.TextVariationNormal;
 
 					} else if (sender.ToString () == _spinner4.ToString () && _add4.Text != Resources.GetText (Resource.String.none_add)) {
-						BTPlayService.Instance.RemoveSlave (_add4.Text);
+						BTManager.Instance.RemoveSlave (_add4.Text);
 						_add4.Text = Resources.GetText (Resource.String.none_add);
 						_pl4.Text = Resources.GetText (Resource.String.Default4);
 						_pl4.InputType = Android.Text.InputTypes.TextVariationNormal;
 					}
-					if (_counter - BTPlayService.Instance.getNumConnected () <= 0)
-						BTPlayService.Instance.StopListen ();
+					if (_counter - BTManager.Instance.getNumConnected () <= 0)
+						BTManager.Instance.StopListen ();
 				}
 				//se scelgo BT
 			} else {
-				if (_counter - BTPlayService.Instance.getNumConnected () == 0) {
-					if (BTPlayService.Instance.isBTEnabled ())
-						BTPlayService.Instance.ConnectAsMaster ();
+				if (_counter - BTManager.Instance.getNumConnected () == 0) {
+					if (BTManager.Instance.isBTEnabled ())
+						BTManager.Instance.ConnectAsMaster ();
 					else
-						BTPlayService.Instance.enableBluetooth ();
+						BTManager.Instance.enableBluetooth ();
 				}
 				_counter++;
 			}
@@ -199,10 +200,12 @@ namespace ProgettoInfo3
 
 		void Start_Game (object sender, EventArgs e)
 		{
-			if (_counter - BTPlayService.Instance.getNumConnected () == 0) {
+			if (_counter - BTManager.Instance.getNumConnected () == 0) {
 				SetTitle (Resource.String.starting);
 
-				BTPlayService.Instance.eventMessageInitialization -= handleMessage;
+				BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
+				BTManager.Instance.eventPackageReceived += handlePackage;
+
 				Intent returnIntent = new Intent ();
 
 				returnIntent.PutExtra ("Names", new string[5] {
@@ -224,7 +227,7 @@ namespace ProgettoInfo3
 
 				SetResult (Result.Ok, returnIntent);
 			
-				BTPlayService.Instance.StopListen ();
+				BTManager.Instance.StopListen ();
 				Finish ();
 			} else
 				Toast.MakeText (this, "Waiting for missing connection", ToastLength.Short).Show ();
@@ -235,7 +238,7 @@ namespace ProgettoInfo3
 		{
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
-			BTPlayService.Instance.Stop ();
+			BTManager.Instance.Stop ();
 			Finish ();
 		}
 
@@ -247,7 +250,7 @@ namespace ProgettoInfo3
 					// When the request to enable Bluetooth returns
 					if (resultCode == Result.Ok)
 						// Bluetooth is now enabled, so set up a chat session
-						BTPlayService.Instance.ConnectAsMaster ();
+						BTManager.Instance.ConnectAsMaster ();
 					else
 						Finish ();
 					
@@ -257,14 +260,37 @@ namespace ProgettoInfo3
 
 		}
 
-		private void handleMessage (Message msg)
+		private void handlePackage (Package pkg)
+		{
+			if (pkg == EnPackageType.NAME) {
+				PackageName pkgn = (PackageName) pkg;
+
+				if (pkgn.address == _add1.Text) {
+					Toast.MakeText (Application.Context, _pl1.Text + " changed his/her name to " + pkgn.name, ToastLength.Short).Show (); 
+					_pl1.Text = pkgn.name;
+				} else if (pkgn.address == _add2.Text) {
+					Toast.MakeText (Application.Context, _pl2.Text + " changed his/her name to " + pkgn.name, ToastLength.Short).Show (); 
+					_pl2.Text = pkgn.name;
+				} else if (pkgn.address == _add3.Text) {
+					Toast.MakeText (Application.Context, _pl3.Text + " changed his/her name to " + pkgn.name, ToastLength.Short).Show (); 
+					_pl3.Text = pkgn.name;
+				} else if (pkgn.address == _add4.Text) {
+					Toast.MakeText (Application.Context, _pl4.Text + " changed his/her name to " + pkgn.name, ToastLength.Short).Show (); 
+					_pl4.Text = pkgn.name;
+				}
+			}
+
+		}
+
+
+		private void handleLocalMessage (Message msg)
 		{
 
 			switch (msg.What) {
 				case (int) EnLocalMessageType.MESSAGE_DEVICE_ADDR:
 					if (msg.Arg1 == (int) EnConnectionState.STATE_CONNECTED_MASTER) {
 
-						_name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
+						_name = BTManager.Instance.getRemoteDevice ((string) msg.Obj).Name;
 						Toast.MakeText (Application.Context, "Connected to " + _name, ToastLength.Short).Show ();
 						if (_name.Length > MainActivity.MAX_NAME_LENGHT)
 							_name = _name.Substring (0, MainActivity.MAX_NAME_LENGHT);
@@ -288,54 +314,23 @@ namespace ProgettoInfo3
 					}
 
 				break;
-
-				case (int) EnLocalMessageType.MESSAGE_READ:
-					string player = Encoding.ASCII.GetString ((byte []) msg.Obj);
-					if (player.Length > MainActivity.MAX_NAME_LENGHT)
-						player = player.Substring (0, MainActivity.MAX_NAME_LENGHT);
-					if (_address.CompareTo (_add1.Text) == 0) {
-						Toast.MakeText (Application.Context, _pl1.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-						_pl1.Text = player;
-					}
-					if (_address.CompareTo (_add2.Text) == 0) {
-						Toast.MakeText (Application.Context, _pl2.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-						_pl2.Text = player;
-					}
-					if (_address.CompareTo (_add3.Text) == 0) {
-						Toast.MakeText (Application.Context, _pl3.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-						_pl3.Text = player;
-					}
-					if (_address.CompareTo (_add4.Text) == 0) {
-						Toast.MakeText (Application.Context, _pl4.Text + " changed his/her name to " + player, ToastLength.Short).Show (); 
-						_pl4.Text = player;
-					}
-					_address = "";
-					
-				break;
-
-				case (int) EnLocalMessageType.MESSAGE_DEVICE_READ:
-					_address = (string) msg.Obj;
-				break;
 				
 				case (int) EnLocalMessageType.MESSAGE_CONNECTION_LOST:
 					_address = (string) msg.Obj;
-					BTPlayService.Instance.RemoveSlave (_address);
-					if (_address.CompareTo (_add1.Text) == 0) {
+					BTManager.Instance.RemoveSlave (_address);
+					if (_address == _add1.Text) {
 						_pl1.Text = this.Resources.GetText (Resource.String.Default1);
 						_add1.Text = this.Resources.GetText (Resource.String.none_add);
-					}
-					if (_address.CompareTo (_add2.Text) == 0) {
+					} else if (_address == _add2.Text) {
 						_pl2.Text = this.Resources.GetText (Resource.String.Default2);
 						_add2.Text = this.Resources.GetText (Resource.String.none_add);
 
-					}
-					if (_address.CompareTo (_add3.Text) == 0) {
+					} else if (_address == _add3.Text) {
 						_pl3.Text = this.Resources.GetText (Resource.String.Default3);
 						_add3.Text = this.Resources.GetText (Resource.String.none_add);
 
 
-					}
-					if (_address.CompareTo (_add4.Text) == 0) {
+					} else if (_address == _add4.Text) {
 						_pl4.Text = this.Resources.GetText (Resource.String.Default4);
 						_add4.Text = this.Resources.GetText (Resource.String.none_add);
 					}
@@ -343,10 +338,10 @@ namespace ProgettoInfo3
 				break;
 			}
 			if (msg.What != (int) EnLocalMessageType.MESSAGE_STATE_CHANGE) {
-				if (_counter - BTPlayService.Instance.getNumConnected () > 0)
-					BTPlayService.Instance.ConnectAsMaster ();
+				if (_counter - BTManager.Instance.getNumConnected () > 0)
+					BTManager.Instance.ConnectAsMaster ();
 				else
-					BTPlayService.Instance.StopListen ();
+					BTManager.Instance.StopListen ();
 			}
 		}
 

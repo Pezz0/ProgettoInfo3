@@ -12,7 +12,7 @@ namespace BTLibrary
 
 		public PackageBoard (byte [] bs) : base (EnPackageType.BOARD)
 		{
-			if (bs [0] == (byte) type)
+			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
 			Board.Instance.recreateFromByteArray (bs);

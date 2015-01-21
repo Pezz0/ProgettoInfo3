@@ -19,14 +19,14 @@ namespace BTLibrary
 			_player = player;
 			player.Controller = this;
 
-			BTPlayService.Instance.eventPackageReceived += handleMessage;
+			BTManager.Instance.eventPackageReceived += handleMessage;
 		}
 
 		private void handleMessage (Package pkg)
 		{
 			if (pkg == EnPackageType.READY) {
 				Player p = ( (PackageReady) pkg ).player;
-				_readyToStart = BTPlayService.Instance.isSlave () || p == _player;
+				_readyToStart = BTManager.Instance.isSlave () || p == _player;
 			} else if (pkg == EnPackageType.BID) {
 				PackageBid pkgb = (PackageBid) pkg;
 				if (pkgb.bid.bidder == _player) {

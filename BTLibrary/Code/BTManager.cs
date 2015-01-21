@@ -15,15 +15,15 @@ using System.Text;
 
 namespace BTLibrary
 {
-	public class BTPlayService: Handler,IConnectable, IFindable
+	public class BTManager: Handler,IConnectable, IFindable
 	{
 		#region singleton implementation
 
-		private static readonly Lazy<BTPlayService> _instance = new Lazy<BTPlayService> (() => new BTPlayService ());
+		private static readonly Lazy<BTManager> _instance = new Lazy<BTManager> (() => new BTManager ());
 
-		public static BTPlayService Instance{ get { return _instance.Value; } }
+		public static BTManager Instance{ get { return _instance.Value; } }
 
-		private BTPlayService ()
+		private BTManager ()
 		{
 		}
 
@@ -538,9 +538,9 @@ namespace BTLibrary
 
 		#region Handler
 
-		public delegate void eventHandlerMessageInitialization (Message msg);
+		public delegate void eventHandlerLocalMessageReceived (Message msg);
 
-		public event eventHandlerMessageInitialization eventMessageInitialization;
+		public event eventHandlerLocalMessageReceived eventLocalMessageReceived;
 
 		/// <summary>
 		/// delegate to handle a playtime message.
@@ -594,8 +594,11 @@ namespace BTLibrary
 
 					Package pkg = Package.createPackage (data);	
 
+					if (eventPackageReceived != null)
+						eventPackageReceived (pkg);
+
 					//ACK consists of the type ACK followed by the message received 
-					if (BTPlayService.Instance.isSlave ())
+					if (BTManager.Instance.isSlave ())
 						_writeToMasterThread.Add (pkg.getAckMessage ());
 					else
 						for (int i = 0; i < _writeToSlaveThread.Count; i++)
@@ -604,8 +607,8 @@ namespace BTLibrary
 						
 				}
 				// all other messages that are not message_read (STATE_CHANGE, DEVICE_ADDRESS ecc) are initializing events
-			} else if (eventMessageInitialization != null)	//local message
-				eventMessageInitialization (msg);
+			} else if (eventLocalMessageReceived != null)	//local message
+				eventLocalMessageReceived (msg);
 
 		}
 
@@ -646,11 +649,11 @@ namespace BTLibrary
 		{
 			Board.Instance.eventImReady += imReady;
 			Board.Instance.eventIPlaceABid += bidPlaced;
-			if (!BTPlayService.Instance.isSlave ())
+			if (!BTManager.Instance.isSlave ())
 				Board.Instance.eventSomeonePlaceABid += bidPlaced;
 			Board.Instance.eventPlaytimeStart += semeChosen;
 			Board.Instance.eventIPlayACard += cardPlayed;
-			if (!BTPlayService.Instance.isSlave ())
+			if (!BTManager.Instance.isSlave ())
 				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}
 
@@ -658,7 +661,7 @@ namespace BTLibrary
 		private void imReady ()
 		{
 			//the message is only one byte because the ready event doesn't need any information
-			if (BTPlayService.Instance.isSlave ())
+			if (BTManager.Instance.isSlave ())
 				WriteToMaster (new PackageReady ());
 			else
 				WriteToAllSlave (new PackageReady ());
@@ -670,32 +673,32 @@ namespace BTLibrary
 		{
 			//the message is compose of the nuber of bid to control that happens in the correct board time
 			// then is added the information about the bid type 
-			if (BTPlayService.Instance.isSlave ())
-				BTPlayService.Instance.WriteToMaster (new PackageBid (bid));
+			if (BTManager.Instance.isSlave ())
+				BTManager.Instance.WriteToMaster (new PackageBid (bid));
 			else
-				BTPlayService.Instance.WriteToAllSlave (new PackageBid (bid));
+				BTManager.Instance.WriteToAllSlave (new PackageBid (bid));
 		}
 
 		//When the Board event eventPlaytimeStart happens, write to master or to all slave the message
 		private void semeChosen ()
 		{
 			//if this is the slave and is the caller send to master one byte that indicate the seme chosen 
-			if (BTPlayService.Instance.isSlave ()) {
+			if (BTManager.Instance.isSlave ()) {
 				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
-					BTPlayService.Instance.WriteToMaster (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+					BTManager.Instance.WriteToMaster (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
 				//if this is the master send to all slave one byte that indicate the seme chosen
 			} else
-				BTPlayService.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+				BTManager.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
 		}
 
 		//When the Board event eventIPlayACard or eventSomeonePlayACard happens, write to master or to all slave the message
 		private void cardPlayed (Move move)
 		{
 			//the message is composed of the time where the card is played and then the information about the card
-			if (BTPlayService.Instance.isSlave ())
-				BTPlayService.Instance.WriteToMaster (new PackageCard (move));
+			if (BTManager.Instance.isSlave ())
+				BTManager.Instance.WriteToMaster (new PackageCard (move));
 			else
-				BTPlayService.Instance.WriteToAllSlave (new PackageCard (move));
+				BTManager.Instance.WriteToAllSlave (new PackageCard (move));
 		}
 
 		#endregion

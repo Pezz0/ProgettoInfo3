@@ -45,7 +45,6 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Code\Thread\BTConnectThread.cs" />
     <Compile Include="Code\Thread\BTListenThread.cs" />
-    <Compile Include="Code\BTPlayService.cs" />
     <Compile Include="Code\BTReceiver.cs" />
     <Compile Include="Code\IConnectable.cs" />
     <Compile Include="Code\IFindable.cs" />
@@ -63,6 +62,7 @@
     <Compile Include="Code\Package\PackageName.cs" />
     <Compile Include="Code\Package\PackageReady.cs" />
     <Compile Include="Code\Package\PackageSeme.cs" />
+    <Compile Include="Code\BTManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

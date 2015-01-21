@@ -67,13 +67,13 @@ namespace BTLibrary
 					bytes = _inStream.Read (buffer, 0, buffer.Length);
 
 					// Send the obtained bytes to the BTPlayservice
-					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
-					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
 
 				} catch (Exception e) {
 					e.ToString ();
-					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
-					BTPlayService.Instance.ConnectionLost ();
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+					BTManager.Instance.ConnectionLost ();
 					break;
 				}
 			}
