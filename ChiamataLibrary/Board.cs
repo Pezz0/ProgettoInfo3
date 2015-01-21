@@ -154,7 +154,6 @@ namespace ChiamataLibrary
 				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
 
 			_bytes = new List<Byte> (bytes);
-			_bytes.RemoveAt (0);
 
 			int index = 0;
 

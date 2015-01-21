@@ -29,7 +29,7 @@ namespace BTLibrary
 				_readyToStart = BTManager.Instance.isSlave () || p == _player;
 			} else if (pkg == EnPackageType.BID) {
 				PackageBid pkgb = (PackageBid) pkg;
-				if (pkgb.bid.bidder == _player) {
+				if (pkgb.bid.bidder == _player && pkgb.nOfBid > Board.Instance.NumberOfBid) {
 					_ready = true;
 					//recreate bid from message 
 					_bid = pkgb.bid;
@@ -43,7 +43,7 @@ namespace BTLibrary
 				}
 			} else if (pkg == EnPackageType.MOVE) {
 				PackageCard pkgm = (PackageCard) pkg;
-				if (pkgm.move.player == _player) {
+				if (pkgm.move.player == _player && pkgm.time >= Board.Instance.Time) {
 					_ready = true;
 					//recreate bid from message 
 					_card = pkgm.move.card;

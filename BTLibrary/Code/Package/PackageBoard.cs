@@ -18,7 +18,10 @@ namespace BTLibrary
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
-			bytes = bs;
+			bytes = new byte[1024];
+			for (int i = 1; i < bs.GetLength (0); ++i)
+				bytes [i - 1] = bs [i];
+
 		}
 
 		public override byte[] getMessage ()
