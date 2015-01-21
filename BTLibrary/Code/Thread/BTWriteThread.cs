@@ -75,11 +75,11 @@ namespace BTLibrary
 						try {
 							_OutStream.Write (msg, 0, msg.Length);
 							// Share the sent message back 
-							//BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
+							BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
 						
 						} catch {
-							BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
-							BTPlayService.Instance.ConnectionLost ();
+							BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+							BTManager.Instance.ConnectionLost ();
 
 						}
 
