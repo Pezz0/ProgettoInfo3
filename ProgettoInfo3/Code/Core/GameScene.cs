@@ -2,6 +2,10 @@
 using CocosSharp;
 using System.Collections.Generic;
 using ChiamataLibrary;
+using Android.App;
+using Android.Content;
+using ProgettoInfo3;
+using System.Security.Cryptography;
 
 
 
@@ -270,6 +274,7 @@ namespace Core
 
 		private void actExit (List<CCTouch> touches, CCEvent touchEvent)
 		{
+
 			window.Application.ExitGame ();
 		}
 
@@ -856,6 +861,9 @@ namespace Core
 			mainLayer.Color = new CCColor3B (6, 117, 21);
 			mainLayer.Opacity = 255;
 			written = false;
+
+
+
 
 			Board.Instance.Me.Controller = this;
 		}
