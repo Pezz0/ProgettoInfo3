@@ -258,6 +258,7 @@ namespace ProgettoInfo3
 				_name.Enabled = false;
 
 				Intent returnIntent = new Intent ();
+				returnIntent.PutExtra ("Board", ( (PackageBoard) pkg ).bytes);
 				returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
 				this.SetResult (Result.Ok, returnIntent);
 

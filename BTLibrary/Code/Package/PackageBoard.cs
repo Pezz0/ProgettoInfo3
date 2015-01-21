@@ -6,8 +6,11 @@ namespace BTLibrary
 {
 	public class PackageBoard:Package
 	{
+		public readonly byte [] bytes;
+
 		public PackageBoard () : base (EnPackageType.BOARD)
 		{
+			bytes = Board.Instance.SendableBytes.ToArray ();
 		}
 
 		public PackageBoard (byte [] bs) : base (EnPackageType.BOARD)
@@ -15,14 +18,14 @@ namespace BTLibrary
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
-			Board.Instance.recreateFromByteArray (bs);
+			bytes = bs;
 		}
 
 		public override byte[] getMessage ()
 		{
 			List<Byte> msg = new List<byte> (1024);
 			msg.Add ((byte) type);
-			msg.AddRange (Board.Instance.SendableBytes);
+			msg.AddRange (bytes);
 			return msg.ToArray ();
 		}
 

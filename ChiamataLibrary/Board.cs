@@ -148,21 +148,24 @@ namespace ChiamataLibrary
 
 		public Board recreateFromByteArray (byte [] bytes)
 		{
+
+			reset ();
 			if (!isCreationPhase)
 				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
 
-			reset ();
 			_bytes = new List<Byte> (bytes);
+			_bytes.RemoveAt (0);
+
 			int index = 0;
 
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
 			
-				int lenght = BitConverter.ToInt16 (new byte[2]{ bytes [index], 0 }, 0);
+				int lenght = BitConverter.ToInt16 (new byte[2]{ _bytes [index], 0 }, 0);
 				index = index + 1;
 
 				byte [] bs = new byte[lenght];
 				for (int j = 0; j < lenght; j++) {
-					bs [j] = bytes [index + j];
+					bs [j] = _bytes [index + j];
 				}
 
 				index = index + lenght;
@@ -176,7 +179,10 @@ namespace ChiamataLibrary
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
 				for (int j = 0; j < nNumber; j++) {
 
-					int assignedPlayer = BitConverter.ToInt16 (new byte[2]{ bytes [index], 0 }, 0);
+					int assignedPlayer = BitConverter.ToInt16 (new byte[2] {
+						_bytes [index],
+						0
+					}, 0);
 
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					index++;

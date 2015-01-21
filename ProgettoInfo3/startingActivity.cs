@@ -50,6 +50,8 @@ namespace ProgettoInfo3
 
 					char [] Me = data.GetCharArrayExtra ("Name");
 
+					Board.Instance.recreateFromByteArray (data.GetByteArrayExtra ("Board"));
+
 					Board.Instance.initializeSlave (new string (Me));
 				
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++)

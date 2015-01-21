@@ -28,7 +28,7 @@ namespace BTLibrary
 			for (int i = 1; i < 18; i++)
 				adr [i - 1] = (char) bs [i];
 
-			string address = new string (adr);
+			address = new string (adr);
 
 			List<byte> lb = new List<byte> ();
 
