@@ -41,6 +41,11 @@ namespace ChiamataLibrary
 			_listGames.Add (gm);
 		}
 
+		public GameData lastGame ()
+		{
+			return _listGames [_listGames.Count - 1];
+		}
+
 		#region Info
 
 		public List<string> getAllPlayer ()

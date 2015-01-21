@@ -166,6 +166,13 @@
     <AndroidAsset Include="Assets\Content\TRE_ORI.png" />
     <AndroidAsset Include="Assets\Content\TRE_SPADE.png" />
     <AndroidAsset Include="Assets\Content\turnLight3.png" />
+    <AndroidAsset Include="Assets\Content\resultBoard.png" />
+    <AndroidAsset Include="Assets\Content\spriteDefeat.png" />
+    <AndroidAsset Include="Assets\Content\spriteVictory.png" />
+    <AndroidAsset Include="Assets\Content\btnExit.png" />
+    <AndroidAsset Include="Assets\Content\btnExitPressed.png" />
+    <AndroidAsset Include="Assets\Content\btnNext.png" />
+    <AndroidAsset Include="Assets\Content\btnNextPressed.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">

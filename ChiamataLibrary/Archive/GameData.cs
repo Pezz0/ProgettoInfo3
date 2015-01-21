@@ -42,10 +42,10 @@ namespace ChiamataLibrary
 		public Player getSocio ()
 		{
 			foreach (Player p in _players)
-				if (p.Role == EnRole.CHIAMANTE)
+				if (p.Role == EnRole.SOCIO)
 					return p;
 
-			throw new Exception ("Some error occur, this path shoudn't be executed");
+			throw new Exception ("Chiamata in mano");
 		}
 
 		public List<Player> getAltri ()

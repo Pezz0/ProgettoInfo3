@@ -33,7 +33,6 @@ namespace ProgettoInfo3
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-
 			var serverIntent = new Intent (this, typeof (MainActivity));
 			StartActivityForResult (serverIntent, 2);
 
@@ -92,8 +91,15 @@ namespace ProgettoInfo3
 					
 				var application = new CCApplication ();
 				application.ApplicationDelegate = new Core.GameAppDelegate ();
+
 				SetContentView (application.AndroidContentView);
+
+
 				application.StartGame ();
+
+
+
+
 
 			}
 		}

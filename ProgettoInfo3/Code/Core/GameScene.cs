@@ -3,6 +3,9 @@ using CocosSharp;
 using System.Collections.Generic;
 using ChiamataLibrary;
 
+
+
+
 namespace Core
 {
 	public class GameScene : CCScene,IPlayerController
@@ -13,6 +16,13 @@ namespace Core
 
 		//Core variables
 		private CCLayer mainLayer;
+		private CCWindow window;
+
+		//Sprites for end game
+		private CCSprite resultBoard;
+		private CCSprite endStatusSpriteWin;
+		private CCSprite endStatusSpriteLoss;
+
 
 		//Sprites and position variables
 		private List<CardData> carte;
@@ -73,6 +83,8 @@ namespace Core
 		private Button chooseSpade;
 		private Button chooseBastoni;
 		private Button chooseCoppe;
+		private Button btnExit;
+		private Button btnNext;
 		private const float vertSpace = 0.05f * 58;
 		private const float orzSpace = 0.04f * 115;
 
@@ -254,6 +266,16 @@ namespace Core
 
 			mySeme = EnSemi.SPADE;
 			bidded = true;
+		}
+
+		private void actExit (List<CCTouch> touches, CCEvent touchEvent)
+		{
+			window.Application.ExitGame ();
+		}
+
+		private void actNext (List<CCTouch> touches, CCEvent touchEvent)
+		{
+
 		}
 
 		#endregion
@@ -581,6 +603,10 @@ namespace Core
 			mainLayer = new CCLayerColor ();
 			AddChild (mainLayer);
 
+
+			window = mainWindow;
+
+
 			//Instancing the touch listener
 			touch = new TouchList (this);
 
@@ -794,6 +820,31 @@ namespace Core
 
 			#endregion
 
+			#region End game label, buttons and sprites initialization
+			resultBoard = new CCSprite ("resultBoard");
+			resultBoard.Position = new CCPoint (winSize.Width / 2, winSize.Height / 2);
+			resultBoard.Scale = _cardScale;
+			resultBoard.Rotation = -90;
+			resultBoard.Visible = false;
+			mainLayer.AddChild (resultBoard, 15);
+
+			endStatusSpriteWin = new CCSprite ("spriteVictory");
+			endStatusSpriteWin.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 4 / 5);
+			endStatusSpriteWin.Scale = _cardScale;
+			endStatusSpriteWin.Visible = false;
+			resultBoard.AddChild (endStatusSpriteWin, 1);
+
+			endStatusSpriteLoss = new CCSprite ("spriteDefeat");
+			endStatusSpriteLoss.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 4 / 5);
+			endStatusSpriteLoss.Scale = _cardScale;
+			endStatusSpriteLoss.Visible = false;
+			resultBoard.AddChild (endStatusSpriteLoss, 1);
+
+			btnExit = new Button (resultBoard, touch, actExit, "btnExit", "btnExitPressed", new CCPoint (resultBoard.BoundingBox.Size.Width / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2f);
+			btnNext = new Button (resultBoard, touch, actNext, "btnNext", "btnNextPressed", new CCPoint (resultBoard.BoundingBox.Size.Width * 3 / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2f);
+			btnExit.Enabled = true;
+			btnNext.Enabled = true;
+			#endregion
 
 			wait = 0;
 			touchAsta = true;
@@ -824,16 +875,30 @@ namespace Core
 			}
 
 			if (Board.Instance.isGameFinish && !written) {
-				String a = "";
-				Archive.Instance.forEach (delegate(GameData gd) {
-					a = a + "Chiamate : " + gd.getChiamante ().ToString () + " " + gd.getChiamantePointCount ().ToString ();
-				});
-				CCLabel victory = new CCLabel (a, "Arial", 18);
-				victory.Rotation = -90;
-				victory.Scale = 3f;
-				victory.Position = new CCPoint (winSize.Width / 2, winSize.Height / 2);
-				mainLayer.AddChild (victory);
 				written = true;
+				resultBoard.Visible = true;
+				btnExit.Enabled = true;
+				btnNext.Enabled = true;
+				bool inMano = false;
+				GameData gd = Archive.Instance.lastGame ();
+				if (gd.getWinners ().Contains (Board.Instance.Me))
+					endStatusSpriteWin.Visible = true;
+				else
+					endStatusSpriteLoss.Visible = true;
+
+				if (gd.isChiamataInMano) {
+					inMano = true;
+				}
+
+				String str = "Il chiamante era " + gd.getChiamante ().name;
+				str += inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.getSocio ().name + ": " );
+				str += inMano ? ( "ha " ) : ( "hanno " );
+				str += "fatto " + gd.getChiamantePointCount () + " punti." + Environment.NewLine;
+				str += "Gli altri giocatori (" + gd.getAltri () [0].name + ", " + gd.getAltri () [1].name + " e " + gd.getAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.getAltriPointCount () + " punti.";
+				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 90f, new CCSize (resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
+
+				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 3 / 5);
+				resultBoard.AddChild (resultLbl);
 			}
 					
 			
@@ -1028,11 +1093,9 @@ namespace Core
 			if (played) {
 				played = false;
 				Card temp = Board.Instance.Me.InitialHand [droppedCards [Board.Instance.numberOfCardOnBoard].index];
-
-
-
 				touchAsta = true;
 				turnLight (1);
+				wait += 0.5f;
 				return Board.Instance.getCard (temp.seme, temp.number);
 			}
 

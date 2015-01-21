@@ -1,5 +1,6 @@
 ﻿using System;
 using CocosSharp;
+using ProgettoInfo3;
 
 
 namespace Core
@@ -26,6 +27,8 @@ namespace Core
 		public override void ApplicationWillEnterForeground (CCApplication application)
 		{
 		}
+
+
 	}
 
 }
