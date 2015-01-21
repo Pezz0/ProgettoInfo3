@@ -6,7 +6,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Player.
 	/// </summary>
-	public class Player:IBTSendable<Player>
+	public class Player
 	{
 		#region Basic informations
 
@@ -159,23 +159,6 @@ namespace ChiamataLibrary
 
 			return vestita;
 		}
-
-		#endregion
-
-		#region Bluetooth
-
-		public byte[] toByteArray ()
-		{
-			return BitConverter.GetBytes (order);
-		}
-
-		public Player recreateFromByteArray (byte [] bytes)
-		{
-			return Board.Instance.getPlayer ((int) bytes [0]);
-		}
-
-		public int ByteArrayLenght { get { return 1; } }
-
 
 		#endregion
 

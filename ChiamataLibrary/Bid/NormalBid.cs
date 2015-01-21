@@ -16,18 +16,6 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		#region Bluetooth
-
-		public override byte[] toByteArray ()
-		{
-			byte [] b = new Byte[2];
-			b [0] = BitConverter.GetBytes (point) [0];
-			b [1] = BitConverter.GetBytes ((int) number) [0];
-
-			return b;
-		}
-
-		#endregion
 
 		public override IBid changeBidder (Player newBidder)
 		{

@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>BTLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,14 +49,20 @@
     <Compile Include="Code\BTReceiver.cs" />
     <Compile Include="Code\IConnectable.cs" />
     <Compile Include="Code\IFindable.cs" />
-    <Compile Include="Code\BTPlayer.cs" />
-    <Compile Include="Code\BTManager.cs" />
-    <Compile Include="Code\Enumeration\EnContentType.cs" />
     <Compile Include="Code\Thread\BTWriteThread.cs" />
     <Compile Include="Code\Thread\BTReadThread.cs" />
-    <Compile Include="Code\Enumeration\EnMessageType.cs" />
     <Compile Include="Code\Enumeration\EnConnectionState.cs" />
     <Compile Include="Code\Enumeration\EnActivityResultCode.cs" />
+    <Compile Include="Code\Enumeration\EnLocalMessageType.cs" />
+    <Compile Include="Code\Enumeration\EnPackageType.cs" />
+    <Compile Include="Code\BTPlayerController.cs" />
+    <Compile Include="Code\Package\Package.cs" />
+    <Compile Include="Code\Package\PackageBid.cs" />
+    <Compile Include="Code\Package\PackageBoard.cs" />
+    <Compile Include="Code\Package\PackageCard.cs" />
+    <Compile Include="Code\Package\PackageName.cs" />
+    <Compile Include="Code\Package\PackageReady.cs" />
+    <Compile Include="Code\Package\PackageSeme.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -69,5 +75,6 @@
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Code\Thread\" />
+    <Folder Include="Code\Package\" />
   </ItemGroup>
 </Project>

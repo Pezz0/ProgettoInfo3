@@ -91,11 +91,11 @@ namespace ChiamataLibrary
 				//Board.Instance.Me.Controller = new ConsoleController ();
 
 				//setto le IA
-				ArtificialIntelligence AI0 = new ArtificialIntelligence (Board.Instance.getPlayer (0), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				ArtificialIntelligence AI1 = new ArtificialIntelligence (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				ArtificialIntelligence AI2 = new ArtificialIntelligence (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				ArtificialIntelligence AI3 = new ArtificialIntelligence (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				ArtificialIntelligence AI4 = new ArtificialIntelligence (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				AIPlayerController AI0 = new AIPlayerController (Board.Instance.getPlayer (0), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				AIPlayerController AI1 = new AIPlayerController (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				AIPlayerController AI2 = new AIPlayerController (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				AIPlayerController AI3 = new AIPlayerController (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				AIPlayerController AI4 = new AIPlayerController (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
 
 				//setto gli eventi
 				Board.Instance.eventSomeonePlaceABid += someonePlaceABid;

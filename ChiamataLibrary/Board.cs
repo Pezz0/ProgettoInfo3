@@ -8,7 +8,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Board.
 	/// </summary>
-	public class Board:IBTSendable<Board>
+	public class Board
 	{
 		/// <summary>
 		/// The numbe of player
@@ -141,14 +141,10 @@ namespace ChiamataLibrary
 				}
 		}
 
-		#region Bluetooth
 
 		private  List<Byte> _bytes = new List<byte> ();
 
-		public byte[] toByteArray ()
-		{
-			return _bytes.ToArray ();
-		}
+		public List<Byte> SendableBytes { get { return _bytes; } }
 
 		public Board recreateFromByteArray (byte [] bytes)
 		{
@@ -189,9 +185,6 @@ namespace ChiamataLibrary
 			return this;
 		}
 
-		public int ByteArrayLenght { get { return _bytes.Count; } }
-
-		#endregion
 
 		#endregion
 
@@ -295,26 +288,6 @@ namespace ChiamataLibrary
 			return _cardGrid [(int) seme, (int) number];
 		}
 
-		/// <summary>
-		/// Gets the card from a byte's array.
-		/// </summary>
-		/// <returns>The card.</returns>
-		/// <param name="bytes">The byte's array.</param>
-		public Card getCard (byte [] bytes)
-		{
-			return _cardGrid [0, 0].recreateFromByteArray (bytes);
-		}
-
-		/// <summary>
-		/// Gets the card.
-		/// </summary>
-		/// <returns>The card.</returns>
-		/// <param name="bytes">Bytes.</param>
-		public Card getCard (byte bytes)
-		{
-			return getCard (new Byte[1]{ bytes });
-		}
-
 		#endregion
 
 		#region Player management
@@ -337,26 +310,6 @@ namespace ChiamataLibrary
 		public Player getPlayer (int order)
 		{
 			return _players [order];
-		}
-
-		/// <summary>
-		/// Gets the player from a byte's array.
-		/// </summary>
-		/// <returns>The player.</returns>
-		/// <param name="bytes">The byte's array.</param>
-		public Player getPlayer (Byte [] bytes)
-		{
-			return _players [0].recreateFromByteArray (bytes);
-		}
-
-		/// <summary>
-		/// Gets the player.
-		/// </summary>
-		/// <returns>The player.</returns>
-		/// <param name="bytes">Bytes.</param>
-		public Player getPlayer (Byte  bytes)
-		{
-			return getPlayer (new Byte[1]{ bytes });
 		}
 
 		/// <summary>

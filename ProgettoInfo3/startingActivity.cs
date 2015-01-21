@@ -48,24 +48,13 @@ namespace ProgettoInfo3
 
 				if (BTPlayService.Instance.isSlave ()) {
 
-					byte [] board = data.GetByteArrayExtra ("Board");
-
-					List<byte> bs = new List<byte> ();
-
-					for (int i = 1; i < board.GetLength (0); i++)
-						bs.Add (board [i]);
-
-					Board.Instance.recreateFromByteArray (bs.ToArray ());
-
 					char [] Me = data.GetCharArrayExtra ("Name");
 
 					Board.Instance.initializeSlave (new string (Me));
-
-					BTManager.Instance.initialize ();
 				
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++)
 						if (Board.Instance.Me.order != i)
-							_PlayerControllerList.Add (new BTPlayer (Board.Instance.getPlayer (i)));
+							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
 
 				} else {
 					string [] name = data.GetStringArrayExtra ("Names");
@@ -73,17 +62,15 @@ namespace ProgettoInfo3
 					ChiamataLibrary.Board.Instance.initializeMaster (name, data.GetIntExtra ("Dealer", 0));
 
 					if (BTPlayService.Instance.getNumConnected () > 0)
-						BTPlayService.Instance.WriteToAllSlave (EnContentType.BOARD, Board.Instance.toByteArray ());
-
-					BTManager.Instance.initialize ();
+						BTPlayService.Instance.WriteToAllSlave (new PackageBoard ());
 
 					string [] type = data.GetStringArrayExtra ("types");
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (type [i - 1] == "AI")
-							_PlayerControllerList.Add (new ArtificialIntelligence (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
+							_PlayerControllerList.Add (new AIPlayerController (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
 						else if (type [i - 1] == "BlueTooth") {
-							_PlayerControllerList.Add (new BTPlayer (Board.Instance.getPlayer (i)));
+							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
 						
 						}
 					}

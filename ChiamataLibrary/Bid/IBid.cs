@@ -2,31 +2,12 @@
 
 namespace ChiamataLibrary
 {
-	public abstract class IBid: IComparable<IBid>,IEquatable<IBid>,IBTSendable<IBid>
+	public abstract class IBid: IComparable<IBid>,IEquatable<IBid>
 	{
 		/// <summary>
 		/// The bidder.
 		/// </summary>
 		public readonly Player bidder;
-
-		#region Bluetooth
-
-		public int ByteArrayLenght { get { return 3; } }
-
-		public abstract byte[] toByteArray ();
-
-		public IBid recreateFromByteArray (byte [] bytes)
-		{
-			if (bytes [0] == 255)
-				return new PassBid ();
-
-			if (bytes [1] == 255)
-				return new CarichiBid ((int) bytes [1]);
-
-			return new NormalBid ((EnNumbers) bytes [1], (int) bytes [0]);
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Engine.IBid"/> class.

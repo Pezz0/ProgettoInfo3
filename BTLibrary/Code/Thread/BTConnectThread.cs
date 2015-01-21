@@ -25,14 +25,12 @@ namespace BTLibrary
 		public BTConnectThread (BluetoothDevice device, UUID MY_UUID)
 		{
 			_device = device;
-			;
 			BluetoothSocket tmp = null;
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
 			try {
 				tmp = _device.CreateRfcommSocketToServiceRecord (MY_UUID);
-			} catch (Exception e) {
-				e.ToString ();
+			} catch {
 			}
 			_socket = tmp;
 			_connecter = new Thread (Connect);
@@ -50,17 +48,14 @@ namespace BTLibrary
 				// This is a blocking call and will only return on a
 				// successful connection or an exception
 				_socket.Connect ();
-			} catch (Exception e) {
-				e.ToString ();
-				BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_FAILED, -1, -1).SendToTarget ();
+			} catch {
+				BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_FAILED, -1, -1).SendToTarget ();
 				BTPlayService.Instance.ConnectionFailed ();
 
 				// Close the socket
 				try {
 					_socket.Close ();
-				} catch (Exception e2) {
-					//close fail
-					e2.ToString ();
+				} catch {
 				}
 				return;
 			}
@@ -76,10 +71,9 @@ namespace BTLibrary
 		{
 			try {
 				_socket.Close ();
-			} catch (Exception e) {
-				//close of connect socket failed
-				e.ToString ();
+			} catch {
 			}
+
 			_connecter.Abort ();
 		}
 	}

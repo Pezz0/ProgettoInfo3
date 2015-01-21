@@ -5,21 +5,21 @@ namespace MyRandom
 {
 	public class NormalRandom:IRandomGenerator
 	{
-		private RandomNumberGenerator _rnd;
+		private RNGCryptoServiceProvider _rnd;
 
 		public int getRandomNumber (int maxValue)
 		{
-			byte [] b = new byte[4];
+			byte [] b = new byte[2];
 			_rnd.GetBytes (b);
-			double d = (double) BitConverter.ToUInt32 (b, 0) / UInt32.MaxValue;
+			int d = ( (int) BitConverter.ToUInt16 (b, 0) ) % maxValue;
 
-			return (int) Math.Round (d * ( maxValue - 1 ));
+			return d;
 
 		}
 
 		public NormalRandom ()
 		{
-			_rnd = RandomNumberGenerator.Create ();
+			_rnd = new RNGCryptoServiceProvider ();
 		}
 	}
 }

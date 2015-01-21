@@ -14,7 +14,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Move.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Player.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\ArtificialIntelligence.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\IAIChooseCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\IAIChooseSeme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\BidChooser\AIBFixedJump.cs" />
@@ -36,12 +35,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bid\NormalBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\NotPassBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\PassBid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bluetooth\IBTSendable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnCard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnGameType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enumeration\EnRole.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\IRandomGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Random\NormalRandom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AI\AIPlayerController.cs" />
   </ItemGroup>
 </Project>

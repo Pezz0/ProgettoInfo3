@@ -39,9 +39,7 @@ namespace BTLibrary
 			// Get the BluetoothSocket input stream.
 			try {
 				tmpIn = _socket.InputStream;
-			} catch (Exception e) {
-				//temp socket not created
-				e.ToString ();
+			} catch {
 			}
 			_inStream = tmpIn;
 
@@ -69,12 +67,12 @@ namespace BTLibrary
 					bytes = _inStream.Read (buffer, 0, buffer.Length);
 
 					// Send the obtained bytes to the BTPlayservice
-					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
-					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
+					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
+					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
 
 				} catch (Exception e) {
 					e.ToString ();
-					BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+					BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
 					BTPlayService.Instance.ConnectionLost ();
 					break;
 				}
@@ -91,8 +89,6 @@ namespace BTLibrary
 			try {
 				_socket.Close ();
 			} catch (Exception e) {
-				//close of connect socket failed
-				e.ToString ();
 			}
 
 			_reader.Abort ();

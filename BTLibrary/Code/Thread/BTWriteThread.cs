@@ -53,10 +53,9 @@ namespace BTLibrary
 			// Get the BluetoothSocket input and output streams
 			try {
 				tmpOut = _Socket.OutputStream;
-			} catch (System.Exception e) {
-				//temp socket not created
-				e.ToString ();
+			} catch {
 			}
+
 			_OutStream = tmpOut;
 
 			//start the thread
@@ -76,17 +75,15 @@ namespace BTLibrary
 						try {
 							_OutStream.Write (msg, 0, msg.Length);
 							// Share the sent message back 
-							BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
+							//BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
 						
-						} catch (System.Exception e) {
-							//exception during write
-							e.ToString ();
-							BTPlayService.Instance.ObtainMessage ((int) EnMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
+						} catch {
+							BTPlayService.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
 							BTPlayService.Instance.ConnectionLost ();
 
 						}
 
-						if (msg [0] == (int) EnContentType.ACK || msg [0] == (int) EnContentType.NAME)
+						if (msg [0] == (int) EnPackageType.ACK/* || msg [0] == (int) EnPackageType.NAME*/)
 							_buffer.Remove (msg);
 					} else
 						Monitor.Wait (_buffer);
@@ -119,10 +116,9 @@ namespace BTLibrary
 		{
 			try {
 				_Socket.Close ();
-			} catch (System.Exception e) {
-				//close of connect socket failed
-				e.ToString ();
+			} catch {
 			}
+
 			_writer.Abort ();
 		}
 	}
@@ -145,7 +141,7 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Add (byte [] elem)
 		{
-			if (elem [0] == (int) EnContentType.ACK)
+			if (elem [0] == (int) EnPackageType.ACK)
 				_buffer.Insert (0, elem);
 			else
 				_buffer.Add (elem);

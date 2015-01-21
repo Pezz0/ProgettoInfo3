@@ -5,7 +5,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Card.
 	/// </summary>
-	public class Card:IComparable<Card>,IEquatable<Card>,IBTSendable<Card>
+	public class Card:IComparable<Card>,IEquatable<Card>
 	{
 
 		#region Card's information
@@ -195,25 +195,6 @@ namespace ChiamataLibrary
 		}
 
 
-
-		#endregion
-
-		#region Bluetooth
-
-		public int ByteArrayLenght { get { return 1; } }
-
-		public byte[] toByteArray ()
-		{
-			return BitConverter.GetBytes (( (int) seme ) * Enum.GetValues (typeof (EnNumbers)).GetLength (0) + ( (int) number ));
-		}
-
-		public Card recreateFromByteArray (byte [] bytes)
-		{
-			EnSemi s = (EnSemi) ( bytes [0] / Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
-			EnNumbers n = (EnNumbers) ( bytes [0] % Enum.GetValues (typeof (EnNumbers)).GetLength (0) );
-
-			return Board.Instance.getCard (s, n);
-		}
 
 		#endregion
 

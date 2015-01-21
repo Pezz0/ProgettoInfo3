@@ -135,7 +135,7 @@ namespace ProgettoInfo3
 			else
 				_pl0.Text = name;
 
-			BTPlayService.Instance.eventMsgInitilizationRecieved += handleMessage;
+			BTPlayService.Instance.eventMessageInitialization += handleMessage;
 		}
 
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
@@ -202,7 +202,7 @@ namespace ProgettoInfo3
 			if (_counter - BTPlayService.Instance.getNumConnected () == 0) {
 				SetTitle (Resource.String.starting);
 
-				BTPlayService.Instance.eventMsgInitilizationRecieved -= handleMessage;
+				BTPlayService.Instance.eventMessageInitialization -= handleMessage;
 				Intent returnIntent = new Intent ();
 
 				returnIntent.PutExtra ("Names", new string[5] {
@@ -261,7 +261,7 @@ namespace ProgettoInfo3
 		{
 
 			switch (msg.What) {
-				case (int) EnMessageType.MESSAGE_DEVICE_ADDR:
+				case (int) EnLocalMessageType.MESSAGE_DEVICE_ADDR:
 					if (msg.Arg1 == (int) EnConnectionState.STATE_CONNECTED_MASTER) {
 
 						_name = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
@@ -289,7 +289,7 @@ namespace ProgettoInfo3
 
 				break;
 
-				case (int) EnMessageType.MESSAGE_READ:
+				case (int) EnLocalMessageType.MESSAGE_READ:
 					string player = Encoding.ASCII.GetString ((byte []) msg.Obj);
 					if (player.Length > MainActivity.MAX_NAME_LENGHT)
 						player = player.Substring (0, MainActivity.MAX_NAME_LENGHT);
@@ -313,11 +313,11 @@ namespace ProgettoInfo3
 					
 				break;
 
-				case (int) EnMessageType.MESSAGE_DEVICE_READ:
+				case (int) EnLocalMessageType.MESSAGE_DEVICE_READ:
 					_address = (string) msg.Obj;
 				break;
 				
-				case (int) EnMessageType.MESSAGE_CONNECTION_LOST:
+				case (int) EnLocalMessageType.MESSAGE_CONNECTION_LOST:
 					_address = (string) msg.Obj;
 					BTPlayService.Instance.RemoveSlave (_address);
 					if (_address.CompareTo (_add1.Text) == 0) {
@@ -342,7 +342,7 @@ namespace ProgettoInfo3
 					Toast.MakeText (Application.Context, "Device connection lost", ToastLength.Short).Show ();
 				break;
 			}
-			if (msg.What != (int) EnMessageType.MESSAGE_STATE_CHANGE) {
+			if (msg.What != (int) EnLocalMessageType.MESSAGE_STATE_CHANGE) {
 				if (_counter - BTPlayService.Instance.getNumConnected () > 0)
 					BTPlayService.Instance.ConnectAsMaster ();
 				else

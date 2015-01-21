@@ -115,7 +115,7 @@ namespace ProgettoInfo3
 					_pairedArrayList.Add (BTPlayService.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 			}
 
-			BTPlayService.Instance.eventMsgInitilizationRecieved += handleMessage;
+			BTPlayService.Instance.eventMessageInitialization += handleMessage;
 		}
 
 		public override void OnBackPressed ()
@@ -151,7 +151,7 @@ namespace ProgettoInfo3
 					setName.SetTitle ("Name Too Long");
 					setName.SetMessage ("Your name is too long\nDo you want to be registered on master with this name: " + sub + "?");
 					setName.SetPositiveButton ("YES", delegate {
-						BTPlayService.Instance.WriteToMaster (EnContentType.NAME, Encoding.ASCII.GetBytes (sub));
+						BTPlayService.Instance.WriteToMaster (new PackageName (sub));
 
 					});
 					setName.SetNegativeButton ("NO", delegate {
@@ -160,7 +160,7 @@ namespace ProgettoInfo3
 					setName.Show ();
 
 				} else
-					BTPlayService.Instance.WriteToMaster (EnContentType.NAME, Encoding.ASCII.GetBytes (_name.Text));
+					BTPlayService.Instance.WriteToMaster (new PackageName (_name.Text));
 
 			} else
 				Toast.MakeText (this, "Insert a valid name", ToastLength.Short).Show ();
@@ -254,14 +254,14 @@ namespace ProgettoInfo3
 		{
 			switch (msg.What) {
 
-				case (int)EnMessageType.NEW_DEVICE:
+				case (int)EnLocalMessageType.NEW_DEVICE:
 					string address = (string) msg.Obj;
 					_newArrayList.Add (BTPlayService.Instance.getRemoteDevice (address).Name + "\n" + address);
 					_newdev.Enabled = true;
 
 				break;
 
-				case (int) EnMessageType.END_SCANNING:
+				case (int) EnLocalMessageType.END_SCANNING:
 					if (_normalEnd) {
 						AlertDialog.Builder connect = new AlertDialog.Builder (this);
 						connect.SetTitle ("End Scanning");
@@ -275,26 +275,30 @@ namespace ProgettoInfo3
 					_pb.Visibility = ViewStates.Invisible;
 					this.SetTitle (Resource.String.select);
 				break;
-				case (int)EnMessageType.NONE_FOUND:
+				case (int)EnLocalMessageType.NONE_FOUND:
 					if (_normalEnd) {
 						_newArrayList.Add ("No Device Found");
 						_newdev.Enabled = false;
 					}
 				break;
 				
-				case (int)EnMessageType.MESSAGE_READ:
-					this.SetTitle (Resource.String.starting);
-					_send.Enabled = false;
-					_name.Enabled = false;
-					Intent returnIntent = new Intent ();
-					returnIntent.PutExtra ("Board", (byte []) msg.Obj);
-					returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
-					this.SetResult (Result.Ok, returnIntent);
-					BTPlayService.Instance.eventMsgInitilizationRecieved -= handleMessage;
-					Finish ();
+				case (int)EnLocalMessageType.MESSAGE_READ:
+
+					if (Package.createPackage ((byte []) ( msg.Obj )) == EnPackageType.BOARD) {
+						this.SetTitle (Resource.String.starting);
+						_send.Enabled = false;
+						_name.Enabled = false;
+
+						Intent returnIntent = new Intent ();
+						returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
+						this.SetResult (Result.Ok, returnIntent);
+						BTPlayService.Instance.eventMessageInitialization -= handleMessage;
+						Finish ();
+					}
+
 				break;
 
-				case (int) EnMessageType.MESSAGE_CONNECTION_LOST:
+				case (int) EnLocalMessageType.MESSAGE_CONNECTION_LOST:
 					_send.Enabled = false;
 					_name.Enabled = false;
 					_paired.Enabled = true;
@@ -304,12 +308,12 @@ namespace ProgettoInfo3
 					this.SetTitle (Resource.String.select);
 					Toast.MakeText (Application.Context, "Device connection lost", ToastLength.Short).Show ();
 				break;
-				case (int) EnMessageType.MESSAGE_CONNECTION_FAILED:
+				case (int) EnLocalMessageType.MESSAGE_CONNECTION_FAILED:
 					Toast.MakeText (Application.Context, "I don't find any BlueTooth game opened on this device", ToastLength.Short).Show ();
 					_pb.Visibility = ViewStates.Invisible;
 					this.SetTitle (Resource.String.select);
 				break;
-				case (int) EnMessageType.MESSAGE_DEVICE_ADDR:
+				case (int) EnLocalMessageType.MESSAGE_DEVICE_ADDR:
 					if (msg.Arg1 == (int) EnConnectionState.STATE_CONNECTED_SLAVE) {
 						_conn = BTPlayService.Instance.getRemoteDevice ((string) msg.Obj).Name;
 						_pb.Visibility = ViewStates.Invisible;

@@ -24,8 +24,7 @@ namespace BTLibrary
 
 			try {
 				tmp = BTPlayService.Instance.getBTAdapter ().ListenUsingRfcommWithServiceRecord (NAME, MY_UUID);
-			} catch (Exception e) {
-				e.ToString ();
+			} catch {
 			}
 
 			//start the thread
@@ -57,9 +56,7 @@ namespace BTLibrary
 					else {
 						try {
 							socket.Close ();
-						} catch (Exception e) {
-							//unable to colse unwanted socket
-							e.ToString ();
+						} catch {
 						}
 					}
 				}
@@ -73,8 +70,7 @@ namespace BTLibrary
 		{
 			try {
 				_serverSocket.Close ();
-			} catch (Exception e) {
-				e.ToString ();
+			} catch {
 			}
 		}
 	}

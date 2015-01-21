@@ -5,7 +5,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Move.
 	/// </summary>
-	public class Move:IBTSendable<Move>
+	public class Move
 	{
 		/// <summary>
 		/// The played card.
@@ -16,26 +16,6 @@ namespace ChiamataLibrary
 		/// The player who play a card.
 		/// </summary>
 		public readonly Player player;
-
-		#region Bluetooth
-
-		public int ByteArrayLenght { get { return 2; } }
-
-		public byte[] toByteArray ()
-		{
-			Byte [] b = new Byte[2];
-			b [0] = player.toByteArray () [0];
-			b [1] = card.toByteArray () [0];
-
-			return b;
-		}
-
-		public Move recreateFromByteArray (byte [] bytes)
-		{
-			return new Move (Board.Instance.getCard (bytes [1]), Board.Instance.getPlayer (bytes [0]));
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.Move"/> class.

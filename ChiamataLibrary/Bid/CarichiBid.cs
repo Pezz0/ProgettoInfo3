@@ -17,19 +17,6 @@ namespace ChiamataLibrary
 			return new CarichiBid (newBidder, this.point);
 		}
 
-		#region Bluetooth
-
-		public override byte[] toByteArray ()
-		{
-			byte [] b = new Byte[2];
-			b [0] = BitConverter.GetBytes (point) [0];
-			b [1] = 255;	//default value
-
-			return b;
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.CarichiBid"/> class.
 		/// </summary>

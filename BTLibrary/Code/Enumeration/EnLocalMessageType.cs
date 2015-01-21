@@ -2,7 +2,7 @@
 
 namespace BTLibrary
 {
-	public enum EnMessageType
+	public enum EnLocalMessageType
 	{
 		MESSAGE_STATE_CHANGE,
 		MESSAGE_READ,

@@ -122,7 +122,7 @@ namespace BTLibrary
 		public void RegisterReceiver ()
 		{
 			// Register for broadcasts when a device is discovered
-			_receiver = new BTReceiver (this);
+			_receiver = new BTReceiver ();
 			var filter = new IntentFilter (BluetoothDevice.ActionFound);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 
@@ -300,7 +300,7 @@ namespace BTLibrary
 
 			//sets the state on STATE_LISTEN and send message to indicate this change
 			SetState (EnConnectionState.STATE_LISTEN);
-			this.ObtainMessage ((int) EnMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_LISTEN, -1).SendToTarget ();
+			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_LISTEN, -1).SendToTarget ();
 		}
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace BTLibrary
 
 			//sets the state to CONNECTING and send message to indicate this change
 			SetState (EnConnectionState.STATE_CONNECTING);
-			this.ObtainMessage ((int) EnMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_CONNECTING, -1).SendToTarget ();
+			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_CONNECTING, -1).SendToTarget ();
 
 			// Start the thread to connect with the given device
 			_connectThread = new BTConnectThread (device, MY_UUID);
@@ -339,7 +339,7 @@ namespace BTLibrary
 			_writeToMasterThread = new BTWriteThread (socket);
 
 			//sends a message to the indicate the slave connection to a device
-			this.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_SLAVE, -1, device.Address).SendToTarget ();
+			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_SLAVE, -1, device.Address).SendToTarget ();
 
 		}
 
@@ -373,7 +373,7 @@ namespace BTLibrary
 			_writeToSlaveThread.Add (new BTWriteThread (socket));
 
 			//sends a message to the indicate the master connection to a device
-			this.ObtainMessage ((int) EnMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_MASTER, -1, device.Address).SendToTarget ();
+			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_MASTER, -1, device.Address).SendToTarget ();
 
 			//stop listen thread 
 			StopListen ();
@@ -481,148 +481,6 @@ namespace BTLibrary
 
 		#endregion
 
-		#region Communication Management
-
-		/// <summary>
-		/// Creates the message.
-		/// </summary>
-		/// <returns>The message.</returns>
-		/// <param name="type">Type.</param>
-		/// <param name="msg">Message.</param>
-		private byte[] createMsg (EnContentType type, byte [] msg)
-		{
-			// Normal messages:
-			//
-			//  |  type  |       msg       |
-			//    1 byte   1023 bytes max
-			//
-			// ACK messages:
-			//
-			//  |  type  |  Local Address  |       msg        |
-			//    1 byte       17 bytes       1006 bytes max
-			List<byte> bs = new List<byte> ();
-
-			bs.Add ((byte) type);
-
-			if (type == EnContentType.ACK) {
-				byte [] bAddress = Encoding.ASCII.GetBytes (GetLocalAddress ());
-				bs.AddRange (bAddress);
-			}
-				
-			bs.AddRange (msg);
-			return bs.ToArray ();
-		}
-
-		/// <summary>
-		/// Creates the message in playtime.
-		/// </summary>
-		/// <returns>The message.</returns>
-		/// <param name="sender">Sender.</param>
-		/// <param name="msg">Message.</param>
-		private byte[] createMsgPlaytime (Player sender, byte [] msg)
-		{
-			//A Playtime message is composed of the player who makes the bid or move and the message.
-			// after this phase it will be inserted in a normal message:
-			//
-			// Normal messages:
-			//
-			//  |  type  | sender |       msg       |
-			//    1 byte   1 byte    1022 bytes max
-			//
-			// ACK messages:
-			//
-			//  |  type  |  Local Address  | sender |       msg        |
-			//    1 byte      17 bytes       1 byte    1005 bytes max
-
-			List<byte> bs = new List<byte> ();
-			bs.Add (sender.toByteArray () [0]);
-			bs.AddRange (msg);
-			return bs.ToArray ();
-		}
-
-		/// <summary>
-		/// Writes to master a message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="msg">Message.</param>
-		public void WriteToMaster (EnContentType type, byte [] msg)
-		{
-			if (_writeToMasterThread == null)
-				return;
-			
-			_writeToMasterThread.Add (createMsg (type, msg));
-
-		}
-
-		/// <summary>
-		/// Writes to master a playtime message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="sender">Sender.</param>
-		/// <param name="msg">Message.</param>
-		public void WriteToMaster (EnContentType type, Player sender, byte [] msg)
-		{
-			WriteToMaster (type, createMsgPlaytime (sender, msg));
-		}
-
-		/// <summary>
-		/// Writes to a single slave a message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="msg">Message.</param>
-		/// <param name="slave">Slave.</param>
-		private void WriteToSlave (EnContentType type, byte [] msg, int slave)
-		{
-			if (_writeToSlaveThread [slave] == null) {
-				Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
-				return;
-			}
-			_writeToSlaveThread [slave].Add (createMsg (type, msg));
-
-		}
-
-		/// <summary>
-		/// Writes to a single slave a playtime message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="sender">Sender.</param>
-		/// <param name="msg">Message.</param>
-		/// <param name="slave">Slave.</param>
-		private void WriteToSlave (EnContentType type, Player sender, byte [] msg, int slave)
-		{
-			WriteToSlave (type, createMsgPlaytime (sender, msg), slave);
-		}
-
-		/// <summary>
-		/// Writes to all slave a message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="msg">Message.</param>
-		public void WriteToAllSlave (EnContentType type, byte [] msg)
-		{
-			byte [] message = createMsg (type, msg);
-			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
-
-				if (_writeToSlaveThread [i] != null) {
-					_writeToSlaveThread [i].Add (message);
-			
-				}
-			}
-		}
-
-		/// <summary>
-		/// Writes to all slave a playtime message.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="sender">Sender.</param>
-		/// <param name="msg">Message.</param>
-		public void WriteToAllSlave (EnContentType type, Player sender, byte [] msg)
-		{
-			WriteToAllSlave (type, createMsgPlaytime (sender, msg));
-		}
-
-		#endregion
-
 		#region Application Management
 
 		/// <summary>
@@ -672,44 +530,40 @@ namespace BTLibrary
 			_readFromSlaveThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
 			_writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
+
+			initializeComunication ();
 		}
 
 		#endregion
 
 		#region Handler
 
+		public delegate void eventHandlerMessageInitialization (Message msg);
+
+		public event eventHandlerMessageInitialization eventMessageInitialization;
+
 		/// <summary>
 		/// delegate to handle a playtime message.
 		/// </summary>
-		public delegate void eventHandlerMsgPlaytimeRecieved (EnContentType type, Player sender, List<byte> msg);
+		public delegate void eventHandlerPackageRecieved (Package pkg);
 
 		/// <summary>
 		/// Occurs when a playtime message is received.
 		/// </summary>
-		public event eventHandlerMsgPlaytimeRecieved eventMsgPlaytimeReceived;
-
-		/// <summary>
-		/// delegate to handle an initialization message. 
-		/// </summary>
-		public delegate void eventHandlerMsgInitilizationRecieved (Message msg);
-
-		/// <summary>
-		/// Occurs when an initilization message is recieved.
-		/// </summary>
-		public event eventHandlerMsgInitilizationRecieved eventMsgInitilizationRecieved;
+		public event eventHandlerPackageRecieved eventPackageReceived;
 
 		/// <summary>
 		/// Handle the messages.
 		/// </summary>
 		public override void HandleMessage (Message msg)
 		{
-			if (msg.What == (int) EnMessageType.MESSAGE_READ) {
+			if (msg.What == (int) EnLocalMessageType.MESSAGE_READ) {	//package message(remote)
 				byte [] data = (byte []) msg.Obj;
 
 				//Get the type of the message from the firs byte of the message
-				EnContentType type = (EnContentType) data [0];
+				EnPackageType type = (EnPackageType) data [0];
 
-				if (type == EnContentType.ACK) {
+				if (type == EnPackageType.ACK) {
 				
 					char [] adr = new char[17];
 
@@ -718,7 +572,6 @@ namespace BTLibrary
 						adr [i - 1] = (char) data [i];
 
 					string address = new string (adr);
-
 
 					List<byte> bs = new List<byte> ();
 					//the other bytes indicate the message (normal or playtime)
@@ -735,49 +588,116 @@ namespace BTLibrary
 								thred.Remove (bs.ToArray ());
 						});
 					}
+						
 
-				
-				} else if (type == EnContentType.NAME) {
-					//the name does not expect an ACK, so remove the type from the message and send it to the handler	
-					List<byte> bs = new List<byte> ();
-					for (int i = 1; data [i] != '\0'; i++)
-						bs.Add (data [i]);
+				} else if (type != EnPackageType.NONE) {
 
-					msg.Obj = bs.ToArray ();
-					if (eventMsgInitilizationRecieved != null)
-						eventMsgInitilizationRecieved (msg);
-
-				} else if (type != EnContentType.NONE) {
-
-					// all other messages (Board,bid,move,seme,ready) needs an ACK 
-					if (eventMsgInitilizationRecieved != null)
-						eventMsgInitilizationRecieved (msg);	
-
-					if (type == EnContentType.READY || type == EnContentType.BID || type == EnContentType.SEME || type == EnContentType.MOVE) {
-						//ready, bid, seme, move are playtime events, so we need type, sender and message
-						Player sender = Board.Instance.getPlayer (data [1]);
-
-						List<byte> bs = new List<byte> ();
-						for (int i = 2; i < data.GetLength (0); i++)
-							bs.Add (data [i]);
-
-						if (eventMsgPlaytimeReceived != null)
-							eventMsgPlaytimeReceived (type, sender, bs);
-					}	
+					Package pkg = Package.createPackage (data);	
 
 					//ACK consists of the type ACK followed by the message received 
 					if (BTPlayService.Instance.isSlave ())
-						BTPlayService.Instance.WriteToMaster (EnContentType.ACK, data);
+						_writeToMasterThread.Add (pkg.getAckMessage ());
 					else
-						BTPlayService.Instance.WriteToAllSlave (EnContentType.ACK, data);
+						for (int i = 0; i < _writeToSlaveThread.Count; i++)
+							if (_writeToSlaveThread [i] != null)
+								_writeToSlaveThread [i].Add (pkg.getAckMessage ());
+						
 				}
 				// all other messages that are not message_read (STATE_CHANGE, DEVICE_ADDRESS ecc) are initializing events
-			} else if (eventMsgInitilizationRecieved != null)
-				eventMsgInitilizationRecieved (msg);
+			} else if (eventMessageInitialization != null)	//local message
+				eventMessageInitialization (msg);
 
 		}
 
 		#endregion
 
+		#region Communication Management
+
+		public void WriteToMaster (Package pkg)
+		{
+			if (_writeToMasterThread == null)
+				return;
+
+			_writeToMasterThread.Add (pkg.getMessage ());
+
+		}
+
+		private void WriteToSlave (Package pkg, int slave)
+		{
+			if (_writeToSlaveThread [slave] == null) {
+				Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
+				return;
+			}
+			_writeToSlaveThread [slave].Add (pkg.getMessage ());
+
+		}
+
+
+		public void WriteToAllSlave (Package pkg)
+		{
+			byte [] message = pkg.getMessage ();
+			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
+				if (_writeToSlaveThread [i] != null)
+					_writeToSlaveThread [i].Add (message);
+			}
+		}
+
+		private void initializeComunication ()
+		{
+			Board.Instance.eventImReady += imReady;
+			Board.Instance.eventIPlaceABid += bidPlaced;
+			if (!BTPlayService.Instance.isSlave ())
+				Board.Instance.eventSomeonePlaceABid += bidPlaced;
+			Board.Instance.eventPlaytimeStart += semeChosen;
+			Board.Instance.eventIPlayACard += cardPlayed;
+			if (!BTPlayService.Instance.isSlave ())
+				Board.Instance.eventSomeonePlayACard += cardPlayed;
+		}
+
+		//When the Board event eventImReady happens, write to master or to all slave the message
+		private void imReady ()
+		{
+			//the message is only one byte because the ready event doesn't need any information
+			if (BTPlayService.Instance.isSlave ())
+				WriteToMaster (new PackageReady ());
+			else
+				WriteToAllSlave (new PackageReady ());
+
+		}
+
+		//When the Board event eventIPlaceABid or eventSomeonePlaceABid happens, write to master or to all slave the message
+		private void bidPlaced (IBid bid)
+		{
+			//the message is compose of the nuber of bid to control that happens in the correct board time
+			// then is added the information about the bid type 
+			if (BTPlayService.Instance.isSlave ())
+				BTPlayService.Instance.WriteToMaster (new PackageBid (bid));
+			else
+				BTPlayService.Instance.WriteToAllSlave (new PackageBid (bid));
+		}
+
+		//When the Board event eventPlaytimeStart happens, write to master or to all slave the message
+		private void semeChosen ()
+		{
+			//if this is the slave and is the caller send to master one byte that indicate the seme chosen 
+			if (BTPlayService.Instance.isSlave ()) {
+				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
+					BTPlayService.Instance.WriteToMaster (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+				//if this is the master send to all slave one byte that indicate the seme chosen
+			} else
+				BTPlayService.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+		}
+
+		//When the Board event eventIPlayACard or eventSomeonePlayACard happens, write to master or to all slave the message
+		private void cardPlayed (Move move)
+		{
+			//the message is composed of the time where the card is played and then the information about the card
+			if (BTPlayService.Instance.isSlave ())
+				BTPlayService.Instance.WriteToMaster (new PackageCard (move));
+			else
+				BTPlayService.Instance.WriteToAllSlave (new PackageCard (move));
+		}
+
+		#endregion
 	}
 }

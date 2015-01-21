@@ -65,7 +65,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Artificial intelligence.
 	/// </summary>
-	public class ArtificialIntelligence:IPlayerController
+	public class AIPlayerController:IPlayerController
 	{
 		/// <summary>
 		/// The bid chooser.
@@ -96,7 +96,7 @@ namespace ChiamataLibrary
 		/// <param name="bid">Bid.</param>
 		/// <param name="seme">Seme.</param>
 		/// <param name="card">Card.</param>
-		public ArtificialIntelligence (Player me, IAIBidChooser bid, IAISemeChooser seme, IAICardChooser card)
+		public AIPlayerController (Player me, IAIBidChooser bid, IAISemeChooser seme, IAICardChooser card)
 		{
 			this.me = me;
 			this._cardChooser = card;

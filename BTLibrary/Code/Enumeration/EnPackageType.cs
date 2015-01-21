@@ -2,7 +2,7 @@
 
 namespace BTLibrary
 {
-	public enum EnContentType
+	public enum EnPackageType
 	{
 		NONE,
 
@@ -20,4 +20,3 @@ namespace BTLibrary
 		ACK,
 	}
 }
-

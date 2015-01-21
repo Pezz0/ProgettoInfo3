@@ -7,18 +7,6 @@ namespace ChiamataLibrary
 	/// </summary>
 	public class PassBid:IBid
 	{
-		#region Bluetooth
-
-		public override byte[] toByteArray ()
-		{
-			byte [] b = new Byte[2];
-			b [0] = 255;	//default value
-			b [1] = 255;	//default value
-
-			return b;
-		}
-
-		#endregion
 
 		public override IBid changeBidder (Player newBidder)
 		{
