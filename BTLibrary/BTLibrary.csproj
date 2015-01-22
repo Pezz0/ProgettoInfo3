@@ -63,6 +63,7 @@
     <Compile Include="Code\Package\PackageReady.cs" />
     <Compile Include="Code\Package\PackageSeme.cs" />
     <Compile Include="Code\BTManager.cs" />
+    <Compile Include="Code\Package\PackageTerminate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

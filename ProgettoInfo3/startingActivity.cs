@@ -91,7 +91,8 @@ namespace MenuLayout
 					}
 				}
 
-				new Thread (finisher).Start ();
+				if (!BTManager.Instance.isSlave ())
+					new Thread (finisher).Start ();
 
 			}
 		}
@@ -110,6 +111,8 @@ namespace MenuLayout
 				case 0:
 					Board.Instance.reset ();
 					var serverIntent = new Intent (this, typeof (MainActivity));
+					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
+
 					StartActivityForResult (serverIntent, 2);
 				break;
 				case 1:
@@ -123,14 +126,31 @@ namespace MenuLayout
 
 					Board.Instance.reset ();
 
+					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
 					StartActivityForResult (inte, 2);
 
 				break;
 			}
+
 		
 		}
 
 
+		private void terminateHandle (Package pkg)
+		{
+			if (pkg == EnPackageType.TERMINATE) {
+				PackageTerminate pkgt = (PackageTerminate) pkg;
+				if (pkgt.terminateSignal == 0) {
+					Board.Instance.reset ();
+					var serverIntent = new Intent (this, typeof (MainActivity));
+					StartActivityForResult (serverIntent, 2);
+				} else if (pkgt.terminateSignal == 1) {
+					Board.Instance.reset ();
+					var serverIntent = new Intent (this, typeof (JoinTableActivity));
+					StartActivityForResult (serverIntent, 2);
+				}
+			}
+		}
 
 	}
 

@@ -16,6 +16,9 @@ namespace BTLibrary
 		SEME,
 		MOVE,
 
+		//terminate
+		TERMINATE,
+
 		//ack
 		ACK,
 	}

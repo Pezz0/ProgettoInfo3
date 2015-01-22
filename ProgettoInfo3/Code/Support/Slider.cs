@@ -30,10 +30,13 @@ namespace Core
 		private bool _visible;
 
 		public bool visible {
+			get{ return _visible; }
 			set {
+				_visible = value;
 				if (value) {
 					spriteBar.Visible = true;
 					spritePoint.Visible = true;
+
 				} else {
 					spriteBar.Visible = false;
 					spritePoint.Visible = false;
