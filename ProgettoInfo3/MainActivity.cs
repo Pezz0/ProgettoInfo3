@@ -91,6 +91,7 @@ namespace ProgettoInfo3
 
 		void settingClick (object sender, EventArgs e)
 		{
+
 			_settings.Enabled = false;
 
 		}

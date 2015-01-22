@@ -5,7 +5,8 @@ using ChiamataLibrary;
 using Android.App;
 using Android.Content;
 using ProgettoInfo3;
-using System.Security.Cryptography;
+using Java.IO;
+using System.IO;
 
 
 
@@ -807,7 +808,7 @@ namespace Core
 
 			float scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
 
-			//FIXME : controllare le posizioni dei bottoni nel caso si cambiassero le textures
+
 			for (int i = 4; i > -1; i--) {
 				buttons [i] = new Button (mainLayer, touch, actButtons [i], pathButtons [i], pathButtonsPressed [i], new CCPoint (3 * vertSpace + 3 * 58 * scale, winSize.Height / 4 + ( textWidth * scale + orzSpace ) * ( ( i - 4 ) * -1 )), winSize, -90, scale);
 			}
@@ -905,8 +906,16 @@ namespace Core
 				str += "Gli altri giocatori (" + gd.getAltri () [0].name + ", " + gd.getAltri () [1].name + " e " + gd.getAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.getAltriPointCount () + " punti.";
 				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 90f, new CCSize (resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
 
-				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 3 / 5);
+				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 47 / 80);
 				resultBoard.AddChild (resultLbl);
+
+//				String x = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+//				x = Path.Combine (x, "prova1.xml");
+//
+//				Archive.Instance.lastGame ().writeOnXML (x);
+//				Archive.Instance.AddFromXML (x);
+
+
 			}
 					
 			
