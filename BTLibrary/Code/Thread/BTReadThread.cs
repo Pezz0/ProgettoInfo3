@@ -70,8 +70,7 @@ namespace BTLibrary
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_READ, _connected).SendToTarget ();
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_READ, bytes, -1, buffer).SendToTarget ();
 
-				} catch (Exception e) {
-					e.ToString ();
+				} catch {
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
 					BTManager.Instance.ConnectionLost ();
 					break;
@@ -88,7 +87,7 @@ namespace BTLibrary
 		{
 			try {
 				_socket.Close ();
-			} catch (Exception e) {
+			} catch {
 			}
 
 			_reader.Abort ();

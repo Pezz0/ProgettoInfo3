@@ -564,28 +564,15 @@ namespace BTLibrary
 				EnPackageType type = (EnPackageType) data [0];
 
 				if (type == EnPackageType.ACK) {
-				
-					char [] adr = new char[17];
-
-					//the next 17 bytes indicete the address of the device who sends message
-					for (int i = 1; i < 18; i++)
-						adr [i - 1] = (char) data [i];
-
-					string address = new string (adr);
-
-					List<byte> bs = new List<byte> ();
-					//the other bytes indicate the message (normal or playtime)
-					for (int i = 18; i < data.GetLength (0); i++)
-						bs.Add (data [i]);
 						
 					if (isSlave ()) {
 						//if i am a slave i remove the message from the list of the message to send
-						_writeToMasterThread.Remove (bs.ToArray ());
+						_writeToMasterThread.Remove (Package.getMessageFromHack (data));
 					} else {
 						//otherwise i am the master so i remove the message only from the list of the sender
 						_writeToSlaveThread.ForEach (delegate(BTWriteThread thred) {
-							if (thred.Connected == address)
-								thred.Remove (bs.ToArray ());
+							if (thred.Connected == Package.getAddressFromHack (data))
+								thred.Remove (Package.getMessageFromHack (data));
 						});
 					}
 						

@@ -47,12 +47,8 @@ namespace ProgettoInfo3
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
 				if (BTManager.Instance.isSlave ()) {
-
-					char [] Me = data.GetCharArrayExtra ("Name");
-
-					Board.Instance.recreateFromByteArray (data.GetByteArrayExtra ("Board"));
-
-					Board.Instance.initializeSlave (new string (Me));
+				
+					Board.Instance.initializeSlave (data.GetByteArrayExtra ("Board"), new string (data.GetCharArrayExtra ("Name")));
 				
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++)
 						if (Board.Instance.Me.order != i)
@@ -85,10 +81,6 @@ namespace ProgettoInfo3
 
 
 				application.StartGame ();
-
-
-
-
 
 			}
 		}

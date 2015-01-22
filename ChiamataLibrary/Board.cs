@@ -67,6 +67,8 @@ namespace ChiamataLibrary
 			eventPlaytimeStart = null;
 			eventPlaytimeEnd = null;
 
+			_listBid.Clear ();
+
 			_t = -4;
 		}
 
@@ -89,7 +91,7 @@ namespace ChiamataLibrary
 
 			_me = 0;	
 
-			_bytes = new List<byte> ();
+			_bytes.Clear ();
 
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
 				_players [i] = new Player (playerName [i], i);
@@ -129,36 +131,22 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Initializes the board in a slave device.
+		/// Initializes the board on a slave device
 		/// </summary>
-		/// <param name="me">Me.</param>
-		public void initializeSlave (string me)
+		/// <param name="bytes">The sequence of bytes.</param>
+		/// <param name="me">The name of the player on this device.</param>
+		public void initializeSlave (byte [] bytes, string me)
 		{
-			foreach (Player p in _players)
-				if (p.name == me) {
-					_me = p.order;
-					return;
-				}
-		}
-
-
-		private  List<Byte> _bytes = new List<byte> ();
-
-		public List<Byte> SendableBytes { get { return _bytes; } }
-
-		public Board recreateFromByteArray (byte [] bytes)
-		{
-
 			reset ();
-			if (!isCreationPhase)
-				throw new WrongPhaseException ("The board must be initialized during the creation phase", "Creation phase");
 
-			_bytes = new List<Byte> (bytes);
+			_bytes.Clear ();
+			_bytes.AddRange (bytes);
 
 			int index = 0;
 
+			//Player initialization
 			for (int i = 0; i < PLAYER_NUMBER; i++) {
-			
+
 				int lenght = BitConverter.ToInt16 (new byte[2]{ _bytes [index], 0 }, 0);
 				index = index + 1;
 
@@ -171,10 +159,18 @@ namespace ChiamataLibrary
 				_players [i] = new Player (Encoding.ASCII.GetString (bs), i);
 			}
 
+
+			foreach (Player p in _players)
+				if (p.name == me) {
+					_me = p.order;
+					return;
+				}
+
 			_lastWinner = ( _bytes [index] + 1 ) % PLAYER_NUMBER;	//the last winner is the player that have to play first in the next turn
 			index++;
 
 
+			//card initialization
 			for (int i = 0; i < nSemi; i++)		//cycle all the possibible card
 				for (int j = 0; j < nNumber; j++) {
 
@@ -186,10 +182,13 @@ namespace ChiamataLibrary
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					index++;
 				}
-					
-			return this;
+
 		}
 
+
+		private readonly List<Byte> _bytes = new List<byte> ();
+
+		public List<Byte> SendableBytes { get { return _bytes; } }
 
 		#endregion
 
@@ -495,20 +494,9 @@ namespace ChiamataLibrary
 		#region Auction management
 
 		/// <summary>
-		/// The default bid.
-		/// </summary>
-		private IBid _defBid = new PassBid ();
-
-		/// <summary>
-		/// Gets the default bid.
-		/// </summary>
-		/// <value>The default bid.</value>
-		public IBid DefBid { get { return _defBid; } }
-
-		/// <summary>
 		/// The list bid.
 		/// </summary>
-		private List<IBid> _listBid;
+		private readonly List<IBid> _listBid = new List<IBid> ();
 
 		/// <summary>
 		/// Gets the number of bid.
@@ -546,17 +534,6 @@ namespace ChiamataLibrary
 		#region Playtime management
 
 		/// <summary>
-		/// The default move.
-		/// </summary>
-		private Move _defMove = new Move ();
-
-		/// <summary>
-		/// Gets the default move.
-		/// </summary>
-		/// <value>The default move.</value>
-		public Move DefMove { get { return _defMove; } }
-
-		/// <summary>
 		/// The last winner.
 		/// </summary>
 		private int _lastWinner;
@@ -564,7 +541,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The card on the board.
 		/// </summary>
-		private List<Card> _cardOnBoard = new List<Card> ();
+		private readonly List<Card> _cardOnBoard = new List<Card> ();
 
 		/// <summary>
 		/// Gets the last winner.
@@ -597,9 +574,7 @@ namespace ChiamataLibrary
 		public int ValueOnBoard {
 			get {
 				int v = 0;
-				_cardOnBoard.ForEach (delegate(Card c) {
-					v = v + c.getPoint ();
-				});
+				_cardOnBoard.ForEach (c => v = v + c.getPoint ());
 				return v;
 			}
 		}
@@ -684,7 +659,7 @@ namespace ChiamataLibrary
 			_t = -3;
 
 				
-			_listBid = new List<IBid> ();
+			_listBid.Clear ();
 			_activeAuctionPlayer = _lastWinner;	//dealer+1
 			_currentWinningBid = null;
 		}
@@ -818,7 +793,7 @@ namespace ChiamataLibrary
 					if (eventPickTheBoard != null)
 						eventPickTheBoard (_players [_lastWinner], _cardOnBoard);
 
-					_cardOnBoard = new List<Card> ();
+					_cardOnBoard.Clear ();
 
 					if (isLastTurn) {
 						if (eventPlaytimeEnd != null)

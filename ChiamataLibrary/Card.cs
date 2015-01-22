@@ -224,7 +224,7 @@ namespace ChiamataLibrary
 		}
 
 		public override int GetHashCode ()
-		{//TODO: but is not necessary
+		{//FIXME: To implement but never used
 			return base.GetHashCode ();
 		}
 

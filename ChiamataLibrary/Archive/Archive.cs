@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ChiamataLibrary
 {
@@ -31,14 +32,40 @@ namespace ChiamataLibrary
 
 		public void forEach (Action<GameData> action, DateTime from)
 		{
-			_listGames.FindAll (delegate(GameData gm) {
-				return gm.time > from;
-			}).ForEach (action);
+			_listGames.FindAll (gm => gm.time > from).ForEach (action);
 		}
 
 		public void add (GameData gm)
 		{
 			_listGames.Add (gm);
+		}
+
+		public void addFromFolder (String path, String fileName)
+		{
+			int i = 0;
+			String completePath = Path.Combine (path, fileName + i.ToString () + ".xml");
+
+			while (File.Exists (completePath)) {
+				add (new GameData (completePath));
+				++i;
+				completePath = Path.Combine (path, fileName + i.ToString () + ".xml");
+			}
+
+//			for (i = 0; File.Exists (completePath); completePath = Path.Combine (path, fileName + ( ++i ).ToString () + ".xml"))
+//				add (new GameData (completePath));
+
+		}
+
+		public void saveInFolder (String path, String fileName)
+		{
+			int i = 0;
+			_listGames.ForEach (delegate(GameData gd) {
+				gd.writeOnXML (Path.Combine (path, fileName + i.ToString () + ".xml"));
+				i++;
+			});
+
+
+			//_listGames.ForEach (gd => gd.writeOnXML (Path.Combine (path, fileName + ( i++ ).ToString () + ".xml")));
 		}
 
 		public GameData lastGame ()
