@@ -8,9 +8,7 @@ using Android.Content;
 using BTLibrary;
 using Android.Views;
 
-
-
-namespace ProgettoInfo3
+namespace MenuLayout
 {
 	[Activity (
 		Label = "ProgettoInfo3",
@@ -68,18 +66,33 @@ namespace ProgettoInfo3
 
 		}
 
-		//		private int ConvertPixelsToDp (float pixelValue)
-		//		{
-		//			var dp = (int) ( pixelValue / Resources.DisplayMetrics.Density );
-		//			return dp;
-		//		}
-
 		void createClick (object sender, EventArgs e)
 		{
 			_create.Enabled = false;
 			//Toast.MakeText (this, "Create new tab", ToastLength.Long).Show ();
-			var serverIntent = new Intent (this, typeof (CraeteTabActivity));
-			StartActivityForResult (serverIntent, 1);
+
+			string [] names = new string[5];
+
+
+			names [0] = BTManager.Instance.GetLocalName ();
+			if (names [0].Length > MainActivity.MAX_NAME_LENGHT)
+				names [0] = names [0].Substring (0, MainActivity.MAX_NAME_LENGHT);
+
+			names [1] = Resources.GetText (Resource.String.Default1);
+			names [2] = Resources.GetText (Resource.String.Default2);
+			names [3] = Resources.GetText (Resource.String.Default3);
+			names [4] = Resources.GetText (Resource.String.Default4);
+
+			string [] address = new string[4];
+			for (int i = 0; i < 4; ++i)
+				address [i] = Resources.GetText (Resource.String.none_add);
+
+			Intent inte = new Intent (this, typeof (CreateTabActivity));
+
+			GameProfile gp = new GameProfile (names, address, 0);
+			gp.setIntent (inte);
+
+			StartActivityForResult (inte, 1);
 		}
 
 		void joinClick (object sender, EventArgs e)

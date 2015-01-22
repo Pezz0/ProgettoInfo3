@@ -12,7 +12,7 @@ using Android.Content.PM;
 using System.Runtime.CompilerServices;
 using Android.Util;
 
-namespace ProgettoInfo3
+namespace MenuLayout
 {
 	[Activity (Label = "JoinTableActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class JoinTableActivity : Activity

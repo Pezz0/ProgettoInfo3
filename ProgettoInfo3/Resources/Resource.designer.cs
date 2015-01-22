@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("ProgettoInfo3.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("MenuLayout.Resource", IsApplication=true)]
 
-namespace ProgettoInfo3
+namespace MenuLayout
 {
 	
 	
@@ -26,7 +26,7 @@ namespace ProgettoInfo3
 		
 		public static void UpdateIdValues()
 		{
-			global::BTLibrary.Resource.String.library_name = global::ProgettoInfo3.Resource.String.library_name;
+			global::BTLibrary.Resource.String.library_name = global::MenuLayout.Resource.String.library_name;
 		}
 		
 		public partial class Array

@@ -15,8 +15,9 @@ using Microsoft.Xna.Framework;
 using CocosSharp;
 using ChiamataLibrary;
 using BTLibrary;
+using System.Threading;
 
-namespace ProgettoInfo3
+namespace MenuLayout
 {
 	[Activity (Label = "ProgettoInfo3",
 		AlwaysRetainTaskState = true,
@@ -30,6 +31,9 @@ namespace ProgettoInfo3
 
 	public class startingActivity : AndroidGameActivity
 	{
+
+		private GameProfile _gameProfile;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -38,6 +42,7 @@ namespace ProgettoInfo3
 
 		}
 
+		private bool primo = true;
 		private readonly List<IPlayerController> _PlayerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER - 1);
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
@@ -55,35 +60,102 @@ namespace ProgettoInfo3
 							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
 
 				} else {
-					string [] name = data.GetStringArrayExtra ("Names");
 
-					ChiamataLibrary.Board.Instance.initializeMaster (name, data.GetIntExtra ("Dealer", 0));
+					_gameProfile = new GameProfile (data);
+
+					ChiamataLibrary.Board.Instance.initializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer);
 
 					if (BTManager.Instance.getNumConnected () > 0)
 						BTManager.Instance.WriteToAllSlave (new PackageBoard ());
 
-					string [] type = data.GetStringArrayExtra ("types");
-
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
-						if (type [i - 1] == "AI")
+						if (_gameProfile.getPlayerAddress (i - 1) == Resources.GetString (Resource.String.none_add))
 							_PlayerControllerList.Add (new AIPlayerController (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
-						else if (type [i - 1] == "BlueTooth") {
+						else
 							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
-						
-						}
+
 					}
 				}
-					
-				var application = new CCApplication ();
-				application.ApplicationDelegate = new Core.GameAppDelegate ();
 
-				SetContentView (application.AndroidContentView);
+				if (primo) {
+					var application = new CCApplication ();
+					application.ApplicationDelegate = new Core.GameAppDelegate (_terminateMsg);
 
+					SetContentView (application.AndroidContentView);
 
-				application.StartGame ();
+					application.StartGame ();
+					primo = false;
+				} else {
+					lock (_terminateMsg) {
+						Monitor.Pulse (_terminateMsg);
+					}
+				}
+
+				new Thread (finisher).Start ();
 
 			}
 		}
+
+
+		private readonly TerminateMessage _terminateMsg = new TerminateMessage (0);
+
+		private void finisher ()
+		{
+		
+			lock (_terminateMsg) {
+				Monitor.Wait (_terminateMsg);
+			}
+		
+			switch (_terminateMsg.Signal) {
+				case 0:
+					Board.Instance.reset ();
+					var serverIntent = new Intent (this, typeof (MainActivity));
+					StartActivityForResult (serverIntent, 2);
+				break;
+				case 1:
+		
+					string [] address = new string[4];
+					for (int i = 0; i < 4; ++i)
+						address [i] = Resources.GetText (Resource.String.none_add);
+
+					Intent inte = new Intent (this, typeof (CreateTabActivity));
+					_gameProfile.nextGame ().setIntent (inte);
+
+					Board.Instance.reset ();
+
+					StartActivityForResult (inte, 2);
+
+				break;
+			}
+		
+		}
+
+
+
+	}
+
+	public class TerminateMessage
+	{
+		private int _signal;
+
+		public int Signal { get { return _signal; } }
+
+		public void setAbort ()
+		{
+			_signal = 0;
+		}
+
+		public void setRestart ()
+		{
+			_signal = 1;
+		}
+
+		public TerminateMessage (int signal)
+		{
+			this._signal = signal;
+		}
+
+
 	}
 }
 

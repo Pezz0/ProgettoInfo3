@@ -6,7 +6,6 @@ using Android.Bluetooth;
 using Android.Content;
 using Android.OS;
 using Android.Widget;
-using Java.Lang;
 using Java.Util;
 using ChiamataLibrary;
 using System;

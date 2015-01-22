@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using ChiamataLibrary;
 using Android.App;
 using Android.Content;
-using ProgettoInfo3;
+using MenuLayout;
 using Java.IO;
 using System.IO;
+using System.Threading;
 
 
 
@@ -275,13 +276,32 @@ namespace Core
 
 		private void actExit (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			lock (_terminateMsg) {
+				_terminateMsg.setAbort ();
+				Monitor.Pulse (_terminateMsg);
+			}
 
-			window.Application.ExitGame ();
+			new Thread (restart).Start ();
 		}
 
 		private void actNext (List<CCTouch> touches, CCEvent touchEvent)
 		{
+			lock (_terminateMsg) {
+				_terminateMsg.setRestart ();
+				Monitor.Pulse (_terminateMsg);
+			}
 
+			new Thread (restart).Start ();
+		}
+
+
+		private void restart ()
+		{
+			lock (_terminateMsg) {
+				Monitor.Wait (_terminateMsg);
+			}
+		
+			Window.DefaultDirector.ReplaceScene (new GameScene (window, _terminateMsg));
 		}
 
 		#endregion
@@ -597,13 +617,16 @@ namespace Core
 		//Boolean value that says if the debug label has already been written
 		private bool written;
 
+		private TerminateMessage _terminateMsg;
+
+
 		/// <summary>
 		/// Gamescene constructor, initializes sprites to their default position
 		/// </summary>
 		/// <param name="mainWindow">Main window.</param>
-		public GameScene (CCWindow mainWindow) : base (mainWindow)
+		public GameScene (CCWindow mainWindow, TerminateMessage terminateMsg) : base (mainWindow)
 		{
-
+			this._terminateMsg = terminateMsg;
 
 			//Instancing the layer and setting him as a child of the mainWindow
 			mainLayer = new CCLayerColor ();
@@ -829,7 +852,7 @@ namespace Core
 			#region End game label, buttons and sprites initialization
 			resultBoard = new CCSprite ("resultBoard");
 			resultBoard.Position = new CCPoint (winSize.Width / 2, winSize.Height / 2);
-			resultBoard.Scale = _cardScale;
+			resultBoard.Scale = scale * 0.38f;
 			resultBoard.Rotation = -90;
 			resultBoard.Visible = false;
 			mainLayer.AddChild (resultBoard, 15);
@@ -846,10 +869,10 @@ namespace Core
 			endStatusSpriteLoss.Visible = false;
 			resultBoard.AddChild (endStatusSpriteLoss, 1);
 
-			btnExit = new Button (resultBoard, touch, actExit, "btnExit", "btnExitPressed", new CCPoint (resultBoard.BoundingBox.Size.Width / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2f);
-			btnNext = new Button (resultBoard, touch, actNext, "btnNext", "btnNextPressed", new CCPoint (resultBoard.BoundingBox.Size.Width * 3 / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2f);
-			btnExit.Enabled = true;
-			btnNext.Enabled = true;
+			btnExit = new Button (resultBoard, touch, actExit, "btnExit", "btnExitPressed", new CCPoint (resultBoard.BoundingBox.Size.Width / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2.8f);
+			btnNext = new Button (resultBoard, touch, actNext, "btnNext", "btnNextPressed", new CCPoint (resultBoard.BoundingBox.Size.Width * 3 / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2.8f);
+			btnExit.Enabled = false;
+			btnNext.Enabled = false;
 			#endregion
 
 			wait = 0;
@@ -899,14 +922,16 @@ namespace Core
 					inMano = true;
 				}
 
+				turnLight (-1);
+
 				String str = "Il chiamante era " + gd.getChiamante ().name;
 				str += inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.getSocio ().name + ": " );
 				str += inMano ? ( "ha " ) : ( "hanno " );
 				str += "fatto " + gd.getChiamantePointCount () + " punti." + Environment.NewLine;
 				str += "Gli altri giocatori (" + gd.getAltri () [0].name + ", " + gd.getAltri () [1].name + " e " + gd.getAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.getAltriPointCount () + " punti.";
-				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 90f, new CCSize (resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
+				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 80f, new CCSize (resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
 
-				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 47 / 80);
+				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 43 / 80);
 				resultBoard.AddChild (resultLbl);
 
 //				String x = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
@@ -978,7 +1003,8 @@ namespace Core
 			for (int i = 0; i < 5; i++) {
 				turnLights [i].Visible = false;
 			}
-			turnLights [playerIndex].Visible = true;
+			if (playerIndex >= 0)
+				turnLights [playerIndex].Visible = true;
 		}
 
 		#endregion
@@ -1175,7 +1201,7 @@ namespace Core
 			}
 
 			if (Board.Instance.numberOfCardOnBoard == Board.PLAYER_NUMBER) {
-				wait += 2;
+				wait += 1.5f;
 			} else
 				turnLight (( localIndex + 1 ) % Board.PLAYER_NUMBER);
 				
