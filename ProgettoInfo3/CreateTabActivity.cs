@@ -114,7 +114,7 @@ namespace MenuLayout
 		{
 			int c = 0;
 			for (int i = 0; i < 4; ++i)
-				if (_spinner [i].Id == 1)
+				if (_spinner [i].SelectedItemPosition == 1)
 					c++;
 			return c;
 		}
@@ -139,14 +139,10 @@ namespace MenuLayout
 						BTManager.Instance.StopListen ();
 				}
 
-			} else {
-				if (getBTNumber () - BTManager.Instance.getNumConnected () == 0) {
-					if (BTManager.Instance.isBTEnabled ())
-						BTManager.Instance.ConnectAsMaster ();
-					else
-						BTManager.Instance.enableBluetooth ();
-				}
-			}
+			} else if (BTManager.Instance.isBTEnabled ())
+				BTManager.Instance.ConnectAsMaster ();
+			else
+				BTManager.Instance.enableBluetooth ();
 		}
 
 		void Start_Game (object sender, EventArgs e)

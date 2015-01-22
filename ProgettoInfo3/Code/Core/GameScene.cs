@@ -53,6 +53,7 @@ namespace Core
 		private EnSemi? mySeme;
 		private bool bidded;
 		private bool initializedSeme;
+		private float scale;
 		private static String [] pathButtons = {
 			"btnDue",
 			"btnQuattro",
@@ -116,9 +117,10 @@ namespace Core
 					buttons [i].Enabled = true;
 				buttons [0].Enabled = true;
 				buttons [10].Enabled = true;
-				slider.min = b.point + 1;
-				if (b.number == 0)
+				if (b.number == 0) {
 					slider.visible = true;
+					slider.min = b.point + 1;
+				}
 			}
 
 
@@ -147,7 +149,7 @@ namespace Core
 		{
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.ASSE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.ASSE, 61);
 			bidded = true;
 		}
 
@@ -157,7 +159,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.TRE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.TRE, 61);
 
 			bidded = true;
 		}
@@ -167,7 +169,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.RE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.RE, 61);
 
 			bidded = true;
 		}
@@ -178,7 +180,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
 			bidded = true;
 		}
 
@@ -188,7 +190,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.FANTE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.FANTE, 61);
 			bidded = true;
 		}
 
@@ -198,7 +200,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SETTE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SETTE, 61);
 			bidded = true;
 		}
 
@@ -208,7 +210,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SEI, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.SEI, 61);
 			bidded = true;
 		}
 
@@ -218,7 +220,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CINQUE, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.CINQUE, 61);
 			bidded = true;
 		}
 
@@ -228,7 +230,7 @@ namespace Core
 
 			disableAllButtons ();
 
-			myBid = new NormalBid (Board.Instance.Me, EnNumbers.QUATTRO, slider.currentValue);
+			myBid = new NormalBid (Board.Instance.Me, EnNumbers.QUATTRO, 61);
 			bidded = true;
 		}
 
@@ -829,7 +831,7 @@ namespace Core
 
 			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
 
-			float scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
+			scale = ( ( winSize.Height / 2 ) - orzSpace * 4 ) / ( 4 * textWidth );
 
 
 			for (int i = 4; i > -1; i--) {
@@ -843,7 +845,7 @@ namespace Core
 			buttons [11] = new Button (mainLayer, touch, actButtons [11], pathButtons [11], pathButtonsPressed [11], new CCPoint (vertSpace + 58 * scale, winSize.Height / 2 + orzSpace / 2 + ( textWidth * scale ) / 2), winSize, -90, scale);
 
 			slider = new Slider (mainLayer, touch, "sliderBar", "sliderBall", new CCPoint (5 * vertSpace + 4 * 58 * scale, winSize.Height / 4 - 115 * scale), winSize, 61, 120, -90, _cardScale * 3f);
-
+			slider.visible = false;
 			disableAllButtons ();
 
 
@@ -877,7 +879,6 @@ namespace Core
 
 			wait = 0;
 			touchAsta = true;
-			slider.visible = false;
 
 			Schedule (RunGameLogic);
 			Board.Instance.start ();
@@ -892,6 +893,7 @@ namespace Core
 			Board.Instance.Me.Controller = this;
 		}
 
+		#region Gamelogic
 
 		/// <summary>
 		/// Game logic, will be executed every frame
@@ -909,6 +911,13 @@ namespace Core
 			if (Board.Instance.isGameFinish && !written) {
 				written = true;
 				resultBoard.Visible = true;
+
+				if (Board.Instance.Me.order != 0) {
+					btnExit.remove ();
+					btnNext.remove ();
+					new Thread (restart).Start ();
+				}
+
 				btnExit.Enabled = true;
 				btnNext.Enabled = true;
 				bool inMano = false;
@@ -933,20 +942,12 @@ namespace Core
 
 				resultLbl.Position = new CCPoint (resultBoard.BoundingBox.Size.Width / 2, resultBoard.BoundingBox.Size.Height * 43 / 80);
 				resultBoard.AddChild (resultLbl);
-
-//				String x = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-//				x = Path.Combine (x, "prova1.xml");
-//
-//				Archive.Instance.lastGame ().writeOnXML (x);
-//				Archive.Instance.AddFromXML (x);
-
-
 			}
 					
 			
 		}
 
-
+		#endregion
 
 		#region Move and rotate methods
 
@@ -1034,7 +1035,6 @@ namespace Core
 
 			bidded = false;
 			initializedSeme = false;
-			slider.visible = false;
 
 			turnLight (playerToOrder (Board.Instance.ActiveAuctionPlayer));
 

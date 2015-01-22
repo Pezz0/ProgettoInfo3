@@ -155,6 +155,8 @@ namespace MenuLayout
 					var serverIntent = new Intent (this, typeof (JoinTableActivity));
 					StartActivityForResult (serverIntent, 2);
 				}
+
+				BTManager.Instance.eventPackageReceived -= terminateHandle;
 			}
 		}
 

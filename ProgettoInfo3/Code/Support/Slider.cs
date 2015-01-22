@@ -21,7 +21,8 @@ namespace Core
 				if (_currentValue == _min) {
 					_currentValue = value;
 					_min = value;
-					lblValue.SetString (value.ToString (), true);
+					lblValue.Text = value.ToString ();
+					//(value.ToString (), true);
 
 				}
 			}
@@ -36,10 +37,14 @@ namespace Core
 				if (value) {
 					spriteBar.Visible = true;
 					spritePoint.Visible = true;
+					touch.eventTouchBegan += touchBegan;
+					touch.eventTouchMoved += touchMoved;
 
 				} else {
 					spriteBar.Visible = false;
 					spritePoint.Visible = false;
+					touch.eventTouchBegan -= touchBegan;
+					touch.eventTouchMoved -= touchMoved;
 				}
 			}
 		}
