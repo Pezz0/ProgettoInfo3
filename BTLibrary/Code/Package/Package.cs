@@ -31,6 +31,8 @@ namespace BTLibrary
 					return new PackageReady (b);
 				case EnPackageType.SEME:
 					return new PackageSeme (b);
+				case EnPackageType.TERMINATE:
+					return new PackageTerminate (b);
 				default:
 					throw new Exception ("Wrong byte's sequence");
 			}

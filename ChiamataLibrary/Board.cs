@@ -159,13 +159,6 @@ namespace ChiamataLibrary
 				_players [i] = new Player (Encoding.ASCII.GetString (bs), i);
 			}
 
-
-			foreach (Player p in _players)
-				if (p.name == me) {
-					_me = p.order;
-					return;
-				}
-
 			_lastWinner = ( _bytes [index] + 1 ) % PLAYER_NUMBER;	//the last winner is the player that have to play first in the next turn
 			index++;
 
@@ -181,6 +174,12 @@ namespace ChiamataLibrary
 
 					_cardGrid [i, j] = new Card ((EnNumbers) j, (EnSemi) i, _players [assignedPlayer]);	//instantiate the card
 					index++;
+				}
+
+			foreach (Player p in _players)
+				if (p.name == me) {
+					_me = p.order;
+					return;
 				}
 
 		}

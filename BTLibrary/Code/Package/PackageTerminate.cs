@@ -13,7 +13,7 @@ namespace BTLibrary
 			this.terminateSignal = terminateSignal;
 		}
 
-		public PackageTerminate (byte [] bs) : base (EnPackageType.SEME)
+		public PackageTerminate (byte [] bs) : base (EnPackageType.TERMINATE)
 		{
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");

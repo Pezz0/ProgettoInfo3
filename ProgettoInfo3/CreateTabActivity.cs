@@ -34,8 +34,6 @@ namespace MenuLayout
 
 		private ArrayAdapter adapter;
 
-		private int _counter;
-
 		private string _name = "", _address = "";
 
 		private float _FIRST_FRACTION_WIDTH = 0.15f, _SECOND_FRACTION_WIDTH = 0.2f, _THIRD_FRACTION_WIDTH = 0.3f;
@@ -103,7 +101,6 @@ namespace MenuLayout
 
 			#endregion
 
-			_counter = 4;
 			BTManager.Instance.setActivity (this);
 
 			SetTitle (Resource.String.create_title);
@@ -112,12 +109,21 @@ namespace MenuLayout
 			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
 
+
+		private int getBTNumber ()
+		{
+			int c = 0;
+			for (int i = 0; i < 4; ++i)
+				if (_spinner [i].Id == 1)
+					c++;
+			return c;
+		}
+
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			//se scelgo AI
 			if (e.Id == 0) {
-				if (_counter - BTManager.Instance.getNumConnected () >= 0) {
-					_counter--;
+				if (getBTNumber () - BTManager.Instance.getNumConnected () >= 0) {
 
 					for (int i = 0; i < 4; ++i)
 						if (sender.ToString () == _spinner [i].ToString () && _addr [i] != Resources.GetText (Resource.String.none_add)) {
@@ -129,24 +135,23 @@ namespace MenuLayout
 						}
 
 					//se scelgo BT
-					if (_counter - BTManager.Instance.getNumConnected () <= 0)
+					if (getBTNumber () - BTManager.Instance.getNumConnected () <= 0)
 						BTManager.Instance.StopListen ();
 				}
 
 			} else {
-				if (_counter - BTManager.Instance.getNumConnected () == 0) {
+				if (getBTNumber () - BTManager.Instance.getNumConnected () == 0) {
 					if (BTManager.Instance.isBTEnabled ())
 						BTManager.Instance.ConnectAsMaster ();
 					else
 						BTManager.Instance.enableBluetooth ();
 				}
-				_counter++;
 			}
 		}
 
 		void Start_Game (object sender, EventArgs e)
 		{
-			if (_counter - BTManager.Instance.getNumConnected () == 0) {
+			if (getBTNumber () - BTManager.Instance.getNumConnected () == 0) {
 				SetTitle (Resource.String.starting);
 
 				BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
@@ -257,7 +262,7 @@ namespace MenuLayout
 				break;
 			}
 			if (msg.What != (int) EnLocalMessageType.MESSAGE_STATE_CHANGE) {
-				if (_counter - BTManager.Instance.getNumConnected () > 0)
+				if (getBTNumber () - BTManager.Instance.getNumConnected () > 0)
 					BTManager.Instance.ConnectAsMaster ();
 				else
 					BTManager.Instance.StopListen ();

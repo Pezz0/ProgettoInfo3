@@ -869,8 +869,8 @@ namespace Core
 			endStatusSpriteLoss.Visible = false;
 			resultBoard.AddChild (endStatusSpriteLoss, 1);
 
-			btnExit = new Button (resultBoard, touch, actExit, "btnExit", "btnExitPressed", new CCPoint (resultBoard.BoundingBox.Size.Width / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2.8f);
-			btnNext = new Button (resultBoard, touch, actNext, "btnNext", "btnNextPressed", new CCPoint (resultBoard.BoundingBox.Size.Width * 3 / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, scale * 2.8f);
+			btnExit = new Button (resultBoard, touch, actExit, "btnExit", "btnExitPressed", new CCPoint (resultBoard.BoundingBox.Size.Width / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, 2.6f);
+			btnNext = new Button (resultBoard, touch, actNext, "btnNext", "btnNextPressed", new CCPoint (resultBoard.BoundingBox.Size.Width * 3 / 4, resultBoard.BoundingBox.Size.Height / 5), winSize, 0, 2.6f);
 			btnExit.Enabled = false;
 			btnNext.Enabled = false;
 			#endregion

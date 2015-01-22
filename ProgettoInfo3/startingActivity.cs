@@ -55,6 +55,8 @@ namespace MenuLayout
 				
 					Board.Instance.initializeSlave (data.GetByteArrayExtra ("Board"), new string (data.GetCharArrayExtra ("Name")));
 				
+					BTManager.Instance.initializeComunication ();
+
 					for (int i = 0; i < Board.PLAYER_NUMBER; i++)
 						if (Board.Instance.Me.order != i)
 							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
@@ -64,6 +66,8 @@ namespace MenuLayout
 					_gameProfile = new GameProfile (data);
 
 					ChiamataLibrary.Board.Instance.initializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer);
+
+					BTManager.Instance.initializeComunication ();
 
 					if (BTManager.Instance.getNumConnected () > 0)
 						BTManager.Instance.WriteToAllSlave (new PackageBoard ());
@@ -91,7 +95,9 @@ namespace MenuLayout
 					}
 				}
 
-				if (!BTManager.Instance.isSlave ())
+				if (BTManager.Instance.isSlave ())
+					BTManager.Instance.eventPackageReceived += terminateHandle;
+				else
 					new Thread (finisher).Start ();
 
 			}

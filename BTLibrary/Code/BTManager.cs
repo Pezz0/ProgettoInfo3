@@ -530,7 +530,6 @@ namespace BTLibrary
 
 			_writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 
-			initializeComunication ();
 		}
 
 		#endregion
@@ -631,15 +630,15 @@ namespace BTLibrary
 			}
 		}
 
-		private void initializeComunication ()
+		public void initializeComunication ()
 		{
 			Board.Instance.eventImReady += imReady;
 			Board.Instance.eventIPlaceABid += bidPlaced;
-			if (!BTManager.Instance.isSlave ())
+			if (!isSlave ())
 				Board.Instance.eventSomeonePlaceABid += bidPlaced;
 			Board.Instance.eventPlaytimeStart += semeChosen;
 			Board.Instance.eventIPlayACard += cardPlayed;
-			if (!BTManager.Instance.isSlave ())
+			if (!isSlave ())
 				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}
 
