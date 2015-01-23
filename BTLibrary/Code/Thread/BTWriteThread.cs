@@ -33,7 +33,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The sleep time of the thread.
 		/// </summary>
-		private const int _SLEEP_TIME = 100;
+		private const int _SLEEP_TIME = 200;
 
 		/// <summary>
 		/// The buffer to store out messages.

@@ -76,7 +76,7 @@ namespace Core
 			spritePoint = new CCSprite (texturePoint);
 			spriteBar.AddChild (spritePoint);
 			spritePoint.Position = new CCPoint (0, spriteBar.ContentSize.Height / 2);
-			spritePoint.Scale = scale * 0.77f;
+			spritePoint.Scale = scale * 0.06f;
 			spritePoint.BlendFunc = CCBlendFunc.AlphaBlend;
 
 			_min = min;

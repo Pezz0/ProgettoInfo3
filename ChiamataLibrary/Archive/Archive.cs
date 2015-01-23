@@ -40,15 +40,18 @@ namespace ChiamataLibrary
 			_listGames.Add (gm);
 		}
 
-		public void addFromFolder (String path, String fileName)
+		private int _lastGameCount;
+		public const string FILE_NAME = "Partita";
+
+		public void addFromFolder (string path)
 		{
-			int i = 0;
-			String completePath = Path.Combine (path, fileName + i.ToString () + ".xml");
+			_lastGameCount = 0;
+			String completePath = Path.Combine (path, FILE_NAME + _lastGameCount.ToString () + ".xml");
 
 			while (File.Exists (completePath)) {
 				add (new GameData (completePath));
-				++i;
-				completePath = Path.Combine (path, fileName + i.ToString () + ".xml");
+				++_lastGameCount;
+				completePath = Path.Combine (path, FILE_NAME + _lastGameCount.ToString () + ".xml");
 			}
 
 //			for (i = 0; File.Exists (completePath); completePath = Path.Combine (path, fileName + ( ++i ).ToString () + ".xml"))
@@ -56,16 +59,22 @@ namespace ChiamataLibrary
 
 		}
 
-		public void saveInFolder (String path, String fileName)
+		public void saveInFolder (string path)
 		{
 			int i = 0;
 			_listGames.ForEach (delegate(GameData gd) {
-				gd.writeOnXML (Path.Combine (path, fileName + i.ToString () + ".xml"));
-				i++;
+				gd.writeOnXML (Path.Combine (path, FILE_NAME + i.ToString () + ".xml"));
+				++i;
 			});
 
 
 			//_listGames.ForEach (gd => gd.writeOnXML (Path.Combine (path, fileName + ( i++ ).ToString () + ".xml")));
+		}
+
+		public void saveLastGame (string path)
+		{
+			lastGame ().writeOnXML (Path.Combine (path, FILE_NAME + _lastGameCount.ToString () + ".xml"));
+			++_lastGameCount;
 		}
 
 		public GameData lastGame ()

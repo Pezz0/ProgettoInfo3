@@ -113,6 +113,8 @@ namespace MenuLayout
 				Monitor.Wait (_terminateMsg);
 			}
 		
+			Archive.Instance.saveLastGame (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
+
 			switch (_terminateMsg.Signal) {
 				case 0:
 					Board.Instance.reset ();
@@ -149,6 +151,7 @@ namespace MenuLayout
 				if (pkgt.terminateSignal == 0) {
 					Board.Instance.reset ();
 					var serverIntent = new Intent (this, typeof (MainActivity));
+
 					StartActivityForResult (serverIntent, 2);
 				} else if (pkgt.terminateSignal == 1) {
 					Board.Instance.reset ();

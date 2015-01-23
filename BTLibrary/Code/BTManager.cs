@@ -10,6 +10,7 @@ using Java.Util;
 using ChiamataLibrary;
 using System;
 using System.Text;
+using Android.Util;
 
 
 namespace BTLibrary
@@ -536,6 +537,8 @@ namespace BTLibrary
 
 		#region Handler
 
+		private	List<Package> _packageReceived = new List<Package> ();
+
 		public delegate void eventHandlerLocalMessageReceived (Message msg);
 
 		public event eventHandlerLocalMessageReceived eventLocalMessageReceived;
@@ -579,9 +582,14 @@ namespace BTLibrary
 
 					Package pkg = Package.createPackage (data);	
 
+					if (pkg == EnPackageType.MOVE)
+						Log.Debug ("da handler", ( (PackageCard) pkg ).move.ToString () + ( (PackageCard) pkg ).time + " " + Board.Instance.Time);
+
+					_packageReceived.Add (pkg);
+
 					if (eventPackageReceived != null)
 						eventPackageReceived (pkg);
-
+						
 					//ACK consists of the type ACK followed by the message received 
 					if (BTManager.Instance.isSlave ())
 						_writeToMasterThread.Add (pkg.getAckMessage ());

@@ -7,6 +7,7 @@ using Android.Util;
 using Android.Content;
 using BTLibrary;
 using Android.Views;
+using ChiamataLibrary;
 
 namespace MenuLayout
 {
@@ -60,7 +61,7 @@ namespace MenuLayout
 			_settings.Click += settingClick;
 
 			BTManager.Instance.Initialize (this);
-
+			BTManager.Instance.Stop ();
 
 
 
@@ -106,6 +107,7 @@ namespace MenuLayout
 		{
 
 			_settings.Enabled = false;
+			Archive.Instance.addFromFolder (( System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal) ));
 
 		}
 
