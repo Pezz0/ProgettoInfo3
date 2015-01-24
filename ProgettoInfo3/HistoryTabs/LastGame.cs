@@ -35,12 +35,20 @@ namespace MenuLayout
 
 			if (gd != null) {
 
-				play.Add ("Played at: ");
+				play.Add ("Date:");
 				play.Add (gd.time.Day.ToString () + "/" + gd.time.Month.ToString () + "/" + gd.time.Year.ToString ());
+				play.Add ("");
+				play.Add ("Time:");
 				play.Add (gd.time.Hour.ToString () + ":" + gd.time.Minute.ToString () + ":" + gd.time.Second.ToString ());
-				play.Add ("Called Card:");
-				play.Add (gd.calledCard.number.ToString ());
-				play.Add (gd.calledCard.seme.ToString ());
+				play.Add ("");
+				play.Add ("Type:");
+				play.Add (gd.gameType.ToString ());
+				play.Add ("");
+				if (gd.gameType != EnGameType.CARICHI) {
+					play.Add ("Called Card:");
+					play.Add (gd.calledCard.number.ToString ());
+					play.Add (gd.calledCard.seme.ToString ());
+				}
 				play.Add ("Caller Points: ");
 				play.Add (gd.getChiamantePointCount ());
 				play.Add ("");
