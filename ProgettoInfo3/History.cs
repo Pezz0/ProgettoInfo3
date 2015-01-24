@@ -12,53 +12,46 @@ using Android.Views;
 using Android.Widget;
 using ChiamataLibrary;
 using Android.Content.PM;
+using Android.Util;
 
 namespace MenuLayout
 {
 	[Activity (Label = "History", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
-	public class History : Activity
+	public class History : TabActivity
 	{
-		ArrayAdapter<string> play;
-
-		GridView grid;
-
 		Button back;
+		private const float TAB_WIDTH = 0.7f;
+		TabHost tabH;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-
+			RequestWindowFeature (WindowFeatures.NoTitle);
 			SetContentView (Resource.Layout.History);
 
-			play = new ArrayAdapter<string> (this, Resource.Layout.History_elem);
+			DisplayMetrics metrics = Resources.DisplayMetrics;
+			int widthInDp = metrics.WidthPixels;
 
-			grid = FindViewById<GridView> (Resource.Id.gridView1);
-			grid.Adapter = play;
+			tabH = FindViewById<TabHost> (Android.Resource.Id.TabHost);
+			tabH.LayoutParameters.Width = (int) ( widthInDp * TAB_WIDTH );
 
-			back = FindViewById<Button> (Resource.Id.backHist);
-
+			back = FindViewById<Button> (Resource.Id.backHistory);
 			back.Click += Back;
+			CreateTab (typeof (LastGame), "last_game", "Last Game");
+			CreateTab (typeof (AllGames), "all_games", "All Games");
 
-			GameData gd = Archive.Instance.lastGame ();
+		}
 
-			if (gd != null) {
-				Player caller = gd.getChiamante ();
+		private void CreateTab (Type activityType, string tag, string label)
+		{
+			var intent = new Intent (this, activityType);
+			intent.AddFlags (ActivityFlags.NewTask);
 
-				Player socio = gd.getSocio ();
+			var spec = TabHost.NewTabSpec (tag);
+			spec.SetIndicator (label);
+			spec.SetContent (intent);
 
-				for (int i = 0; i < Board.PLAYER_NUMBER; ++i) {
-					Player player = gd.getPlayer (i);
-					play.Add (player.name);
-					if (player.name == caller.name)
-						play.Add ("CHIAMANTE");
-					else if (player.name == socio.name)
-						play.Add ("SOCIO");
-					else
-						play.Add ("ALTRO");
-					play.Add (gd.getAward (i));
-				}
-			} else
-				play.Add ("No match found");
+			TabHost.AddTab (spec);
 		}
 
 		public void Back (object sender, EventArgs e)

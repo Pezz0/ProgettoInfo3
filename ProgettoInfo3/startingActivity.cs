@@ -37,6 +37,7 @@ namespace MenuLayout
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+			Archive.Instance.addFromFolder (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
 			var serverIntent = new Intent (this, typeof (MainActivity));
 			StartActivityForResult (serverIntent, 2);
 

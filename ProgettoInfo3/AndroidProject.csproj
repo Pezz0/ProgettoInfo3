@@ -27,6 +27,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
     <ConsolePause>false</ConsolePause>
+    <NoWarn>0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -72,6 +73,8 @@
     <Compile Include="GameProfile.cs" />
     <Compile Include="CreateTabActivity.cs" />
     <Compile Include="History.cs" />
+    <Compile Include="HistoryTabs\LastGame.cs" />
+    <Compile Include="HistoryTabs\AllGames.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -92,13 +95,15 @@
     <AndroidResource Include="Resources\drawable\indeterminate.xml" />
     <AndroidResource Include="Resources\drawable\image_for_rotation.png" />
     <AndroidResource Include="Resources\layout\History.axml" />
-    <AndroidResource Include="Resources\layout\History_elem.axml" />
+    <AndroidResource Include="Resources\layout\Grid.axml" />
+    <AndroidResource Include="Resources\layout\Grid_elem.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Assets\Content\" />
     <Folder Include="Code\Support\" />
+    <Folder Include="HistoryTabs\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\btnAsse.png" />

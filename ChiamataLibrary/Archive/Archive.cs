@@ -25,6 +25,8 @@ namespace ChiamataLibrary
 
 		private List<GameData> _listGames = new List<GameData> ();
 
+		public List<GameData> ListGame{ get { return _listGames; } }
+
 		public void forEach (Action<GameData> action)
 		{
 			_listGames.ForEach (action);
