@@ -79,7 +79,9 @@ namespace ChiamataLibrary
 
 		public GameData lastGame ()
 		{
-			return _listGames [_listGames.Count - 1];
+			if (_listGames.Count > 0)
+				return _listGames [_listGames.Count - 1];
+			return null;
 		}
 
 		#region Info

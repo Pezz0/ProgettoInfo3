@@ -60,8 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/create" />
             <Button
-                android:text="Settings"
-                android:id="@+id/settings"
+                android:text="History"
+                android:id="@+id/history"
                 android:background="@drawable/red_button"
                 style="@style/button_text"
                 android:layout_width="match_parent"

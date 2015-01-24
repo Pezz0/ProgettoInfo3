@@ -150,8 +150,8 @@ namespace MenuLayout
 			if (getBTNumber () - BTManager.Instance.getNumConnected () == 0) {
 				SetTitle (Resource.String.starting);
 
-				BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
-				BTManager.Instance.eventPackageReceived += handlePackage;
+				BTManager.Instance.eventLocalMessageReceived -= handleLocalMessage;
+				BTManager.Instance.eventPackageReceived -= handlePackage;
 
 				string [] names = new string[5];
 				for (int i = 0; i < 5; ++i)

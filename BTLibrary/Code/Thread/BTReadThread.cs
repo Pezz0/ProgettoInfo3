@@ -3,6 +3,7 @@ using Android.Bluetooth;
 using System.IO;
 using Android.OS;
 using System.Threading;
+using Android.Util;
 
 namespace BTLibrary
 {
@@ -72,7 +73,6 @@ namespace BTLibrary
 
 				} catch {
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
-					BTManager.Instance.ConnectionLost ();
 					break;
 				}
 			}
@@ -86,11 +86,14 @@ namespace BTLibrary
 		public void Cancel ()
 		{
 			try {
+				_inStream.Close ();
 				_socket.Close ();
+
 			} catch {
 			}
 
 			_reader.Abort ();
+			Log.Debug ("Reader:", "Abort");
 		}
 	}
 }

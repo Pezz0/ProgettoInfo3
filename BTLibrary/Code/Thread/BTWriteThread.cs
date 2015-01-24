@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Android.OS;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Android.Util;
 
 namespace BTLibrary
 {
@@ -79,12 +80,11 @@ namespace BTLibrary
 						
 						} catch {
 							BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
-							BTManager.Instance.ConnectionLost ();
-
 						}
 
-						if (msg [0] == (int) EnPackageType.ACK/* || msg [0] == (int) EnPackageType.NAME*/)
+						if (msg [0] == (int) EnPackageType.ACK)
 							_buffer.Remove (msg);
+
 					} else
 						Monitor.Wait (_buffer);
 				}
@@ -108,6 +108,11 @@ namespace BTLibrary
 			}
 		}
 
+		public bool nothingToSend ()
+		{
+			return _buffer.isEmpty;
+		}
+
 		/// <summary>
 		/// Try to close the socket
 		/// </summary>
@@ -115,6 +120,7 @@ namespace BTLibrary
 		public void Cancel ()
 		{
 			try {
+				_OutStream.Close ();
 				_Socket.Close ();
 			} catch {
 			}

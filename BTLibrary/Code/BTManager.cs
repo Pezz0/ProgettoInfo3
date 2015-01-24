@@ -11,17 +11,18 @@ using ChiamataLibrary;
 using System;
 using System.Text;
 using Android.Util;
+using System.Threading;
 
 
 namespace BTLibrary
 {
-	public class BTManager: Handler,IConnectable, IFindable
+	public class BTManager: Handler
 	{
 		#region singleton implementation
 
-		private static readonly Lazy<BTManager> _instance = new Lazy<BTManager> (() => new BTManager ());
+		private static readonly BTManager _instance = new BTManager ();
 
-		public static BTManager Instance{ get { return _instance.Value; } }
+		public static BTManager Instance{ get { return _instance; } }
 
 		private BTManager ()
 		{
@@ -171,7 +172,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The list of paired device addresses.
 		/// </summary>
-		private List<string> _pairedDevicesList;
+		private List<string> _pairedDevicesList = new List<string> ();
 
 		/// <summary>
 		/// Gets a list of paired device addresses.
@@ -242,12 +243,12 @@ namespace BTLibrary
 		/// <summary>
 		/// The list of thread to perform master read with mutiple connected slave.
 		/// </summary>
-		private List<BTReadThread> _readFromSlaveThread;
+		private List<BTReadThread> _readFromSlaveThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
 		/// <summary>
 		/// The list of thread to perform master write with multiple connected slave
 		/// </summary>
-		private List<BTWriteThread> _writeToSlaveThread;
+		private List<BTWriteThread> _writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 
 		/// <summary>
 		/// The UUID to perform connection.
@@ -446,16 +447,31 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveSlave (string address)
 		{
-			for (int i = 0; i < _readFromSlaveThread.Count; i++) {
-
-				if (_readFromSlaveThread [i]._socket.RemoteDevice.Address.CompareTo (address) == 0) {
+			for (int i = 0; i < _readFromSlaveThread.Count; ++i)
+				if (_readFromSlaveThread [i]._socket.RemoteDevice.Address == address) {
 					_readFromSlaveThread [i].Cancel ();
 					_readFromSlaveThread.RemoveAt (i);
-
+					break;
+				}
+			for (int i = 0; i < _writeToSlaveThread.Count; ++i) {
+				if (_writeToSlaveThread [i]._Socket.RemoteDevice.Address == address) {
 					_writeToSlaveThread [i].Cancel ();
 					_writeToSlaveThread.RemoveAt (i);
-					return;
+					break;
 				}
+			}
+		}
+
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void RemoveMaster ()
+		{
+			if (_writeToMasterThread != null) {
+				_writeToMasterThread.Cancel ();
+				_writeToMasterThread = null;
+			}
+			if (_readFromMasterThread != null) {
+				_readFromMasterThread.Cancel ();
+				_readFromMasterThread = null;
 			}
 		}
 
@@ -463,16 +479,6 @@ namespace BTLibrary
 		/// Indicate that the connection attempt failed and notify the Activity.
 		/// </summary>
 		internal void ConnectionFailed ()
-		{	
-			//stops all existing thread
-			Stop ();
-
-		}
-
-		/// <summary>
-		/// Indicate that the connection was lost and notify the UI Activity.
-		/// </summary>
-		internal void ConnectionLost ()
 		{	
 			//stops all existing thread
 			Stop ();
@@ -492,15 +498,6 @@ namespace BTLibrary
 			_activity = activity;
 		}
 
-		/// <summary>
-		/// Gets the activity.
-		/// </summary>
-		/// <returns>The activity.</returns>
-		public Activity getActivity ()
-		{
-			return _activity;
-		}
-
 		#endregion
 
 		#region initialization
@@ -515,22 +512,15 @@ namespace BTLibrary
 		/// </summary>
 		/// <param name="activity">Activity.</param>
 		/// <param name="handler">Handler.</param>
-		public void Initialize (Activity activity)//, int maxplayer)
+		public void Initialize (Activity activity)
 		{
-			// Initialize the list of device that are already paired  
-			_pairedDevicesList = new List<string> ();
-
 			//activity to register the receiver
 			_activity = activity;
 
 			//sets the state to STATE_NONE
 			_state = EnConnectionState.STATE_NONE;
 
-			//creates an arry of connectedThread with _MAXPLAYER elements
-			_readFromSlaveThread = new List<BTReadThread> (MAX_BT_PLAYER);
-
-			_writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
-
+			Stop ();
 		}
 
 		#endregion
@@ -575,6 +565,7 @@ namespace BTLibrary
 							if (thred.Connected == Package.getAddressFromHack (data))
 								thred.Remove (Package.getMessageFromHack (data));
 						});
+
 					}
 						
 
@@ -584,7 +575,9 @@ namespace BTLibrary
 
 					if (pkg == EnPackageType.MOVE)
 						Log.Debug ("da handler", ( (PackageCard) pkg ).move.ToString () + ( (PackageCard) pkg ).time + " " + Board.Instance.Time);
-
+					if (pkg == EnPackageType.BID)
+						Log.Debug ("BID", ( (PackageBid) pkg ).bid.ToString () + ( (PackageBid) pkg ).bid.bidder);
+							
 					_packageReceived.Add (pkg);
 
 					if (eventPackageReceived != null)
@@ -618,7 +611,7 @@ namespace BTLibrary
 
 		}
 
-		private void WriteToSlave (Package pkg, int slave)
+		/*private void WriteToSlave (Package pkg, int slave)
 		{
 			if (_writeToSlaveThread [slave] == null) {
 				Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
@@ -626,7 +619,7 @@ namespace BTLibrary
 			}
 			_writeToSlaveThread [slave].Add (pkg.getMessage ());
 
-		}
+		}*/
 
 
 		public void WriteToAllSlave (Package pkg)

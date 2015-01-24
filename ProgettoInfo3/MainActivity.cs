@@ -21,7 +21,7 @@ namespace MenuLayout
 
 		internal const int MAX_NAME_LENGHT = 10;
 
-		private Button _create, _join, _settings;
+		private Button _create, _join, _history;
 
 		private RelativeLayout _textLayout, _buttonLayout, _imageLayout;
 
@@ -39,7 +39,7 @@ namespace MenuLayout
 
 			_create = FindViewById<Button> (Resource.Id.create);
 			_join = FindViewById<Button> (Resource.Id.select);
-			_settings = FindViewById<Button> (Resource.Id.settings);
+			_history = FindViewById<Button> (Resource.Id.history);
 			_textLayout = FindViewById<RelativeLayout> (Resource.Id.TitleLayout);
 			_buttonLayout = FindViewById<RelativeLayout> (Resource.Id.ButtonLatout);
 			_imageLayout = FindViewById<RelativeLayout> (Resource.Id.ImageLayout);
@@ -54,23 +54,19 @@ namespace MenuLayout
 
 			_create.Enabled = true;
 			_join.Enabled = true;
-			_settings.Enabled = true;
+			_history.Enabled = true;
 
 			_create.Click += createClick;
 			_join.Click += joinClick;
-			_settings.Click += settingClick;
+			_history.Click += settingClick;
 
 			BTManager.Instance.Initialize (this);
-			BTManager.Instance.Stop ();
-
-
 
 		}
 
 		void createClick (object sender, EventArgs e)
 		{
 			_create.Enabled = false;
-			//Toast.MakeText (this, "Create new tab", ToastLength.Long).Show ();
 
 			string [] names = new string[5];
 
@@ -105,9 +101,8 @@ namespace MenuLayout
 
 		void settingClick (object sender, EventArgs e)
 		{
-
-			_settings.Enabled = false;
-			Archive.Instance.addFromFolder (( System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal) ));
+			var serverIntent = new Intent (this, typeof (History));
+			StartActivity (serverIntent);
 
 		}
 
@@ -115,7 +110,7 @@ namespace MenuLayout
 		{
 			_create.Enabled = true;
 			_join.Enabled = true;
-			_settings.Enabled = true;
+			_history.Enabled = true;
 
 			if (requestCode == 1 && resultCode == Result.Ok) {
 

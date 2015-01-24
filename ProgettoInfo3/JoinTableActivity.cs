@@ -310,6 +310,7 @@ namespace MenuLayout
 					_scan.Enabled = true;
 					_disconnect.Enabled = false;
 					this.SetTitle (Resource.String.select);
+					BTManager.Instance.RemoveMaster ();
 					Toast.MakeText (Application.Context, "Device connection lost", ToastLength.Short).Show ();
 				break;
 				case (int) EnLocalMessageType.MESSAGE_CONNECTION_FAILED:

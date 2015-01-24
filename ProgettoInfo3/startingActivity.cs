@@ -80,6 +80,7 @@ namespace MenuLayout
 
 					}
 				}
+					
 
 				if (primo) {
 					var application = new CCApplication ();
@@ -103,7 +104,6 @@ namespace MenuLayout
 			}
 		}
 
-
 		private readonly TerminateMessage _terminateMsg = new TerminateMessage (0);
 
 		private void finisher ()
@@ -114,27 +114,33 @@ namespace MenuLayout
 			}
 		
 			Archive.Instance.saveLastGame (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
-
+			BTManager.Instance.eventPackageReceived -= terminateHandle;
 			switch (_terminateMsg.Signal) {
 				case 0:
 					Board.Instance.reset ();
-					var serverIntent = new Intent (this, typeof (MainActivity));
-					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
+					List<string> addresses = new List<string> (_gameProfile.PlayerAddress);
+					if (addresses.Exists (pla => pla != Resources.GetText (Resource.String.none_add))) {
+						BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
+						var serverIntent = new Intent (this, typeof (MainActivity));
+						StartActivityForResult (serverIntent, 2);
 
-					StartActivityForResult (serverIntent, 2);
+					} else {
+						var serverIntent = new Intent (this, typeof (MainActivity));
+						StartActivityForResult (serverIntent, 2);
+					}
 				break;
 				case 1:
 		
-					string [] address = new string[4];
-					for (int i = 0; i < 4; ++i)
-						address [i] = Resources.GetText (Resource.String.none_add);
-
+					//string [] address = new string[4];
+					//for (int i = 0; i < 4; ++i)
+						//address [i] = Resources.GetText (Resource.String.none_add);
 					Intent inte = new Intent (this, typeof (CreateTabActivity));
 					_gameProfile.nextGame ().setIntent (inte);
 
 					Board.Instance.reset ();
 
 					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
+
 					StartActivityForResult (inte, 2);
 
 				break;
@@ -151,7 +157,6 @@ namespace MenuLayout
 				if (pkgt.terminateSignal == 0) {
 					Board.Instance.reset ();
 					var serverIntent = new Intent (this, typeof (MainActivity));
-
 					StartActivityForResult (serverIntent, 2);
 				} else if (pkgt.terminateSignal == 1) {
 					Board.Instance.reset ();
@@ -162,7 +167,6 @@ namespace MenuLayout
 				BTManager.Instance.eventPackageReceived -= terminateHandle;
 			}
 		}
-
 	}
 
 	public class TerminateMessage
