@@ -21,18 +21,23 @@ namespace MenuLayout
 
 		GridView grid;
 
+		Button clear;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Grid);
 
+			History.eventDelete += Delete;
+
 			play = new ArrayAdapter<string> (this, Resource.Layout.Grid_elem);
 			grid = FindViewById<GridView> (Resource.Id.gridView1);
 			grid.Adapter = play;
 			int i = 1;
+
 			Archive.Instance.forEach (gd => {
 
-				play.Add ("Game " + ( i + 1 ) + ":");
+				play.Add ("Game " + i + ":");
 				play.Add ("");
 				play.Add ("");
 
@@ -71,7 +76,8 @@ namespace MenuLayout
 							play.Add ("SOCIO");
 						else
 							play.Add ("ALTRO");
-						play.Add (gd.getAward (j));
+						int award = gd.getAward (player);
+						play.Add (award > 0 ? "+" + award.ToString () : award.ToString ());
 					}
 				} else {
 					play.Add ("Game not Found");
@@ -82,7 +88,18 @@ namespace MenuLayout
 				play.Add ("");
 				play.Add ("");
 
+				++i;
+
 			});
+
+			if (play.Count == 0)
+				play.Add ("No matches found"); 
+		}
+
+		private void Delete ()
+		{
+			play.Clear ();
+			play.Add ("No matches found");
 		}
 	}
 

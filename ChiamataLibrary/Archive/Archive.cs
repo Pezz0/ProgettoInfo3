@@ -77,6 +77,16 @@ namespace ChiamataLibrary
 			++_lastGameCount;
 		}
 
+		public void delete (string path)
+		{
+			string completePath = "";
+			for (int i = 0; i < _listGames.Count; ++i) {
+				completePath = Path.Combine (path, FILE_NAME + i.ToString () + ".xml");
+				new FileInfo (completePath).Delete ();
+			}
+			_listGames.Clear ();
+		}
+
 		public GameData lastGame ()
 		{
 			if (_listGames.Count > 0)

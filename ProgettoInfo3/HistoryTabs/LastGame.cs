@@ -11,10 +11,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using ChiamataLibrary;
+using Android.Util;
+using Android.Content.PM;
 
 namespace MenuLayout
 {
-	[Activity (Label = "LastGame")]			
+	[Activity (Label = "LastGame", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class LastGame : Activity
 	{
 		ArrayAdapter<string> play;
@@ -25,11 +27,15 @@ namespace MenuLayout
 		{
 			base.OnCreate (bundle);
 			// Create your application here
+
 			SetContentView (Resource.Layout.Grid);
+
 			play = new ArrayAdapter<string> (this, Resource.Layout.Grid_elem);
 
 			grid = FindViewById<GridView> (Resource.Id.gridView1);
 			grid.Adapter = play;
+
+			History.eventDelete += Delete;
 
 			GameData gd = Archive.Instance.lastGame ();
 
@@ -69,10 +75,17 @@ namespace MenuLayout
 						play.Add ("SOCIO");
 					else
 						play.Add ("ALTRO");
-					play.Add (gd.getAward (i));
+					int award = gd.getAward (player);
+					play.Add (award > 0 ? "+" + award.ToString () : award.ToString ());
 				}
 			} else
 				play.Add ("No match found");
+		}
+
+		private void Delete ()
+		{
+			play.Clear ();
+			play.Add ("No match found");
 		}
 			
 	}

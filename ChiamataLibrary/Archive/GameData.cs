@@ -118,16 +118,13 @@ namespace ChiamataLibrary
 			int award = 0;
 			if (w.Count == 1)
 				award = 4;
-			else if (w.Count == 2 && player.Role == EnRole.CHIAMANTE)
+			else if (player.Role == EnRole.CHIAMANTE)
 				award = 2;
-			else if (w.Count == 2 && player.Role == EnRole.SOCIO)
-				award = 1;
 			else
 				award = 1;
 
 			if (!w.Contains (player)) {
-				int nLoser = Board.PLAYER_NUMBER - w.Count;
-				award = -( award * w.Count ) / nLoser;
+				award = -award;
 			}
 				
 			award = award * ( 1 + ( ( winningPoint - 60 ) / 10 ) + ( isCapotto ? 1 : 0 ) );

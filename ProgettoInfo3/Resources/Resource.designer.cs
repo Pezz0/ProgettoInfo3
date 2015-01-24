@@ -114,8 +114,8 @@ namespace MenuLayout
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f08002f
-			public const int ButtonLatout = 2131230767;
+			// aapt resource value: 0x7f080031
+			public const int ButtonLatout = 2131230769;
 			
 			// aapt resource value: 0x7f08001c
 			public const int Dealer1 = 2131230748;
@@ -135,11 +135,14 @@ namespace MenuLayout
 			// aapt resource value: 0x7f08001b
 			public const int DealerGroup = 2131230747;
 			
+			// aapt resource value: 0x7f08002d
+			public const int Delete = 2131230765;
+			
 			// aapt resource value: 0x7f080028
 			public const int Disconnect = 2131230760;
 			
-			// aapt resource value: 0x7f08002e
-			public const int ImageLayout = 2131230766;
+			// aapt resource value: 0x7f080030
+			public const int ImageLayout = 2131230768;
 			
 			// aapt resource value: 0x7f080022
 			public const int Layout = 2131230754;
@@ -153,8 +156,8 @@ namespace MenuLayout
 			// aapt resource value: 0x7f080019
 			public const int Start = 2131230745;
 			
-			// aapt resource value: 0x7f08002c
-			public const int TitleLayout = 2131230764;
+			// aapt resource value: 0x7f08002e
+			public const int TitleLayout = 2131230766;
 			
 			// aapt resource value: 0x7f080014
 			public const int addr2 = 2131230740;
@@ -171,20 +174,23 @@ namespace MenuLayout
 			// aapt resource value: 0x7f08001a
 			public const int back = 2131230746;
 			
-			// aapt resource value: 0x7f08002b
-			public const int backHistory = 2131230763;
+			// aapt resource value: 0x7f08002c
+			public const int backHistory = 2131230764;
 			
-			// aapt resource value: 0x7f080030
-			public const int create = 2131230768;
+			// aapt resource value: 0x7f080032
+			public const int create = 2131230770;
 			
 			// aapt resource value: 0x7f08002a
 			public const int gridView1 = 2131230762;
 			
-			// aapt resource value: 0x7f080032
-			public const int history = 2131230770;
+			// aapt resource value: 0x7f080034
+			public const int history = 2131230772;
 			
 			// aapt resource value: 0x7f080029
 			public const int linearLayout1 = 2131230761;
+			
+			// aapt resource value: 0x7f08002b
+			public const int linearLayout2 = 2131230763;
 			
 			// aapt resource value: 0x7f080024
 			public const int newdev = 2131230756;
@@ -213,14 +219,14 @@ namespace MenuLayout
 			// aapt resource value: 0x7f080000
 			public const int relativeLayout1 = 2131230720;
 			
-			// aapt resource value: 0x7f08002d
-			public const int relativeLayout3 = 2131230765;
+			// aapt resource value: 0x7f08002f
+			public const int relativeLayout3 = 2131230767;
 			
 			// aapt resource value: 0x7f080023
 			public const int scan = 2131230755;
 			
-			// aapt resource value: 0x7f080031
-			public const int select = 2131230769;
+			// aapt resource value: 0x7f080033
+			public const int select = 2131230771;
 			
 			// aapt resource value: 0x7f080009
 			public const int spinner1 = 2131230729;
