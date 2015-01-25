@@ -21,8 +21,6 @@ namespace MenuLayout
 
 		GridView grid;
 
-		Button clear;
-
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -35,7 +33,7 @@ namespace MenuLayout
 			grid.Adapter = play;
 			int i = 1;
 
-			Archive.Instance.forEach (gd => {
+			Archive.Instance.forEach (delegate(GameData gd) {
 
 				play.Add ("Game " + i + ":");
 				play.Add ("");

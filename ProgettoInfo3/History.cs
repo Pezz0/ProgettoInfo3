@@ -46,6 +46,7 @@ namespace MenuLayout
 
 			CreateTab (typeof (LastGame), "last_game", "Last Game");
 			CreateTab (typeof (AllGames), "all_games", "All Games");
+			CreateTab (typeof (Points), "points", "Points");
 
 		}
 

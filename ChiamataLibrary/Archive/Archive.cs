@@ -109,13 +109,26 @@ namespace ChiamataLibrary
 			return lp;
 		}
 
-		public int getTotalPoint (String player)
+		public int getPlayed (string name)
+		{
+			int count = 0;
+			_listGames.ForEach (delegate(GameData gm) {
+				for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
+					if (gm.getPlayer (i).name == name)
+						++count;
+
+			});
+			return count;
+		}
+
+
+		public int getTotalPoint (string player)
 		{
 			int tp = 0;
 			_listGames.ForEach (delegate(GameData gm) {
 				for (int i = 0; i < Board.PLAYER_NUMBER; i++)
 					if (gm.getPlayer (i).name == player)
-						tp = tp + gm.getAward (1);
+						tp = tp + gm.getAward (i);
 			});
 			return tp;
 		}
