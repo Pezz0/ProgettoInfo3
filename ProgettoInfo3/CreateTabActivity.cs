@@ -18,26 +18,58 @@ using Android.Util;
 
 namespace MenuLayout
 {
+	/// <summary>
+	/// Activity to create a new table.
+	/// </summary>
 	[Activity (Label = "CraeteTabActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class CreateTabActivity : Activity
 	{
+		/// <summary>
+		/// Spinner used to select if the slot is occupied by an AI or a Bluetooth
+		/// </summary>
 		private readonly Spinner [] _spinner = new Spinner[4];
 
+		/// <summary>
+		/// Player names
+		/// </summary>
 		private readonly EditText [] _pl = new EditText[5];
 
+		/// <summary>
+		/// Addresses of the bluetooth devices connected.
+		/// </summary>
 		private readonly string [] _addr = new string[4];
 
+		/// <summary>
+		/// Radio buttons used to decide to which slot will be assigned the dealer role.
+		/// </summary>
 		private readonly RadioButton [] _radioDealer = new RadioButton[5];
+		/// <summary>
+		/// Column titles.
+		/// </summary>
 		private TextView _titCol1, _titCol2, _titCol3;
 
+		/// <summary>
+		/// The Start and back buttons.
+		/// </summary>
 		private Button _start, _back;
+
 
 		private ArrayAdapter adapter;
 
+		/// <summary>
+		/// Strings containing my bluetooth name and my bluetooth address.
+		/// </summary>
 		private string _name = "", _address = "";
 
+		/// <summary>
+		/// Width of the columns.
+		/// </summary>
 		private float _FIRST_FRACTION_WIDTH = 0.15f, _SECOND_FRACTION_WIDTH = 0.2f, _THIRD_FRACTION_WIDTH = 0.3f;
 
+		/// <summary>
+		/// Called on activity creation.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -109,7 +141,10 @@ namespace MenuLayout
 			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
 
-
+		/// <summary>
+		/// Gets the number of bluetooth-avaiable slots.
+		/// </summary>
+		/// <returns>The number of BT-avaiable slots.</returns>
 		private int getBTNumber ()
 		{
 			int c = 0;
@@ -119,6 +154,11 @@ namespace MenuLayout
 			return c;
 		}
 
+		/// <summary>
+		/// Called when the selected item of the spinner changes.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			//se scelgo AI
@@ -145,6 +185,11 @@ namespace MenuLayout
 				BTManager.Instance.enableBluetooth ();
 		}
 
+		/// <summary>
+		/// Starts the game.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void Start_Game (object sender, EventArgs e)
 		{
 			if (getBTNumber () - BTManager.Instance.getNumConnected () == 0) {
@@ -178,6 +223,11 @@ namespace MenuLayout
 
 		}
 
+		/// <summary>
+		/// Close the activity and returns to the main activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void Back (object sender, EventArgs e)
 		{
 			Intent returnIntent = new Intent ();
@@ -186,6 +236,18 @@ namespace MenuLayout
 			Finish ();
 		}
 
+		/// <param name="requestCode">The integer request code originally supplied to
+		///  startActivityForResult(), allowing you to identify who this
+		///  result came from.</param>
+		/// <param name="resultCode">The integer result code returned by the child activity
+		///  through its setResult().</param>
+		/// <param name="data">An Intent, which can return result data to the caller
+		///  (various data can be attached to Intent "extras").</param>
+		/// <summary>
+		/// Called when an activity you launched exits, giving you the requestCode
+		///  you started it with, the resultCode it returned, and any additional
+		///  data from it.
+		/// </summary>
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
 			switch (requestCode) {
@@ -204,6 +266,10 @@ namespace MenuLayout
 
 		}
 
+		/// <summary>
+		/// Handles the bluetooth messages recived (only name-change packages will be accepted).
+		/// </summary>
+		/// <param name="pkg">Package containing the message.</param>
 		private void handlePackage (Package pkg)
 		{
 			if (pkg == EnPackageType.NAME) {
@@ -219,7 +285,10 @@ namespace MenuLayout
 
 		}
 
-
+		/// <summary>
+		/// HHandles the local messages.
+		/// </summary>
+		/// <param name="msg">Message.</param>
 		private void handleLocalMessage (Message msg)
 		{
 

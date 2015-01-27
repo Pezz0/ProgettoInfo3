@@ -16,14 +16,29 @@ using Android.Util;
 
 namespace MenuLayout
 {
+	/// <summary>
+	/// History of stats and past games.
+	/// </summary>
 	[Activity (Label = "History", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class History : TabActivity
 	{
+		/// <summary>
+		/// Buttons to exit the activity and to delete the game data.
+		/// </summary>
 		Button back, delete;
+
+		/// <summary>
+		/// Tab width.
+		/// </summary>
 		private const float TAB_WIDTH = 0.7f;
+
 		TabHost tabH;
 		TabWidget tabW;
 
+		/// <summary>
+		/// Called on activity creation.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -50,6 +65,12 @@ namespace MenuLayout
 
 		}
 
+		/// <summary>
+		/// Helper metod that creates a new tab.
+		/// </summary>
+		/// <param name="activityType">Activity type.</param>
+		/// <param name="tag">Tag of the tab.</param>
+		/// <param name="label">Title of the tab.</param>
 		private void CreateTab (Type activityType, string tag, string label)
 		{
 			var intent = new Intent (this, activityType);
@@ -61,15 +82,31 @@ namespace MenuLayout
 			TabHost.AddTab (spec);
 		}
 
+		/// <summary>
+		/// Closes the activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		public void Back (object sender, EventArgs e)
 		{
 			Finish ();
 		}
 
+		/// <summary>
+		/// Delegate for the delete event.
+		/// </summary>
 		public delegate void eventHandlerDelete ();
 
+		/// <summary>
+		/// Delete event.
+		/// </summary>
 		public static event eventHandlerDelete eventDelete;
 
+		/// <summary>
+		/// Deletes the currently selected game from the archive.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		public void Delete (object sender, EventArgs e)
 		{
 			Archive.Instance.delete (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
@@ -77,6 +114,10 @@ namespace MenuLayout
 				eventDelete ();
 		}
 
+		/// <summary>
+		/// Called when the activity has detected the user's press of the back
+		///  key.
+		/// </summary>
 		public override void OnBackPressed ()
 		{
 			base.OnBackPressed ();

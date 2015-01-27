@@ -19,6 +19,9 @@ using System.Threading;
 
 namespace MenuLayout
 {
+	/// <summary>
+	/// First activity to be created on the app launch.
+	/// </summary>
 	[Activity (Label = "ProgettoInfo3",
 		AlwaysRetainTaskState = true,
 		Icon = "@drawable/icon",
@@ -31,9 +34,15 @@ namespace MenuLayout
 
 	public class startingActivity : AndroidGameActivity
 	{
-
+		/// <summary>
+		/// Contains the data of the game.
+		/// </summary>
 		private GameProfile _gameProfile;
 
+		/// <summary>
+		/// Called on activity creation.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -43,9 +52,28 @@ namespace MenuLayout
 
 		}
 
+		/// <summary>
+		/// Boolean value indicating if this is the first game since the app launch (used to skip some initializations).
+		/// </summary>
 		private bool primo = true;
+
+		/// <summary>
+		/// The player controllers list.
+		/// </summary>
 		private List<IPlayerController> _playerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER);
 
+		/// <param name="requestCode">The integer request code originally supplied to
+		///  startActivityForResult(), allowing you to identify who this
+		///  result came from.</param>
+		/// <param name="resultCode">The integer result code returned by the child activity
+		///  through its setResult().</param>
+		/// <param name="data">An Intent, which can return result data to the caller
+		///  (various data can be attached to Intent "extras").</param>
+		/// <summary>
+		/// Called when an activity you launched exits, giving you the requestCode
+		///  you started it with, the resultCode it returned, and any additional
+		///  data from it.
+		/// </summary>
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
 			_playerControllerList.Clear ();
@@ -104,6 +132,9 @@ namespace MenuLayout
 
 		private readonly TerminateMessage _terminateMsg = new TerminateMessage (0);
 
+		/// <summary>
+		/// Method that waits the signal from the game scene to decide if a new game needs to be started [only master].
+		/// </summary>
 		private void finisher ()
 		{
 		
@@ -147,7 +178,10 @@ namespace MenuLayout
 		
 		}
 
-
+		/// <summary>
+		///  Handles the bluetooth messages recived (only terminate packages will be accepted) [only slaves].
+		/// </summary>
+		/// <param name="pkg">Package.</param>
 		private void terminateHandle (Package pkg)
 		{
 			if (pkg == EnPackageType.TERMINATE) {
@@ -167,6 +201,9 @@ namespace MenuLayout
 		}
 	}
 
+	/// <summary>
+	/// Message used to signal the activity if a new game needs to be started after finishing the previous one.
+	/// </summary>
 	public class TerminateMessage
 	{
 		private int _signal;

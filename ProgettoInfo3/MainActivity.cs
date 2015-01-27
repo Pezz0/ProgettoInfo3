@@ -11,20 +11,37 @@ using ChiamataLibrary;
 
 namespace MenuLayout
 {
+	/// <summary>
+	/// Title screen activity.
+	/// </summary>
 	[Activity (
 		Label = "ProgettoInfo3",
 		ScreenOrientation = ScreenOrientation.ReverseLandscape)
 	]
 	public class MainActivity : Activity
 	{
+		/// <summary>
+		/// Width and height of the columns.
+		/// </summary>
 		private const float _FRACTION_WIDTH = 0.5f, _FRACTION_HEIGH = 0.75f;
 
+		/// <summary>
+		/// Maximum number of character accepted for the name.
+		/// </summary>
 		internal const int MAX_NAME_LENGHT = 10;
 
+		/// <summary>
+		/// Buttons to create or join a table and to view history of past games.
+		/// </summary>
 		private Button _create, _join, _history;
+
 
 		private RelativeLayout _textLayout, _buttonLayout, _imageLayout;
 
+		/// <summary>
+		/// Called on activity creation.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -58,12 +75,17 @@ namespace MenuLayout
 
 			_create.Click += createClick;
 			_join.Click += joinClick;
-			_history.Click += settingClick;
+			_history.Click += historyClick;
 
 			BTManager.Instance.Initialize (this);
 
 		}
 
+		/// <summary>
+		/// Starts the create table activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void createClick (object sender, EventArgs e)
 		{
 			_create.Enabled = false;
@@ -92,6 +114,11 @@ namespace MenuLayout
 			StartActivityForResult (inte, 1);
 		}
 
+		/// <summary>
+		/// Starts the join table activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void joinClick (object sender, EventArgs e)
 		{
 			_join.Enabled = false;
@@ -99,13 +126,30 @@ namespace MenuLayout
 			StartActivityForResult (serverIntent, 1);
 		}
 
-		void settingClick (object sender, EventArgs e)
+		/// <summary>
+		/// Starts the history activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		void historyClick (object sender, EventArgs e)
 		{
 			var serverIntent = new Intent (this, typeof (History));
 			StartActivity (serverIntent);
 
 		}
 
+		/// <param name="requestCode">The integer request code originally supplied to
+		///  startActivityForResult(), allowing you to identify who this
+		///  result came from.</param>
+		/// <param name="resultCode">The integer result code returned by the child activity
+		///  through its setResult().</param>
+		/// <param name="data">An Intent, which can return result data to the caller
+		///  (various data can be attached to Intent "extras").</param>
+		/// <summary>
+		/// Called when an activity you launched exits, giving you the requestCode
+		///  you started it with, the resultCode it returned, and any additional
+		///  data from it.
+		/// </summary>
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
 			_create.Enabled = true;

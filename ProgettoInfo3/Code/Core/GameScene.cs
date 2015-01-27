@@ -57,7 +57,7 @@ namespace Core
 		#region Cards related variables
 
 		/// <summary>
-		/// List of CardData (contains sprite, base position and base rotation) representing the cards in the hand.
+		/// List of <see cref="Support.cardData"/> (contains sprite, base position and base rotation) representing the cards in the hand.
 		/// </summary>
 		private readonly List<CardData> _carte = new List<CardData> (8);
 
@@ -67,7 +67,7 @@ namespace Core
 		private readonly float _cardScale;
 
 		/// <summary>
-		/// List of CardData (contains sprite, base position and base rotation) representing the cards dropped on the game field.
+		/// List of <see cref="Support.cardData"/> (contains sprite, base position and base rotation) representing the cards dropped on the game field.
 		/// </summary>
 		private readonly List<CardData> _droppedCards = new List<CardData> (Board.PLAYER_NUMBER);
 
@@ -181,37 +181,37 @@ namespace Core
 		};
 
 		/// <summary>
-		/// Array of buttons used for the bids.
+		/// Array of <see cref="Support.Button"/> used for the bids.
 		/// </summary>
 		private readonly Button [] _buttons = new Button[12];
 
 		/// <summary>
-		/// Button used to choose ori.
+		/// <see cref="Support.Button"/> used to choose ori.
 		/// </summary>
 		private Button _chooseOri;
 
 		/// <summary>
-		/// Button used to choose spade.
+		/// <see cref="Support.Button"/> used to choose spade.
 		/// </summary>
 		private Button _chooseSpade;
 
 		/// <summary>
-		/// Button used to choose bastoni.
+		/// <see cref="Support.Button"/> used to choose bastoni.
 		/// </summary>
 		private Button _chooseBastoni;
 
 		/// <summary>
-		/// Button used to choose coppe.
+		/// <see cref="Support.Button"/> used to choose coppe.
 		/// </summary>
 		private Button _chooseCoppe;
 
 		/// <summary>
-		/// Button used to exit the game.
+		/// <see cref="Support.Button"/> used to exit the game.
 		/// </summary>
 		private Button _btnExit;
 
 		/// <summary>
-		/// Button used to start the next game.
+		/// <see cref="Support.Button"/> used to start the next game.
 		/// </summary>
 		private Button _btnNext;
 
@@ -231,7 +231,7 @@ namespace Core
 		private readonly List<TouchList.eventHandlerTouch> _actButtons = new List<TouchList.eventHandlerTouch> ();
 
 		/// <summary>
-		/// Slider used to modify the points
+		/// <see cref="Support.Slider"/> used to modify the points
 		/// </summary>
 		private readonly Slider _slider;
 
@@ -867,9 +867,10 @@ namespace Core
 
 
 		/// <summary>
-		/// Gamescene constructor, initializes sprites to their default position
+		/// Initializes a new instance of the <see cref="Core.GameScene"/> class.
 		/// </summary>
 		/// <param name="mainWindow">Main window.</param>
+		/// <param name="terminateMsg">Terminate message.</param>
 		public GameScene (CCWindow mainWindow, TerminateMessage terminateMsg) : base (mainWindow)
 		{
 			this._terminateMsg = terminateMsg;
@@ -1366,7 +1367,6 @@ namespace Core
 		/// <param name="bid">The bid.</param>
 		private void bidPlaced (IBid bid)
 		{
-			//TODO : disabilitare i pulsanti che non posso cliccare perchè puntano roba troppo alta
 			if (!Board.Instance.isAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
 				disableAllButtons ();
 			} else {

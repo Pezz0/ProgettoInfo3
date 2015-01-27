@@ -4,94 +4,154 @@ using System.Collections.Generic;
 
 namespace Core
 {
+	/// <summary>
+	/// Basic button.
+	/// </summary>
 	public class Button
 	{
-		private bool pressed;
-		private CCSprite spriteNorm;
-		private CCSprite spritePressed;
-		private CCSize winSize;
-		private TouchList.eventHandlerTouch onButtonPressed;
-		private TouchList touch;
-		private CCNode mainLayer;
+		/// <summary>
+		/// Boolean value that indicates if the button has been pressed.
+		/// </summary>
+		private bool _pressed;
 
+		/// <summary>
+		/// The sprite that the button shows when it's in the normal state.
+		/// </summary>
+		private readonly CCSprite _spriteNorm;
+
+		/// <summary>
+		/// The sprite that the button shows when it's in the pressed state.
+		/// </summary>
+		private readonly CCSprite _spritePressed;
+
+		/// <summary>
+		/// The size of the window.
+		/// </summary>
+		private readonly CCSize _winSize;
+
+		/// <summary>
+		/// The method which will be called when the button is pressed. Must be coherent with the delegate <see cref="Core.touchList.eventHandlerTouch"/>.
+		/// </summary>
+		private TouchList.eventHandlerTouch _onButtonPressed;
+
+		/// <summary>
+		/// Touch listener.
+		/// </summary>
+		private readonly TouchList _touch;
+
+		/// <summary>
+		/// Father node for the button (usually the mainlayer).
+		/// </summary>
+		private readonly CCNode _father;
+
+		/// <summary>
+		/// Boolean value that indicates wheter or not the button can be pressed.
+		/// </summary>
 		private bool _Enabled;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="Core.Button"/> is enabled.
+		/// </summary>
+		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
 		public bool Enabled {
 			get{ return _Enabled; }
 			set {
 				if (value == true) {
-					//TODO : aggiungere la texture di disabled
-					spriteNorm.Color = CCColor3B.White;
-					touch.eventTouchBegan += touchBegan;
-					touch.eventTouchEnded += touchEnded;
+					_spriteNorm.Color = CCColor3B.White;
+					_touch.eventTouchBegan += touchBegan;
+					_touch.eventTouchEnded += touchEnded;
 					_Enabled = true;
 				} else {
-					//TODO : aggiungere la texture di disabled
-					spriteNorm.Color = CCColor3B.Gray;
-					touch.eventTouchBegan -= touchBegan;
-					touch.eventTouchEnded -= touchEnded;
+					_spriteNorm.Color = CCColor3B.Gray;
+					_touch.eventTouchBegan -= touchBegan;
+					_touch.eventTouchEnded -= touchEnded;
 					_Enabled = false;
 				}
 			}
 		}
 
-		public Button (CCNode mainLayer, TouchList tl, TouchList.eventHandlerTouch method, string textureDefault, string texturePressed, CCPoint position, CCSize winSize, float rot = -90, float scale = 0.55f, int order = 0)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Core.Button"/> class.
+		/// </summary>
+		/// <param name="father">Father node for the button.</param>
+		/// <param name="tl">Touch listener.</param>
+		/// <param name="method">Method to call when the button is pressed. Must be coherent with the delegate <see cref="Core.touchList.eventHandlerTouch"/>.</param>
+		/// <param name="textureDefault">Texture for normal state.</param>
+		/// <param name="texturePressed">Texture for pressed state.</param>
+		/// <param name="position">Position of the button.</param>
+		/// <param name="winSize">Window size.</param>
+		/// <param name="rot">Rotation of the button.</param>
+		/// <param name="scale">Scale of the button.</param>
+		/// <param name="order">ZOrder (depth).</param>
+		public Button (CCNode father, TouchList tl, TouchList.eventHandlerTouch method, string textureDefault, string texturePressed, CCPoint position, CCSize winSize, float rot = -90, float scale = 0.55f, int order = 0)
 		{
 
 			//Defining the sprite
-			spriteNorm = new CCSprite (textureDefault);
-			spriteNorm.Position = position;
-			spriteNorm.Rotation = rot;
-			spriteNorm.Scale = scale;
-			mainLayer.AddChild (spriteNorm);
+			_spriteNorm = new CCSprite (textureDefault);
+			_spriteNorm.Position = position;
+			_spriteNorm.Rotation = rot;
+			_spriteNorm.Scale = scale;
+			father.AddChild (_spriteNorm);
 
-			spritePressed = new CCSprite (texturePressed);
-			spritePressed.Position = position;
-			spritePressed.Rotation = rot;
-			spritePressed.Scale = scale;
-			mainLayer.AddChild (spritePressed);
-			spritePressed.Visible = false;
+			_spritePressed = new CCSprite (texturePressed);
+			_spritePressed.Position = position;
+			_spritePressed.Rotation = rot;
+			_spritePressed.Scale = scale;
+			father.AddChild (_spritePressed);
+			_spritePressed.Visible = false;
 
-			this.winSize = winSize;
-			this.mainLayer = mainLayer;
+			this._winSize = winSize;
+			this._father = father;
 
 			//Defining the event variables
-			onButtonPressed = method;
-			pressed = false;
-			touch = tl;
-			touch.eventTouchBegan += touchBegan;
-			touch.eventTouchEnded += touchEnded;
+			_onButtonPressed = method;
+			_pressed = false;
+			_touch = tl;
+			_touch.eventTouchBegan += touchBegan;
+			_touch.eventTouchEnded += touchEnded;
 		}
 
+		/// <summary>
+		/// Method added to the touch listener. Will be executed every time a touch is detected.
+		/// </summary>
+		/// <param name="touches">Touches.</param>
+		/// <param name="touchEvent">Touch event.</param>
 		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			if (spriteNorm.BoundingBoxTransformedToWorld.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y))) {
-				pressed = true;
-				spritePressed.Visible = true;
-				spriteNorm.Visible = false;
+			if (_spriteNorm.BoundingBoxTransformedToWorld.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, _winSize.Height - touches [0].LocationOnScreen.Y))) {
+				_pressed = true;
+				_spritePressed.Visible = true;
+				_spriteNorm.Visible = false;
 			}
 				
 		}
 
+		/// <summary>
+		/// Method added to the touch listener. Will be executed every time a touch ends.
+		/// </summary>
+		/// <param name="touches">Touches.</param>
+		/// <param name="touchEvent">Touch event.</param>
 		private void touchEnded (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			spriteNorm.Visible = true;
-			spritePressed.Visible = false;
-			if (spriteNorm.BoundingBoxTransformedToWorld.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, winSize.Height - touches [0].LocationOnScreen.Y)) && pressed == true) {
-				onButtonPressed (touches, touchEvent);
-				pressed = false;
+			_spriteNorm.Visible = true;
+			_spritePressed.Visible = false;
+			if (_spriteNorm.BoundingBoxTransformedToWorld.ContainsPoint (new CCPoint (touches [0].LocationOnScreen.X, _winSize.Height - touches [0].LocationOnScreen.Y)) && _pressed == true) {
+				_onButtonPressed (touches, touchEvent);
+				_pressed = false;
 
 			}
 
 		}
 
-
+		/// <summary>
+		/// Remove the instance of the <see cref="Core.Button"/>.
+		/// </summary>
 		public void remove ()
 		{
-			touch.eventTouchBegan -= touchBegan;
-			touch.eventTouchEnded -= touchEnded;
-			mainLayer.RemoveChild (spriteNorm);
-			mainLayer.RemoveChild (spritePressed);
+			_touch.eventTouchBegan -= touchBegan;
+			_touch.eventTouchEnded -= touchEnded;
+			_father.RemoveChild (_spriteNorm);
+			_father.RemoveChild (_spritePressed);
 
 		}
 	}

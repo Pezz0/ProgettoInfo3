@@ -14,29 +14,58 @@ using Android.Util;
 
 namespace MenuLayout
 {
+	/// <summary>
+	/// Activity to join an existing table.
+	/// </summary>
 	[Activity (Label = "JoinTableActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
 	public class JoinTableActivity : Activity
 	{
+		/// <summary>
+		/// The device address length.
+		/// </summary>
 		public const int _DEVICE_ADDRESS_LENGHT = 17;
 
+		/// <summary>
+		/// Width of the column.
+		/// </summary>
 		private const float _FRACTION_WIDTH = 0.3f;
 
+		/// <summary>
+		/// Buttons to scan for games, send updated name, close the activity or disconnect from current game.
+		/// </summary>
 		private Button _scan, _send, _back, _disconnect;
 
+		/// <summary>
+		/// Progress barr indicating the busy status
+		/// </summary>
 		private ProgressBar _pb;
 
+		/// <summary>
+		/// TextBox used to edit bluetooth name.
+		/// </summary>
 		private EditText _name;
+
 
 		private ArrayAdapter<string> _pairedArrayList, _newArrayList;
 
+
 		private bool _start, _normalEnd, _connecting;
+
 
 		private string _address = "", _conn = "";
 
+
 		private ListView _paired, _newdev;
 
+		/// <summary>
+		/// Relative layout.
+		/// </summary>
 		private RelativeLayout _newDeviceLayout;
 
+		/// <summary>
+		/// Called on activity creation.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -120,6 +149,10 @@ namespace MenuLayout
 			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
 
+		/// <summary>
+		/// Called when the activity has detected the user's press of the back
+		///  key.
+		/// </summary>
 		public override void OnBackPressed ()
 		{
 			base.OnBackPressed ();
@@ -127,7 +160,11 @@ namespace MenuLayout
 			Finish ();
 		}
 
-
+		/// <summary>
+		/// Scan for nearby bluetooth devices.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void scanDevice (object sender, EventArgs e)
 		{
 			_start = false;
@@ -144,6 +181,11 @@ namespace MenuLayout
 			
 		}
 
+		/// <summary>
+		/// Sends the name contained in the textbox to the paired bluetooth device.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void SendName (object sender, EventArgs e)
 		{
 			if (_name.Text.CompareTo ("") != 0) {
@@ -169,6 +211,11 @@ namespace MenuLayout
 			
 		}
 
+		/// <summary>
+		/// Disconnect from the paired bluetooth device.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void Disconnect (object sender, EventArgs e)
 		{
 			BTManager.Instance.Stop ();
@@ -181,12 +228,22 @@ namespace MenuLayout
 			this.SetTitle (Resource.String.select);
 		}
 
+		/// <summary>
+		/// Closes the activity.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void Back (object sender, EventArgs e)
 		{
 			BTManager.Instance.Stop ();
 			Finish ();
 		}
 
+		/// <summary>
+		/// Method called when an item on the device list is pressed.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			_connecting = true;
@@ -205,6 +262,9 @@ namespace MenuLayout
 			}
 		}
 
+		/// <summary>
+		/// Connects with the selected bluetooth device.
+		/// </summary>
 		private void connection ()
 		{
 
@@ -225,7 +285,18 @@ namespace MenuLayout
 			connect.Show ();
 		}
 
-
+		/// <param name="requestCode">The integer request code originally supplied to
+		///  startActivityForResult(), allowing you to identify who this
+		///  result came from.</param>
+		/// <param name="resultCode">The integer result code returned by the child activity
+		///  through its setResult().</param>
+		/// <param name="data">An Intent, which can return result data to the caller
+		///  (various data can be attached to Intent "extras").</param>
+		/// <summary>
+		/// Called when an activity you launched exits, giving you the requestCode
+		///  you started it with, the resultCode it returned, and any additional
+		///  data from it.
+		/// </summary>
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
 			switch (requestCode) {
@@ -253,6 +324,10 @@ namespace MenuLayout
 
 		private List<BTPlayerController> _playerControllerList;
 
+		/// <summary>
+		/// Handles the bluetooth messages recived (only board packages will be accepted).
+		/// </summary>
+		/// <param name="pkg">Package containing the message.</param>
 		private void handlePackage (Package pkg)
 		{
 			if (pkg == EnPackageType.BOARD) {
@@ -281,6 +356,10 @@ namespace MenuLayout
 			}
 		}
 
+		/// <summary>
+		/// Handles the local messages.
+		/// </summary>
+		/// <param name="msg">Message.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		private void handleLocalMessage (Message msg)
 		{

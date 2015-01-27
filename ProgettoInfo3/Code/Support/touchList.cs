@@ -4,16 +4,40 @@ using System.Collections.Generic;
 
 namespace Core
 {
+	/// <summary>
+	/// Touch listener. Wrapper for <see cref="CCEventListenerTouchAllAtOnce"/>
+	/// </summary>
 	public class TouchList
 	{
+		/// <summary>
+		/// The touch listener.
+		/// </summary>
+		private readonly CCEventListenerTouchAllAtOnce touchListener;
 
-		private CCEventListenerTouchAllAtOnce touchListener;
-		public delegate void eventHandlerTouch (List<CCTouch> touches,CCEvent touchEvent);
+		/// <summary>
+		/// Delegate for every method that will be called by the event.
+		/// </summary>
+		public delegate void eventHandlerTouch (List<CCTouch> touches, CCEvent touchEvent);
 
+		/// <summary>
+		/// Occurs when a touch begins.
+		/// </summary>
 		public event eventHandlerTouch eventTouchBegan;
+
+		/// <summary>
+		/// Occurs when a touch is dragged.
+		/// </summary>
 		public event eventHandlerTouch eventTouchMoved;
+
+		/// <summary>
+		/// Occurs when a touch is ended.
+		/// </summary>
 		public event eventHandlerTouch eventTouchEnded;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Core.TouchList"/> class.
+		/// </summary>
+		/// <param name="gScene">Game scene.</param>
 		public TouchList (CCScene gScene)
 		{
 			touchListener = new CCEventListenerTouchAllAtOnce ();
@@ -22,7 +46,7 @@ namespace Core
 			touchListener.OnTouchesEnded = touchEnded;
 			gScene.AddEventListener (touchListener, gScene);
 		}
-			
+
 
 		/// <summary>
 		/// Function executed on the starting touch
@@ -31,7 +55,7 @@ namespace Core
 		/// <param name="touchEvent">Touch event</param>
 		private void touchBegan (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			if(eventTouchBegan!=null)  {
+			if (eventTouchBegan != null) {
 				eventTouchBegan (touches, touchEvent);
 			}
 		}
@@ -43,7 +67,7 @@ namespace Core
 		/// <param name="touchEvent">Touch event</param>
 		private void touchMoved (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			if(eventTouchMoved!=null)  {
+			if (eventTouchMoved != null) {
 				eventTouchMoved (touches, touchEvent);
 			}	
 		}
@@ -57,7 +81,7 @@ namespace Core
 		/// <param name="touchEvent">Touch event</param>
 		void touchEnded (List<CCTouch> touches, CCEvent touchEvent)
 		{	
-			if(eventTouchEnded!=null)  {
+			if (eventTouchEnded != null) {
 				eventTouchEnded (touches, touchEvent);
 			}
 				
