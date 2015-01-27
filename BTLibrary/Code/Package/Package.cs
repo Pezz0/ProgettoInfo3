@@ -27,8 +27,6 @@ namespace BTLibrary
 					return new PackageCard (b);
 				case EnPackageType.NAME:
 					return new PackageName (b);
-				case EnPackageType.READY:
-					return new PackageReady (b);
 				case EnPackageType.SEME:
 					return new PackageSeme (b);
 				case EnPackageType.TERMINATE:

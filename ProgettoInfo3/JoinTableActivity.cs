@@ -115,6 +115,7 @@ namespace MenuLayout
 					_pairedArrayList.Add (BTManager.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 			}
 
+
 			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 			BTManager.Instance.eventPackageReceived += handlePackage;
 		}
@@ -250,6 +251,8 @@ namespace MenuLayout
 			}
 		}
 
+		private List<BTPlayerController> _playerControllerList;
+
 		private void handlePackage (Package pkg)
 		{
 			if (pkg == EnPackageType.BOARD) {
@@ -258,13 +261,22 @@ namespace MenuLayout
 				_name.Enabled = false;
 
 				Intent returnIntent = new Intent ();
-				returnIntent.PutExtra ("Board", ( (PackageBoard) pkg ).bytes);
-				returnIntent.PutExtra ("Name", _name.Text.ToCharArray ());
 				this.SetResult (Result.Ok, returnIntent);
+
+				Board.Instance.initializeSlave (( (PackageBoard) pkg ).bytes, _name.Text);
+
+				BTManager.Instance.initializeComunication ();
+
+
+				for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
+					if (Board.Instance.Me.order != i)
+						Board.Instance.getPlayer (i).setController (_playerControllerList [i]);
+
+
 
 				BTManager.Instance.eventLocalMessageReceived -= handleLocalMessage;
 				BTManager.Instance.eventPackageReceived -= handlePackage;
-
+		
 				Finish ();
 			}
 		}
@@ -329,6 +341,9 @@ namespace MenuLayout
 						_scan.Enabled = false;
 						_disconnect.Enabled = true;
 						Toast.MakeText (Application.Context, "Connected to " + _conn, ToastLength.Short).Show ();
+						_playerControllerList = new List<BTPlayerController> (Board.PLAYER_NUMBER);
+						for (int i = 0; i < Board.PLAYER_NUMBER; i++)
+							_playerControllerList.Add (new BTPlayerController (i));
 						this.SetTitle (Resource.String.change_name);
 					}
 

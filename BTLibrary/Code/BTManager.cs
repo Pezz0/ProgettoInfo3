@@ -633,7 +633,7 @@ namespace BTLibrary
 
 		public void initializeComunication ()
 		{
-			Board.Instance.eventImReady += imReady;
+			//Board.Instance.eventImReady += imReady;
 			Board.Instance.eventIPlaceABid += bidPlaced;
 			if (!isSlave ())
 				Board.Instance.eventSomeonePlaceABid += bidPlaced;
@@ -644,7 +644,7 @@ namespace BTLibrary
 		}
 
 		//When the Board event eventImReady happens, write to master or to all slave the message
-		private void imReady ()
+		/*private void imReady ()
 		{
 			//the message is only one byte because the ready event doesn't need any information
 			if (BTManager.Instance.isSlave ())
@@ -652,7 +652,7 @@ namespace BTLibrary
 			else
 				WriteToAllSlave (new PackageReady ());
 
-		}
+		}*/
 
 		//When the Board event eventIPlaceABid or eventSomeonePlaceABid happens, write to master or to all slave the message
 		private void bidPlaced (IBid bid)

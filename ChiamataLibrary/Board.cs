@@ -219,7 +219,7 @@ namespace ChiamataLibrary
 		/// /*Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is waiting phase.*/
 		/// </summary>
 		/// <value><c>true</c> if is waiting phase; otherwise, <c>false</c>.</value>
-		public bool isWaitingPhase{ get { return _t == -3; } }
+		//public bool isWaitingPhase{ get { return _t == -3; } }
 
 
 		/// <summary>
@@ -630,11 +630,6 @@ namespace ChiamataLibrary
 		public delegate void eventHandlerChangePhase ();
 
 		/// <summary>
-		/// Occurs when i'm ready start.
-		/// </summary>
-		public event eventHandlerChangePhase eventImReady;
-
-		/// <summary>
 		/// Occurs when the auction start.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStart;
@@ -655,49 +650,24 @@ namespace ChiamataLibrary
 
 		public void start ()
 		{
-			_t = -3;
-
-				
 			_listBid.Clear ();
 			_activeAuctionPlayer = _lastWinner;	//dealer+1
 			_currentWinningBid = null;
+
+			_t = -2;
+			if (eventAuctionStart != null)
+				eventAuctionStart ();
+
 		}
 
 		#endregion
 
 		#region Update
 
-		//private bool _imReady = false;
-
 		public void update ()
 		{
-			if (isWaitingPhase) {	//waiting phase
 
-				if (_me == 0) {	//master
-					bool r = true;
-					
-					for (int i = 0; i < PLAYER_NUMBER && r; i++)
-						r = r && _players [i].isReady;
-					
-					if (r) {
-						_t = -2;
-						if (eventAuctionStart != null)
-							eventAuctionStart ();
-					}
-										
-				} else {	//slave
-					if (eventImReady != null)
-						eventImReady ();
-
-
-					_t = -2;
-					if (eventAuctionStart != null)
-						eventAuctionStart ();
-
-				}
-
-
-			} else if (isAuctionPhase) {	//auction
+			if (isAuctionPhase) {	//auction
 				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
 
 				if (bid != null) {

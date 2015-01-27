@@ -63,14 +63,16 @@ namespace MenuLayout
 
 					Player caller = gd.getChiamante ();
 
-					Player socio = gd.getSocio ();
+					Player socio = null;
+					if (!gd.isChiamataInMano)
+						socio = gd.getSocio ();
 
 					for (int j = 0; j < Board.PLAYER_NUMBER; ++j) {
 						Player player = gd.getPlayer (j);
 						play.Add (player.name);
 						if (player.name == caller.name)
 							play.Add ("CHIAMANTE");
-						else if (player.name == socio.name)
+						else if (!gd.isChiamataInMano && player.name == socio.name)
 							play.Add ("SOCIO");
 						else
 							play.Add ("ALTRO");

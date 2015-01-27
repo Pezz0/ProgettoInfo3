@@ -10,7 +10,7 @@ namespace ChiamataLibrary
 
 		#region Card
 
-		private readonly Card [,] _cards;
+		private readonly Card [,] _cards = new Card[Board.Instance.nSemi, Board.Instance.nNumber];
 
 		public Card getCard (EnSemi seme, EnNumbers number)
 		{
@@ -21,7 +21,7 @@ namespace ChiamataLibrary
 
 		#region Player
 
-		private readonly Player [] _players;
+		private readonly Player [] _players = new Player[Board.PLAYER_NUMBER];
 
 		public Player getPlayer (int order)
 		{
@@ -65,7 +65,7 @@ namespace ChiamataLibrary
 
 		#region Auction
 
-		private readonly List<IBid> _bids;
+		private readonly List<IBid> _bids = new List<IBid> ();
 
 		#endregion
 
@@ -116,7 +116,7 @@ namespace ChiamataLibrary
 		{
 			List<Player> w = getWinners ();
 			int award = 0;
-			if (w.Count == 1)
+			if (w.Count == 1 || ( isChiamataInMano && player.Role == EnRole.CHIAMANTE ))
 				award = 4;
 			else if (player.Role == EnRole.CHIAMANTE)
 				award = 2;
@@ -378,9 +378,16 @@ namespace ChiamataLibrary
 		public GameData (DateTime time, Card [,] cards, Player [] players, List<IBid> bids, EnGameType type, Card calledCard, int winningPoint)
 		{
 			this.time = time;
-			this._cards = cards;
-			this._players = players;
-			this._bids = bids;
+
+			for (int i = 0; i < Board.Instance.nSemi; ++i)
+				for (int j = 0; j < Board.Instance.nNumber; ++j)
+					this._cards [i, j] = cards [i, j];
+
+			for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
+				this._players [i] = players [i];
+
+			this._bids = new List<IBid> (bids);
+
 			this.gameType = type;
 			this.calledCard = calledCard;
 			this.winningPoint = winningPoint;

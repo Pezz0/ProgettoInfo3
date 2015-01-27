@@ -109,7 +109,7 @@ namespace ChiamataLibrary
 			Board.Instance.eventPlaytimeStart += startGame;
 		}
 
-		public bool isReady { get { return true; } }
+		//public bool isReady { get { return true; } }
 
 		public bool isActive {
 			get {

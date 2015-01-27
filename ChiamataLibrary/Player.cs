@@ -173,7 +173,7 @@ namespace ChiamataLibrary
 			_controller = controller;
 		}
 
-		public bool isReady{ get { return _controller.isReady; } }
+		//public bool isReady{ get { return _controller.isReady; } }
 
 
 		public IBid invokeChooseBid ()

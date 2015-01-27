@@ -58,7 +58,6 @@
     <Compile Include="Code\Package\PackageBoard.cs" />
     <Compile Include="Code\Package\PackageCard.cs" />
     <Compile Include="Code\Package\PackageName.cs" />
-    <Compile Include="Code\Package\PackageReady.cs" />
     <Compile Include="Code\Package\PackageSeme.cs" />
     <Compile Include="Code\BTManager.cs" />
     <Compile Include="Code\Package\PackageTerminate.cs" />

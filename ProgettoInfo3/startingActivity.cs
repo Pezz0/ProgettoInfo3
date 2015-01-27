@@ -44,23 +44,16 @@ namespace MenuLayout
 		}
 
 		private bool primo = true;
-		private readonly List<IPlayerController> _PlayerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER - 1);
+		private List<IPlayerController> _playerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER);
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{
-			_PlayerControllerList.Clear ();
+			_playerControllerList.Clear ();
 
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
 				if (BTManager.Instance.isSlave ()) {
 				
-					Board.Instance.initializeSlave (data.GetByteArrayExtra ("Board"), new string (data.GetCharArrayExtra ("Name")));
-				
-					BTManager.Instance.initializeComunication ();
-
-					for (int i = 0; i < Board.PLAYER_NUMBER; i++)
-						if (Board.Instance.Me.order != i)
-							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
 
 				} else {
 
@@ -73,12 +66,16 @@ namespace MenuLayout
 					if (BTManager.Instance.getNumConnected () > 0)
 						BTManager.Instance.WriteToAllSlave (new PackageBoard ());
 
+					_playerControllerList = new List<IPlayerController> (Board.PLAYER_NUMBER);
+
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (_gameProfile.getPlayerAddress (i - 1) == Resources.GetString (Resource.String.none_add))
-							_PlayerControllerList.Add (new AIPlayerController (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
-						else
-							_PlayerControllerList.Add (new BTPlayerController (Board.Instance.getPlayer (i)));
-
+							_playerControllerList.Add (new AIPlayerController (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
+						else {
+							BTPlayerController bt = new BTPlayerController (i);
+							_playerControllerList.Add (bt);
+							Board.Instance.getPlayer (i).setController (bt);
+						}
 					}
 				}
 					

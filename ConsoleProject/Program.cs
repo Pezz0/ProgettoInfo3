@@ -62,7 +62,7 @@ namespace ChiamataLibrary
 			return mano [int.Parse (Console.ReadLine ())];
 		}
 
-		public bool isReady { get { return true; } }
+		//public bool isReady { get { return true; } }
 
 		public bool isActive { get { return true; } }
 	}

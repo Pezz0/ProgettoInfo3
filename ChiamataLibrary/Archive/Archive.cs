@@ -23,7 +23,7 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		private List<GameData> _listGames = new List<GameData> ();
+		private readonly List<GameData> _listGames = new List<GameData> ();
 
 		public void forEach (Action<GameData> action)
 		{
@@ -54,8 +54,6 @@ namespace ChiamataLibrary
 				completePath = Path.Combine (path, FILE_NAME + _lastGameCount.ToString () + ".xml");
 			}
 
-//			for (i = 0; File.Exists (completePath); completePath = Path.Combine (path, fileName + ( ++i ).ToString () + ".xml"))
-//				add (new GameData (completePath));
 
 		}
 
@@ -66,9 +64,6 @@ namespace ChiamataLibrary
 				gd.writeOnXML (Path.Combine (path, FILE_NAME + i.ToString () + ".xml"));
 				++i;
 			});
-
-
-			//_listGames.ForEach (gd => gd.writeOnXML (Path.Combine (path, fileName + ( i++ ).ToString () + ".xml")));
 		}
 
 		public void saveLastGame (string path)
