@@ -14,7 +14,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AssemblyName>ProgettoInfo3</AssemblyName>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -133,8 +133,6 @@
     <AndroidAsset Include="Assets\Content\btnCarichiPressed.png" />
     <AndroidAsset Include="Assets\Content\sliderBall.png" />
     <AndroidAsset Include="Assets\Content\sliderBar.png" />
-    <AndroidAsset Include="Assets\Content\turnLight.png" />
-    <AndroidAsset Include="Assets\Content\turnLight2.png" />
     <AndroidAsset Include="Assets\Content\ASSE_BASTONI.png" />
     <AndroidAsset Include="Assets\Content\ASSE_COPE.png" />
     <AndroidAsset Include="Assets\Content\ASSE_ORI.png" />
@@ -175,7 +173,6 @@
     <AndroidAsset Include="Assets\Content\TRE_COPE.png" />
     <AndroidAsset Include="Assets\Content\TRE_ORI.png" />
     <AndroidAsset Include="Assets\Content\TRE_SPADE.png" />
-    <AndroidAsset Include="Assets\Content\turnLight3.png" />
     <AndroidAsset Include="Assets\Content\resultBoard.png" />
     <AndroidAsset Include="Assets\Content\spriteDefeat.png" />
     <AndroidAsset Include="Assets\Content\spriteVictory.png" />
