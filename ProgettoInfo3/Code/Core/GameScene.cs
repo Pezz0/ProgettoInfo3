@@ -188,17 +188,17 @@ namespace Core
 		/// <summary>
 		/// Button used to choose ori.
 		/// </summary>
-		private readonly Button _chooseOri;
+		private Button _chooseOri;
 
 		/// <summary>
 		/// Button used to choose spade.
 		/// </summary>
-		private readonly Button _chooseSpade;
+		private Button _chooseSpade;
 
 		/// <summary>
 		/// Button used to choose bastoni.
 		/// </summary>
-		private readonly Button _chooseBastoni;
+		private Button _chooseBastoni;
 
 		/// <summary>
 		/// Button used to choose coppe.
@@ -859,13 +859,6 @@ namespace Core
 		#endregion
 
 		#endregion
-
-		public bool isReady { get { return true; } }
-
-
-
-		//Boolean value that says if the debug label has already been written.
-		//private bool written;
 
 		/// <summary>
 		/// Message that contains the information about continue or quit the game.

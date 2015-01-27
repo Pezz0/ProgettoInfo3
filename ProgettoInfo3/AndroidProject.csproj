@@ -180,6 +180,21 @@
     <AndroidAsset Include="Assets\Content\btnExitPressed.png" />
     <AndroidAsset Include="Assets\Content\btnNext.png" />
     <AndroidAsset Include="Assets\Content\btnNextPressed.png" />
+    <AndroidAsset Include="Assets\Content\turnLight.png" />
+    <AndroidAsset Include="Assets\Content\cll_ASSE.png" />
+    <AndroidAsset Include="Assets\Content\cll_BASTONI.png" />
+    <AndroidAsset Include="Assets\Content\cll_CAVALLO.png" />
+    <AndroidAsset Include="Assets\Content\cll_CINQUE.png" />
+    <AndroidAsset Include="Assets\Content\cll_COPE.png" />
+    <AndroidAsset Include="Assets\Content\cll_DUE.png" />
+    <AndroidAsset Include="Assets\Content\cll_FANTE.png" />
+    <AndroidAsset Include="Assets\Content\cll_ORI.png" />
+    <AndroidAsset Include="Assets\Content\cll_QUATTRO.png" />
+    <AndroidAsset Include="Assets\Content\cll_RE.png" />
+    <AndroidAsset Include="Assets\Content\cll_SEI.png" />
+    <AndroidAsset Include="Assets\Content\cll_SETTE.png" />
+    <AndroidAsset Include="Assets\Content\cll_SPADE.png" />
+    <AndroidAsset Include="Assets\Content\cll_TRE.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">

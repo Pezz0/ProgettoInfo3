@@ -4,15 +4,16 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}</ProjectGuid>
+    <ProjectGuid>{FEFCBDF8-7D42-4EDA-844E-779D263AF4BD}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>BTLibrary</RootNamespace>
-    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <RootNamespace>AndroidTestProject</RootNamespace>
+    <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
-    <AssemblyName>BTLibrary</AssemblyName>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>AndroidTestProject</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,8 +24,8 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidLinkMode>None</AndroidLinkMode>
     <ConsolePause>false</ConsolePause>
+    <AndroidLinkMode>None</AndroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -40,39 +41,32 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
+    <Reference Include="Xamarin.Android.NUnitLite" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="Code\Thread\BTConnectThread.cs" />
-    <Compile Include="Code\Thread\BTListenThread.cs" />
-    <Compile Include="Code\BTReceiver.cs" />
-    <Compile Include="Code\Thread\BTWriteThread.cs" />
-    <Compile Include="Code\Thread\BTReadThread.cs" />
-    <Compile Include="Code\Enumeration\EnConnectionState.cs" />
-    <Compile Include="Code\Enumeration\EnActivityResultCode.cs" />
-    <Compile Include="Code\Enumeration\EnLocalMessageType.cs" />
-    <Compile Include="Code\Enumeration\EnPackageType.cs" />
-    <Compile Include="Code\BTPlayerController.cs" />
-    <Compile Include="Code\Package\Package.cs" />
-    <Compile Include="Code\Package\PackageBid.cs" />
-    <Compile Include="Code\Package\PackageBoard.cs" />
-    <Compile Include="Code\Package\PackageCard.cs" />
-    <Compile Include="Code\Package\PackageName.cs" />
-    <Compile Include="Code\Package\PackageSeme.cs" />
-    <Compile Include="Code\BTManager.cs" />
-    <Compile Include="Code\Package\PackageTerminate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CardTest.cs" />
+    <Compile Include="IBidTest.cs" />
+    <Compile Include="PackageTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
+    <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\Icon.png" />
   </ItemGroup>
-  <Import Project="..\ChiamataLibrary\ChiamataLibrary.projitems" Label="Shared" Condition="Exists('..\ChiamataLibrary\ChiamataLibrary.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Code\" />
-    <Folder Include="Code\Thread\" />
-    <Folder Include="Code\Package\" />
+    <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">
+      <Project>{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}</Project>
+      <Name>BTLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

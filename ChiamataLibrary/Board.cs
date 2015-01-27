@@ -69,7 +69,7 @@ namespace ChiamataLibrary
 
 			_listBid.Clear ();
 
-			_t = -4;
+			_t = -3;
 		}
 
 		#endregion
@@ -195,8 +195,7 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Variable that rappresent the current discrete time
-		/// 	-4 = creation time
-		/// 	-3 = waiting phase
+		/// 	-3 = creation time
 		/// 	-2 = auction time
 		/// 	-1 = finalize
 		/// 	 0 = first play
@@ -207,19 +206,13 @@ namespace ChiamataLibrary
 		/// 	 39 = last play
 		/// 	 40 = point counting e conclusion
 		/// </summary>
-		private int _t = -4;
+		private int _t = -3;
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
-		public bool isCreationPhase{ get { return _t == -4; } }
-
-		/// <summary>
-		/// /*Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is waiting phase.*/
-		/// </summary>
-		/// <value><c>true</c> if is waiting phase; otherwise, <c>false</c>.</value>
-		//public bool isWaitingPhase{ get { return _t == -3; } }
+		public bool isCreationPhase{ get { return _t == -3; } }
 
 
 		/// <summary>
