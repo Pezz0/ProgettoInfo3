@@ -83,9 +83,10 @@ namespace BTLibrary
 
 			address = new string (adr);
 
+			int len = (int) bs [18] + 19;
 			List<byte> lb = new List<byte> ();
 
-			for (int i = 18; bs [i] != 0; ++i)
+			for (int i = 19; i < len; ++i)
 				lb.Add (bs [i]);
 				
 			name = Encoding.ASCII.GetString (lb.ToArray ());
@@ -103,7 +104,7 @@ namespace BTLibrary
 
 			byte [] bAddress = Encoding.ASCII.GetBytes (address);
 			msg.AddRange (bAddress);
-
+			msg.Add ((byte) name.Length);
 			msg.AddRange (Encoding.ASCII.GetBytes (name));
 			return msg.ToArray ();
 		}
