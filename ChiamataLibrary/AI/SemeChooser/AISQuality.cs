@@ -3,15 +3,29 @@ using System.Collections.Generic;
 
 namespace ChiamataLibrary
 {
+	/// <summary>
+	/// AI for seme choosing, using as a figure of merit the quality of the cards of the same SEME.
+	/// </summary>
 	public class AISQuality:IAISemeChooser
 	{
+		/// <summary>
+		/// The seme that will be chosen by this AI.
+		/// </summary>
 		private EnSemi _seme;
 
+		/// <summary>
+		/// Getter for the seme.
+		/// </summary>
+		/// <returns>The seme that will be chosen by this AI.</returns>
 		public EnSemi? chooseSeme ()
 		{
 			return _seme;
 		}
 
+		/// <summary>
+		/// Initializes this instance.
+		/// </summary>
+		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
 		public void setup (Player me)
 		{
 			List<Card> [] onHand = new List<Card>[Board.Instance.nSemi]; 
@@ -36,6 +50,9 @@ namespace ChiamataLibrary
 			_seme = (EnSemi) maxValue;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.AISQuality"/> class.
+		/// </summary>
 		public AISQuality ()
 		{
 		}

@@ -8,7 +8,7 @@ using Android.Util;
 namespace BTLibrary
 {
 	/// <summary>
-	/// BlueTooth read thread.
+	/// Thread that waits for incoming messages.
 	/// </summary>
 	internal class BTReadThread
 	{
@@ -32,6 +32,10 @@ namespace BTLibrary
 		/// </summary>
 		private Thread _reader;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BTLibrary.BTReadThread"/> class.
+		/// </summary>
+		/// <param name="socket">Bluetooth socket.</param>
 		public BTReadThread (BluetoothSocket socket)
 		{
 			_socket = socket;

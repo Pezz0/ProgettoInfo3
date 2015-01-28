@@ -340,7 +340,7 @@ namespace MenuLayout
 
 				Board.Instance.initializeSlave (( (PackageBoard) pkg ).bytes, _name.Text);
 
-				BTManager.Instance.initializeComunication ();
+				BTManager.Instance.initializeCommunication ();
 
 
 				for (int i = 0; i < Board.PLAYER_NUMBER; ++i)

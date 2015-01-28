@@ -2,6 +2,9 @@
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Enumeration for the activity results.
+	/// </summary>
 	public enum EnActivityResultCode
 	{
 		REQUEST_CONNECT_DEVICE,

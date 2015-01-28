@@ -2,12 +2,25 @@
 
 namespace ChiamataLibrary
 {
+	/// <summary>
+	/// AI for play time, for players that are in the SOCIO role.
+	/// </summary>
 	public class AICSocioNascosto:IAICardChooser
 	{
 
+		/// <summary>
+		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
+		/// </summary>
 		private Player _me;
+		/// <summary>
+		/// Integer representing the distance between this player and the player in the CHIAMANTE role.
+		/// </summary>
 		private int _deltaChiamante;
 
+		/// <summary>
+		/// Method that returns which card the AI wants to play.
+		/// </summary>
+		/// <returns>The card.</returns>
 		public Card chooseCard ()
 		{
 			Card temp;
@@ -74,13 +87,19 @@ namespace ChiamataLibrary
 			throw new Exception ("some errore occur");
 		}
 
+		/// <summary>
+		/// Initializes this instance.
+		/// </summary>
+		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
 		public void setup (Player me)
 		{
 			this._me = me;
 			_deltaChiamante = ( me.order - Board.Instance.getChiamante ().order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
 		}
 
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.AICSocioNascosto"/> class.
+		/// </summary>
 		public AICSocioNascosto ()
 		{
 		}

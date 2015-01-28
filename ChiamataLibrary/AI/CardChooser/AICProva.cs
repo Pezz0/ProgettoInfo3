@@ -2,22 +2,41 @@
 
 namespace ChiamataLibrary
 {
+	/// <summary>
+	/// Test AI for play time.
+	/// </summary>
 	public class AICProva:IAICardChooser
 	{
+		/// <summary>
+		/// The card chooser.
+		/// </summary>
 		private IAICardChooser _cardChooser;
-
+		/// <summary>
+		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
+		/// </summary>
 		private Player _me;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.AICProva"/> class.
+		/// </summary>
 		public AICProva ()
 		{
 
 		}
 
+		/// <summary>
+		/// Method that returns which card the AI wants to play.
+		/// </summary>
+		/// <returns>The card.</returns>
 		public Card chooseCard ()
 		{
 			return _cardChooser.chooseCard ();
 		}
 
+		/// <summary>
+		/// Initializes this instance.
+		/// </summary>
+		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
 		public void setup (Player me)
 		{
 			this._me = me;

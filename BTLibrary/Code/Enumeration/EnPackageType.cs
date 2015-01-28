@@ -2,6 +2,9 @@
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Enumeration for the package type.
+	/// </summary>
 	public enum EnPackageType
 	{
 		NONE,

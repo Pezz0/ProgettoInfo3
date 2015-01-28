@@ -9,10 +9,13 @@ namespace BTLibrary
 	{
 
 		/// <summary>
-		/// the counter that inicate if any new device is dicovered
+		/// The counter that indicates the number of new device discovered.
 		/// </summary>
 		private static int count = 0;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BTLibrary.BTReceiver"/> class.
+		/// </summary>
 		public BTReceiver ()
 		{
 		}
@@ -20,8 +23,7 @@ namespace BTLibrary
 		/// <param name="context">The Context in which the receiver is running.</param>
 		/// <param name="intent">The Intent being received.</param>
 		/// <summary>
-		/// This method is called when the BroadcastReceiver is receiving an Intent
-		///  broadcast.
+		/// This method is called when the BroadcastReceiver is receiving an Intent broadcast.
 		/// </summary>
 		public override void OnReceive (Context context, Intent intent)
 		{ 

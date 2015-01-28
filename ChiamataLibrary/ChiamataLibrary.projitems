@@ -14,8 +14,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Move.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Player.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\IAIChooseCard.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AI\IAIChooseSeme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\BidChooser\AIBFixedJump.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\BidChooser\AIBMobileJump.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\BidChooser\AIBStupid.cs" />

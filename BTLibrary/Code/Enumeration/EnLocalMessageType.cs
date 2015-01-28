@@ -2,6 +2,9 @@
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Enumeration for the local messages.
+	/// </summary>
 	public enum EnLocalMessageType
 	{
 		MESSAGE_STATE_CHANGE,

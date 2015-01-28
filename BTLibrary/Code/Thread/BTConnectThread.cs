@@ -6,7 +6,7 @@ using System.Threading;
 namespace BTLibrary
 {
 	/// <summary>
-	/// Connect thread class.
+	/// Used to connect to an open bluetooth slot (used by the slaves).
 	/// </summary>
 	internal class BTConnectThread
 	{
@@ -20,8 +20,16 @@ namespace BTLibrary
 		/// </summary>
 		private BluetoothDevice _device;
 
+		/// <summary>
+		/// Thread that attempts to connect to the master.
+		/// </summary>
 		private Thread _connecter;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BTLibrary.BTConnectThread"/> class.
+		/// </summary>
+		/// <param name="device">The device of the master we want to connect to.</param>
+		/// <param name="MY_UUID">My UUID.</param>
 		public BTConnectThread (BluetoothDevice device, UUID MY_UUID)
 		{
 			_device = device;

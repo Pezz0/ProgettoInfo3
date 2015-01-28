@@ -2,10 +2,27 @@
 
 namespace ChiamataLibrary
 {
+	/// <summary>
+	/// AI for auction, Fixed Jump algorithm.
+	/// See the documentation for more informations about this AI.
+	/// </summary>
 	public class AIBFixedJump:IAIBCallEverything
 	{
+		/// <summary>
+		/// Maximum jump.
+		/// </summary>
+		/// <remarks>
+		/// Represents the maximum number of consecutive cards that can be missing from a player hand.
+		/// For example, a value of 0 means that in order to continue bidding, the AI must have all the cards from ASSE to CINQUE of one SEME
+		/// A Value of 1 lets the AI bid even if has some missing cards (the AI still cannot bid if two consecutive cards are missing)
+		/// </remarks>
 		private readonly int _maxJump;
 
+		/// <summary>
+		/// Initializes this instance.
+		/// </summary>
+		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
+		/// <param name="seme">The seme that will be chosen if this AI wins the auction.</param>
 		public override void setup (Player me, EnSemi seme)
 		{
 			base.setup (me, seme);
@@ -27,6 +44,10 @@ namespace ChiamataLibrary
 
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.AIBFixedJump"/> class.
+		/// </summary>
+		/// <param name="maxJump">Value of max jump. See <see cref="ChiamataLibrary.AIBFixedJump._maxJump"/> for more informations.</param>
 		public AIBFixedJump (int maxJump) : base ()
 		{
 			this._maxJump = maxJump;

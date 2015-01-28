@@ -16,12 +16,22 @@ using System.Threading;
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Wrapper for all the bluetooth features (singleton implementation).
+	/// </summary>
 	public class BTManager: Handler
 	{
 		#region singleton implementation
 
+		/// <summary>
+		/// Instance of the <see cref="BTLibrary.BTManager"/> singleton
+		/// </summary>
 		private static readonly BTManager _instance = new BTManager ();
 
+		/// <summary>
+		/// Gets the instance.
+		/// </summary>
+		/// <value>The instance of the <see cref="BTLibrary.BTManager"/>.</value>
 		public static BTManager Instance{ get { return _instance; } }
 
 		private BTManager ()
@@ -65,7 +75,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Indicate if BT is enable.
+		/// Indicate if BT is enabled.
 		/// </summary>
 		/// <returns><c>true</c>, if BT is enable <c>false</c> otherwise.</returns>
 		public bool isBTEnabled ()
@@ -118,7 +128,7 @@ namespace BTLibrary
 		private BTReceiver _receiver;
 
 		/// <summary>
-		/// Registers the receiver for when a device is discovered and when discovery is finished.
+		/// Registers the receiver for device discovery and the finishing of device discovery.
 		/// </summary>
 		public void RegisterReceiver ()
 		{
@@ -175,9 +185,9 @@ namespace BTLibrary
 		private List<string> _pairedDevicesList = new List<string> ();
 
 		/// <summary>
-		/// Gets a list of paired device addresses.
+		/// Gets a list of paired devices address.
 		/// </summary>
-		/// <returns>The paired device addresses.</returns>
+		/// <returns>The paired devices address.</returns>
 		public List<string> GetPaired ()
 		{
 			// Get a set of currently paired devices
@@ -195,7 +205,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Performs discovery of new device
+		/// Performs discovery of a new device
 		/// </summary>
 		public void Discovery ()
 		{
@@ -221,7 +231,7 @@ namespace BTLibrary
 		#region Connection Management
 
 		/// <summary>
-		/// The listen thread for accepting incoming connection.
+		/// The listen thread to accept incoming connections.
 		/// </summary>
 		private BTListenThread _listenThread;
 
@@ -288,7 +298,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Performs connection as master
+		/// Performs connection as master.
 		/// </summary>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void ConnectAsMaster ()
@@ -305,7 +315,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Performs connection as slave
+		/// Performs connection as slave.
 		/// </summary>
 		/// <param name="device">Device to connect.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
@@ -323,10 +333,10 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Connecteds to Master.
+		/// Connects to Master.
 		/// </summary>
-		/// <param name="socket">Socket.</param>
-		/// <param name="device">Device.</param>
+		/// <param name="socket">Bluetooth socket.</param>
+		/// <param name="device">Bluetooth device.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
 		{
@@ -345,7 +355,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Indicate if is Slave in the network.
+		/// Indicates if the current device is a slave in the network.
 		/// </summary>
 		/// <returns><c>true</c>, if is client <c>false</c> otherwise.</returns>
 		[MethodImpl (MethodImplOptions.Synchronized)]
@@ -357,10 +367,10 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Connecteds to slave.
+		/// Connects to slave.
 		/// </summary>
-		/// <param name="socket">Socket.</param>
-		/// <param name="device">Device.</param>
+		/// <param name="socket">Bluetooth socket.</param>
+		/// <param name="device">Bluetooth device.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
@@ -441,7 +451,7 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Removes a slave .
+		/// Removes a slave.
 		/// </summary>
 		/// <param name="address">Address of the slave to remove.</param>
 		[MethodImpl (MethodImplOptions.Synchronized)]
@@ -462,6 +472,9 @@ namespace BTLibrary
 			}
 		}
 
+		/// <summary>
+		/// Removes the master.
+		/// </summary>
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveMaster ()
 		{
@@ -503,7 +516,7 @@ namespace BTLibrary
 		#region initialization
 
 		/// <summary>
-		/// The Max player bluetooth.
+		/// The maximum number of bluetooth slots avaiable.
 		/// </summary>
 		public const int MAX_BT_PLAYER = 4;
 
@@ -511,7 +524,6 @@ namespace BTLibrary
 		/// Initialize the specified the Play Service.
 		/// </summary>
 		/// <param name="activity">Activity.</param>
-		/// <param name="handler">Handler.</param>
 		public void Initialize (Activity activity)
 		{
 			//activity to register the receiver
@@ -527,14 +539,18 @@ namespace BTLibrary
 
 		#region Handler
 
-		private	List<Package> _packageReceived = new List<Package> ();
-
+		/// <summary>
+		/// Delegate for the event that occours when a local message is recieved.
+		/// </summary>
 		public delegate void eventHandlerLocalMessageReceived (Message msg);
 
+		/// <summary>
+		/// Occurs when a local message is received.
+		/// </summary>
 		public event eventHandlerLocalMessageReceived eventLocalMessageReceived;
 
 		/// <summary>
-		/// delegate to handle a playtime message.
+		/// Delegate or the event that occours when a playtime message is received.
 		/// </summary>
 		public delegate void eventHandlerPackageRecieved (Package pkg);
 
@@ -544,7 +560,7 @@ namespace BTLibrary
 		public event eventHandlerPackageRecieved eventPackageReceived;
 
 		/// <summary>
-		/// Handle the messages.
+		/// Handles the messages.
 		/// </summary>
 		public override void HandleMessage (Message msg)
 		{
@@ -558,12 +574,12 @@ namespace BTLibrary
 						
 					if (isSlave ()) {
 						//if i am a slave i remove the message from the list of the message to send
-						_writeToMasterThread.Remove (Package.getMessageFromHack (data));
+						_writeToMasterThread.Remove (Package.getMessageFromAck (data));
 					} else {
 						//otherwise i am the master so i remove the message only from the list of the sender
 						_writeToSlaveThread.ForEach (delegate(BTWriteThread thred) {
-							if (thred.Connected == Package.getAddressFromHack (data))
-								thred.Remove (Package.getMessageFromHack (data));
+							if (thred.Connected == Package.getAddressFromAck (data))
+								thred.Remove (Package.getMessageFromAck (data));
 						});
 
 					}
@@ -573,12 +589,6 @@ namespace BTLibrary
 
 					Package pkg = Package.createPackage (data);	
 
-					if (pkg == EnPackageType.MOVE)
-						Log.Debug ("da handler", ( (PackageCard) pkg ).move.ToString () + ( (PackageCard) pkg ).time + " " + Board.Instance.Time);
-					if (pkg == EnPackageType.BID)
-						Log.Debug ("BID", ( (PackageBid) pkg ).bid.ToString () + ( (PackageBid) pkg ).bid.bidder);
-							
-					_packageReceived.Add (pkg);
 
 					if (eventPackageReceived != null)
 						eventPackageReceived (pkg);
@@ -602,6 +612,10 @@ namespace BTLibrary
 
 		#region Communication Management
 
+		/// <summary>
+		/// Writes to master.
+		/// </summary>
+		/// <param name="pkg">Package to send to master.</param>
 		public void WriteToMaster (Package pkg)
 		{
 			if (_writeToMasterThread == null)
@@ -611,17 +625,10 @@ namespace BTLibrary
 
 		}
 
-		/*private void WriteToSlave (Package pkg, int slave)
-		{
-			if (_writeToSlaveThread [slave] == null) {
-				Toast.MakeText (Application.Context, "Client not connected", ToastLength.Long).Show ();
-				return;
-			}
-			_writeToSlaveThread [slave].Add (pkg.getMessage ());
-
-		}*/
-
-
+		/// <summary>
+		/// Writes to all slaves.
+		/// </summary>
+		/// <param name="pkg">Pakage to send to all slaves.</param>
 		public void WriteToAllSlave (Package pkg)
 		{
 			byte [] message = pkg.getMessage ();
@@ -631,9 +638,11 @@ namespace BTLibrary
 			}
 		}
 
-		public void initializeComunication ()
+		/// <summary>
+		/// Initializes the communication.
+		/// </summary>
+		public void initializeCommunication ()
 		{
-			//Board.Instance.eventImReady += imReady;
 			Board.Instance.eventIPlaceABid += bidPlaced;
 			if (!isSlave ())
 				Board.Instance.eventSomeonePlaceABid += bidPlaced;
@@ -643,44 +652,45 @@ namespace BTLibrary
 				Board.Instance.eventSomeonePlayACard += cardPlayed;
 		}
 
-		//When the Board event eventImReady happens, write to master or to all slave the message
-		/*private void imReady ()
-		{
-			//the message is only one byte because the ready event doesn't need any information
-			if (BTManager.Instance.isSlave ())
-				WriteToMaster (new PackageReady ());
-			else
-				WriteToAllSlave (new PackageReady ());
-
-		}*/
-
-		//When the Board event eventIPlaceABid or eventSomeonePlaceABid happens, write to master or to all slave the message
+		/// <summary>
+		/// Sends the BID message to the master (if i'm slave) or to all slaves (if i'm master).
+		/// </summary>
+		/// <remarks>See <see cref="BTLibrary.PackageBid"/> for further informations about the message contents.</remarks>
+		/// <param name="bid">The bid to send.</param>
 		private void bidPlaced (IBid bid)
 		{
-			//the message is compose of the nuber of bid to control that happens in the correct board time
-			// then is added the information about the bid type 
+			//When the Board event eventIPlaceABid or eventSomeonePlaceABid occours, write to master (if i'm slave) or to all slave (if i'm master) the message.
+
 			if (BTManager.Instance.isSlave ())
 				BTManager.Instance.WriteToMaster (new PackageBid (bid));
 			else
 				BTManager.Instance.WriteToAllSlave (new PackageBid (bid));
 		}
 
-		//When the Board event eventPlaytimeStart happens, write to master or to all slave the message
+		/// <summary>
+		/// Sends the SEME message to the master (if i'm slave and caller) or to all slaves (if i'm master).
+		/// </summary>
+		/// <remarks>See <see cref="BTLibrary.PackageSeme"/> for further informations about the message contents.</remarks>
 		private void semeChosen ()
 		{
-			//if this is the slave and is the caller send to master one byte that indicate the seme chosen 
+			// When the Board event eventPlaytimeStart happens, write to master or to all slave the message.
+			// If i'm the slave and the caller send to master one Byte that indicate the seme chosen.
 			if (BTManager.Instance.isSlave ()) {
 				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
 					BTManager.Instance.WriteToMaster (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
-				//if this is the master send to all slave one byte that indicate the seme chosen
+				// If i'm the master send to all slaves one Byte that indicate the seme chosen.
 			} else
 				BTManager.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
 		}
 
-		//When the Board event eventIPlayACard or eventSomeonePlayACard happens, write to master or to all slave the message
+		/// <summary>
+		/// Sends the MOVE message to the master (if i'm slave and caller) or to all slaves (if i'm master).
+		/// </summary>
+		/// <remarks>See <see cref="BTLibrary.PackageCard"/> for further informations about the message contents.</remarks>
+		/// <param name="move">Move.</param>
 		private void cardPlayed (Move move)
 		{
-			//the message is composed of the time where the card is played and then the information about the card
+			// When the Board event eventIPlayACard or eventSomeonePlayACard occours, write to master (if i'm slave) or to all slaves (if i'm master) the message.
 			if (BTManager.Instance.isSlave ())
 				BTManager.Instance.WriteToMaster (new PackageCard (move));
 			else

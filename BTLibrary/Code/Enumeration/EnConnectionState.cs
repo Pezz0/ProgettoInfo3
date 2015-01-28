@@ -2,6 +2,9 @@
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Enumerable for the connection state.
+	/// </summary>
 	public enum EnConnectionState
 	{
 		STATE_NONE,

@@ -6,6 +6,9 @@ using System.Threading;
 
 namespace BTLibrary
 {
+	/// <summary>
+	/// Listens for connection request (used by the master).
+	/// </summary>
 	internal class BTListenThread
 	{
 		/// <summary>
@@ -14,10 +17,15 @@ namespace BTLibrary
 		private BluetoothServerSocket _serverSocket;
 
 		/// <summary>
-		/// The listener thread.
+		/// Thread that waits for connection requests.
 		/// </summary>
 		private Thread _Listener;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BTLibrary.BTListenThread"/> class.
+		/// </summary>
+		/// <param name="NAME">Name.</param>
+		/// <param name="MY_UUID">My UUID.</param>
 		public BTListenThread (string NAME, UUID MY_UUID)
 		{
 			BluetoothServerSocket tmp = null;

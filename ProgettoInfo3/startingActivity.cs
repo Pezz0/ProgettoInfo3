@@ -89,7 +89,7 @@ namespace MenuLayout
 
 					ChiamataLibrary.Board.Instance.initializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer);
 
-					BTManager.Instance.initializeComunication ();
+					BTManager.Instance.initializeCommunication ();
 
 					if (BTManager.Instance.getNumConnected () > 0)
 						BTManager.Instance.WriteToAllSlave (new PackageBoard ());
