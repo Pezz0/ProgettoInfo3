@@ -70,6 +70,8 @@ namespace ChiamataLibrary
 
 				if (b1.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
 					return -1;
+				else if (b1.point == b2.point)	//If the points are even, the normal win is better
+					return 1;
 				else
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
@@ -80,6 +82,8 @@ namespace ChiamataLibrary
 
 				if (b2.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
 					return 1;
+				else if (b1.point == b2.point)	//If the points are even, the normal win is better
+					return -1;
 				else
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
 			}
@@ -123,8 +127,11 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator == (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)
-				return ( (object) b2 ) == null;
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)
+				return true;
+
+			if (( (object) b1 ) == null || ( (object) b2 ) == null)
+				return false;
 
 			return b1.CompareTo (b2) == 0;
 		}
@@ -134,8 +141,11 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator != (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)
-				return ( (object) b2 ) != null;
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)
+				return false;
+
+			if (( (object) b1 ) == null || ( (object) b2 ) == null)
+				return true;
 
 			return b1.CompareTo (b2) != 0;
 		}
@@ -145,8 +155,11 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator >= (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)	//null>=null  null < not null
-				return  ( (object) b2 ) == null;
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)	//
+				return true;
+
+			if (( (object) b1 ) == null)	//if the first is null, the second isn't null 
+				return false;
 
 			return b1.CompareTo (b2) >= 0;
 		}
@@ -156,8 +169,12 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator <= (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)	//null <= everything
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return true;
+
+			if (( (object) b1 ) == null)	//if the first is null, the second isn't null 
+				return true;
+
 
 			return b1.CompareTo (b2) <= 0;
 		}
@@ -167,8 +184,11 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator > (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)	//null > nothing
-				 return false;
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)
+				return false;
+
+			if (( (object) b1 ) == null)	//if the first is null, the second isn't null 
+				return false;
 
 			return b1.CompareTo (b2) > 0;
 		}
@@ -178,8 +198,11 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second bid.</param>
 		public static bool operator < (Bid b1, Bid b2)
 		{
-			if (( (object) b1 ) == null)	//null < not null
-				return  !( ( (object) b2 ) == null );
+			if (( (object) b1 ) == null && ( (object) b2 ) == null)
+				return false;
+
+			if (( (object) b1 ) == null)	//if the first is null, the second isn't null 
+				return true;
 
 			return b1.CompareTo (b2) < 0;
 		}

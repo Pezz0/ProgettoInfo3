@@ -5,7 +5,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Class representing a card.
 	/// </summary>
-	public class Card:IComparable<Card>,IEquatable<Card>
+	public class Card
 	{
 
 		#region Card's information
@@ -127,106 +127,28 @@ namespace ChiamataLibrary
 
 		#region Comparison
 
-		/// <summary>
-		/// Compares two instances of the <see cref="ChiamataLibrary.Card"/> class.
-		/// </summary>
-		/// <returns><c>1</c> if mainCard > other, <c>-0</c> if mainCard = other,<c>-1</c> otherwise.</returns>
-		/// <param name="other">The card to compare the main one to.</param>
-		public int CompareTo (Card other)
-		{
-			if (( (object) other ) == null)	 //null=null everything > null
-				return 1;
-
-			if (this.seme == other.seme)
-				return (int) this.number - (int) other.number;
-
-			if (Board.Instance.GameType != EnGameType.CARICHI) {
-				if (this.seme == Board.Instance.CalledCard.seme)
-					return 1;
-
-				if (other.seme == Board.Instance.CalledCard.seme)
-					return -1;
-			}
-			return 0;
-		}
-
-		/// <summary>
-		/// Compares two instances of <see cref="ChiamataLibrary.Card"/>, returning true if are the same card.
-		/// </summary>
-		/// <returns><c>true</c> if are the same card, <c>false</c> otherwise.</returns>
-		/// <param name="other">The <see cref="ChiamataLibrary.Card"/> to compare with the current <see cref="ChiamataLibrary.Card"/>.</param>
-		public bool Equals (Card other)
-		{
-			return this.CompareTo (other) == 0;
-		}
-
-
-		/// <summary>
-		/// Compares an instance of <see cref="ChiamataLibrary.Card"/>with an object, returning true if are the same card.
-		/// </summary>
-		/// <returns><c>true</c> if are the same card, <c>false</c> otherwise.</returns>
-		/// <param name="other">The <see cref="System.Object"/> to compare with the current <see cref="ChiamataLibrary.Card"/>.</param>
-		public override bool Equals (object other)
-		{
-			if (!( other is Card ))
-				return false;
-
-			return Equals ((Card) other);
-		}
-
-		/// <summary>Overrides the == operator</summary>
-		/// <param name="b1">First card.</param>
-		/// <param name="b2">Second card.</param>
-		public static bool operator == (Card c1, Card c2)
-		{
-			if (( (object) c1 ) == null)
-				return ( (object) c2 ) == null;
-
-			return c1.CompareTo (c2) == 0;
-		}
-
-		/// <summary>Overrides the != operator</summary>
-		/// <param name="b1">First card.</param>
-		/// <param name="b2">Second card.</param>
-		public static bool operator != (Card c1, Card c2)
-		{
-			if (( (object) c1 ) == null)
-				return ( (object) c2 ) != null;
-
-			return c1.CompareTo (c2) != 0;
-		}
-
-		/// <summary>Overrides the &gt= operator</summary>
-		/// <param name="b1">First card.</param>
-		/// <param name="b2">Second card.</param>
-		public static bool operator >= (Card c1, Card c2)
-		{
-			if (( (object) c1 ) == null)	//null>=null  null < not null
-				return  ( (object) c2 ) == null;
-
-			return c1.CompareTo (c2) >= 0;
-		}
-
-		/// <summary>Overrides the &lt= operator</summary>
-		/// <param name="b1">First card.</param>
-		/// <param name="b2">Second card.</param>
-		public static bool operator <= (Card c1, Card c2)
-		{
-			if (( (object) c1 ) == null)	//null <= everything
-				return true;
-
-			return c1.CompareTo (c2) <= 0;
-		}
-
 		/// <summary>Overrides the &gt operator</summary>
 		/// <param name="b1">First card.</param>
 		/// <param name="b2">Second card.</param>
 		public static bool operator > (Card c1, Card c2)
 		{
-			if (( (object) c1 ) == null)	//null > nothing
+			if (( (object) c1 ) == null && ( (object) c2 ) == null)
 				return false;
 
-			return c1.CompareTo (c2) > 0;
+			if (( (object) c1 ) == null || ( (object) c2 ) == null)
+				return ( (object) c2 ) == null;
+
+			if (c1.seme == c2.seme)
+				return (int) c1.number > (int) c2.number;
+
+			if (Board.Instance.GameType != EnGameType.CARICHI) {
+				if (c1.isBiscola)
+					return true;
+
+				if (c2.isBiscola)
+					return false;
+			}
+			return false;
 		}
 
 		/// <summary>Overrides the &lt operator</summary>
@@ -234,13 +156,8 @@ namespace ChiamataLibrary
 		/// <param name="b2">Second card.</param>
 		public static bool operator < (Card c1, Card c2)
 		{
-			if (( (object) c1 ) == null)	//null < not null
-				return  !( ( (object) c2 ) == null );
-
-			return c1.CompareTo (c2) < 0;
+			return !( c1 > c2 );
 		}
-
-
 
 		#endregion
 

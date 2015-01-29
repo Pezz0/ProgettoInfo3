@@ -64,55 +64,55 @@ namespace TestProject
 
 		#region compareTo test
 
-		/// <summary>
-		/// First test for the Compare To method.
-		/// Comparing a not briscola to a null. Expected <c>True</c>.
-		/// </summary>
-		[Test ()]
-		public void compareToTest01 ()
-		{
-			Assert.True (_noBrisc1.CompareTo (_null) > 0);
-		}
-
-		/// <summary>
-		/// Second test for the Compare To method.
-		/// Comparing a not briscola to a not briscola. Expected <c>True</c>.
-		/// </summary>
-		[Test ()]
-		public void compareToTest02 ()
-		{
-			Assert.True (_noBrisc1.CompareTo (_noBrisc2) > 0);
-		}
-
-		/// <summary>
-		/// Third test for the Compare To method.
-		/// Comparing a briscola to a not briscola. Expected <c>True</c>.
-		/// </summary>
-		[Test ()]
-		public void compareToTest03 ()
-		{
-			Assert.True (_brisc.CompareTo (_noBrisc2) > 0);
-		}
-
-		/// <summary>
-		/// Fourth test for the Compare To method.
-		/// Comparing a not briscola to a briscola. Expected <c>True</c>.
-		/// </summary>
-		[Test ()]
-		public void compareToTest04 ()
-		{
-			Assert.True (_noBrisc1.CompareTo (_brisc) < 0);
-		}
-
-		/// <summary>
-		/// Fifth test for the Compare To method.
-		/// Comparing a not briscola to a not briscola. Expected <c>True</c>.
-		/// </summary>
-		[Test ()]
-		public void compareToTest05 ()
-		{
-			Assert.True (_noBrisc1.CompareTo (_noBrisc3) == 0);
-		}
+		//		/// <summary>
+		//		/// First test for the Compare To method.
+		//		/// Comparing a not briscola to a null. Expected <c>True</c>.
+		//		/// </summary>
+		//		[Test ()]
+		//		public void compareToTest01 ()
+		//		{
+		//			Assert.True (_noBrisc1.CompareTo (_null) > 0);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Second test for the Compare To method.
+		//		/// Comparing a not briscola to a not briscola. Expected <c>True</c>.
+		//		/// </summary>
+		//		[Test ()]
+		//		public void compareToTest02 ()
+		//		{
+		//			Assert.True (_noBrisc1.CompareTo (_noBrisc2) > 0);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Third test for the Compare To method.
+		//		/// Comparing a briscola to a not briscola. Expected <c>True</c>.
+		//		/// </summary>
+		//		[Test ()]
+		//		public void compareToTest03 ()
+		//		{
+		//			Assert.True (_brisc.CompareTo (_noBrisc2) > 0);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Fourth test for the Compare To method.
+		//		/// Comparing a not briscola to a briscola. Expected <c>True</c>.
+		//		/// </summary>
+		//		[Test ()]
+		//		public void compareToTest04 ()
+		//		{
+		//			Assert.True (_noBrisc1.CompareTo (_brisc) < 0);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Fifth test for the Compare To method.
+		//		/// Comparing a not briscola to a not briscola. Expected <c>True</c>.
+		//		/// </summary>
+		//		[Test ()]
+		//		public void compareToTest05 ()
+		//		{
+		//			Assert.True (_noBrisc1.CompareTo (_noBrisc3) == 0);
+		//		}
 
 		#endregion
 

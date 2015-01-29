@@ -109,17 +109,6 @@ namespace ChiamataLibrary
 			Board.Instance.eventPlaytimeStart += startGame;
 		}
 
-
-		/// <summary>
-		/// Gets a value indicating whether this <see cref="ChiamataLibrary.AIPlayerController"/> is active.
-		/// </summary>
-		/// <value><c>true</c> if is active; otherwise, <c>false</c>.</value>
-		public bool isActive {
-			get {
-				return true;
-			}
-		}
-
 		/// <summary>
 		/// Notifies the AI that the auction is starting and sets up the seme and bid choosers.
 		/// </summary>
@@ -146,9 +135,9 @@ namespace ChiamataLibrary
 		{
 			Bid bid = _bidChooser.chooseABid ();
 			if (bid == null)
-				throw new Exception ("Null bid");
+				return new PassBid (me);
 
-			return bid;
+			return  bid;
 		}
 
 		/// <summary>
@@ -157,7 +146,7 @@ namespace ChiamataLibrary
 		/// <returns>The seme that will be chosen by this AI.</returns>
 		public EnSemi? chooseSeme ()
 		{
-			return _semeChooser.chooseSeme ();
+			return _seme;
 		}
 
 		/// <summary>
@@ -168,7 +157,7 @@ namespace ChiamataLibrary
 		{
 			Card card = _cardChooser.chooseCard ();
 			if (card == null)
-				throw new Exception ("Null card");
+				return me.getScartino ();
 
 			return card;
 		}

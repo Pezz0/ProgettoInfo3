@@ -23,65 +23,38 @@ namespace ChiamataLibrary
 		/// <returns>The card.</returns>
 		public Card chooseCard ()
 		{
-			Card temp;
 			int o = _deltaChiamante + ( Board.Instance.getChiamante ().Hand.Count == _me.Hand.Count ? -5 : 0 );
 			switch (o) {
 				case -4:
-					Card vestita = _me.getVestita ();
-					if (vestita == null)
-						return _me.getScartino ();
-					else
-						return vestita;
-
+					return _me.getVestita ();
 
 				case -3:
 				case -2:
 					Card strozzo = _me.getStrozzoBasso (false);
-					if (strozzo == null) {
-						vestita = _me.getVestita ();
-						if (vestita == null)
-							return _me.getScartino ();
-						else
-							return vestita;
-					} else
+					if (strozzo == null)
+						return _me.getVestita ();
+					else
 						return strozzo;
-
 
 				case -1:
 					return _me.getScartino ();
 				
 				case 1:
-					temp = _me.getStrozzoBasso (false);
-					if (temp == null)
-						return _me.getScartino ();
-					return temp;
+					return _me.getStrozzoBasso (false);
 				
 				case 2:
-					return _me.getScartino ();
+					return null;
 				
 				case 3:
-					strozzo = _me.getStrozzoBasso (false);
-					if (strozzo == null)
-						return _me.getScartino ();
-					else
-						return strozzo;
+					return _me.getStrozzoBasso (false);
 				
 				case 4:
-					if (!Board.Instance.CardOnTheBoard.Exists (delegate (Card c) {
-						return c.seme == Board.Instance.CalledCard.seme;
-					})) {
-						temp = _me.getStrozzoAlto ();
-						if (temp == null)
-							return _me.getScartino ();
-						else
-							return temp;
-					} else {
-						temp = _me.getVestita ();
-						if (temp == null)
-							return _me.getScartino ();
-						else
-							return temp;
-					}
+
+					if (Board.Instance.CardOnTheBoard.Exists (c => c.isBiscola))
+						return _me.getVestita ();
+					else
+						return  _me.getStrozzoAlto ();
+
 			}
 
 			throw new Exception ("some errore occur");

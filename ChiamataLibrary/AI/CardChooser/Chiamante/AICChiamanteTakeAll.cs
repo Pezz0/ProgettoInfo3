@@ -37,7 +37,6 @@ namespace ChiamataLibrary
 			int valueOnBoard = Board.Instance.ValueOnBoard + _pointsAfter * ( Board.PLAYER_NUMBER - nCardOnBoard - 1 );
 			int turn = Board.Instance.Turn;
 
-
 			List<Card> briscole = _me.getBriscole ();
 
 			if (valueOnBoard < _thresholdL)
@@ -50,7 +49,7 @@ namespace ChiamataLibrary
 			}
 
 			if (briscole.Count == 0)
-				return _me.getScartino ();
+				return null;
 
 			return briscole [briscole.Count - 1];
 		}

@@ -37,83 +37,48 @@ namespace ChiamataLibrary
 			switch (o) {
 				case -4:
 				case -3:
-					return _me.getScartino ();
-				
+					return null;
 				case -2:
 				case -1:
-					if (Board.Instance.CardOnTheBoard.Exists (delegate (Card c) {
-						return c.seme == Board.Instance.CalledCard.seme;
-					})) {
-						return _me.getScartino ();
-					} else {
-						temp = _me.getStrozzoBasso ();
-
-						if (temp == null)
-							return _me.getScartino ();
-						else
-							return temp;
-					}
+					if (Board.Instance.CardOnTheBoard.Exists (c => c.isBiscola))
+						return null;
+					else
+						return _me.getStrozzoBasso ();
 				
 				case 1:
 				case 2:
-					temp = _me.getCarico ();
-					if (temp == null)
-						return _me.getScartino ();
-					else
-						return temp;
+					return _me.getCarico ();
 				
 				case 3:
-					if (boardValue < _thresholdL) {
+					if (boardValue < _thresholdL)
 						temp = _me.getStrozzoBasso ();
-						if (temp == null)
-							return _me.getScartino ();
-						else
-							return temp;
-					} else if (boardValue < _thresholdH) {
+					else if (boardValue < _thresholdH) {
 						temp = _me.getBriscolaNotCarico ();
 					} else
 						temp = _me.getBriscolaCarico ();
 
-					if (temp != null && ( Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
-						return c.seme == Board.Instance.CalledCard.seme;
-					}).TrueForAll (delegate (Card c) {
-						return temp >= c;
-					}) ))
+					if (Board.Instance.CardOnTheBoard.FindAll (c => c.isBiscola).TrueForAll (c => !( c < temp )))
 						return temp;
 					else
-						return _me.getScartino ();
+						return null;
 						
 				case 4:
-					if (!Board.Instance.CardOnTheBoard.Exists (delegate (Card c) {
-						return c.seme == Board.Instance.CalledCard.seme;
-					})) {
-						temp = _me.getStrozzoAlto ();
-						if (temp == null)
-							return _me.getScartino ();
-						else
-							return temp;
-					} else {
 
-						if (boardValue < _thresholdL) {
+					if (Board.Instance.CardOnTheBoard.Exists (c => c.isBiscola)) {
+						if (boardValue < _thresholdL)
 							temp = _me.getStrozzoBasso ();
-							if (temp == null)
-								return _me.getScartino ();
-							else
-								return temp;
-						} else if (boardValue < _thresholdH) {
+						else if (boardValue < _thresholdH) {
 							temp = _me.getBriscolaNotCarico ();
 						} else
 							temp = _me.getBriscolaCarico ();
 
-						if (temp != null && ( Board.Instance.CardOnTheBoard.FindAll (delegate (Card c) {
-							return c.seme == Board.Instance.CalledCard.seme;
-						}).TrueForAll (delegate (Card c) {
-							return temp >= c;
-						}) ))
+						if (Board.Instance.CardOnTheBoard.FindAll (c => c.isBiscola).TrueForAll (c => !( c < temp )))
 							return temp;
 						else
-							return _me.getScartino ();
-					}
+							return null;
+					} else
+						return  _me.getStrozzoAlto ();
+
 			}
 
 			throw new Exception ("some errore occur");
