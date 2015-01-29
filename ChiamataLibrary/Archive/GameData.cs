@@ -4,14 +4,29 @@ using System.Xml;
 
 namespace ChiamataLibrary
 {
+	/// <summary>
+	/// Contains all the useful informations about a past game.
+	/// </summary>
 	public class GameData
 	{
+		/// <summary>
+		/// The date on which the game was played.
+		/// </summary>
 		public readonly DateTime time;
 
 		#region Card
 
+		/// <summary>
+		/// The matrix containing all the 40 instances of <see cref="ChiamataLibrary.Card"/>.
+		/// </summary>
 		private readonly Card [,] _cards = new Card[Board.Instance.nSemi, Board.Instance.nNumber];
 
+		/// <summary>
+		/// Getter for the card. Must provide SEME and NUMBER as arguments.
+		/// </summary>
+		/// <returns>The instance of <see cref="ChiamataLibrary.Card"/>.</returns>
+		/// <param name="seme">Seme.</param>
+		/// <param name="number">Number.</param>
 		public Card getCard (EnSemi seme, EnNumbers number)
 		{
 			return _cards [(int) seme, (int) number];
@@ -21,8 +36,16 @@ namespace ChiamataLibrary
 
 		#region Player
 
+		/// <summary>
+		/// Array of <see cref="ChiamataLibrary.Player"/> that were in the game.
+		/// </summary>
 		private readonly Player [] _players = new Player[Board.PLAYER_NUMBER];
 
+		/// <summary>
+		/// Getter for the player. Must provide his hindex as argument.
+		/// </summary>
+		/// <returns>The instance of <see cref="ChiamataLibrary.Player"/>.</returns>
+		/// <param name="order">The index of the instances of <see cref="ChiamataLibrary.Player"/>.</param>
 		public Player getPlayer (int order)
 		{
 			return _players [order];
@@ -30,6 +53,10 @@ namespace ChiamataLibrary
 
 		#region Team
 
+		/// <summary>
+		/// Gets the <see cref="ChiamataLibrary.Player"/> in the CHIAMANTE role.
+		/// </summary>
+		/// <returns>The <see cref="ChiamataLibrary.Player"/> in the CHIAMANTE role.</returns>
 		public Player getChiamante ()
 		{
 			foreach (Player p in _players)
@@ -39,6 +66,10 @@ namespace ChiamataLibrary
 			throw new Exception ("Some error occur, this path shoudn't be executed");
 		}
 
+		/// <summary>
+		/// Gets the <see cref="ChiamataLibrary.Player"/> in the SOCIO role.
+		/// </summary>
+		/// <returns>The <see cref="ChiamataLibrary.Player"/> in the SOCIO role.</returns>
 		public Player getSocio ()
 		{
 			foreach (Player p in _players)
@@ -48,6 +79,10 @@ namespace ChiamataLibrary
 			throw new Exception ("Chiamata in mano");
 		}
 
+		/// <summary>
+		/// Gets the list of <see cref="ChiamataLibrary.Player"/> in the ALTRI role.
+		/// </summary>
+		/// <returns>The list of <see cref="ChiamataLibrary.Player"/> in the ALTRI role.</returns>
 		public List<Player> getAltri ()
 		{
 			List<Player> pl = new List<Player> ();
@@ -65,20 +100,44 @@ namespace ChiamataLibrary
 
 		#region Auction
 
-		private readonly List<IBid> _bids = new List<IBid> ();
+		/// <summary>
+		/// The list of the bids put in the auction.
+		/// </summary>
+		private readonly List<Bid> _bids = new List<Bid> ();
 
 		#endregion
 
 		#region Winning condition
 
+		/// <summary>
+		/// The type of the game. See<see cref="ChiamataLibrary.EnGameType"/>for the various types of games.
+		/// </summary>
 		public readonly EnGameType gameType;
+		/// <summary>
+		/// The<see cref="ChiamataLibrary.Card"/>that has been called.
+		/// </summary>
 		public readonly Card calledCard;
+		/// <summary>
+		/// The points that the team composed of CHIAMANTE and SOCIO had to do in order to win the game.
+		/// </summary>
 		public readonly int winningPoint;
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.GameData"/> is a chiamata in mano.
+		/// </summary>
+		/// <value><c>true</c> if is chiamata in mano; otherwise, <c>false</c>.</value>
 		public bool isChiamataInMano{ get { return gameType == EnGameType.STANDARD && calledCard.initialPlayer.Role == EnRole.CHIAMANTE; } }
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.GameData"/> is capotto.
+		/// </summary>
+		/// <value><c>true</c> if is capotto; otherwise, <c>false</c>.</value>
 		public bool isCapotto{ get { return getChiamantePointCount () % 121 == 0; } }
 
+		/// <summary>
+		/// Gets the chiamante points.
+		/// </summary>
+		/// <returns>The chiamante points.</returns>
 		public int getChiamantePointCount ()
 		{
 			int count = 0;
@@ -89,6 +148,10 @@ namespace ChiamataLibrary
 			return count;
 		}
 
+		/// <summary>
+		/// Gets the altri points.
+		/// </summary>
+		/// <returns>The altri points.</returns>
 		public int getAltriPointCount ()
 		{
 			int count = 0;
@@ -99,6 +162,10 @@ namespace ChiamataLibrary
 			return count;
 		}
 
+		/// <summary>
+		/// Gets the list of winning<see cref="ChiamataLibrary.Player"/>.
+		/// </summary>
+		/// <returns>The list of winners.</returns>
 		public List<Player> getWinners ()
 		{
 			List<Player> w = new List<Player> ();
@@ -112,6 +179,11 @@ namespace ChiamataLibrary
 			return w;
 		}
 
+		/// <summary>
+		/// Gets the award for the<see cref="ChiamataLibrary.Player"/>provided as argument.
+		/// </summary>
+		/// <returns>The award.</returns>
+		/// <param name="player">The<see cref="ChiamataLibrary.Player"/>we want to calculate the award for.</param>
 		public int getAward (Player player)
 		{
 			List<Player> w = getWinners ();
@@ -132,6 +204,11 @@ namespace ChiamataLibrary
 			return award;
 		}
 
+		/// <summary>
+		/// Gets the award for the<see cref="ChiamataLibrary.Player"/>with the index provided as argument.
+		/// </summary>
+		/// <returns>The award.</returns>
+		/// <param name="i">The index of the<see cref="ChiamataLibrary.Player"/>.</param>
 		public int getAward (int i)
 		{
 			return getAward (_players [i]);
@@ -141,6 +218,10 @@ namespace ChiamataLibrary
 
 		#region WriteXML
 
+		/// <summary>
+		/// Method that writes this <see cref="ChiamataLibrary.GameData"/> on an XML file.
+		/// </summary>
+		/// <param name="path">The path for the XML file.</param>
 		public void writeOnXML (string path)
 		{
 
@@ -184,7 +265,7 @@ namespace ChiamataLibrary
 			writer.WriteStartElement ("BidList");
 			writer.WriteAttributeString ("Number", _bids.Count.ToString ());
 
-			foreach (IBid bid in _bids) {
+			foreach (Bid bid in _bids) {
 				writer.WriteStartElement ("Bid");
 
 				if (bid is PassBid) {
@@ -261,12 +342,16 @@ namespace ChiamataLibrary
 
 		#region ReadXML
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.GameData"/> class.
+		/// </summary>
+		/// <param name="path">The path of the XML file from which will be reading the <see cref="ChiamataLibrary.GameData"/>.</param>
 		public GameData (string path)
 		{
 			Board.Instance.reset ();
 			_players = new Player[Board.PLAYER_NUMBER];
 			_cards = new Card[Board.Instance.nSemi, Board.Instance.nNumber];
-			_bids = new List<IBid> ();
+			_bids = new List<Bid> ();
 
 			//create the xml reader
 			XmlReaderSettings setting = new XmlReaderSettings ();
@@ -375,7 +460,17 @@ namespace ChiamataLibrary
 
 		#endregion
 
-		public GameData (DateTime time, Card [,] cards, Player [] players, List<IBid> bids, EnGameType type, Card calledCard, int winningPoint)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.GameData"/> class.
+		/// </summary>
+		/// <param name="time">The date on which the game was played.</param>
+		/// <param name="cards">The matrix of <see cref="ChiamataLibrary.Card"/> of the game.</param>
+		/// <param name="players">The array of <see cref="ChiamataLibrary.Player"/>.</param>
+		/// <param name="bids">The list of bids.</param>
+		/// <param name="type">The type of game.</param>
+		/// <param name="calledCard">The called <see cref="ChiamataLibrary.Card"/>.</param>
+		/// <param name="winningPoint">The points that the team composed of CHIAMANTE and SOCIO had to do in order to win the game.</param>
+		public GameData (DateTime time, Card [,] cards, Player [] players, List<Bid> bids, EnGameType type, Card calledCard, int winningPoint)
 		{
 			this.time = time;
 
@@ -386,7 +481,7 @@ namespace ChiamataLibrary
 			for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
 				this._players [i] = players [i];
 
-			this._bids = new List<IBid> (bids);
+			this._bids = new List<Bid> (bids);
 
 			this.gameType = type;
 			this.calledCard = calledCard;

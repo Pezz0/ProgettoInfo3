@@ -122,7 +122,7 @@ namespace Core
 		/// <summary>
 		/// Variable that stores the bid done by the player.
 		/// </summary>
-		private IBid _myBid;
+		private Bid _myBid;
 
 		/// <summary>
 		/// Variable that stores the seme choosen by the player (EnSemi is nullable).
@@ -546,7 +546,7 @@ namespace Core
 
 		#region controller bid and seme
 
-		public IBid chooseBid ()
+		public Bid chooseBid ()
 		{
 			turnLight (0);
 
@@ -1365,7 +1365,7 @@ namespace Core
 		/// Method that shows a bid near the player.
 		/// </summary>
 		/// <param name="bid">The bid.</param>
-		private void bidPlaced (IBid bid)
+		private void bidPlaced (Bid bid)
 		{
 			if (!Board.Instance.isAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
 				disableAllButtons ();
@@ -1381,7 +1381,7 @@ namespace Core
 
 		}
 
-		private string bidToString (IBid bid)
+		private string bidToString (Bid bid)
 		{
 			if (bid is PassBid)
 				return "PASSO";

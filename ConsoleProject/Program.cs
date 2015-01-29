@@ -6,11 +6,11 @@ namespace ChiamataLibrary
 {
 	class ConsoleController:IPlayerController
 	{
-		public IBid chooseBid ()
+		public Bid chooseBid ()
 		{
 			Console.WriteLine ("******************************");
 
-			IBid wb = Board.Instance.currentAuctionWinningBid;
+			Bid wb = Board.Instance.currentAuctionWinningBid;
 
 			if (wb == null)
 				Console.WriteLine ("Non c'è nessuna bid");
@@ -124,7 +124,7 @@ namespace ChiamataLibrary
 
 		}
 
-		public static void someonePlaceABid (IBid bid)
+		public static void someonePlaceABid (Bid bid)
 		{
 			Console.WriteLine ("**********************");
 			Console.WriteLine ("Nuova bid:" + bid.ToString ());

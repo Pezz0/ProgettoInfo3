@@ -4,7 +4,9 @@ using System.Runtime.Serialization;
 namespace ChiamataLibrary
 {
 	#region WrongPhaseException
-
+	/// <summary>
+	/// Thrown when a different phase was expected.
+	/// </summary>
 	[Serializable ()]
 	public class WrongPhaseException:Exception
 	{
@@ -21,7 +23,7 @@ namespace ChiamataLibrary
 		public string ExpectedPhase { get { return _expectedPhase; } }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Library.WrongPhaseException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPhaseException"/> class.
 		/// </summary>
 		/// <param name="expected">Expected phase.</param>
 		public WrongPhaseException (string expected) : base ()
@@ -30,7 +32,7 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Library.WrongPhaseException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPhaseException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="expected">Expected phase.</param>
@@ -40,7 +42,7 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Library.WrongPhaseException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPhaseException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
@@ -78,12 +80,14 @@ namespace ChiamataLibrary
 	#endregion
 
 	#region WrongBiddingPlayerException
-
+	/// <summary>
+	/// Thrown when an unexpected bid is presented in the auction.
+	/// </summary>
 	[Serializable ()]
 	public class WrongBiddingPlayerException:Exception
 	{
 		/// <summary>
-		/// The player.
+		/// The player making the bid.
 		/// </summary>
 		private Player _player;
 
@@ -96,7 +100,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
 		/// </summary>
-		/// <param name="player">The player who place the wrong bid</param>
+		/// <param name="player">The player who placed the wrong bid</param>
 		public WrongBiddingPlayerException (Player player) : base ()
 		{
 			_player = player;
@@ -106,7 +110,7 @@ namespace ChiamataLibrary
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
-		/// <param name="player">The player who place the wrong bid</param>
+		/// <param name="player">The player who placed the wrong bid</param>
 		public WrongBiddingPlayerException (string message, Player player) : base (message)
 		{
 			_player = player;
@@ -117,7 +121,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
-		/// <param name="player">The player who place the wrong bid</param>
+		/// <param name="player">The player who placed the wrong bid</param>
 		public WrongBiddingPlayerException (string message, Exception inner, Player player) : base (message, inner)
 		{
 			_player = player;
@@ -130,7 +134,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="info">Serialization info</param>
 		/// <param name="context">Serialization context</param>
-		/// <param name="player">The player who place the wrong bid</param>
+		/// <param name="player">The player who placed the wrong bid</param>
 		protected WrongBiddingPlayerException (SerializationInfo info, StreamingContext context, Player player)
 			: base (info, context)
 		{
@@ -151,26 +155,28 @@ namespace ChiamataLibrary
 	#endregion
 
 	#region BidNotEnoughException
-
+	/// <summary>
+	/// Thrown when the bid is superior to the currently winning one.
+	/// </summary>
 	[Serializable ()]
 	public class BidNotEnoughException:Exception
 	{
 		/// <summary>
 		/// The bid.
 		/// </summary>
-		private IBid _bid;
+		private Bid _bid;
 
 		/// <summary>
 		/// Gets the bid.
 		/// </summary>
 		/// <value>The bid.</value>
-		public IBid Bid { get { return _bid; } }
+		public Bid Bid { get { return _bid; } }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.BidNotEnoughException"/> class.
 		/// </summary>
-		/// <param name="bid">Bid.</param>
-		public BidNotEnoughException (IBid bid) : base ()
+		/// <param name="bid">The bid.</param>
+		public BidNotEnoughException (Bid bid) : base ()
 		{
 			_bid = bid;
 		}
@@ -179,8 +185,8 @@ namespace ChiamataLibrary
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.BidNotEnoughException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
-		/// <param name="bid">Bid.</param>
-		public BidNotEnoughException (string message, IBid bid) : base (message)
+		/// <param name="bid">The bid.</param>
+		public BidNotEnoughException (string message, Bid bid) : base (message)
 		{
 			_bid = bid;
 		}
@@ -190,8 +196,8 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
-		/// <param name="bid">Bid.</param>
-		public BidNotEnoughException (string message, Exception inner, IBid bid) : base (message, inner)
+		/// <param name="bid">The bid.</param>
+		public BidNotEnoughException (string message, Exception inner, Bid bid) : base (message, inner)
 		{
 			_bid = bid;
 		}
@@ -201,8 +207,8 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="info">Serialization info</param>
 		/// <param name="context">Serialization context</param>
-		/// <param name="bid">Bid.</param>
-		protected BidNotEnoughException (SerializationInfo info, StreamingContext context, IBid bid)
+		/// <param name="bid">The bid.</param>
+		protected BidNotEnoughException (SerializationInfo info, StreamingContext context, Bid bid)
 			: base (info, context)
 		{
 			_bid = bid;
@@ -221,7 +227,9 @@ namespace ChiamataLibrary
 	#endregion
 
 	#region WrongPlayerException
-
+	/// <summary>
+	/// Thrown when a player plays in the wrong turn.
+	/// </summary>
 	[Serializable ()]
 	public class WrongPlayerException:Exception
 	{
@@ -237,30 +245,30 @@ namespace ChiamataLibrary
 		public Player Player { get { return _player; } }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPlayerException"/> class.
 		/// </summary>
-		/// <param name="player">The player who play in the wrong turn</param>
+		/// <param name="player">The player who played in the wrong turn</param>
 		public WrongPlayerException (Player player) : base ()
 		{
 			_player = player;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPlayerException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
-		/// <param name="player">The player who play in the wrong turn</param>
+		/// <param name="player">The player who played in the wrong turn</param>
 		public WrongPlayerException (string message, Player player) : base (message)
 		{
 			_player = player;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongPlayerException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
-		/// <param name="player">The player who play in the wrong turn</param>
+		/// <param name="player">The player who played in the wrong turn</param>
 		public WrongPlayerException (string message, Exception inner, Player player) : base (message, inner)
 		{
 			_player = player;
@@ -273,7 +281,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="info">Serialization info</param>
 		/// <param name="context">Serialization context</param>
-		/// <param name="player">The player who play in the wrong turn</param>
+		/// <param name="player">The player who played in the wrong turn</param>
 		protected WrongPlayerException (SerializationInfo info, StreamingContext context, Player player)
 			: base (info, context)
 		{
@@ -294,7 +302,9 @@ namespace ChiamataLibrary
 	#endregion
 
 	#region WrongCardException
-
+	/// <summary>
+	/// Wrong card exception.
+	/// </summary>
 	[Serializable ()]
 	public class WrongCardException:Exception
 	{
@@ -311,7 +321,7 @@ namespace ChiamataLibrary
 
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongCardException"/> class.
 		/// </summary>
 		/// <param name="card">The wrong card</param>
 		public WrongCardException (Card card) : base ()
@@ -320,7 +330,7 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongCardException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="card">The wrong card</param>
@@ -330,7 +340,7 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongCardException"/> class.
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
@@ -354,6 +364,10 @@ namespace ChiamataLibrary
 			_card = card;
 		}
 
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongCardException"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongCardException"/>.</returns>
 		public override string ToString ()
 		{
 			return string.Format ("[WrongCardException: Card={0}]", Card);

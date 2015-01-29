@@ -15,7 +15,7 @@ namespace ChiamataLibrary
 		/// <returns>The bid.</returns>
 		/// <param name="me">Me.</param>
 		/// <param name="seme">Seme.</param>
-		IBid chooseABid ();
+		Bid chooseABid ();
 
 		/// <summary>
 		/// Setup this instance.
@@ -142,9 +142,9 @@ namespace ChiamataLibrary
 		/// Method that returns which bid the AI wants to place in the auction.
 		/// </summary>
 		/// <returns>The bid.</returns>
-		public IBid chooseBid ()
+		public Bid chooseBid ()
 		{
-			IBid bid = _bidChooser.chooseABid ();
+			Bid bid = _bidChooser.chooseABid ();
 			if (bid == null)
 				throw new Exception ("Null bid");
 

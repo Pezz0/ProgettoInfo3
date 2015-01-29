@@ -3,7 +3,7 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// Enumeration of the possibile type of game
+	/// Enumeration of the possibile types of game
 	/// </summary>
 	public enum EnGameType
 	{

@@ -657,7 +657,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <remarks>See <see cref="BTLibrary.PackageBid"/> for further informations about the message contents.</remarks>
 		/// <param name="bid">The bid to send.</param>
-		private void bidPlaced (IBid bid)
+		private void bidPlaced (Bid bid)
 		{
 			//When the Board event eventIPlaceABid or eventSomeonePlaceABid occours, write to master (if i'm slave) or to all slave (if i'm master) the message.
 

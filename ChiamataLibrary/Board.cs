@@ -6,36 +6,36 @@ using System.Text;
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// Board.
+	/// Class representing the game board. Everything game-related will go here.
 	/// </summary>
 	public class Board
 	{
 		/// <summary>
-		/// The numbe of player
+		/// The number of players.
 		/// </summary>
 		public const int PLAYER_NUMBER = 5;
 
 		/// <summary>
-		/// The number of semi
+		/// The number of semi.
 		/// </summary>
 		public readonly int nSemi = Enum.GetValues (typeof (EnSemi)).GetLength (0);
 
 		/// <summary>
-		/// The number of number
+		/// The number of card numbers (usually 10in normal cards, 13 in french cards).
 		/// </summary>
 		public readonly int nNumber = Enum.GetValues (typeof (EnNumbers)).GetLength (0);
 
 		#region Singleton implementation
 
 		/// <summary>
-		/// The singleton's instance.
+		/// Instance of the <see cref="ChiamataLibrary.Board"/> singleton
 		/// </summary>
 		private static readonly Board _instance = new Board ();
 
 		/// <summary>
-		/// Gets the singleton's instance.
+		/// Gets the singleton instance.
 		/// </summary>
-		/// <value>The instance.</value>
+		/// <value>The instance of the <see cref="ChiamataLibrary.Board"/>.</value>
 		public static Board Instance{ get { return _instance; } }
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Reset this instance.
+		/// Reset this instance, preparing for a new game.
 		/// </summary>
 		public void reset ()
 		{
@@ -77,10 +77,11 @@ namespace ChiamataLibrary
 		#region Initilization
 
 		/// <summary>
-		/// Initializes the board in the master device.
+		/// Initializes the board for a master device.
 		/// </summary>
-		/// <param name="playerName">Players' name.</param>
-		/// <param name="indexDealer">dealer's index.</param>
+		/// <param name="playerName">The Players' name.</param>
+		/// <param name="indexDealer">The dealer's index.</param>
+		/// <param name="rnd">The custom random number generator</param>
 		public void initializeMaster (string [] playerName, int indexDealer, IRandomGenerator rnd)
 		{
 			if (!isCreationPhase)
@@ -125,13 +126,18 @@ namespace ChiamataLibrary
 				}
 		}
 
+		/// <summary>
+		/// Initializes the board for a master device.
+		/// </summary>
+		/// <param name="playerName">The Players' name.</param>
+		/// <param name="indexDealer">The dealer's index.</param>
 		public void initializeMaster (string [] playerName, int indexDealer)
 		{
 			initializeMaster (playerName, indexDealer, new NormalRandom ());
 		}
 
 		/// <summary>
-		/// Initializes the board on a slave device
+		/// Initializes the board for a slave device.
 		/// </summary>
 		/// <param name="bytes">The sequence of bytes.</param>
 		/// <param name="me">The name of the player on this device.</param>
@@ -184,9 +190,15 @@ namespace ChiamataLibrary
 
 		}
 
-
+		/// <summary>
+		/// Array of bytes representing the board (used to send the BOARD message to the slaves devices).
+		/// </summary>
 		private readonly List<Byte> _bytes = new List<byte> ();
 
+		/// <summary>
+		/// Gets the sendable bytes.
+		/// </summary>
+		/// <value>The sendable bytes.</value>
 		public List<Byte> SendableBytes { get { return _bytes; } }
 
 		#endregion
@@ -195,54 +207,62 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Variable that rappresent the current discrete time
-		/// 	-3 = creation time
-		/// 	-2 = auction time
-		/// 	-1 = finalize
-		/// 	 0 = first play
-		/// 	...
-		///  	 4 = last play of the first turn
-		/// 	 5 = first play of the second turn
-		/// 	...
-		/// 	 39 = last play
-		/// 	 40 = point counting e conclusion
+		/// 
+		/// The BID message is composed of 4 Bytes:
+		/// <list type="table">
+		/// <listheader>
+		/// <term>Time</term>
+		/// <term>Description</term>
+		/// </listheader>
+		/// <item><term>-3</term><description>Creation time</description></item>
+		/// <item><term>-2</term><description>Auction time</description></item>
+		/// <item><term>-1</term><description>Finalize</description></item>
+		/// <item><term>0</term><description>First play of the first turn</description></item>
+		/// <item><term>...</term><description></description></item>
+		/// <item><term>4</term><description>Last play of the first turn</description></item>
+		/// <item><term>5</term><description>First play of the second turn</description></item>
+		/// <item><term>...</term><description></description></item>
+		/// <item><term>39</term><description>Last play of the last turn</description></item>
+		/// <item><term>40</term><description>Points counting and conclusion</description></item>
+		/// </list>
 		/// </summary>
 		private int _t = -3;
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Engine.Board"/> is creating the cards and players.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is creating the cards and players.
 		/// </summary>
 		/// <value><c>true</c> if the board is creating; otherwise, <c>false</c>.</value>
 		public bool isCreationPhase{ get { return _t == -3; } }
 
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Engine.Board"/> is the time for the auction.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is doing the auction.
 		/// </summary>
-		/// <value><c>true</c> ifis the time for the auction; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if is the auction is ongoing; otherwise, <c>false</c>.</value>
 		public bool isAuctionPhase{ get { return _t == -2; } }
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is finalize phase.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is in the finalize phase.
 		/// </summary>
-		/// <value><c>true</c> if is finalize phase; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if the finalize phase is ongoing; otherwise, <c>false</c>.</value>
 		public bool isFinalizePhase{ get { return _t == -1; } }
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Engine.Board"/> is play time.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is in play time.
 		/// </summary>
-		/// <value><c>true</c> if is play time; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if is in play time; otherwise, <c>false</c>.</value>
 		public bool isPlayTime{ get { return _t >= 0 && _t <= nSemi * nNumber; } }
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is last turn.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is on the last turn.
 		/// </summary>
-		/// <value><c>true</c> if is last turn; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if is on the last turn; otherwise, <c>false</c>.</value>
 		public bool isLastTurn{ get { return _t == nSemi * nNumber; } }
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is game finish.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> has finished the game.
 		/// </summary>
-		/// <value><c>true</c> if is game finish; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if the game is finished; otherwise, <c>false</c>.</value>
 		public bool isGameFinish{ get { return _t > nSemi * nNumber; } }
 
 		/// <summary>
@@ -260,6 +280,7 @@ namespace ChiamataLibrary
 
 		/// <summary>
 		/// Gets the current discrete time.
+		/// See <see cref="ChiamataLibrary.Board._t"/> for more informations.
 		/// </summary>
 		/// <value>The time.</value>
 		public int Time { get { return _t; } }
@@ -269,14 +290,14 @@ namespace ChiamataLibrary
 		#region Card management
 
 		/// <summary>
-		/// The cards' grid.
+		/// The cards' matrix.
 		/// </summary>
 		private readonly Card [,] _cardGrid;
 
-		/// <summary>
-		/// Gets the card.
+		// <summary>
+		/// Getter for the card. Must provide SEME and NUMBER as arguments.
 		/// </summary>
-		/// <returns>The card.</returns>
+		/// <returns>The instance of <see cref="ChiamataLibrary.Card"/>.</returns>
 		/// <param name="seme">Seme.</param>
 		/// <param name="number">Number.</param>
 		public Card getCard (EnSemi seme, EnNumbers number)
@@ -289,36 +310,36 @@ namespace ChiamataLibrary
 		#region Player management
 
 		/// <summary>
-		/// The players.
+		/// The array of <see cref="ChiamataLibrary.Player"/> currently in the game.
 		/// </summary>
 		private readonly Player [] _players = new Player[PLAYER_NUMBER];
 
 		/// <summary>
-		/// The index of the player on this device
+		/// The index of the player on this device.
 		/// </summary>
 		private int _me;
 
 		/// <summary>
-		/// Gets the player.
+		/// Getter for the <see cref="ChiamataLibrary.Player"/>. Must provide the index as an argument.
 		/// </summary>
-		/// <returns>The player.</returns>
-		/// <param name="order">Order.</param>
+		/// <returns>The instance of <see cref="ChiamataLibrary.Player"/> that has the index provided.</returns>
+		/// <param name="order">Index of the player.</param>
 		public Player getPlayer (int order)
 		{
 			return _players [order];
 		}
 
 		/// <summary>
-		/// Gets the player on this device.
+		/// Gets the <see cref="ChiamataLibrary.Player"/> on this device.
 		/// </summary>
-		/// <value>Me.</value>
+		/// <value>The instance of <see cref="ChiamataLibrary.Player"/> representing myself.</value>
 		public Player Me{ get { return _players [_me]; } }
 
 		/// <summary>
 		/// Gets the player's hand.
 		/// </summary>
-		/// <returns>The player hand.</returns>
-		/// <param name="p">P.</param>
+		/// <returns>The list oc <see cref="ChiamataLibrary.Card"/> representing the hand.</returns>
+		/// <param name="p">The instance of <see cref="ChiamataLibrary.Player"/>.</param>
 		public List<Card> getPlayerHand (Player p)
 		{
 			List<Card> cl = new List<Card> ();
@@ -329,6 +350,11 @@ namespace ChiamataLibrary
 			return cl;
 		}
 
+		/// <summary>
+		/// Gets the player initial hand.
+		/// </summary>
+		/// <returns>The list oc <see cref="ChiamataLibrary.Card"/> representing the initial hand.</returns>
+		/// <param name="p">he instance of <see cref="ChiamataLibrary.Player"/>.</param>
 		public List<Card> getPlayerInitialHand (Player p)
 		{
 			List<Card> cl = new List<Card> ();
@@ -340,15 +366,15 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Gets all players.
+		/// Gets a list of all the <see cref="ChiamataLibrary.Player"/> in the game.
 		/// </summary>
-		/// <value>All players.</value>
+		/// <returns>A list of all the <see cref="ChiamataLibrary.Player"/> in the game.</returns>
 		public List<Player> AllPlayers{ get { return new List<Player> (_players); } }
 
 		/// <summary>
-		/// Gets the chiamante.
+		/// Gets the <see cref="ChiamataLibrary.Player"/> in the CHIAMANTE role.
 		/// </summary>
-		/// <returns>The chiamante.</returns>
+		/// <returns>The <see cref="ChiamataLibrary.Player"/> in the CHIAMANTE role.</returns>
 		public Player getChiamante ()
 		{
 
@@ -363,9 +389,9 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Gets the socio.
+		/// Gets the <see cref="ChiamataLibrary.Player"/> in the SOCIO role.
 		/// </summary>
-		/// <returns>The socio.</returns>
+		/// <returns>The <see cref="ChiamataLibrary.Player"/> in the SOCIO role.</returns>
 		public Player getSocio ()
 		{
 			if (!isPlayTime)
@@ -381,9 +407,9 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Gets the altri.
+		/// Gets a list of the <see cref="ChiamataLibrary.Player"/> in the ALTRI role.
 		/// </summary>
-		/// <returns>The altri.</returns>
+		/// <returns>A list of the <see cref="ChiamataLibrary.Player"/> in the ALTRI role.</returns>
 		public List<Player> getAltri ()
 		{
 			if (!isPlayTime)
@@ -448,13 +474,13 @@ namespace ChiamataLibrary
 		public bool isChiamataInMano{ get { return _gameType == EnGameType.STANDARD && _calledCard.initialPlayer.Role == EnRole.CHIAMANTE; } }
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Board"/> is socio reveal.
+		/// Gets a value indicating whether in this <see cref="ChiamataLibrary.Board"/> the socio has already revealed himself.
 		/// </summary>
-		/// <value><c>true</c> if is socio reveal; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if the socio has revealed himself; otherwise, <c>false</c>.</value>
 		public bool isSocioReveal{ get { return !_calledCard.isPlayable; } }
 
 		/// <summary>
-		/// Gets the briscola.
+		/// Gets the <see cref="ChiamataLibrary.EnSemi"/> representing the briscola.
 		/// </summary>
 		/// <value>The briscola.</value>
 		public EnSemi Briscola {
@@ -467,10 +493,10 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// Ises the briscola.
+		/// Returns true if the card provided as argument is briscola
 		/// </summary>
-		/// <returns><c>true</c>, if briscola was ised, <c>false</c> otherwise.</returns>
-		/// <param name="c">C.</param>
+		/// <returns><c>true</c>, if the card provided as argument is briscola, <c>false</c> otherwise.</returns>
+		/// <param name="c">The card to check.</param>
 		public bool isBriscola (Card c)
 		{
 			if (_gameType != EnGameType.STANDARD)
@@ -486,18 +512,18 @@ namespace ChiamataLibrary
 		#region Auction management
 
 		/// <summary>
-		/// The list bid.
+		/// The list of bids in the auction.
 		/// </summary>
-		private readonly List<IBid> _listBid = new List<IBid> ();
+		private readonly List<Bid> _listBid = new List<Bid> ();
 
 		/// <summary>
-		/// Gets the number of bid.
+		/// Gets the number of bids currently in the auction.
 		/// </summary>
-		/// <value>The number of bid.</value>
+		/// <value>The number of bids.</value>
 		public int NumberOfBid{ get { return _listBid.Count; } }
 
 		/// <summary>
-		///  Gets the player that have to do a bid or pass.
+		/// Gets the player whose turn is it during the auction.
 		/// </summary>
 		private int _activeAuctionPlayer;
 
@@ -526,43 +552,43 @@ namespace ChiamataLibrary
 		#region Playtime management
 
 		/// <summary>
-		/// The last winner.
+		/// The index of the player that won the last hand.
 		/// </summary>
 		private int _lastWinner;
 
 		/// <summary>
-		/// The card on the board.
+		/// The cards on the board.
 		/// </summary>
 		private readonly List<Card> _cardOnBoard = new List<Card> ();
 
 		/// <summary>
-		/// Gets the last winner.
+		/// Gets the player who won the last hand.
 		/// </summary>
-		/// <value>The last winner.</value>
+		/// <value>The player who won the last hand.</value>
 		public Player LastWinner{ get { return _players [_lastWinner]; } }
 
 		/// <summary>
-		/// Gets the player that have to play.
+		/// Gets the player that has do his turn.
 		/// </summary>
-		/// <value>The player that have to play.</value>
+		/// <value>The player that has do his turn.</value>
 		public Player ActivePlayer{ get { return _players [( _lastWinner + _t ) % PLAYER_NUMBER]; } }
 
 		/// <summary>
-		/// Gets the number of card on board.
+		/// Gets the number of cards on board.
 		/// </summary>
-		/// <value>The number of card on board.</value>
+		/// <value>The number of cards on board.</value>
 		public int numberOfCardOnBoard{ get { return _cardOnBoard.Count; } }
 
 		/// <summary>
-		/// Gets the card on the board.
+		/// Gets the cards on the board.
 		/// </summary>
-		/// <value>The card on the board.</value>
+		/// <value>The list of cards on the board.</value>
 		public List<Card> CardOnTheBoard { get { return _cardOnBoard; } }
 
 		/// <summary>
-		/// Gets the value on board.
+		/// Gets the value on the board (points wise).
 		/// </summary>
-		/// <value>The value on board.</value>
+		/// <value>The value on board (points wise).</value>
 		public int ValueOnBoard {
 			get {
 				int v = 0;
@@ -578,62 +604,62 @@ namespace ChiamataLibrary
 		#region Event declaration
 
 		/// <summary>
-		/// Event handler place A bid.
+		/// Delegate for the event that occours when a bid is placed.
 		/// </summary>
-		public delegate void eventHandlerPlaceABid (IBid bid);
+		public delegate void eventHandlerPlaceABid (Bid bid);
 
 		/// <summary>
-		/// Occurs when I place A bid.
+		/// Occurs when i place a bid.
 		/// </summary>
 		public event eventHandlerPlaceABid eventIPlaceABid;
 
 		/// <summary>
-		/// Occurs when someone else place A bid.
+		/// Occurs when someone else places a bid.
 		/// </summary>
 		public event eventHandlerPlaceABid eventSomeonePlaceABid;
 
 		/// <summary>
-		/// Event handler play A card.
+		/// Delegate for the event that occours when a card is played.
 		/// </summary>
 		public delegate void eventHandlerPlayACard (Move move);
 
 		/// <summary>
-		/// Occurs when I play A card.
+		/// Occurs when i play a card.
 		/// </summary>
 		public event eventHandlerPlayACard eventIPlayACard;
 
 		/// <summary>
-		/// Occurs when someone else play A card.
+		/// Occurs when someone else plays a card.
 		/// </summary>
 		public event eventHandlerPlayACard eventSomeonePlayACard;
 
 		/// <summary>
-		/// Event handler pick the board.
+		/// Delegate for the event that occours when a player wins the hand.
 		/// </summary>
 		public delegate void eventHandlerPickTheBoard (Player player, List<Card> board);
 
 		/// <summary>
-		/// Occurs when someone pick the board.
+		/// Occurs when someone wins the hand.
 		/// </summary>
 		public event eventHandlerPickTheBoard eventPickTheBoard;
 
 		/// <summary>
-		/// Event handler change phase.
+		/// Delegate for the event that occours when the phase must be changed.
 		/// </summary>
 		public delegate void eventHandlerChangePhase ();
 
 		/// <summary>
-		/// Occurs when the auction start.
+		/// Occurs when the auction starts.
 		/// </summary>
 		public event eventHandlerChangePhase eventAuctionStart;
 
 		/// <summary>
-		/// Occurs when the playtime start.
+		/// Occurs when the playtime starts.
 		/// </summary>
 		public event eventHandlerChangePhase eventPlaytimeStart;
 
 		/// <summary>
-		/// Occurs when the playtime end.
+		/// Occurs when the playtime ends.
 		/// </summary>
 		public event eventHandlerChangePhase eventPlaytimeEnd;
 
@@ -641,6 +667,9 @@ namespace ChiamataLibrary
 
 		#region Start
 
+		/// <summary>
+		/// Starts the game.
+		/// </summary>
 		public void start ()
 		{
 			_listBid.Clear ();
@@ -657,11 +686,14 @@ namespace ChiamataLibrary
 
 		#region Update
 
+		/// <summary>
+		/// Updates the game. must be continuously called in order to continue with the game. Stopping would mean a pause in the game.
+		/// </summary>
 		public void update ()
 		{
 
 			if (isAuctionPhase) {	//auction
-				IBid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
+				Bid bid = _players [_activeAuctionPlayer].invokeChooseBid ();
 
 				if (bid != null) {
 					//place a bid
@@ -672,7 +704,7 @@ namespace ChiamataLibrary
 
 					List<Player> pass = new List<Player> ();
 
-					_listBid.ForEach (delegate(IBid b) {
+					_listBid.ForEach (delegate(Bid b) {
 						if (b is PassBid)
 							pass.Add (b.bidder);
 					});
@@ -788,6 +820,9 @@ namespace ChiamataLibrary
 
 		#endregion
 
+		/// <summary>
+		/// Adds this game to the archive.
+		/// </summary>
 		private void addToArchive ()
 		{
 			Archive.Instance.add (new GameData (DateTime.Now, _cardGrid, _players, _listBid, _gameType, _calledCard, _winningPoint));

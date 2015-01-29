@@ -51,13 +51,13 @@ namespace BTLibrary
 		/// <summary>
 		/// The bid.
 		/// </summary>
-		public readonly IBid bid;
+		public readonly Bid bid;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.PackageBid"/> class.
 		/// </summary>
 		/// <param name="bid">The bid that will be inserted in the message.</param>
-		public PackageBid (IBid bid) : base (EnPackageType.BID)
+		public PackageBid (Bid bid) : base (EnPackageType.BID)
 		{
 			this.bid = bid;
 			nOfBid = Board.Instance.NumberOfBid;

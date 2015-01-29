@@ -15,7 +15,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The lowest bid the AI will do in the auction. If the auction goes below this, the AI will do a <see cref="ChiamataLibrary.PassBid"/>.
 		/// </summary>
-		protected IBid _lastBid;
+		protected Bid _lastBid;
 
 		/// <summary>
 		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
@@ -30,7 +30,7 @@ namespace ChiamataLibrary
 		/// Method that returns which bid the AI wants to place in the auction.
 		/// </summary>
 		/// <returns>The bid.</returns>
-		public IBid chooseABid ()
+		public Bid chooseABid ()
 		{
 			if (_lastBid is PassBid)
 				return new PassBid (_me);

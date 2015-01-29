@@ -3,7 +3,7 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// Card.
+	/// Class representing a card.
 	/// </summary>
 	public class Card:IComparable<Card>,IEquatable<Card>
 	{
@@ -21,9 +21,9 @@ namespace ChiamataLibrary
 		public readonly EnNumbers number;
 
 		/// <summary>
-		/// Gets the value in point of this card.
+		/// Gets the value in points of this card.
 		/// </summary>
-		/// <returns>the value in point.</returns>
+		/// <returns>The card's value in points.</returns>
 		public int getPoint ()
 		{
 			if (number == EnNumbers.ASSE)
@@ -42,10 +42,22 @@ namespace ChiamataLibrary
 				return 0;
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Card"/> is a carico.
+		/// </summary>
+		/// <value><c>true</c> if is carico; otherwise, <c>false</c>.</value>
 		public bool isCarico{ get { return number == EnNumbers.ASSE || number == EnNumbers.TRE; } }
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Card"/> is a biscola.
+		/// </summary>
+		/// <value><c>true</c> if is biscola; otherwise, <c>false</c>.</value>
 		public bool isBiscola{ get { return seme == Board.Instance.Briscola; } }
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Card"/> is a vestita.
+		/// </summary>
+		/// <value><c>true</c> if is vestita; otherwise, <c>false</c>.</value>
 		public bool isVestita{ get { return number == EnNumbers.RE || number == EnNumbers.CAVALLO || number == EnNumbers.FANTE; } }
 
 		#endregion
@@ -53,17 +65,17 @@ namespace ChiamataLibrary
 		#region Owner's information
 
 		/// <summary>
-		/// The player who have this card at the start of the game.
+		/// The player that owns this card at the start of the game.
 		/// </summary>
 		public readonly Player initialPlayer;
 
 		/// <summary>
-		/// The playing time.
+		/// The time at which the card has been played. A value of -1 means that the card hasn't been played yet.
 		/// </summary>
 		private int _playingTime = -1;
 
 		/// <summary>
-		/// Gets or sets the playing time.
+		/// Gets or sets the playing time. See <see cref="ChiamataLibrary.Card._playingTime"/> for more informations.
 		/// </summary>
 		/// <value>The playing time.</value>
 		public int PlayingTime {
@@ -77,19 +89,19 @@ namespace ChiamataLibrary
 		}
 
 		/// <summary>
-		/// The player who have this card at the end of the game.
+		/// The player who owns this card at the end of the game.
 		/// </summary>
 		private Player _finalPlayer = null;
 
 		/// <summary>
-		/// The value that indicate if the final player is decided.
+		/// The value that indicates if the card has already been taken by a player by winning an hand.
 		/// </summary>
 		private bool _finalPlayerAssigned = false;
 
 		/// <summary>
-		/// Gets or sets the player who have this card at the end of the game.
+		/// Gets or sets the player who owns this card at the end of the game.
 		/// </summary>
-		/// <value>The player who have this card at the end of the game.</value>
+		/// <value>The player who owns this card at the end of the game.</value>
 		public Player FinalPlayer {
 			get { return _finalPlayer; }
 			set {
@@ -106,7 +118,7 @@ namespace ChiamataLibrary
 
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="Engine.Card"/> is playable.
+		/// Gets a value indicating whether this <see cref="ChiamataLibrary.Card"/> is playable.
 		/// </summary>
 		/// <value><c>true</c> if is playable; otherwise, <c>false</c>.</value>
 		public bool isPlayable{ get { return _playingTime == -1; } }
@@ -115,6 +127,11 @@ namespace ChiamataLibrary
 
 		#region Comparison
 
+		/// <summary>
+		/// Compares two instances of the <see cref="ChiamataLibrary.Card"/> class.
+		/// </summary>
+		/// <returns><c>1</c> if mainCard > other, <c>-0</c> if mainCard = other,<c>-1</c> otherwise.</returns>
+		/// <param name="other">The card to compare the main one to.</param>
 		public int CompareTo (Card other)
 		{
 			if (( (object) other ) == null)	 //null=null everything > null
@@ -133,11 +150,22 @@ namespace ChiamataLibrary
 			return 0;
 		}
 
+		/// <summary>
+		/// Compares two instances of <see cref="ChiamataLibrary.Card"/>, returning true if are the same card.
+		/// </summary>
+		/// <returns><c>true</c> if are the same card, <c>false</c> otherwise.</returns>
+		/// <param name="other">The <see cref="ChiamataLibrary.Card"/> to compare with the current <see cref="ChiamataLibrary.Card"/>.</param>
 		public bool Equals (Card other)
 		{
 			return this.CompareTo (other) == 0;
 		}
 
+
+		/// <summary>
+		/// Compares an instance of <see cref="ChiamataLibrary.Card"/>with an object, returning true if are the same card.
+		/// </summary>
+		/// <returns><c>true</c> if are the same card, <c>false</c> otherwise.</returns>
+		/// <param name="other">The <see cref="System.Object"/> to compare with the current <see cref="ChiamataLibrary.Card"/>.</param>
 		public override bool Equals (object other)
 		{
 			if (!( other is Card ))
@@ -146,6 +174,9 @@ namespace ChiamataLibrary
 			return Equals ((Card) other);
 		}
 
+		/// <summary>Overrides the == operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator == (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)
@@ -154,6 +185,9 @@ namespace ChiamataLibrary
 			return c1.CompareTo (c2) == 0;
 		}
 
+		/// <summary>Overrides the != operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator != (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)
@@ -162,6 +196,9 @@ namespace ChiamataLibrary
 			return c1.CompareTo (c2) != 0;
 		}
 
+		/// <summary>Overrides the &gt= operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator >= (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)	//null>=null  null < not null
@@ -170,6 +207,9 @@ namespace ChiamataLibrary
 			return c1.CompareTo (c2) >= 0;
 		}
 
+		/// <summary>Overrides the &lt= operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator <= (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)	//null <= everything
@@ -178,6 +218,9 @@ namespace ChiamataLibrary
 			return c1.CompareTo (c2) <= 0;
 		}
 
+		/// <summary>Overrides the &gt operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator > (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)	//null > nothing
@@ -186,6 +229,9 @@ namespace ChiamataLibrary
 			return c1.CompareTo (c2) > 0;
 		}
 
+		/// <summary>Overrides the &lt operator</summary>
+		/// <param name="b1">First card.</param>
+		/// <param name="b2">Second card.</param>
 		public static bool operator < (Card c1, Card c2)
 		{
 			if (( (object) c1 ) == null)	//null < not null
@@ -199,11 +245,11 @@ namespace ChiamataLibrary
 		#endregion
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Engine.Card"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.Card"/> class.
 		/// </summary>
 		/// <param name="number">The card's number.</param>
 		/// <param name="seme">The card's seme.</param>
-		/// <param name="iniziale">Initial player.</param>
+		/// <param name="iniziale">The player who initially owns the card.</param>
 		public Card (EnNumbers number, EnSemi seme, Player initial)
 		{
 			if (!Board.Instance.isCreationPhase)
@@ -223,6 +269,10 @@ namespace ChiamataLibrary
 			return string.Format ("[Card: Seme={0}, Number={1}]", seme, number);
 		}
 
+		/// <summary>
+		/// Override the GetHashCode method.
+		/// </summary>
+		/// <returns>The HashCode of this instance.</returns>
 		public override int GetHashCode ()
 		{//FIXME: To implement but never used
 			return base.GetHashCode ();

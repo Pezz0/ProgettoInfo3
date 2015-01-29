@@ -3,18 +3,22 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// The pass
+	/// Class representing a pass bid.
 	/// </summary>
-	public class PassBid:IBid
+	public class PassBid:Bid
 	{
-
-		public override IBid changeBidder (Player newBidder)
+		/// <summary>
+		/// Changes the bidder of a specified bid.
+		/// </summary>
+		/// <returns>The bid.</returns>
+		/// <param name="newBidder">The new bidder.</param>
+		public override Bid changeBidder (Player newBidder)
 		{
 			return new PassBid (newBidder);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Engine.Pass"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.PassBid"/> class.
 		/// </summary>
 		/// <param name="bidder">Bidder.</param>
 		public PassBid (Player bidder) : base (bidder)

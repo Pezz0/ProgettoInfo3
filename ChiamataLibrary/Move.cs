@@ -3,7 +3,7 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// Move.
+	/// Class representing a move.
 	/// </summary>
 	public class Move
 	{
@@ -13,15 +13,15 @@ namespace ChiamataLibrary
 		public readonly Card card;
 
 		/// <summary>
-		/// The player who play a card.
+		/// The player who played the card.
 		/// </summary>
 		public readonly Player player;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.Move"/> class.
 		/// </summary>
-		/// <param name="card">Card.</param>
-		/// <param name="player">Player.</param>
+		/// <param name="card">The played card.</param>
+		/// <param name="player">The player that played the card.</param>
 		public Move (Card card, Player player)
 		{
 			this.card = card;

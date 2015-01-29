@@ -29,7 +29,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Archive\Archive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Archive\GameData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\CarichiBid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bid\IBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\NormalBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\NotPassBid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bid\PassBid.cs" />
@@ -40,5 +39,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Random\NormalRandom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayerController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AI\AIPlayerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bid\Bid.cs" />
   </ItemGroup>
 </Project>

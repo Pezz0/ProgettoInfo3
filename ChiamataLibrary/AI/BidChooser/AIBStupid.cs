@@ -23,7 +23,7 @@ namespace ChiamataLibrary
 		/// <returns>The bid.</returns>
 		/// <param name="me">Me.</param>
 		/// <param name="seme">Seme.</param>
-		public IBid chooseABid ()
+		public Bid chooseABid ()
 		{
 			return new PassBid ();
 		}

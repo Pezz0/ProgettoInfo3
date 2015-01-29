@@ -3,7 +3,7 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// Normal bid.
+	/// Class representing a normal bid.
 	/// </summary>
 	public class NormalBid:NotPassBid
 	{
@@ -16,12 +16,20 @@ namespace ChiamataLibrary
 
 		#endregion
 
-
-		public override IBid changeBidder (Player newBidder)
+		/// <summary>
+		/// Changes the bidder of a specified bid.
+		/// </summary>
+		/// <returns>The bid.</returns>
+		/// <param name="newBidder">The new bidder.</param>
+		public override Bid changeBidder (Player newBidder)
 		{
 			return new NormalBid (newBidder, this.number, this.point);
 		}
 
+		/// <summary>
+		/// Gets the next avaiable bid.
+		/// </summary>
+		/// <returns>The next avaiable bid.</returns>
 		public override NotPassBid getNext ()
 		{
 			if (this.number == 0)
@@ -35,7 +43,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="bidder">Bidder.</param>
 		/// <param name="number">Number.</param>
-		/// <param name="point">Point.</param>
+		/// <param name="point">Points.</param>
 		public NormalBid (Player bidder, EnNumbers number, int point) : base (bidder, point)
 		{
 			this.number = number;
@@ -45,7 +53,7 @@ namespace ChiamataLibrary
 		/// Initializes a new naked instance of the <see cref="ChiamataLibrary.NormalBid"/> class.
 		/// </summary>
 		/// <param name="number">Number.</param>
-		/// <param name="point">Point.</param>
+		/// <param name="point">Points.</param>
 		public NormalBid (EnNumbers number, int point) : base (point)
 		{
 			this.number = number;

@@ -3,9 +3,9 @@
 namespace ChiamataLibrary
 {
 	/// <summary>
-	/// A possibile winning bid
+	/// Abstract class representing a possible winning bid.
 	/// </summary>
-	public abstract class NotPassBid:IBid
+	public abstract class NotPassBid:Bid
 	{
 		/// <summary>
 		/// The point.
@@ -16,7 +16,7 @@ namespace ChiamataLibrary
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.NotPassBid"/> class.
 		/// </summary>
 		/// <param name="bidder">Bidder.</param>
-		/// <param name="point">Point.</param>
+		/// <param name="point">Points.</param>
 		public NotPassBid (Player bidder, int point) : base (bidder)
 		{
 			this.point = point;
@@ -25,16 +25,16 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// Initializes a new naked instance of the <see cref="ChiamataLibrary.NotPassBid"/> class.
 		/// </summary>
-		/// <param name="point">Point.</param>
+		/// <param name="point">Points.</param>
 		public NotPassBid (int point) : base ()
 		{
 			this.point = point;
 		}
 
 		/// <summary>
-		/// Gets the next bid.
+		/// Gets the next avaiable bid.
 		/// </summary>
-		/// <returns>The next.</returns>
+		/// <returns>The next avaiable bid.</returns>
 		public abstract NotPassBid getNext ();
 	}
 }

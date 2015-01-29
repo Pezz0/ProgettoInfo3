@@ -5,9 +5,15 @@ using ChiamataLibrary;
 
 namespace TestProject
 {
+	/// <summary>
+	/// Test for the <see cref="BTLibrary.Package"/> class.
+	/// </summary>
 	[TestFixture ()]
 	public class PackageTest
 	{
+		/// <summary>
+		/// Setup for this tests.
+		/// </summary>
 		[SetUp ()]
 		public void setup ()
 		{
@@ -17,10 +23,15 @@ namespace TestProject
 
 		#region Bid test
 
+		/// <summary>
+		/// First test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new bid package from a new pass bid, to check if the created package is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidPassTest ()
 		{
-			IBid b = new PassBid (Board.Instance.Me);
+			Bid b = new PassBid (Board.Instance.Me);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -32,10 +43,15 @@ namespace TestProject
 			Assert.True (b.Equals (pkgbRec.bid));
 		}
 
+		/// <summary>
+		/// Second test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new ACK package for a bid from a new pass bid, to check if the message stored in the ACK
+		/// is indeed a <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidPassAckTest ()
 		{
-			IBid b = new PassBid (Board.Instance.Me);
+			Bid b = new PassBid (Board.Instance.Me);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
@@ -47,10 +63,15 @@ namespace TestProject
 			Assert.AreEqual (b, pkgbRec.bid);
 		}
 
+		/// <summary>
+		/// Third test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new bid package from a new carichi bid, to check if the created package is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidCarichiTest ()
 		{
-			IBid b = new CarichiBid (Board.Instance.Me, 61);
+			Bid b = new CarichiBid (Board.Instance.Me, 61);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -62,10 +83,15 @@ namespace TestProject
 			Assert.True (b.Equals (pkgbRec.bid));
 		}
 
+		/// <summary>
+		/// Third test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new ACK package for a bid from a new carichi bid, to check if the message stored in the ACK 
+		/// is indeed a <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidCarichiAckTest ()
 		{
-			IBid b = new CarichiBid (Board.Instance.Me, 61);
+			Bid b = new CarichiBid (Board.Instance.Me, 61);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
@@ -77,10 +103,15 @@ namespace TestProject
 			Assert.True (b.Equals (pkgbRec.bid));
 		}
 
+		/// <summary>
+		/// Fourth test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new bid package from a new normal bid, to check if the created package is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidNormalTest ()
 		{
-			IBid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
+			Bid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -92,10 +123,15 @@ namespace TestProject
 			Assert.True (b.Equals (pkgbRec.bid));
 		}
 
+		/// <summary>
+		/// Fifth test for the <see cref="BTLibrary.PackageBid"/> class.
+		/// Creating a new ACK package for a bid from a new normal bid, to check if the message stored in the ACK 
+		/// is indeed a <see cref="BTLibrary.EnPackageType.BID"/> and if the informations stored are the right ones (bidder and bid).
+		/// </summary>
 		[Test ()]
 		public void packageBidNormalAckTest ()
 		{
-			IBid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
+			Bid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
@@ -109,9 +145,13 @@ namespace TestProject
 
 		#endregion
 
-
 		#region Move
 
+		/// <summary>
+		/// First test for the <see cref="BTLibrary.PackageCard"/> class.
+		/// Creating a new card package from a new move, to check if the message is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.MOVE"/> and if the informations stored are the right ones (player and card).
+		/// </summary>
 		[Test ()]
 		public void packageCardTest ()
 		{
@@ -127,6 +167,11 @@ namespace TestProject
 			Assert.AreSame (Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CINQUE), pkgcRec.move.card);
 		}
 
+		/// <summary>
+		/// Second test for the <see cref="BTLibrary.PackageCard"/> class.
+		/// Creating a new ACK package for a move from a new move, to check if the message stored in the ACK is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.MOVE"/> and if the informations stored are the right ones (player and card).
+		/// </summary>
 		[Test ()]
 		public void packageCardAckTest ()
 		{
@@ -146,6 +191,11 @@ namespace TestProject
 
 		#region Name
 
+		/// <summary>
+		/// First test for the <see cref="BTLibrary.PackageName"/> class.
+		/// Creating a new name package from a new name, to check if the message is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.NAME"/> and if the name stored is the right one.
+		/// </summary>
 		[Test ()]
 		public void packageNameTest ()
 		{
@@ -160,6 +210,11 @@ namespace TestProject
 			Assert.AreEqual (name, pkgnRec.name);
 		}
 
+		/// <summary>
+		/// Second test for the <see cref="BTLibrary.PackageName"/> class.
+		/// Creating a new ACK package for a name from a new name, to check if the message stored in the ACK is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.NAME"/> and if the name stored is the right one.
+		/// </summary>
 		[Test ()]
 		public void packageNameAckTest ()
 		{
@@ -179,6 +234,11 @@ namespace TestProject
 
 		#region Seme
 
+		/// <summary>
+		/// First test for the <see cref="BTLibrary.PackageSeme"/> class.
+		/// Creating a new seme package from a new seme, to check if the message is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.SEME"/> and if the informations stored are the right ones (player and seme).
+		/// </summary>
 		[Test ()]
 		public void packageSemeTest ()
 		{
@@ -194,6 +254,11 @@ namespace TestProject
 			Assert.AreEqual (s, pkgsRec.seme);
 		}
 
+		/// <summary>
+		/// Second test for the <see cref="BTLibrary.PackageSeme"/> class.
+		/// Creating a new ACK package for a seme from a new seme, to check if the message stored in the ACK is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.SEME"/> and if the informations stored are the right ones (player and seme).
+		/// </summary>
 		[Test ()]
 		public void packageSemeAckTest ()
 		{
@@ -213,6 +278,11 @@ namespace TestProject
 
 		#region Terminate
 
+		/// <summary>
+		/// First test for the <see cref="BTLibrary.PackageTerminate"/> class.
+		/// Creating a new terminate package from a new terminate message, to check if the message is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.TERMINATE"/> and if the terminate signal is the right one.
+		/// </summary>
 		[Test ()]
 		public void packageTerminateTest ()
 		{
@@ -227,6 +297,11 @@ namespace TestProject
 
 		}
 
+		/// <summary>
+		/// Second test for the <see cref="BTLibrary.PackageTerminate"/> class.
+		/// Creating a new ACK package for a terminate message from a new terminate message, to check if the message stored in the ACK is indeed a 
+		/// <see cref="BTLibrary.EnPackageType.TERMINATE"/> and if the terminate signal is the right one.
+		/// </summary>
 		[Test ()]
 		public void packageTerminateAckTest ()
 		{

@@ -2,7 +2,10 @@
 
 namespace ChiamataLibrary
 {
-	public abstract class IBid: IComparable<IBid>,IEquatable<IBid>
+	/// <summary>
+	/// Abstract class representing a general bid.
+	/// </summary>
+	public abstract class Bid: IComparable<Bid>,IEquatable<Bid>
 	{
 		/// <summary>
 		/// The bidder.
@@ -10,32 +13,37 @@ namespace ChiamataLibrary
 		public readonly Player bidder;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Engine.IBid"/> class.
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.Bid"/> class.
 		/// </summary>
 		/// <param name="bidder">Bidder.</param>
-		public IBid (Player bidder)
+		public Bid (Player bidder)
 		{
 			this.bidder = bidder;
 		}
 
 		/// <summary>
-		/// Initializes a new naked instance of the <see cref="ChiamataLibrary.IBid"/> class.
+		/// Initializes a new naked instance of the <see cref="ChiamataLibrary.Bid"/> class.
 		/// </summary>
-		public IBid ()
+		public Bid ()
 		{
 			this.bidder = null;
 		}
 
 		/// <summary>
-		/// Changes the bidder.
+		/// Changes the bidder of a specified bid.
 		/// </summary>
-		/// <returns>The bidder.</returns>
-		/// <param name="newBidder">New bidder.</param>
-		public abstract IBid changeBidder (Player newBidder);
+		/// <returns>The bid.</returns>
+		/// <param name="newBidder">The new bidder.</param>
+		public abstract Bid changeBidder (Player newBidder);
 
 		#region Comparison
 
-		public int CompareTo (IBid other)
+		/// <summary>
+		/// Compares two instances of the <see cref="ChiamataLibrary.IBid"/> class.
+		/// </summary>
+		/// <returns><c>1</c> if mainBid > other, <c>-0</c> if mainBid = other,<c>-1</c> otherwise.</returns>
+		/// <param name="other">The bid to compare the main one to.</param>
+		public int CompareTo (Bid other)
 		{
 			if (( (object) other ) == null)	 //null=null everything > null
 				return 1;
@@ -86,20 +94,34 @@ namespace ChiamataLibrary
 			throw new Exception ("Some error occur, this path shoudn't be executed");
 		}
 
-		public bool Equals (IBid other)
+		/// <summary>
+		/// Compares two instances of <see cref="ChiamataLibrary.IBid"/>, returning true if are the same bid.
+		/// </summary>
+		/// <returns><c>true</c> if are the same bid, <c>false</c> otherwise.</returns>
+		/// <param name="other">The <see cref="ChiamataLibrary.IBid"/> to compare with the current <see cref="ChiamataLibrary.IBid"/>.</param>
+		public bool Equals (Bid other)
 		{
 			return this.CompareTo (other) == 0;
 		}
 
+
+		/// <summary>
+		/// Compares an instance of <see cref="ChiamataLibrary.IBid"/>with an object, returning true if are the same bid.
+		/// </summary>
+		/// <returns><c>true</c> if are the same bid, <c>false</c> otherwise.</returns>
+		/// <param name="other">The <see cref="System.Object"/> to compare with the current <see cref="ChiamataLibrary.IBid"/>.</param>
 		public override bool Equals (object other)
 		{
-			if (!( other is IBid ))
+			if (!( other is Bid ))
 				return false;
 
-			return Equals ((IBid) other);
+			return Equals ((Bid) other);
 		}
 
-		public static bool operator == (IBid b1, IBid b2)
+		/// <summary>Overrides the == operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator == (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)
 				return ( (object) b2 ) == null;
@@ -107,7 +129,10 @@ namespace ChiamataLibrary
 			return b1.CompareTo (b2) == 0;
 		}
 
-		public static bool operator != (IBid b1, IBid b2)
+		/// <summary>Overrides the != operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator != (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)
 				return ( (object) b2 ) != null;
@@ -115,7 +140,10 @@ namespace ChiamataLibrary
 			return b1.CompareTo (b2) != 0;
 		}
 
-		public static bool operator >= (IBid b1, IBid b2)
+		/// <summary>Overrides the &gt= operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator >= (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)	//null>=null  null < not null
 				return  ( (object) b2 ) == null;
@@ -123,7 +151,10 @@ namespace ChiamataLibrary
 			return b1.CompareTo (b2) >= 0;
 		}
 
-		public static bool operator <= (IBid b1, IBid b2)
+		/// <summary>Overrides the &lt= operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator <= (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)	//null <= everything
 				return true;
@@ -131,7 +162,10 @@ namespace ChiamataLibrary
 			return b1.CompareTo (b2) <= 0;
 		}
 
-		public static bool operator > (IBid b1, IBid b2)
+		/// <summary>Overrides the &gt operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator > (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)	//null > nothing
 				 return false;
@@ -139,7 +173,10 @@ namespace ChiamataLibrary
 			return b1.CompareTo (b2) > 0;
 		}
 
-		public static bool operator < (IBid b1, IBid b2)
+		/// <summary>Overrides the &lt operator</summary>
+		/// <param name="b1">First bid.</param>
+		/// <param name="b2">Second bid.</param>
+		public static bool operator < (Bid b1, Bid b2)
 		{
 			if (( (object) b1 ) == null)	//null < not null
 				return  !( ( (object) b2 ) == null );
@@ -151,6 +188,10 @@ namespace ChiamataLibrary
 
 		#endregion
 
+		/// <summary>
+		/// Override the GetHashCode method.
+		/// </summary>
+		/// <returns>The HashCode of this instance.</returns>
 		public override int GetHashCode ()
 		{//FIXME: To implement but never used
 			return base.GetHashCode ();
