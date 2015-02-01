@@ -144,6 +144,9 @@ namespace MenuLayout
 					_pairedArrayList.Add (BTManager.Instance.getRemoteDevice (addr).Name + "\n" + addr);
 			}
 
+			_playerControllerList = new List<BTPlayerController> (Board.PLAYER_NUMBER);
+			for (int i = 0; i < Board.PLAYER_NUMBER; i++)
+				_playerControllerList.Add (new BTPlayerController (i));
 
 			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 			BTManager.Instance.eventPackageReceived += handlePackage;
@@ -420,9 +423,6 @@ namespace MenuLayout
 						_scan.Enabled = false;
 						_disconnect.Enabled = true;
 						Toast.MakeText (Application.Context, "Connected to " + _conn, ToastLength.Short).Show ();
-						_playerControllerList = new List<BTPlayerController> (Board.PLAYER_NUMBER);
-						for (int i = 0; i < Board.PLAYER_NUMBER; i++)
-							_playerControllerList.Add (new BTPlayerController (i));
 						this.SetTitle (Resource.String.change_name);
 					}
 

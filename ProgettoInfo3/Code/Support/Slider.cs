@@ -146,7 +146,7 @@ namespace Core
 			spritePoint = new CCSprite (texturePoint);
 			spriteBar.AddChild (spritePoint);
 			spritePoint.Position = new CCPoint (0, spriteBar.ContentSize.Height / 2);
-			spritePoint.Scale = scale * 0.06f;
+			spritePoint.Scale = scale * 0.4f;
 			spritePoint.BlendFunc = CCBlendFunc.AlphaBlend;
 
 			_min = min;
@@ -155,7 +155,7 @@ namespace Core
 			_currentValue = _min;
 
 
-			lblValue = new CCLabel (_currentValue.ToString (), "Arial", 15);
+			lblValue = new CCLabel (_currentValue.ToString (), "Arial", 65 * scale);
 			lblValue.Position = new CCPoint (spriteBar.ContentSize.Width / 2, -0.05f * spriteBar.ContentSize.Height);
 			spriteBar.AddChild (lblValue);
 

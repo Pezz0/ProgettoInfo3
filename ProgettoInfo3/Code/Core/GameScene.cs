@@ -1229,10 +1229,10 @@ namespace Core
 				turnLight (-1);
 
 				String str = "Il chiamante era " + gd.GetChiamante ().name;
-				str += inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.GetSocio ().name + ": " );
+				str += ( inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.GetSocio ().name + ": " ) ) + Environment.NewLine;
 				str += inMano ? ( "ha " ) : ( "hanno " );
 				str += "fatto " + gd.GetChiamantePointCount () + " punti." + Environment.NewLine;
-				str += "Gli altri giocatori (" + gd.GetAltri () [0].name + ", " + gd.GetAltri () [1].name + " e " + gd.GetAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.GetAltriPointCount () + " punti.";
+				str += "Gli altri giocatori (" + gd.GetAltri () [0].name + ", " + gd.GetAltri () [1].name + ( inMano ? ", " : " e " ) + gd.GetAltri () [2].name + ( inMano ? ( " e " + gd.GetAltri () [3].name ) : "" ) + ")" + Environment.NewLine + "hanno fatto " + gd.GetAltriPointCount () + " punti.";
 				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 80f, new CCSize (_resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
 
 				resultLbl.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 43 / 80);
