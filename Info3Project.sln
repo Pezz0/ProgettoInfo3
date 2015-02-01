@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidProject", "ProgettoInfo3\AndroidProject.csproj", "{27AB8DF4-1E2F-4442-8CC5-7D7432AE6B0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidProject", "AndroidProject\AndroidProject.csproj", "{27AB8DF4-1E2F-4442-8CC5-7D7432AE6B0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTLibrary", "BTLibrary\BTLibrary.csproj", "{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}"
 EndProject
