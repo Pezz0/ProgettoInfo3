@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using ChiamataLibrary;
+using AILibrary;
 
-namespace ChiamataLibrary
+namespace ConsoleProject
 {
 	class ConsoleController:IPlayerController
 	{
-		public Bid chooseBid ()
+		public Bid ChooseBid ()
 		{
 			Console.WriteLine ("******************************");
 
@@ -35,7 +36,7 @@ namespace ChiamataLibrary
 			}
 		}
 
-		public EnSemi? chooseSeme ()
+		public EnSemi? ChooseSeme ()
 		{
 			Console.WriteLine ("******************************");
 
@@ -43,7 +44,7 @@ namespace ChiamataLibrary
 			return (EnSemi) int.Parse (Console.ReadLine ());
 		}
 
-		public Card chooseCard ()
+		public Card ChooseCard ()
 		{
 
 			Console.WriteLine ("******************************");
@@ -54,7 +55,7 @@ namespace ChiamataLibrary
 			});
 			Console.WriteLine ("");
 
-			List<Card> mano = Board.Instance.Me.Hand;
+			List<Card> mano = Board.Instance.Me.GetHand ();
 
 			for (int i = 0; i < mano.Count; i++)
 				Console.WriteLine ("premere " + i.ToString () + " per giocare " + mano [i].ToString ());
@@ -62,9 +63,6 @@ namespace ChiamataLibrary
 			return mano [int.Parse (Console.ReadLine ())];
 		}
 
-		//public bool isReady { get { return true; } }
-
-		public bool isActive { get { return true; } }
 	}
 
 	class MainClass
@@ -72,74 +70,59 @@ namespace ChiamataLibrary
 
 		public static void Main (string [] args)
 		{
-			string a = Console.ReadLine ();
 
-			if (a == "x") {
-				GameData gm = new GameData ("C:\\Users\\Matteo\\Documents\\prova.xml");
-			} else {
-				Board.Instance.reset ();
-				Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);	//il mazziere è C
+			Archive.Instance.AddFromFolder ();
 
-				Board.Instance.AllPlayers.ForEach (delegate(Player p) {
-					Console.WriteLine (p.ToString () + " possiede:");
-					Board.Instance.getPlayerHand (p).ForEach (delegate(Card c) {
-						Console.WriteLine (c.ToString ());
-					});
-				});
+			Board.Instance.reset ();
+			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new NormalRandom ());	//il mazziere è C
 
-				//setto me
-				//Board.Instance.Me.Controller = new ConsoleController ();
-
-				//setto le IA
-				AIPlayerController AI0 = new AIPlayerController (Board.Instance.getPlayer (0), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				AIPlayerController AI1 = new AIPlayerController (Board.Instance.getPlayer (1), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				AIPlayerController AI2 = new AIPlayerController (Board.Instance.getPlayer (2), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				AIPlayerController AI3 = new AIPlayerController (Board.Instance.getPlayer (3), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-				AIPlayerController AI4 = new AIPlayerController (Board.Instance.getPlayer (4), new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
-
-				//setto gli eventi
-				Board.Instance.eventSomeonePlaceABid += someonePlaceABid;
-				Board.Instance.eventSomeonePlayACard += someonePlayACard;
-				Board.Instance.eventPickTheBoard += someonePickUp;
-				Board.Instance.eventAuctionStart += auctionStarting;
-				Board.Instance.eventPlaytimeStart += gameStarting;
-				Board.Instance.eventPlaytimeEnd += gameFinish;
-
-				Console.WriteLine ("premere per partire...");
-				Console.ReadLine ();
-
-				Board.Instance.start ();
-
-				while (Board.Instance.Time < 41)
-					Board.Instance.update ();
-
-				Console.WriteLine ("premere per finire...");
-				Console.ReadLine ();
-
-				Archive.Instance.forEach (delegate(GameData gd) {
-					gd.writeOnXML ("C:\\Users\\Matteo\\Documents\\prova.xml");
-				});
-
+			foreach (Player p in Board.Instance.AllPlayers) {
+				new AIPlayerController (p, new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
+				Console.WriteLine (p.ToString () + " possiede:");
+				foreach (Card c in p.GetHand())
+					Console.WriteLine (c.ToString ());
 			}
+
+			//setto me
+			//Board.Instance.Me.Controller = new ConsoleController ();
+
+			//setto gli eventi
+			Board.Instance.eventSomeonePlaceABid += someonePlaceABid;
+			Board.Instance.eventSomeonePlayACard += someonePlayACard;
+			Board.Instance.eventPickTheBoard += someonePickUp;
+			Board.Instance.eventAuctionStart += auctionStarting;
+			Board.Instance.eventPlaytimeStart += gameStarting;
+			Board.Instance.eventPlaytimeEnd += gameFinish;
+
+			Console.WriteLine ("premere per partire...");
+			Console.ReadLine ();
+
+			Board.Instance.Start ();
+
+			while (Board.Instance.Time < 41)
+				Board.Instance.Update ();
+
+			Archive.Instance.SaveLastGame ();
+
+			Console.WriteLine ("premere per finire...");
+			Console.ReadLine ();
 
 		}
 
 		public static void someonePlaceABid (Bid bid)
 		{
-			Console.WriteLine ("**********************");
 			Console.WriteLine ("Nuova bid:" + bid.ToString ());
 		}
 
-		public static void someonePlayACard (Move move)
+		public static void someonePlayACard (Player p, Card c)
 		{
-			Console.WriteLine ("**********************");
-			Console.WriteLine ("Nuova move:" + move.ToString ());
+			Console.WriteLine (string.Format ("{0} gioca {1}", p.ToString (), c.ToString ()));
 		}
 
 		public static void someonePickUp (Player player, List<Card> board)
 		{
-			Console.WriteLine ("**********************");
 			Console.WriteLine (player.ToString () + " ha preso il turno.");
+			Console.WriteLine ("**********************");
 		}
 
 
@@ -155,16 +138,16 @@ namespace ChiamataLibrary
 			if (Board.Instance.GameType == EnGameType.MONTE)
 				Console.WriteLine ("Hanno passato tutti senza offerte e quindi la partita va a monte");
 			else if (Board.Instance.GameType == EnGameType.CARICHI)
-				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.getChiamante ().ToString ());
+				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.GetChiamante ().ToString ());
 			else if (Board.Instance.GameType == EnGameType.STANDARD) {
 				Console.WriteLine ("Partita standard");
-				Console.WriteLine ("Chiamante: " + Board.Instance.getChiamante ().ToString ());
+				Console.WriteLine ("Chiamante: " + Board.Instance.GetChiamante ().ToString ());
 				if (Board.Instance.isChiamataInMano)
 					Console.WriteLine ("Chiamata in mano");
 				else
-					Console.WriteLine ("Socio: " + Board.Instance.getSocio ().ToString ());
+					Console.WriteLine ("Socio: " + Board.Instance.GetSocio ().ToString ());
 
-				foreach (Player p in Board.Instance.getAltri())
+				foreach (Player p in Board.Instance.GetAltri())
 					Console.WriteLine ("Altro: " + p.ToString ());
 			}
 		}

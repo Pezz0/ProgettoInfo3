@@ -57,6 +57,18 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>..\packages\CocosSharp.PCL.Shared.1.2.1.0\lib\MonoAndroid10\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage.Abstractions">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\monoandroid\PCLStorage.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\monoandroid\PCLStorage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -76,11 +88,13 @@
     <Compile Include="HistoryTabs\LastGame.cs" />
     <Compile Include="HistoryTabs\AllGames.cs" />
     <Compile Include="HistoryTabs\Points.cs" />
+    <Compile Include="CriptoRandom.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
@@ -100,6 +114,7 @@
     <AndroidResource Include="Resources\layout\Grid_elem.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Assets\Content\" />
@@ -200,6 +215,14 @@
     <ProjectReference Include="..\BTLibrary\BTLibrary.csproj">
       <Project>{4B2178D8-FF4D-4614-8868-CD156D3BDBA3}</Project>
       <Name>BTLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChiamataLibrary\ChiamataLibrary.csproj">
+      <Project>{D7CC93AD-4B03-411F-826E-7567C930B398}</Project>
+      <Name>ChiamataLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AILibrary\AILibrary.csproj">
+      <Project>{DB0D94DB-D1BB-49E7-8395-15BCF0C766F3}</Project>
+      <Name>AILibrary</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -73,7 +73,7 @@ namespace BTLibrary
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
-			Player bidder = Board.Instance.getPlayer ((int) bs [1]);
+			Player bidder = (Player) bs [1];
 
 			if (bs [2] == 255)
 				bid = new PassBid (bidder);

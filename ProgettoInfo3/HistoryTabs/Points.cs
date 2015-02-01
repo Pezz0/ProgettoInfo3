@@ -34,7 +34,7 @@ namespace MenuLayout
 
 			History.eventDelete += Delete;
 
-			List<string> players = Archive.Instance.getAllPlayer ();
+			List<string> players = Archive.Instance.GetAllPlayer ();
 
 			if (players.Count > 0) {
 				play.Add ("Player");
@@ -49,13 +49,9 @@ namespace MenuLayout
 				int i = 0;
 				players.ForEach (name => {
 					values [i] [0] = name;
-					values [i] [1] = Archive.Instance.getPlayed (name).ToString ();
-					values [i] [2] = Archive.Instance.getTotalPoint (name).ToString ();
+					values [i] [1] = Archive.Instance.GetPlayed (name).ToString ();
+					values [i] [2] = Archive.Instance.GetTotalAward (name).ToString ();
 					i++;
-					/*play.Add (name);
-				play.Add (Archive.Instance.getPlayed (name).ToString ());
-				int points = Archive.Instance.getTotalPoint (name);
-				play.Add (points > 0 ? "+" + points : points.ToString ());*/
 				});
 				sort (values, 0, players.Count - 1);
 				for (int j = 0; j < players.Count; j++) {

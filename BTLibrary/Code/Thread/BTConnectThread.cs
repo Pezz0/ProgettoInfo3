@@ -68,7 +68,6 @@ namespace BTLibrary
 				return;
 			}
 
-			// Start the connected thread
 			BTManager.Instance.ConnectedToMaster (_socket, _device);
 		}
 

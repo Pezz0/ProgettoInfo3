@@ -86,7 +86,7 @@ namespace BTLibrary
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
-			player = Board.Instance.getPlayer ((int) bs [1]);
+			player = (Player) bs [1];
 			seme = (EnSemi) bs [2];
 		}
 

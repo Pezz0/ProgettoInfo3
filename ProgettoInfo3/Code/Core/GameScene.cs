@@ -546,7 +546,7 @@ namespace Core
 
 		#region controller bid and seme
 
-		public Bid chooseBid ()
+		public Bid ChooseBid ()
 		{
 			turnLight (0);
 
@@ -560,7 +560,7 @@ namespace Core
 			return null;
 		}
 
-		public EnSemi? chooseSeme ()
+		public EnSemi? ChooseSeme ()
 		{
 			turnLight (0);
 			if (!_initializedSeme) {
@@ -1005,6 +1005,7 @@ namespace Core
 			#region Card sprites creation and positioning
 			CCPoint posBase;
 			float rotation;
+			List<Card> list = Board.Instance.Me.GetHand ();
 			for (int i = 0; i < 8; i++) {
 
 
@@ -1014,7 +1015,7 @@ namespace Core
 					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _carte [i - 1].posBase.Y + ( _winSize.Height / _carte [0].sprite.Texture.PixelsWide ) * 21f);
 
 				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
-				_carte.Add (new CardData (new CCSprite (Board.Instance.Me.Hand [i].number.ToString () + "_" + Board.Instance.Me.Hand [i].seme.ToString ()), posBase, rotation, i));
+				_carte.Add (new CardData (new CCSprite (list [i].number.ToString () + "_" + list [i].seme.ToString ()), posBase, rotation, i));
 
 
 				_carte [i].sprite.Position = _carte [i].posBase;					//Set the position.
@@ -1176,7 +1177,7 @@ namespace Core
 			_touchAsta = true;		//Setting the touch to be the asta's.
 
 			Schedule (RunGameLogic);	//Start the method that will be called every frame.
-			Board.Instance.start ();	//Start the board.
+			Board.Instance.Start ();	//Start the board.
 
 			_mainLayer.Color = new CCColor3B (6, 117, 21);	//Set the background color to green.
 			_mainLayer.Opacity = 255;			//Alpha = 1.
@@ -1199,10 +1200,10 @@ namespace Core
 				_wait -= frameTimeInSeconds;
 			} else {
 				_wait = 0;
-				Board.Instance.update ();
+				Board.Instance.Update ();
 			}
 
-			if (Board.Instance.isGameFinish && !written) {
+			if (Board.Instance.IsGameFinish && !written) {
 				written = true;
 				_resultBoard.Visible = true;
 
@@ -1215,23 +1216,23 @@ namespace Core
 				_btnExit.Enabled = true;
 				_btnNext.Enabled = true;
 				bool inMano = false;
-				GameData gd = Archive.Instance.lastGame ();
-				if (gd.getWinners ().Contains (Board.Instance.Me))
+				GameData gd = Archive.Instance.LastGame;
+				if (gd.GetWinners ().Contains (Board.Instance.Me))
 					_endStatusSpriteWin.Visible = true;
 				else
 					_endStatusSpriteLoss.Visible = true;
 
-				if (gd.isChiamataInMano) {
+				if (gd.IsChiamataInMano) {
 					inMano = true;
 				}
 
 				turnLight (-1);
 
-				String str = "Il chiamante era " + gd.getChiamante ().name;
-				str += inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.getSocio ().name + ": " );
+				String str = "Il chiamante era " + gd.GetChiamante ().name;
+				str += inMano ? ( " e si è chiamato in mano:" ) : ( " e il socio era " + gd.GetSocio ().name + ": " );
 				str += inMano ? ( "ha " ) : ( "hanno " );
-				str += "fatto " + gd.getChiamantePointCount () + " punti." + Environment.NewLine;
-				str += "Gli altri giocatori (" + gd.getAltri () [0].name + ", " + gd.getAltri () [1].name + " e " + gd.getAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.getAltriPointCount () + " punti.";
+				str += "fatto " + gd.GetChiamantePointCount () + " punti." + Environment.NewLine;
+				str += "Gli altri giocatori (" + gd.GetAltri () [0].name + ", " + gd.GetAltri () [1].name + " e " + gd.GetAltri () [2].name + ")" + Environment.NewLine + "hanno fatto " + gd.GetAltriPointCount () + " punti.";
 				CCLabel resultLbl = new CCLabel (str, "Roboto", _cardScale * 80f, new CCSize (_resultBoard.BoundingBox.Size.Width * 4 / 5, -1), CCTextAlignment.Center);
 
 				resultLbl.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 43 / 80);
@@ -1327,7 +1328,7 @@ namespace Core
 		/// <param name="i">The global index.</param>
 		private int playerToOrder (int i)
 		{
-			return( Board.Instance.getPlayer (i).order - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
+			return( i - Board.Instance.Me.order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
 		}
 
 		#endregion
@@ -1367,7 +1368,7 @@ namespace Core
 		/// <param name="bid">The bid.</param>
 		private void bidPlaced (Bid bid)
 		{
-			if (!Board.Instance.isAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
+			if (!Board.Instance.IsAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
 				disableAllButtons ();
 			} else {
 				enableAvaiableButtons ();
@@ -1377,7 +1378,7 @@ namespace Core
 			else
 				_playerBids [playerToOrder (bid.bidder.order)].Texture = new CCTexture2D ("cll_" + bidToString (bid));
 			_wait = 0.4f;
-			turnLight (( !Board.Instance.isAuctionPhase ? playerToOrder (Board.Instance.currentAuctionWinningBid.bidder) : playerToOrder (Board.Instance.ActiveAuctionPlayer) ));
+			turnLight (( !Board.Instance.IsAuctionPhase ? playerToOrder (Board.Instance.currentAuctionWinningBid.bidder) : playerToOrder (Board.Instance.ActiveAuctionPlayer) ));
 
 		}
 
@@ -1440,7 +1441,7 @@ namespace Core
 
 
 			for (int i = 0; i < Board.PLAYER_NUMBER; i++) {
-				if (Board.Instance.getPlayer (i).Role == EnRole.CHIAMANTE) {
+				if (Board.Instance.GetPlayer (i).Role == EnRole.CHIAMANTE) {
 					CCSprite seme = new CCSprite ("cll_" + Board.Instance.Briscola.ToString ());
 					seme.Position = new CCPoint (45, -75);
 					seme.Scale = _cardScale * 0.65f;
@@ -1460,16 +1461,15 @@ namespace Core
 		/// Method to notify the board that i played a card.
 		/// </summary>
 		/// <returns>The card.</returns>
-		public Card chooseCard ()
+		public Card ChooseCard ()
 		{
 			turnLight (0);
 			if (_played) {
 				_played = false;
-				Card temp = Board.Instance.Me.InitialHand [_droppedCards [Board.Instance.numberOfCardOnBoard].index];
 				_touchAsta = true;
 				turnLight (1);
 				_wait += 0.5f;
-				return Board.Instance.getCard (temp.seme, temp.number);
+				return Board.Instance.Me.GetHand (true) [_droppedCards [Board.Instance.numberOfCardOnBoard].index];
 			}
 
 			_touchAsta = false;
@@ -1484,10 +1484,10 @@ namespace Core
 		/// Method to show a card played by others.
 		/// </summary>
 		/// <param name="m">M.</param>
-		private void playCard (Move m)
+		private void playCard (Player player, Card card)
 		{
-			int localIndex = playerToOrder (m.player);
-			CCSprite cardSprite = new CCSprite (m.card.number.ToString () + "_" + m.card.seme.ToString ());
+			int localIndex = playerToOrder (player);
+			CCSprite cardSprite = new CCSprite (card.number.ToString () + "_" + card.seme.ToString ());
 			cardSprite.Scale = _cardScale * 0.7f;
 			CardData cd;
 			switch (localIndex) {

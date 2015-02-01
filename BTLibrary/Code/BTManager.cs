@@ -241,24 +241,14 @@ namespace BTLibrary
 		private BTConnectThread _connectThread;
 
 		/// <summary>
-		/// The thread to perform slave read from a master device
+		/// The list of thread to perform master read with mutiple connected slave or to perform slave read from the master.
 		/// </summary>
-		private BTReadThread _readFromMasterThread;
+		private List<BTReadThread> _readThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
 		/// <summary>
-		/// The thread to perform slave write to a master device
+		/// The list of thread to perform master write with multiple connected slave or to perform slave read the the master.
 		/// </summary>
-		private BTWriteThread _writeToMasterThread;
-
-		/// <summary>
-		/// The list of thread to perform master read with mutiple connected slave.
-		/// </summary>
-		private List<BTReadThread> _readFromSlaveThread = new List<BTReadThread> (MAX_BT_PLAYER);
-
-		/// <summary>
-		/// The list of thread to perform master write with multiple connected slave
-		/// </summary>
-		private List<BTWriteThread> _writeToSlaveThread = new List<BTWriteThread> (MAX_BT_PLAYER);
+		private List<BTWriteThread> _writeThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 
 		/// <summary>
 		/// The UUID to perform connection.
@@ -344,10 +334,10 @@ namespace BTLibrary
 			SetState (EnConnectionState.STATE_CONNECTED_SLAVE);
 
 			// Start the thread to perform read service
-			_readFromMasterThread = new BTReadThread (socket);
+			_readThread.Add (new BTReadThread (socket));
 
 			// Start the thread to perform write service
-			_writeToMasterThread = new BTWriteThread (socket);
+			_writeThread.Add (new BTWriteThread (socket));
 
 			//sends a message to the indicate the slave connection to a device
 			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_SLAVE, -1, device.Address).SendToTarget ();
@@ -378,10 +368,10 @@ namespace BTLibrary
 			SetState (EnConnectionState.STATE_CONNECTED_MASTER);
 
 			// Start the thread to perform read service
-			_readFromSlaveThread.Add (new BTReadThread (socket));
+			_readThread.Add (new BTReadThread (socket));
 
 			// Start the thread to perform write service
-			_writeToSlaveThread.Add (new BTWriteThread (socket));
+			_writeThread.Add (new BTWriteThread (socket));
 
 			//sends a message to the indicate the master connection to a device
 			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_MASTER, -1, device.Address).SendToTarget ();
@@ -397,7 +387,7 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public int getNumConnected ()
 		{
-			return _readFromSlaveThread.Count;
+			return _readThread.Count;
 		}
 
 		/// <summary>
@@ -411,24 +401,14 @@ namespace BTLibrary
 				_connectThread = null;
 			}
 
-			if (_readFromMasterThread != null) {
-				_readFromMasterThread.Cancel ();
-				_readFromMasterThread = null;
+			for (int i = 0; i < _writeThread.Count; i++) {
+				_writeThread [i].Cancel ();
+				_writeThread.RemoveAt (i);
 			}
 
-			if (_writeToMasterThread != null) {
-				_writeToMasterThread.Cancel ();
-				_writeToMasterThread = null;
-			}
-
-			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
-				_writeToSlaveThread [i].Cancel ();
-				_writeToSlaveThread.RemoveAt (i);
-			}
-
-			for (int i = 0; i < _readFromSlaveThread.Count; i++) {
-				_readFromSlaveThread [i].Cancel ();
-				_readFromSlaveThread.RemoveAt (i);
+			for (int i = 0; i < _readThread.Count; i++) {
+				_readThread [i].Cancel ();
+				_readThread.RemoveAt (i);
 			}
 
 			if (_listenThread != null) {
@@ -457,16 +437,16 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveSlave (string address)
 		{
-			for (int i = 0; i < _readFromSlaveThread.Count; ++i)
-				if (_readFromSlaveThread [i]._socket.RemoteDevice.Address == address) {
-					_readFromSlaveThread [i].Cancel ();
-					_readFromSlaveThread.RemoveAt (i);
+			for (int i = 0; i < _readThread.Count; ++i)
+				if (_readThread [i]._socket.RemoteDevice.Address == address) {
+					_readThread [i].Cancel ();
+					_readThread.RemoveAt (i);
 					break;
 				}
-			for (int i = 0; i < _writeToSlaveThread.Count; ++i) {
-				if (_writeToSlaveThread [i]._Socket.RemoteDevice.Address == address) {
-					_writeToSlaveThread [i].Cancel ();
-					_writeToSlaveThread.RemoveAt (i);
+			for (int i = 0; i < _writeThread.Count; ++i) {
+				if (_writeThread [i]._Socket.RemoteDevice.Address == address) {
+					_writeThread [i].Cancel ();
+					_writeThread.RemoveAt (i);
 					break;
 				}
 			}
@@ -478,14 +458,12 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveMaster ()
 		{
-			if (_writeToMasterThread != null) {
-				_writeToMasterThread.Cancel ();
-				_writeToMasterThread = null;
-			}
-			if (_readFromMasterThread != null) {
-				_readFromMasterThread.Cancel ();
-				_readFromMasterThread = null;
-			}
+			_readThread [0].Cancel ();
+			_readThread.Clear ();
+
+			_writeThread [0].Cancel ();
+			_writeThread.Clear ();
+		
 		}
 
 		/// <summary>
@@ -574,10 +552,10 @@ namespace BTLibrary
 						
 					if (isSlave ()) {
 						//if i am a slave i remove the message from the list of the message to send
-						_writeToMasterThread.Remove (Package.getMessageFromAck (data));
+						_writeThread [0].Remove (Package.getMessageFromAck (data));
 					} else {
 						//otherwise i am the master so i remove the message only from the list of the sender
-						_writeToSlaveThread.ForEach (delegate(BTWriteThread thred) {
+						_writeThread.ForEach (delegate(BTWriteThread thred) {
 							if (thred.Connected == Package.getAddressFromAck (data))
 								thred.Remove (Package.getMessageFromAck (data));
 						});
@@ -595,11 +573,11 @@ namespace BTLibrary
 						
 					//ACK consists of the type ACK followed by the message received 
 					if (BTManager.Instance.isSlave ())
-						_writeToMasterThread.Add (pkg.getAckMessage ());
+						_writeThread [0].Add (pkg.getAckMessage ());
 					else
-						for (int i = 0; i < _writeToSlaveThread.Count; i++)
-							if (_writeToSlaveThread [i] != null)
-								_writeToSlaveThread [i].Add (pkg.getAckMessage ());
+						for (int i = 0; i < _writeThread.Count; i++)
+							if (_writeThread [i] != null)
+								_writeThread [i].Add (pkg.getAckMessage ());
 						
 				}
 				// all other messages that are not message_read (STATE_CHANGE, DEVICE_ADDRESS ecc) are initializing events
@@ -618,10 +596,10 @@ namespace BTLibrary
 		/// <param name="pkg">Package to send to master.</param>
 		public void WriteToMaster (Package pkg)
 		{
-			if (_writeToMasterThread == null)
+			if (_writeThread.Count == 0)
 				return;
 
-			_writeToMasterThread.Add (pkg.getMessage ());
+			_writeThread [0].Add (pkg.getMessage ());
 
 		}
 
@@ -632,9 +610,9 @@ namespace BTLibrary
 		public void WriteToAllSlave (Package pkg)
 		{
 			byte [] message = pkg.getMessage ();
-			for (int i = 0; i < _writeToSlaveThread.Count; i++) {
-				if (_writeToSlaveThread [i] != null)
-					_writeToSlaveThread [i].Add (message);
+			for (int i = 0; i < _writeThread.Count; i++) {
+				if (_writeThread [i] != null)
+					_writeThread [i].Add (message);
 			}
 		}
 
@@ -677,10 +655,10 @@ namespace BTLibrary
 			// If i'm the slave and the caller send to master one Byte that indicate the seme chosen.
 			if (BTManager.Instance.isSlave ()) {
 				if (Board.Instance.Me.Role == EnRole.CHIAMANTE)
-					BTManager.Instance.WriteToMaster (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+					BTManager.Instance.WriteToMaster (new PackageSeme (Board.Instance.GetChiamante (), Board.Instance.CalledCard.seme));
 				// If i'm the master send to all slaves one Byte that indicate the seme chosen.
 			} else
-				BTManager.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.getChiamante (), Board.Instance.CalledCard.seme));
+				BTManager.Instance.WriteToAllSlave (new PackageSeme (Board.Instance.GetChiamante (), Board.Instance.CalledCard.seme));
 		}
 
 		/// <summary>
@@ -688,13 +666,13 @@ namespace BTLibrary
 		/// </summary>
 		/// <remarks>See <see cref="BTLibrary.PackageCard"/> for further informations about the message contents.</remarks>
 		/// <param name="move">Move.</param>
-		private void cardPlayed (Move move)
+		private void cardPlayed (Player player, Card card)
 		{
 			// When the Board event eventIPlayACard or eventSomeonePlayACard occours, write to master (if i'm slave) or to all slaves (if i'm master) the message.
 			if (BTManager.Instance.isSlave ())
-				BTManager.Instance.WriteToMaster (new PackageCard (move));
+				BTManager.Instance.WriteToMaster (new PackageCard (player, card));
 			else
-				BTManager.Instance.WriteToAllSlave (new PackageCard (move));
+				BTManager.Instance.WriteToAllSlave (new PackageCard (player, card));
 		}
 
 		#endregion

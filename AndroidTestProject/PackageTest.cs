@@ -18,7 +18,7 @@ namespace TestProject
 		public void setup ()
 		{
 			Board.Instance.reset ();
-			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new TestRandom ());//il mazziere è C
 		}
 
 		#region Bid test
@@ -155,16 +155,18 @@ namespace TestProject
 		[Test ()]
 		public void packageCardTest ()
 		{
-			Move m = new Move (Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CINQUE), Board.Instance.Me);
-			PackageCard pkgc = new PackageCard (m);
+			Player p = Board.Instance.Me;
+			Card c = Board.Instance.GetCard (EnSemi.BASTONI, EnNumbers.CINQUE);
+
+			PackageCard pkgc = new PackageCard (p, c);
 
 			byte [] bs = pkgc.getMessage ();
 
 			PackageCard pkgcRec = new PackageCard (bs);
 
 			Assert.AreEqual (EnPackageType.MOVE, pkgcRec.type);
-			Assert.AreSame (Board.Instance.Me, pkgcRec.move.player);
-			Assert.AreSame (Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CINQUE), pkgcRec.move.card);
+			Assert.AreSame (p, pkgcRec.player);
+			Assert.AreSame (c, pkgcRec.card);
 		}
 
 		/// <summary>
@@ -175,16 +177,17 @@ namespace TestProject
 		[Test ()]
 		public void packageCardAckTest ()
 		{
-			Move m = new Move (Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CINQUE), Board.Instance.Me);
-			PackageCard pkgc = new PackageCard (m);
+			Player p = Board.Instance.Me;
+			Card c = Board.Instance.GetCard (EnSemi.BASTONI, EnNumbers.CINQUE);
+			PackageCard pkgc = new PackageCard (p, c);
 
 			byte [] bs = pkgc.getAckMessage ();
 
 			PackageCard pkgcRec = new PackageCard (Package.getMessageFromAck (bs));
 
 			Assert.AreEqual (EnPackageType.MOVE, pkgcRec.type);
-			Assert.AreSame (Board.Instance.Me, pkgcRec.move.player);
-			Assert.AreSame (Board.Instance.getCard (EnSemi.BASTONI, EnNumbers.CINQUE), pkgcRec.move.card);
+			Assert.AreSame (p, pkgcRec.player);
+			Assert.AreSame (c, pkgcRec.card);
 		}
 
 		#endregion

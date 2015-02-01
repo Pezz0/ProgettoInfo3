@@ -33,7 +33,7 @@ namespace MenuLayout
 			grid.Adapter = play;
 			int i = 1;
 
-			Archive.Instance.forEach (delegate(GameData gd) {
+			Archive.Instance.ForEach (delegate(GameData gd) {
 
 				play.Add ("Game " + i + ":");
 				play.Add ("");
@@ -55,28 +55,28 @@ namespace MenuLayout
 						play.Add (gd.calledCard.seme.ToString ());
 					}
 					play.Add ("Caller Points: ");
-					play.Add (gd.getChiamantePointCount ());
+					play.Add (gd.GetChiamantePointCount ());
 					play.Add ("");
 					play.Add ("Other's points: ");
-					play.Add (gd.getAltriPointCount ());
+					play.Add (gd.GetAltriPointCount ());
 					play.Add ("");
 
-					Player caller = gd.getChiamante ();
+					Player caller = gd.GetChiamante ();
 
 					Player socio = null;
-					if (!gd.isChiamataInMano)
-						socio = gd.getSocio ();
+					if (!gd.IsChiamataInMano)
+						socio = gd.GetSocio ();
 
 					for (int j = 0; j < Board.PLAYER_NUMBER; ++j) {
-						Player player = gd.getPlayer (j);
+						Player player = gd.GetPlayer (j);
 						play.Add (player.name);
 						if (player.name == caller.name)
 							play.Add ("CHIAMANTE");
-						else if (!gd.isChiamataInMano && player.name == socio.name)
+						else if (!gd.IsChiamataInMano && player.name == socio.name)
 							play.Add ("SOCIO");
 						else
 							play.Add ("ALTRO");
-						int award = gd.getAward (player);
+						int award = gd.GetAward (player);
 						play.Add (award > 0 ? "+" + award.ToString () : award.ToString ());
 					}
 				} else {

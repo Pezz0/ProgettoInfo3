@@ -26,7 +26,11 @@ namespace AndroidTestProject
 		
 		public static void UpdateIdValues()
 		{
+			global::BTLibrary.Resource.String.ApplicationName = global::AndroidTestProject.Resource.String.ApplicationName;
+			global::BTLibrary.Resource.String.Hello = global::AndroidTestProject.Resource.String.Hello;
 			global::BTLibrary.Resource.String.library_name = global::AndroidTestProject.Resource.String.library_name;
+			global::PCLStorage.Resource.String.ApplicationName = global::AndroidTestProject.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::AndroidTestProject.Resource.String.Hello;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionHostName = global::AndroidTestProject.Resource.Id.OptionHostName;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionPort = global::AndroidTestProject.Resource.Id.OptionPort;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionRemoteServer = global::AndroidTestProject.Resource.Id.OptionRemoteServer;
@@ -175,8 +179,14 @@ namespace AndroidTestProject
 		public partial class String
 		{
 			
+			// aapt resource value: 0x7f040001
+			public const int ApplicationName = 2130968577;
+			
 			// aapt resource value: 0x7f040000
-			public const int library_name = 2130968576;
+			public const int Hello = 2130968576;
+			
+			// aapt resource value: 0x7f040002
+			public const int library_name = 2130968578;
 			
 			static String()
 			{

@@ -338,14 +338,14 @@ namespace MenuLayout
 				Intent returnIntent = new Intent ();
 				this.SetResult (Result.Ok, returnIntent);
 
-				Board.Instance.initializeSlave (( (PackageBoard) pkg ).bytes, _name.Text);
+				Board.Instance.InitializeSlave (( (PackageBoard) pkg ).bytes, _name.Text);
 
 				BTManager.Instance.initializeCommunication ();
 
 
 				for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
 					if (Board.Instance.Me.order != i)
-						Board.Instance.getPlayer (i).setController (_playerControllerList [i]);
+						( (Player) i ).SetController (_playerControllerList [i]);
 
 
 

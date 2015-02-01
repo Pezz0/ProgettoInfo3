@@ -47,19 +47,21 @@ namespace BTLibrary
 		/// The time of the play. The global time is stored in <see cref="ChiamataLibrary.Board"/>.
 		/// </summary>
 		public readonly int time;
-		/// <summary>
-		/// The move.
-		/// </summary>
-		public readonly Move move;
+
+		public readonly Player player;
+
+		public readonly Card card;
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.PackageCard"/> class.
 		/// </summary>
 		/// <param name="move">Move.</param>
-		public PackageCard (Move move) : base (EnPackageType.MOVE)
+		public PackageCard (Player player, Card card) : base (EnPackageType.MOVE)
 		{
 			time = Board.Instance.Time;
-			this.move = move;
+			this.player = player;
+			this.card = card;
 		}
 
 		/// <summary>
@@ -75,7 +77,8 @@ namespace BTLibrary
 			EnSemi s = (EnSemi) ( bs [2] / Board.Instance.nNumber );
 			EnNumbers n = (EnNumbers) ( bs [2] % Board.Instance.nNumber );
 
-			move = new Move (Board.Instance.getCard (s, n), Board.Instance.getPlayer ((int) bs [1]));
+			card = Board.Instance.GetCard (s, n); 
+			player = (Player) bs [1];
 
 			time = (int) bs [3];
 		}
@@ -89,8 +92,8 @@ namespace BTLibrary
 		{
 			List<Byte> msg = new List<byte> (1024);
 			msg.Add ((byte) type);
-			msg.Add ((byte) move.player.order);
-			msg.Add ((byte) ( ( (int) move.card.seme ) * Board.Instance.nNumber + ( (int) move.card.number ) ));
+			msg.Add ((byte) player.order);
+			msg.Add ((byte) ( ( (int) card.seme ) * Board.Instance.nNumber + ( (int) card.number ) ));
 			msg.Add ((byte) time);
 			return msg.ToArray ();
 

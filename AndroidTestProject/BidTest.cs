@@ -66,7 +66,7 @@ namespace TestProject
 		public void setup ()
 		{
 			Board.Instance.reset ();
-			Board.Instance.initializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2);//il mazziere è C
+			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new TestRandom ());//il mazziere è C
 
 			_null1 = null;
 			_null2 = null;

@@ -109,7 +109,7 @@ namespace MenuLayout
 		/// <param name="e">E.</param>
 		public void Delete (object sender, EventArgs e)
 		{
-			Archive.Instance.delete (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
+			Archive.Instance.DeleteAll ();
 			if (eventDelete != null)
 				eventDelete ();
 		}

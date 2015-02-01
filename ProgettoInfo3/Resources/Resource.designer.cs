@@ -26,7 +26,11 @@ namespace MenuLayout
 		
 		public static void UpdateIdValues()
 		{
+			global::BTLibrary.Resource.String.ApplicationName = global::MenuLayout.Resource.String.ApplicationName;
+			global::BTLibrary.Resource.String.Hello = global::MenuLayout.Resource.String.Hello;
 			global::BTLibrary.Resource.String.library_name = global::MenuLayout.Resource.String.library_name;
+			global::PCLStorage.Resource.String.ApplicationName = global::MenuLayout.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::MenuLayout.Resource.String.Hello;
 		}
 		
 		public partial class Array
@@ -317,6 +321,9 @@ namespace MenuLayout
 		public partial class String
 		{
 			
+			// aapt resource value: 0x7f040001
+			public const int ApplicationName = 2130968577;
+			
 			// aapt resource value: 0x7f040003
 			public const int Default1 = 2130968579;
 			
@@ -329,8 +336,8 @@ namespace MenuLayout
 			// aapt resource value: 0x7f040006
 			public const int Default4 = 2130968582;
 			
-			// aapt resource value: 0x7f040002
-			public const int app_name = 2130968578;
+			// aapt resource value: 0x7f040000
+			public const int Hello = 2130968576;
 			
 			// aapt resource value: 0x7f04000c
 			public const int change_name = 2130968588;
@@ -341,11 +348,8 @@ namespace MenuLayout
 			// aapt resource value: 0x7f04000b
 			public const int create_title = 2130968587;
 			
-			// aapt resource value: 0x7f040001
-			public const int hello = 2130968577;
-			
-			// aapt resource value: 0x7f040000
-			public const int library_name = 2130968576;
+			// aapt resource value: 0x7f040002
+			public const int library_name = 2130968578;
 			
 			// aapt resource value: 0x7f040007
 			public const int none_add = 2130968583;

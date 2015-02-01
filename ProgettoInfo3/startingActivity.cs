@@ -16,6 +16,8 @@ using CocosSharp;
 using ChiamataLibrary;
 using BTLibrary;
 using System.Threading;
+using AILibrary;
+using MyRandom;
 
 namespace MenuLayout
 {
@@ -46,7 +48,7 @@ namespace MenuLayout
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-			Archive.Instance.addFromFolder (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
+			Archive.Instance.AddFromFolder ();
 			var serverIntent = new Intent (this, typeof (MainActivity));
 			StartActivityForResult (serverIntent, 2);
 
@@ -80,14 +82,11 @@ namespace MenuLayout
 
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
-				if (BTManager.Instance.isSlave ()) {
-				
-
-				} else {
-
+				if (!BTManager.Instance.isSlave ()) {
+	
 					_gameProfile = new GameProfile (data);
 
-					ChiamataLibrary.Board.Instance.initializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer);
+					Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, new CriptoRandom ());
 
 					BTManager.Instance.initializeCommunication ();
 
@@ -98,11 +97,11 @@ namespace MenuLayout
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (_gameProfile.getPlayerAddress (i - 1) == Resources.GetString (Resource.String.none_add))
-							_playerControllerList.Add (new AIPlayerController (Board.Instance.getPlayer (i), new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
+							_playerControllerList.Add (new AIPlayerController ((Player) i, new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
 						else {
 							BTPlayerController bt = new BTPlayerController (i);
 							_playerControllerList.Add (bt);
-							Board.Instance.getPlayer (i).setController (bt);
+							( (Player) i ).SetController (bt);
 						}
 					}
 				}
@@ -142,7 +141,7 @@ namespace MenuLayout
 				Monitor.Wait (_terminateMsg);
 			}
 		
-			Archive.Instance.saveLastGame (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal));
+			Archive.Instance.SaveLastGame ();
 			BTManager.Instance.eventPackageReceived -= terminateHandle;
 			switch (_terminateMsg.Signal) {
 				case 0:

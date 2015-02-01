@@ -11,7 +11,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The counter that indicates the number of new device discovered.
 		/// </summary>
-		private static int count = 0;
+		private int count = 0;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTReceiver"/> class.

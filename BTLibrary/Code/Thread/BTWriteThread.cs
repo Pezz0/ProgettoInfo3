@@ -132,15 +132,6 @@ namespace BTLibrary
 		}
 
 		/// <summary>
-		/// Determine whether the buffer is empty.
-		/// </summary>
-		/// <returns><c>true</c>, if the buffer is empty, <c>false</c> otherwise.</returns>
-		public bool nothingToSend ()
-		{
-			return _buffer.isEmpty;
-		}
-
-		/// <summary>
 		/// Try to close the socket
 		/// </summary>
 		/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
@@ -178,7 +169,6 @@ namespace BTLibrary
 		/// Gets the first message in the buffer.
 		/// </summary>
 		/// <returns>The message.</returns>
-		[MethodImpl (MethodImplOptions.Synchronized)]
 		public byte[] getValue ()
 		{
 			return _buffer [0];
@@ -188,7 +178,6 @@ namespace BTLibrary
 		/// Add the specified message to the buffer.
 		/// </summary>
 		/// <param name="elem">The message.</param>
-		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Add (byte [] elem)
 		{
 			if (elem [0] == (int) EnPackageType.ACK)
@@ -201,7 +190,6 @@ namespace BTLibrary
 		/// Remove the specified message from the buffer.
 		/// </summary>
 		/// <param name="elem">The message.</param>
-		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void Remove (byte [] elem)
 		{
 			_buffer.RemoveAll (delegate(byte [] b) {

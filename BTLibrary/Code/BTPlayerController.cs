@@ -76,11 +76,10 @@ namespace BTLibrary
 				}
 			} else if (pkg == EnPackageType.MOVE) {
 				PackageCard pkgm = (PackageCard) pkg;
-				if (pkgm.move.player.order == _player && pkgm.time >= Board.Instance.Time) {
-					Log.Debug ("da BTPlayer", pkgm.move.ToString () + pkgm.time + " " + Board.Instance.Time);
+				if (pkgm.player.order == _player && pkgm.time >= Board.Instance.Time) {
 					_readyCard = true;
 					//recreate bid from message 
-					_card = pkgm.move.card;
+					_card = pkgm.card;
 				}
 			}
 		}
@@ -90,7 +89,7 @@ namespace BTLibrary
 		/// Retuns null if no bid has been placed yet.
 		/// </summary>
 		/// <returns><c>The bid</c> if the message containing the bid has already arrived, <c>null</c> otherwise.</returns>
-		public Bid chooseBid ()
+		public Bid ChooseBid ()
 		{
 			if (_readyBid) {
 				_readyBid = false;
@@ -104,7 +103,7 @@ namespace BTLibrary
 		/// Retuns null if no seme has been chosen yet.
 		/// </summary>
 		/// <returns><c>The seme</c> if the message containing the seme has already arrived, <c>null</c> otherwise.</returns>
-		public EnSemi? chooseSeme ()
+		public EnSemi? ChooseSeme ()
 		{
 			if (_readySeme) {
 				_readySeme = false;
@@ -118,7 +117,7 @@ namespace BTLibrary
 		/// Returns null if no card has been played yet.
 		/// </summary>
 		/// <returns><c>The card</c> if the message containing the card has already arrived, <c>null</c> otherwise.</returns>
-		public Card chooseCard ()
+		public Card ChooseCard ()
 		{
 			if (_readyCard) {
 				_readyCard = false;

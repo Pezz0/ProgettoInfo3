@@ -37,7 +37,7 @@ namespace MenuLayout
 
 			History.eventDelete += Delete;
 
-			GameData gd = Archive.Instance.lastGame ();
+			GameData gd = Archive.Instance.LastGame;
 
 			if (gd != null) {
 
@@ -56,26 +56,26 @@ namespace MenuLayout
 					play.Add (gd.calledCard.seme.ToString ());
 				}
 				play.Add ("Caller Points: ");
-				play.Add (gd.getChiamantePointCount ());
+				play.Add (gd.GetChiamantePointCount ());
 				play.Add ("");
 				play.Add ("Other's points: ");
-				play.Add (gd.getAltriPointCount ());
+				play.Add (gd.GetAltriPointCount ());
 				play.Add ("");
 
-				Player caller = gd.getChiamante ();
+				Player caller = gd.GetChiamante ();
 				Player socio = null;
-				if (!gd.isChiamataInMano)
-					socio = gd.getSocio ();
+				if (!gd.IsChiamataInMano)
+					socio = gd.GetSocio ();
 				for (int i = 0; i < Board.PLAYER_NUMBER; ++i) {
-					Player player = gd.getPlayer (i);
+					Player player = gd.GetPlayer (i);
 					play.Add (player.name);
 					if (player.name == caller.name)
 						play.Add ("CHIAMANTE");
-					else if (!gd.isChiamataInMano && player.name == socio.name)
+					else if (!gd.IsChiamataInMano && player.name == socio.name)
 						play.Add ("SOCIO");
 					else
 						play.Add ("ALTRO");
-					int award = gd.getAward (player);
+					int award = gd.GetAward (player);
 					play.Add (award > 0 ? "+" + award.ToString () : award.ToString ());
 				}
 			} else
