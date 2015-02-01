@@ -41,19 +41,29 @@ namespace BTLibrary
 	/// <item><term>Cards</term><description>All the 40 cards are assigned an integer between 0 and 4 indicating the index of the player owning that card.</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageBoard:Package
+	public class PackageBoard:PackageBase
 	{
 		/// <summary>
 		/// Byte array representing the board.
 		/// </summary>
-		public readonly byte [] bytes;
+		private byte [] _bytes;
+
+		/// <summary>
+		/// Gets the bytes representing the board.
+		/// </summary>
+		/// <value>The bytes.</value>
+		public byte[] bytes {
+			get {
+				return _bytes;
+			}
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.PackageBoard"/> class.
 		/// </summary>
 		public PackageBoard () : base (EnPackageType.BOARD)
 		{
-			bytes = Board.Instance.SendableBytes.ToArray ();
+			_bytes = Board.Instance.SendableBytes.ToArray ();
 		}
 
 		/// <summary>
@@ -66,9 +76,9 @@ namespace BTLibrary
 			if (bs [0] != (byte) type)
 				throw new Exception ("Wrong byte's sequence");
 
-			bytes = new byte[1024];
+			_bytes = new byte[1024];
 			for (int i = 1; i < bs.GetLength (0); ++i)
-				bytes [i - 1] = bs [i];
+				_bytes [i - 1] = bs [i];
 
 		}
 
@@ -81,7 +91,7 @@ namespace BTLibrary
 		{
 			List<Byte> msg = new List<byte> (1024);
 			msg.Add ((byte) type);
-			msg.AddRange (bytes);
+			msg.AddRange (_bytes);
 			return msg.ToArray ();
 		}
 

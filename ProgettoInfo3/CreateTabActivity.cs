@@ -16,13 +16,13 @@ using System.Runtime.CompilerServices;
 using Android.Util;
 
 
-namespace MenuLayout
+namespace GUILayout
 {
 	/// <summary>
 	/// Activity to create a new table.
 	/// </summary>
 	[Activity (Label = "CraeteTabActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
-	public class CreateTabActivity : Activity
+	internal class CreateTabActivity : Activity
 	{
 		/// <summary>
 		/// Spinner used to select if the slot is occupied by an AI or a Bluetooth
@@ -64,7 +64,7 @@ namespace MenuLayout
 		/// <summary>
 		/// Width of the columns.
 		/// </summary>
-		private float _FIRST_FRACTION_WIDTH = 0.15f, _SECOND_FRACTION_WIDTH = 0.2f, _THIRD_FRACTION_WIDTH = 0.3f;
+		private const float _FIRST_FRACTION_WIDTH = 0.15f, _SECOND_FRACTION_WIDTH = 0.2f, _THIRD_FRACTION_WIDTH = 0.3f;
 
 		/// <summary>
 		/// Called on activity creation.
@@ -270,7 +270,7 @@ namespace MenuLayout
 		/// Handles the bluetooth messages recived (only name-change packages will be accepted).
 		/// </summary>
 		/// <param name="pkg">Package containing the message.</param>
-		private void handlePackage (Package pkg)
+		private void handlePackage (PackageBase pkg)
 		{
 			if (pkg == EnPackageType.NAME) {
 				PackageName pkgn = (PackageName) pkg;

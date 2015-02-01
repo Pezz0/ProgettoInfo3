@@ -16,7 +16,7 @@ namespace AILibrary
 		/// <returns>The bid.</returns>
 		/// <param name="me">Me.</param>
 		/// <param name="seme">Seme.</param>
-		Bid ChooseABid ();
+		BidBase ChooseABid ();
 
 		/// <summary>
 		/// Setup this instance.
@@ -64,17 +64,17 @@ namespace AILibrary
 		/// <summary>
 		/// The bid chooser.
 		/// </summary>
-		private IAIBidChooser _bidChooser;
+		private readonly IAIBidChooser _bidChooser;
 
 		/// <summary>
 		/// The seme chooser.
 		/// </summary>
-		private IAISemeChooser _semeChooser;
+		private readonly IAISemeChooser _semeChooser;
 
 		/// <summary>
 		/// The card chooser.
 		/// </summary>
-		private IAICardChooser _cardChooser;
+		private readonly IAICardChooser _cardChooser;
 
 		/// <summary>
 		/// The player that is controlled by this AI.
@@ -124,9 +124,9 @@ namespace AILibrary
 		/// Method that returns which bid the AI wants to place in the auction.
 		/// </summary>
 		/// <returns>The bid.</returns>
-		public Bid ChooseBid ()
+		public BidBase ChooseBid ()
 		{
-			Bid bid = _bidChooser.ChooseABid ();
+			BidBase bid = _bidChooser.ChooseABid ();
 			if (bid == null)
 				return new PassBid (me);
 

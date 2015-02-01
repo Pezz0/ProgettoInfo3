@@ -16,28 +16,28 @@ namespace BTLibrary
 	/// When the buffer isn't empty, the thread will send the message at the head of the list. When an ACK is recived by the <see cref="BTlibrary.BTReadThread"/>, the method <see cref="Remove"/>
 	/// is used to remove the corresponding message from the buffer.
 	/// </summary>
-	public class BTWriteThread
+	internal class BTWriteThread
 	{
 		/// <summary>
 		/// The BluetoothSocket.
 		/// </summary>
-		public BluetoothSocket _Socket;
+		internal BluetoothSocket _Socket;
 
 		/// <summary>
 		/// The output stream.
 		/// </summary>
-		private Stream _OutStream;
+		private readonly Stream _OutStream;
 
 		/// <summary>
 		/// The connected device address.
 		/// </summary>
-		private string _connected;
+		private readonly string _connected;
 
 		/// <summary>
 		/// Gets the connected device.
 		/// </summary>
 		/// <value>The connected device.</value>
-		public string Connected { get { return _connected; } }
+		internal string Connected { get { return _connected; } }
 
 		/// <summary>
 		/// The sleep time of the thread.
@@ -47,18 +47,18 @@ namespace BTLibrary
 		/// <summary>
 		/// The buffer to store out messages.
 		/// </summary>
-		private BTBuffer _buffer = new BTBuffer ();
+		private readonly BTBuffer _buffer = new BTBuffer ();
 
 		/// <summary>
 		/// The writer thread.
 		/// </summary>
-		private Thread _writer;
+		private readonly Thread _writer;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTWriteThread"/> class.
 		/// </summary>
 		/// <param name="socket">Bluetooth socket.</param>
-		public BTWriteThread (BluetoothSocket socket)
+		internal BTWriteThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
 			Stream tmpOut = null;
@@ -112,7 +112,7 @@ namespace BTLibrary
 		/// Add the specified message to the buffer.
 		/// </summary>
 		/// <param name="elem">Array of bytes representing the message to be sent.</param>
-		public void Add (byte [] elem)
+		internal void Add (byte [] elem)
 		{
 			lock (_buffer) {
 				_buffer.Add (elem);
@@ -124,7 +124,7 @@ namespace BTLibrary
 		/// Removes the message from the buffer.
 		/// </summary>
 		/// <param name="elem">Array of bytes representing the message to be removed.</param>
-		public void Remove (byte [] elem)
+		internal void Remove (byte [] elem)
 		{
 			lock (_buffer) {
 				_buffer.Remove (elem);
@@ -135,7 +135,7 @@ namespace BTLibrary
 		/// Try to close the socket
 		/// </summary>
 		/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
-		public void Cancel ()
+		internal void Cancel ()
 		{
 			try {
 				_OutStream.Close ();
@@ -152,7 +152,7 @@ namespace BTLibrary
 	/// Implemented as a list. ACK are inserted on the head to give priority, the other messages are inserted on the tail.
 	/// Removal is based on which ACK is recived (could be any index of the list). 
 	/// </summary>
-	public class BTBuffer
+	internal class BTBuffer
 	{
 		/// <summary>
 		/// The buffer.
@@ -163,13 +163,13 @@ namespace BTLibrary
 		/// Gets a value indicating whether this <see cref="BTLibrary.BTBuffer"/> is empty.
 		/// </summary>
 		/// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
-		public bool isEmpty{ get { return _buffer.Count == 0; } }
+		internal bool isEmpty{ get { return _buffer.Count == 0; } }
 
 		/// <summary>
 		/// Gets the first message in the buffer.
 		/// </summary>
 		/// <returns>The message.</returns>
-		public byte[] getValue ()
+		internal byte[] getValue ()
 		{
 			return _buffer [0];
 		}
@@ -178,7 +178,7 @@ namespace BTLibrary
 		/// Add the specified message to the buffer.
 		/// </summary>
 		/// <param name="elem">The message.</param>
-		public void Add (byte [] elem)
+		internal void Add (byte [] elem)
 		{
 			if (elem [0] == (int) EnPackageType.ACK)
 				_buffer.Insert (0, elem);
@@ -190,7 +190,7 @@ namespace BTLibrary
 		/// Remove the specified message from the buffer.
 		/// </summary>
 		/// <param name="elem">The message.</param>
-		public void Remove (byte [] elem)
+		internal void Remove (byte [] elem)
 		{
 			_buffer.RemoveAll (delegate(byte [] b) {
 				bool temp = true;
@@ -200,15 +200,6 @@ namespace BTLibrary
 				return temp;
 			});
 
-		}
-
-		/// <summary>
-		/// Clears the buffer.
-		/// </summary>
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void DiscardBuffer ()
-		{
-			_buffer.Clear ();
 		}
 	}
 

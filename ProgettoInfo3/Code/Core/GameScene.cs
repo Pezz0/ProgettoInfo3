@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ChiamataLibrary;
 using Android.App;
 using Android.Content;
-using MenuLayout;
+using GUILayout;
 using Java.IO;
 using System.IO;
 using System.Threading;
@@ -12,12 +12,12 @@ using System.Threading;
 
 
 
-namespace Core
+namespace GUILayout
 {
 	/// <summary>
 	/// Game scene.
 	/// </summary>
-	public class GameScene : CCScene,IPlayerController
+	internal class GameScene : CCScene,IPlayerController
 	{
 
 		/// <summary>
@@ -35,17 +35,17 @@ namespace Core
 		/// <summary>
 		/// Sprite for the result board at the end of the game.
 		/// </summary>
-		private readonly CCSprite _resultBoard;
+		private CCSprite _resultBoard;
 
 		/// <summary>
 		/// Sprite for the victory.
 		/// </summary>
-		private readonly CCSprite _endStatusSpriteWin;
+		private CCSprite _endStatusSpriteWin;
 
 		/// <summary>
 		/// Sprite for the defeat.
 		/// </summary>
-		private readonly CCSprite _endStatusSpriteLoss;
+		private CCSprite _endStatusSpriteLoss;
 
 		/// <summary>
 		/// Boolean value that is used to decide wheter or not the end-game sprites are already been created.
@@ -64,7 +64,7 @@ namespace Core
 		/// <summary>
 		/// The cards scale.
 		/// </summary>
-		private readonly float _cardScale;
+		private float _cardScale;
 
 		/// <summary>
 		/// List of <see cref="Support.cardData"/> (contains sprite, base position and base rotation) representing the cards dropped on the game field.
@@ -122,7 +122,7 @@ namespace Core
 		/// <summary>
 		/// Variable that stores the bid done by the player.
 		/// </summary>
-		private Bid _myBid;
+		private BidBase _myBid;
 
 		/// <summary>
 		/// Variable that stores the seme choosen by the player (EnSemi is nullable).
@@ -142,7 +142,7 @@ namespace Core
 		/// <summary>
 		/// Scale of the buttons.
 		/// </summary>
-		private readonly float _scale;
+		private float _scale;
 
 		/// <summary>
 		/// Array containing the path strings for the normal buttons sprites.
@@ -183,37 +183,37 @@ namespace Core
 		/// <summary>
 		/// Array of <see cref="Support.Button"/> used for the bids.
 		/// </summary>
-		private readonly Button [] _buttons = new Button[12];
+		private readonly CCButton [] _buttons = new CCButton[12];
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to choose ori.
 		/// </summary>
-		private Button _chooseOri;
+		private CCButton _chooseOri;
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to choose spade.
 		/// </summary>
-		private Button _chooseSpade;
+		private CCButton _chooseSpade;
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to choose bastoni.
 		/// </summary>
-		private Button _chooseBastoni;
+		private CCButton _chooseBastoni;
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to choose coppe.
 		/// </summary>
-		private Button _chooseCoppe;
+		private CCButton _chooseCoppe;
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to exit the game.
 		/// </summary>
-		private Button _btnExit;
+		private  CCButton _btnExit;
 
 		/// <summary>
 		/// <see cref="Support.Button"/> used to start the next game.
 		/// </summary>
-		private Button _btnNext;
+		private CCButton _btnNext;
 
 		/// <summary>
 		/// Vertical spacing between the buttons.
@@ -233,7 +233,7 @@ namespace Core
 		/// <summary>
 		/// <see cref="Support.Slider"/> used to modify the points
 		/// </summary>
-		private readonly Slider _slider;
+		private CCSlider _slider;
 
 		/// <summary>
 		/// Disables all buttons.
@@ -546,7 +546,7 @@ namespace Core
 
 		#region controller bid and seme
 
-		public Bid ChooseBid ()
+		public BidBase ChooseBid ()
 		{
 			turnLight (0);
 
@@ -863,7 +863,7 @@ namespace Core
 		/// <summary>
 		/// Message that contains the information about continue or quit the game.
 		/// </summary>
-		private TerminateMessage _terminateMsg;
+		private readonly TerminateMessage _terminateMsg;
 
 
 		/// <summary>
@@ -871,7 +871,7 @@ namespace Core
 		/// </summary>
 		/// <param name="mainWindow">Main window.</param>
 		/// <param name="terminateMsg">Terminate message.</param>
-		public GameScene (CCWindow mainWindow, TerminateMessage terminateMsg) : base (mainWindow)
+		internal GameScene (CCWindow mainWindow, TerminateMessage terminateMsg) : base (mainWindow)
 		{
 			this._terminateMsg = terminateMsg;
 
@@ -890,235 +890,36 @@ namespace Core
 			#region Card data initialization
 			//Getting the window size.
 			_winSize = mainWindow.WindowSizeInPixels;
-
 			//Setting the area when cards can be dropped.
 			_dropField = new CCRect (0, (int) ( _winSize.Height / 5 ), (int) ( _winSize.Width / 2 ), (int) ( _winSize.Height * 3 / 5 ));
-
 			//Setting the area where the cards can be re-arranged.
 			_cardField = new CCRect ((int) ( _winSize.Width * 3.5 / 5 ), (int) ( _winSize.Height / 5 ), (int) ( _winSize.Width * 1.5 / 5 ), (int) ( _winSize.Height * 3 / 5 ));
-
 			//Setting the "off-Screen" position for the cards.
-			_offScreen [0] = new CCPoint (_winSize.Width + 200, _winSize.Height / 2);
-			_offScreen [1] = new CCPoint (_winSize.Width / 2, _winSize.Height + 100);
-			_offScreen [2] = new CCPoint (-100, _winSize.Height * 3 / 4);
-			_offScreen [3] = new CCPoint (-100, _winSize.Height / 4);
-			_offScreen [4] = new CCPoint (_winSize.Width / 2, -100);
-
-			//Initializing the number of cards in-hand.
-			_inHand = 8;
+			initCardData ();
 			#endregion
 
 			#region Events subscriptions
-			//Initializing the events of the touch listener.
-			_touch.eventTouchBegan += touchBegan;
-			_touch.eventTouchMoved += touchMoved;
-			_touch.eventTouchEnded += touchEnded;
-
-			//Initializing the methods for the events provided by the board.
-			Board.Instance.eventAuctionStart += auctionStarted;
-			Board.Instance.eventSomeonePlaceABid += bidPlaced;
-			Board.Instance.eventPlaytimeStart += startPlaytime;
-			Board.Instance.eventSomeonePlayACard += playCard;
-			Board.Instance.eventPickTheBoard += clearBoard;
+			initEventSubsciptions ();
 			#endregion
 
 			#region Light initialization
-			_turnLights.Add (new CCSprite ("turnLight"));						//Adding the sprite to the list.
-			_turnLights [0].Position = new CCPoint (_winSize.Width - _turnLights [0].ContentSize.Height / 2, _winSize.Height / 2);	//Setting the position.
-			_turnLights [0].BlendFunc = CCBlendFunc.NonPremultiplied;				//Setting the blend function to show the transparency.
-			_turnLights [0].Rotation = -90;								//Setting the rotation.	
-			_turnLights [0].Color = CCColor3B.Red;							//Setting the color for the light (default is white).
-			_turnLights [0].ScaleX = _winSize.Height / _turnLights [0].ContentSize.Width;		//Setting the scale.
-			_mainLayer.AddChild (_turnLights [0]);							//Setting the sprite to be a child of the mainlayer.
-			_turnLights [0].ZOrder = 0;								//Setting the ZOrder (depth).
-			_turnLights [0].Visible = false;							//Making the sprite invisible for now.
-
-			_turnLights.Add (new CCSprite ("turnLight"));
-			_turnLights [1].Position = new CCPoint (_winSize.Width / 2, _winSize.Height + 5 - _turnLights [1].ContentSize.Height / 2);
-			_turnLights [1].BlendFunc = CCBlendFunc.NonPremultiplied;
-			_turnLights [1].Rotation = 180;
-			_turnLights [1].Color = CCColor3B.Red;
-			_turnLights [1].ScaleX = _winSize.Width / _turnLights [1].ContentSize.Width;
-			_mainLayer.AddChild (_turnLights [1]);
-			_turnLights [1].ZOrder = 20;
-			_turnLights [1].Visible = false;
-
-			_turnLights.Add (new CCSprite ("turnLight"));
-			_turnLights [2].Position = new CCPoint (-5 + _turnLights [2].ContentSize.Height / 2, _winSize.Height * 3 / 4);
-			_turnLights [2].BlendFunc = CCBlendFunc.NonPremultiplied;
-			_turnLights [2].Rotation = 90;
-			_turnLights [2].Color = CCColor3B.Red;
-			_turnLights [2].ScaleX = ( _winSize.Height / 2 ) / _turnLights [2].ContentSize.Width;
-			_mainLayer.AddChild (_turnLights [2]);
-			_turnLights [2].ZOrder = 20;
-			_turnLights [2].Visible = false;
-
-			_turnLights.Add (new CCSprite ("turnLight"));
-			_turnLights [3].Position = new CCPoint (-5 + _turnLights [3].ContentSize.Height / 2, _winSize.Height / 4);
-			_turnLights [3].BlendFunc = CCBlendFunc.NonPremultiplied;
-			_turnLights [3].Rotation = 90;
-			_turnLights [3].Color = CCColor3B.Red;
-			_turnLights [3].ScaleX = ( _winSize.Height / 2 ) / _turnLights [3].ContentSize.Width;
-			_mainLayer.AddChild (_turnLights [3]);
-			_turnLights [3].ZOrder = 20;
-			_turnLights [3].Visible = false;
-
-			_turnLights.Add (new CCSprite ("turnLight"));
-			_turnLights [4].Position = new CCPoint (_winSize.Width / 2, -5 + _turnLights [1].ContentSize.Height / 2);
-			_turnLights [4].BlendFunc = CCBlendFunc.NonPremultiplied;
-			_turnLights [4].Color = CCColor3B.Red;
-			_turnLights [4].ScaleX = _winSize.Width / _turnLights [4].ContentSize.Width;
-			_mainLayer.AddChild (_turnLights [4]);
-			_turnLights [4].ZOrder = 20;
-			_turnLights [4].Visible = false;
-
+			initTurnLights ();						
 			#endregion
 
 			#region Names initialization
-			_playerNames.Add (new CCLabel ("", "Arial", 12));			//My name.
-
-			//Add a new label with the player name, then set the color to black and the position to be near the side of the window.
-			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 1 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
-			_playerNames [1].Position = new CCPoint (_winSize.Width / 2, _winSize.Height - _winSize.Height / 40);
-			_playerNames [1].Color = CCColor3B.Black;
-			_mainLayer.AddChild (_playerNames [1]);
-
-			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 2 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
-			_playerNames [2].Position = new CCPoint (_winSize.Height / 40, _winSize.Height * 3 / 4);
-			_playerNames [2].Rotation = -90;
-			_playerNames [2].Color = CCColor3B.Black;
-			_mainLayer.AddChild (_playerNames [2]);
-
-			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 3 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
-			_playerNames [3].Position = new CCPoint (_winSize.Height / 40, _winSize.Height / 4);
-			_playerNames [3].Rotation = -90;
-			_playerNames [3].Color = CCColor3B.Black;
-			_mainLayer.AddChild (_playerNames [3]);
-
-			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 4 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
-			_playerNames [4].Position = new CCPoint (_winSize.Width / 2, _winSize.Height / 40);
-			_playerNames [4].Rotation = 180;
-			_playerNames [4].Color = CCColor3B.Black;
-			_mainLayer.AddChild (_playerNames [4]);
+			initNames ();			
 			#endregion
 
 			#region Card sprites creation and positioning
-			CCPoint posBase;
-			float rotation;
-			List<Card> list = Board.Instance.Me.GetHand ();
-			for (int i = 0; i < 8; i++) {
-
-
-				if (i == 0) 	//First card.
-					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _winSize.Height / 4);
-				else 		//All the other cards (Positioning the cards in an arc shape, using a parabola constructed with the for index).
-					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _carte [i - 1].posBase.Y + ( _winSize.Height / _carte [0].sprite.Texture.PixelsWide ) * 21f);
-
-				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
-				_carte.Add (new CardData (new CCSprite (list [i].number.ToString () + "_" + list [i].seme.ToString ()), posBase, rotation, i));
-
-
-				_carte [i].sprite.Position = _carte [i].posBase;					//Set the position.
-				_carte [i].sprite.Rotation = _carte [i].rotation;					//Set the rotation.
-				_cardScale = ( _winSize.Height / _carte [i].sprite.Texture.PixelsWide ) * 0.12f;	//Set the scale.
-				_carte [i].sprite.Scale = _cardScale;
-
-				_mainLayer.AddChild (_carte [i].sprite, i);						//Add the sprite as a child of the mainlayer.
-			}	
+			initCardSprites ();
 			#endregion
 
 			#region Auction buttons initialization
-			//Initializing the list of methods for the button actions.
-			_actButtons.Add (actDue);
-			_actButtons.Add (actQuattro);
-			_actButtons.Add (actCinque);
-			_actButtons.Add (actSei);
-			_actButtons.Add (actSette);
-			_actButtons.Add (actOtto);
-			_actButtons.Add (actNove);
-			_actButtons.Add (actDieci);
-			_actButtons.Add (actTre);
-			_actButtons.Add (actAsse);
-			_actButtons.Add (actLascio);
-			_actButtons.Add (actCarichi);
-
-
-			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
-
-			//Setting a common value for the scale.
-			_scale = ( ( _winSize.Height / 2 ) - _orzSpace * 4 ) / ( 4 * textWidth );
-
-
-			for (int i = 4; i > -1; i--) {
-				_buttons [i] = new Button (_mainLayer, _touch, _actButtons [i], _pathButtons [i], _pathButtonsPressed [i], new CCPoint (3 * _vertSpace + 3 * 58 * _scale, _winSize.Height / 4 + ( textWidth * _scale + _orzSpace ) * ( ( i - 4 ) * -1 )), _winSize, -90, _scale);
-			}
-			for (int i = 9; i > 4; i--) {
-				_buttons [i] = new Button (_mainLayer, _touch, _actButtons [i], _pathButtons [i], _pathButtonsPressed [i], new CCPoint (2 * _vertSpace + 2 * 58 * _scale, _winSize.Height / 4 + ( textWidth * _scale + _orzSpace ) * ( ( i - 9 ) * -1 )), _winSize, -90, _scale);
-			}
-
-			_buttons [10] = new Button (_mainLayer, _touch, _actButtons [10], _pathButtons [10], _pathButtonsPressed [10], new CCPoint (_vertSpace + 58 * _scale, _winSize.Height / 2 - _orzSpace / 2 - ( textWidth * _scale ) / 2), _winSize, -90, _scale);
-			_buttons [11] = new Button (_mainLayer, _touch, _actButtons [11], _pathButtons [11], _pathButtonsPressed [11], new CCPoint (_vertSpace + 58 * _scale, _winSize.Height / 2 + _orzSpace / 2 + ( textWidth * _scale ) / 2), _winSize, -90, _scale);
-
-			_slider = new Slider (_mainLayer, _touch, "sliderBar", "sliderBall", new CCPoint (5 * _vertSpace + 4 * 58 * _scale, _winSize.Height / 4 - 115 * _scale), _winSize, 61, 120, -90, _cardScale);
-			_slider.visible = false;
-			disableAllButtons ();
-
-
+			initAuctionButtons ();
 			#endregion
 
 			#region Bid sprites initialization
-			CCNode bid0 = new CCNode ();								//Instancing the father.
-			bid0.Position = new CCPoint (_winSize.Width * 35 / 40, _winSize.Height * 21 / 24);	//Setting the father position to be the same as the name label position.
-			bid0.Rotation = -90;									//Setting the father rotation to be the same as the name label rotation.
-			_mainLayer.AddChild (bid0);								//Adding the father as a child of the mainlayer.
-			_bidsFathers.Add (bid0);								//Adding the father to the list containing all the fathers.	
-			_playerBids.Add (new CCSprite (""));							//Instancing a blank sprite.
-			_playerBids [0].Position = new CCPoint (-45, -75);					//Setting the position.
-			_playerBids [0].Scale = _cardScale * 0.65f;						//Setting the scale.
-			bid0.AddChild (_playerBids [0]);							//Adding the sprite as a child of the father instanciated before.
-
-
-			CCNode bid1 = new CCNode ();
-			bid1.Position = _playerNames [1].Position;
-			_mainLayer.AddChild (bid1);
-			_bidsFathers.Add (bid1);
-			_playerBids.Add (new CCSprite (""));
-			_playerBids [1].Position = new CCPoint (-45, -75);
-			_playerBids [1].Scale = _cardScale * 0.65f;
-			_playerBids [1].Rotation = -90;
-			bid1.AddChild (_playerBids [1]);
-
-			CCNode bid2 = new CCNode ();
-			bid2.Position = _playerNames [2].Position;
-			bid2.Rotation = -90;
-			_mainLayer.AddChild (bid2);
-			_bidsFathers.Add (bid2);
-			_playerBids.Add (new CCSprite (""));
-			_playerBids [2].Position = new CCPoint (-45, -75);
-			_playerBids [2].Scale = _cardScale * 0.65f;
-			bid2.AddChild (_playerBids [2]);
-
-			CCNode bid3 = new CCNode ();
-			bid3.Position = _playerNames [3].Position;
-			bid3.Rotation = -90;
-			_mainLayer.AddChild (bid3);
-			_bidsFathers.Add (bid3);
-			_playerBids.Add (new CCSprite (""));
-			_playerBids [3].Position = new CCPoint (-45, -75);
-			_playerBids [3].Scale = _cardScale * 0.65f;
-			bid3.AddChild (_playerBids [3]);
-
-			CCNode bid4 = new CCNode ();
-			bid4.Position = _playerNames [4].Position;
-			bid4.Rotation = 180;
-			_mainLayer.AddChild (bid4);
-			_bidsFathers.Add (bid4);
-			_playerBids.Add (new CCSprite (""));
-			_playerBids [4].Position = new CCPoint (-45, -75);
-			_playerBids [4].Scale = _cardScale * 0.65f;
-			_playerBids [4].Rotation = -270;
-			bid4.AddChild (_playerBids [4]);
-
+			initBidSprites ();								
 			#endregion
 
 			#region Debug bids labels
@@ -1147,29 +948,7 @@ namespace Core
 			#endregion
 
 			#region End game label, buttons and sprites initialization
-			_resultBoard = new CCSprite ("resultBoard");
-			_resultBoard.Position = new CCPoint (_winSize.Width / 2, _winSize.Height / 2);
-			_resultBoard.Scale = _scale * 0.38f;
-			_resultBoard.Rotation = -90;
-			_resultBoard.Visible = false;
-			_mainLayer.AddChild (_resultBoard, 15);
-
-			_endStatusSpriteWin = new CCSprite ("spriteVictory");
-			_endStatusSpriteWin.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 4 / 5);
-			_endStatusSpriteWin.Scale = _cardScale;
-			_endStatusSpriteWin.Visible = false;
-			_resultBoard.AddChild (_endStatusSpriteWin, 1);
-
-			_endStatusSpriteLoss = new CCSprite ("spriteDefeat");
-			_endStatusSpriteLoss.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 4 / 5);
-			_endStatusSpriteLoss.Scale = _cardScale;
-			_endStatusSpriteLoss.Visible = false;
-			_resultBoard.AddChild (_endStatusSpriteLoss, 1);
-
-			_btnExit = new Button (_resultBoard, _touch, actExit, "btnExit", "btnExitPressed", new CCPoint (_resultBoard.BoundingBox.Size.Width / 4, _resultBoard.BoundingBox.Size.Height / 5), _winSize, 0, 2.6f);
-			_btnNext = new Button (_resultBoard, _touch, actNext, "btnNext", "btnNextPressed", new CCPoint (_resultBoard.BoundingBox.Size.Width * 3 / 4, _resultBoard.BoundingBox.Size.Height / 5), _winSize, 0, 2.6f);
-			_btnExit.Enabled = false;
-			_btnNext.Enabled = false;
+			initEndGame ();
 			#endregion
 
 
@@ -1187,6 +966,259 @@ namespace Core
 
 			Board.Instance.Me.Controller = this;	//Set the controller for my player.
 		}
+
+		#region Initialization
+
+		private void initCardData ()
+		{
+			_offScreen [0] = new CCPoint (_winSize.Width + 200, _winSize.Height / 2);
+			_offScreen [1] = new CCPoint (_winSize.Width / 2, _winSize.Height + 100);
+			_offScreen [2] = new CCPoint (-100, _winSize.Height * 3 / 4);
+			_offScreen [3] = new CCPoint (-100, _winSize.Height / 4);
+			_offScreen [4] = new CCPoint (_winSize.Width / 2, -100);
+			//Initializing the number of cards in-hand.
+			_inHand = 8;
+		}
+
+		private void initEventSubsciptions ()
+		{
+			//Initializing the events of the touch listener.
+			_touch.eventTouchBegan += touchBegan;
+			_touch.eventTouchMoved += touchMoved;
+			_touch.eventTouchEnded += touchEnded;
+			//Initializing the methods for the events provided by the board.
+			Board.Instance.eventAuctionStart += auctionStarted;
+			Board.Instance.eventSomeonePlaceABid += bidPlaced;
+			Board.Instance.eventPlaytimeStart += startPlaytime;
+			Board.Instance.eventSomeonePlayACard += playCard;
+			Board.Instance.eventPickTheBoard += clearBoard;
+		}
+
+		private void initTurnLights ()
+		{
+			_turnLights.Add (new CCSprite ("turnLight"));
+			//Adding the sprite to the list.
+			_turnLights [0].Position = new CCPoint (_winSize.Width - _turnLights [0].ContentSize.Height / 2, _winSize.Height / 2);
+			//Setting the position.
+			_turnLights [0].BlendFunc = CCBlendFunc.NonPremultiplied;
+			//Setting the blend function to show the transparency.
+			_turnLights [0].Rotation = -90;
+			//Setting the rotation.	
+			_turnLights [0].Color = CCColor3B.Red;
+			//Setting the color for the light (default is white).
+			_turnLights [0].ScaleX = _winSize.Height / _turnLights [0].ContentSize.Width;
+			//Setting the scale.
+			_mainLayer.AddChild (_turnLights [0]);
+			//Setting the sprite to be a child of the mainlayer.
+			_turnLights [0].ZOrder = 0;
+			//Setting the ZOrder (depth).
+			_turnLights [0].Visible = false;
+			//Making the sprite invisible for now.
+			_turnLights.Add (new CCSprite ("turnLight"));
+			_turnLights [1].Position = new CCPoint (_winSize.Width / 2, _winSize.Height + 5 - _turnLights [1].ContentSize.Height / 2);
+			_turnLights [1].BlendFunc = CCBlendFunc.NonPremultiplied;
+			_turnLights [1].Rotation = 180;
+			_turnLights [1].Color = CCColor3B.Red;
+			_turnLights [1].ScaleX = _winSize.Width / _turnLights [1].ContentSize.Width;
+			_mainLayer.AddChild (_turnLights [1]);
+			_turnLights [1].ZOrder = 20;
+			_turnLights [1].Visible = false;
+			_turnLights.Add (new CCSprite ("turnLight"));
+			_turnLights [2].Position = new CCPoint (-5 + _turnLights [2].ContentSize.Height / 2, _winSize.Height * 3 / 4);
+			_turnLights [2].BlendFunc = CCBlendFunc.NonPremultiplied;
+			_turnLights [2].Rotation = 90;
+			_turnLights [2].Color = CCColor3B.Red;
+			_turnLights [2].ScaleX = ( _winSize.Height / 2 ) / _turnLights [2].ContentSize.Width;
+			_mainLayer.AddChild (_turnLights [2]);
+			_turnLights [2].ZOrder = 20;
+			_turnLights [2].Visible = false;
+			_turnLights.Add (new CCSprite ("turnLight"));
+			_turnLights [3].Position = new CCPoint (-5 + _turnLights [3].ContentSize.Height / 2, _winSize.Height / 4);
+			_turnLights [3].BlendFunc = CCBlendFunc.NonPremultiplied;
+			_turnLights [3].Rotation = 90;
+			_turnLights [3].Color = CCColor3B.Red;
+			_turnLights [3].ScaleX = ( _winSize.Height / 2 ) / _turnLights [3].ContentSize.Width;
+			_mainLayer.AddChild (_turnLights [3]);
+			_turnLights [3].ZOrder = 20;
+			_turnLights [3].Visible = false;
+			_turnLights.Add (new CCSprite ("turnLight"));
+			_turnLights [4].Position = new CCPoint (_winSize.Width / 2, -5 + _turnLights [1].ContentSize.Height / 2);
+			_turnLights [4].BlendFunc = CCBlendFunc.NonPremultiplied;
+			_turnLights [4].Color = CCColor3B.Red;
+			_turnLights [4].ScaleX = _winSize.Width / _turnLights [4].ContentSize.Width;
+			_mainLayer.AddChild (_turnLights [4]);
+			_turnLights [4].ZOrder = 20;
+			_turnLights [4].Visible = false;
+		}
+
+		private void initNames ()
+		{
+			_playerNames.Add (new CCLabel ("", "Arial", 12));
+			//My name.
+			//Add a new label with the player name, then set the color to black and the position to be near the side of the window.
+			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 1 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
+			_playerNames [1].Position = new CCPoint (_winSize.Width / 2, _winSize.Height - _winSize.Height / 40);
+			_playerNames [1].Color = CCColor3B.Black;
+			_mainLayer.AddChild (_playerNames [1]);
+			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 2 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
+			_playerNames [2].Position = new CCPoint (_winSize.Height / 40, _winSize.Height * 3 / 4);
+			_playerNames [2].Rotation = -90;
+			_playerNames [2].Color = CCColor3B.Black;
+			_mainLayer.AddChild (_playerNames [2]);
+			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 3 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
+			_playerNames [3].Position = new CCPoint (_winSize.Height / 40, _winSize.Height / 4);
+			_playerNames [3].Rotation = -90;
+			_playerNames [3].Color = CCColor3B.Black;
+			_mainLayer.AddChild (_playerNames [3]);
+			_playerNames.Add (new CCLabel (Board.Instance.AllPlayers [( Board.Instance.Me.order + 4 ) % Board.PLAYER_NUMBER].name, "Arial", ( _winSize.Width / 12 ) * 0.5f));
+			_playerNames [4].Position = new CCPoint (_winSize.Width / 2, _winSize.Height / 40);
+			_playerNames [4].Rotation = 180;
+			_playerNames [4].Color = CCColor3B.Black;
+			_mainLayer.AddChild (_playerNames [4]);
+		}
+
+
+		private void initCardSprites ()
+		{
+			CCPoint posBase;
+			float rotation;
+			List<Card> list = Board.Instance.Me.GetHand ();
+			for (int i = 0; i < 8; i++) {
+				if (i == 0)
+					//First card.
+					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _winSize.Height / 4);
+				else
+					//All the other cards (Positioning the cards in an arc shape, using a parabola constructed with the for index).
+					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _carte [i - 1].posBase.Y + ( _winSize.Height / _carte [0].sprite.Texture.PixelsWide ) * 21f);
+				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
+				_carte.Add (new CardData (new CCSprite (list [i].number.ToString () + "_" + list [i].seme.ToString ()), posBase, rotation, i));
+				_carte [i].sprite.Position = _carte [i].posBase;
+				//Set the position.
+				_carte [i].sprite.Rotation = _carte [i].rotation;
+				//Set the rotation.
+				_cardScale = ( _winSize.Height / _carte [i].sprite.Texture.PixelsWide ) * 0.12f;
+				//Set the scale.
+				_carte [i].sprite.Scale = _cardScale;
+				_mainLayer.AddChild (_carte [i].sprite, i);
+				//Add the sprite as a child of the mainlayer.
+			}
+		}
+
+		private void initAuctionButtons ()
+		{
+			//Initializing the list of methods for the button actions.
+			_actButtons.Add (actDue);
+			_actButtons.Add (actQuattro);
+			_actButtons.Add (actCinque);
+			_actButtons.Add (actSei);
+			_actButtons.Add (actSette);
+			_actButtons.Add (actOtto);
+			_actButtons.Add (actNove);
+			_actButtons.Add (actDieci);
+			_actButtons.Add (actTre);
+			_actButtons.Add (actAsse);
+			_actButtons.Add (actLascio);
+			_actButtons.Add (actCarichi);
+			int textWidth = new CCTexture2D ("btnLascio").PixelsWide;
+			//Setting a common value for the scale.
+			_scale = ( ( _winSize.Height / 2 ) - _orzSpace * 4 ) / ( 4 * textWidth );
+			for (int i = 4; i > -1; i--) {
+				_buttons [i] = new CCButton (_mainLayer, _touch, _actButtons [i], _pathButtons [i], _pathButtonsPressed [i], new CCPoint (3 * _vertSpace + 3 * 58 * _scale, _winSize.Height / 4 + ( textWidth * _scale + _orzSpace ) * ( ( i - 4 ) * -1 )), _winSize, -90, _scale);
+			}
+			for (int i = 9; i > 4; i--) {
+				_buttons [i] = new CCButton (_mainLayer, _touch, _actButtons [i], _pathButtons [i], _pathButtonsPressed [i], new CCPoint (2 * _vertSpace + 2 * 58 * _scale, _winSize.Height / 4 + ( textWidth * _scale + _orzSpace ) * ( ( i - 9 ) * -1 )), _winSize, -90, _scale);
+			}
+			_buttons [10] = new CCButton (_mainLayer, _touch, _actButtons [10], _pathButtons [10], _pathButtonsPressed [10], new CCPoint (_vertSpace + 58 * _scale, _winSize.Height / 2 - _orzSpace / 2 - ( textWidth * _scale ) / 2), _winSize, -90, _scale);
+			_buttons [11] = new CCButton (_mainLayer, _touch, _actButtons [11], _pathButtons [11], _pathButtonsPressed [11], new CCPoint (_vertSpace + 58 * _scale, _winSize.Height / 2 + _orzSpace / 2 + ( textWidth * _scale ) / 2), _winSize, -90, _scale);
+			_slider = new CCSlider (_mainLayer, _touch, "sliderBar", "sliderBall", new CCPoint (5 * _vertSpace + 4 * 58 * _scale, _winSize.Height / 4 - 115 * _scale), _winSize, 61, 120, -90, _cardScale);
+			_slider.visible = false;
+			disableAllButtons ();
+		}
+
+		private void initBidSprites ()
+		{
+			CCNode bid0 = new CCNode ();
+			//Instancing the father.
+			bid0.Position = new CCPoint (_winSize.Width * 35 / 40, _winSize.Height * 21 / 24);
+			//Setting the father position to be the same as the name label position.
+			bid0.Rotation = -90;
+			//Setting the father rotation to be the same as the name label rotation.
+			_mainLayer.AddChild (bid0);
+			//Adding the father as a child of the mainlayer.
+			_bidsFathers.Add (bid0);
+			//Adding the father to the list containing all the fathers.	
+			_playerBids.Add (new CCSprite (""));
+			//Instancing a blank sprite.
+			_playerBids [0].Position = new CCPoint (-45, -75);
+			//Setting the position.
+			_playerBids [0].Scale = _cardScale * 0.65f;
+			//Setting the scale.
+			bid0.AddChild (_playerBids [0]);
+			//Adding the sprite as a child of the father instanciated before.
+			CCNode bid1 = new CCNode ();
+			bid1.Position = _playerNames [1].Position;
+			_mainLayer.AddChild (bid1);
+			_bidsFathers.Add (bid1);
+			_playerBids.Add (new CCSprite (""));
+			_playerBids [1].Position = new CCPoint (-45, -75);
+			_playerBids [1].Scale = _cardScale * 0.65f;
+			_playerBids [1].Rotation = -90;
+			bid1.AddChild (_playerBids [1]);
+			CCNode bid2 = new CCNode ();
+			bid2.Position = _playerNames [2].Position;
+			bid2.Rotation = -90;
+			_mainLayer.AddChild (bid2);
+			_bidsFathers.Add (bid2);
+			_playerBids.Add (new CCSprite (""));
+			_playerBids [2].Position = new CCPoint (-45, -75);
+			_playerBids [2].Scale = _cardScale * 0.65f;
+			bid2.AddChild (_playerBids [2]);
+			CCNode bid3 = new CCNode ();
+			bid3.Position = _playerNames [3].Position;
+			bid3.Rotation = -90;
+			_mainLayer.AddChild (bid3);
+			_bidsFathers.Add (bid3);
+			_playerBids.Add (new CCSprite (""));
+			_playerBids [3].Position = new CCPoint (-45, -75);
+			_playerBids [3].Scale = _cardScale * 0.65f;
+			bid3.AddChild (_playerBids [3]);
+			CCNode bid4 = new CCNode ();
+			bid4.Position = _playerNames [4].Position;
+			bid4.Rotation = 180;
+			_mainLayer.AddChild (bid4);
+			_bidsFathers.Add (bid4);
+			_playerBids.Add (new CCSprite (""));
+			_playerBids [4].Position = new CCPoint (-45, -75);
+			_playerBids [4].Scale = _cardScale * 0.65f;
+			_playerBids [4].Rotation = -270;
+			bid4.AddChild (_playerBids [4]);
+		}
+
+		private void initEndGame ()
+		{
+			_resultBoard = new CCSprite ("resultBoard");
+			_resultBoard.Position = new CCPoint (_winSize.Width / 2, _winSize.Height / 2);
+			_resultBoard.Scale = _scale * 0.38f;
+			_resultBoard.Rotation = -90;
+			_resultBoard.Visible = false;
+			_mainLayer.AddChild (_resultBoard, 15);
+			_endStatusSpriteWin = new CCSprite ("spriteVictory");
+			_endStatusSpriteWin.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 4 / 5);
+			_endStatusSpriteWin.Scale = _cardScale;
+			_endStatusSpriteWin.Visible = false;
+			_resultBoard.AddChild (_endStatusSpriteWin, 1);
+			_endStatusSpriteLoss = new CCSprite ("spriteDefeat");
+			_endStatusSpriteLoss.Position = new CCPoint (_resultBoard.BoundingBox.Size.Width / 2, _resultBoard.BoundingBox.Size.Height * 4 / 5);
+			_endStatusSpriteLoss.Scale = _cardScale;
+			_endStatusSpriteLoss.Visible = false;
+			_resultBoard.AddChild (_endStatusSpriteLoss, 1);
+			_btnExit = new CCButton (_resultBoard, _touch, actExit, "btnExit", "btnExitPressed", new CCPoint (_resultBoard.BoundingBox.Size.Width / 4, _resultBoard.BoundingBox.Size.Height / 5), _winSize, 0, 2.6f);
+			_btnNext = new CCButton (_resultBoard, _touch, actNext, "btnNext", "btnNextPressed", new CCPoint (_resultBoard.BoundingBox.Size.Width * 3 / 4, _resultBoard.BoundingBox.Size.Height / 5), _winSize, 0, 2.6f);
+			_btnExit.Enabled = false;
+			_btnNext.Enabled = false;
+		}
+
+		#endregion
 
 		#region Gamelogic
 
@@ -1241,6 +1273,8 @@ namespace Core
 					
 			
 		}
+
+
 
 		#endregion
 
@@ -1366,7 +1400,7 @@ namespace Core
 		/// Method that shows a bid near the player.
 		/// </summary>
 		/// <param name="bid">The bid.</param>
-		private void bidPlaced (Bid bid)
+		private void bidPlaced (BidBase bid)
 		{
 			if (!Board.Instance.IsAuctionPhase || Board.Instance.ActiveAuctionPlayer != Board.Instance.Me) {
 				disableAllButtons ();
@@ -1382,7 +1416,7 @@ namespace Core
 
 		}
 
-		private string bidToString (Bid bid)
+		private string bidToString (BidBase bid)
 		{
 			if (bid is PassBid)
 				return "PASSO";
@@ -1419,10 +1453,10 @@ namespace Core
 		{
 
 			auctionEnded ();
-			_chooseOri = new Button (_mainLayer, _touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 + _cardScale * _carte [0].sprite.Texture.PixelsWide * 1.5f), _winSize, -90, _cardScale * 0.7f);
-			_chooseCoppe = new Button (_mainLayer, _touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 + _cardScale * _carte [0].sprite.Texture.PixelsWide * 0.5f), _winSize, -90, _cardScale * 0.7f);
-			_chooseBastoni = new Button (_mainLayer, _touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 - _cardScale * _carte [0].sprite.Texture.PixelsWide * 0.5f), _winSize, -90, _cardScale * 0.7f);
-			_chooseSpade = new Button (_mainLayer, _touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 - _cardScale * _carte [0].sprite.Texture.PixelsWide * 1.5f), _winSize, -90, _cardScale * 0.7f);
+			_chooseOri = new CCButton (_mainLayer, _touch, actOri, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "ORI", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 + _cardScale * _carte [0].sprite.Texture.PixelsWide * 1.5f), _winSize, -90, _cardScale * 0.7f);
+			_chooseCoppe = new CCButton (_mainLayer, _touch, actCoppe, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "COPE", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 + _cardScale * _carte [0].sprite.Texture.PixelsWide * 0.5f), _winSize, -90, _cardScale * 0.7f);
+			_chooseBastoni = new CCButton (_mainLayer, _touch, actBastoni, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "BASTONI", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 - _cardScale * _carte [0].sprite.Texture.PixelsWide * 0.5f), _winSize, -90, _cardScale * 0.7f);
+			_chooseSpade = new CCButton (_mainLayer, _touch, actSpade, ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", ( (NormalBid) Board.Instance.currentAuctionWinningBid ).number.ToString () + "_" + "SPADE", new CCPoint (_winSize.Width / 2, _winSize.Height / 2 - _cardScale * _carte [0].sprite.Texture.PixelsWide * 1.5f), _winSize, -90, _cardScale * 0.7f);
 		}
 
 		#endregion
@@ -1556,7 +1590,7 @@ namespace Core
 		/// </summary>
 		/// <param name="player">Player that wins the hand.</param>
 		/// <param name="board">List of cards on the board.</param>
-		public void clearBoard (Player player, List<Card> board)
+		private void clearBoard (Player player, List<Card> board)
 		{
 			for (int i = 4; i > -1; i--) {
 				CCMoveTo move = new CCMoveTo (0.5f, _offScreen [playerToOrder (player)]);

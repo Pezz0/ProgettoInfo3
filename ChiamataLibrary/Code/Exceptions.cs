@@ -7,13 +7,13 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Thrown when a different phase was expected.
 	/// </summary>
-	public class WrongPhaseException:Exception
+	internal class WrongPhaseException:Exception
 	{
 
 		/// <summary>
 		/// The expected phase.
 		/// </summary>
-		private string _expectedPhase;
+		private readonly string _expectedPhase;
 
 		/// <summary>
 		/// Gets the expected phase.
@@ -68,12 +68,12 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Thrown when an unexpected bid is presented in the auction.
 	/// </summary>
-	public class WrongBiddingPlayerException:Exception
+	internal class WrongBiddingPlayerException:Exception
 	{
 		/// <summary>
 		/// The player making the bid.
 		/// </summary>
-		private Player _player;
+		private readonly Player _player;
 
 		/// <summary>
 		/// Gets the player.
@@ -128,24 +128,24 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Thrown when the bid is superior to the currently winning one.
 	/// </summary>
-	public class BidNotEnoughException:Exception
+	internal class BidNotEnoughException:Exception
 	{
 		/// <summary>
 		/// The bid.
 		/// </summary>
-		private Bid _bid;
+		private readonly BidBase _bid;
 
 		/// <summary>
 		/// Gets the bid.
 		/// </summary>
 		/// <value>The bid.</value>
-		public Bid Bid { get { return _bid; } }
+		public BidBase Bid { get { return _bid; } }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.BidNotEnoughException"/> class.
 		/// </summary>
 		/// <param name="bid">The bid.</param>
-		public BidNotEnoughException (Bid bid) : base ()
+		public BidNotEnoughException (BidBase bid) : base ()
 		{
 			_bid = bid;
 		}
@@ -155,7 +155,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <param name="message">Exception description</param>
 		/// <param name="bid">The bid.</param>
-		public BidNotEnoughException (string message, Bid bid) : base (message)
+		public BidNotEnoughException (string message, BidBase bid) : base (message)
 		{
 			_bid = bid;
 		}
@@ -166,7 +166,7 @@ namespace ChiamataLibrary
 		/// <param name="message">Exception description</param>
 		/// <param name="inner">Exception inner cause</param>
 		/// <param name="bid">The bid.</param>
-		public BidNotEnoughException (string message, Exception inner, Bid bid) : base (message, inner)
+		public BidNotEnoughException (string message, Exception inner, BidBase bid) : base (message, inner)
 		{
 			_bid = bid;
 		}
@@ -187,12 +187,12 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Thrown when a player plays in the wrong turn.
 	/// </summary>
-	public class WrongPlayerException:Exception
+	internal class WrongPlayerException:Exception
 	{
 		/// <summary>
 		/// The player.
 		/// </summary>
-		private Player _player;
+		private readonly Player _player;
 
 		/// <summary>
 		/// Gets the player.
@@ -247,12 +247,12 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Wrong card exception.
 	/// </summary>
-	public class WrongCardException:Exception
+	internal class WrongCardException:Exception
 	{
 		/// <summary>
 		/// The wrong card.
 		/// </summary>
-		private Card _card;
+		private readonly Card _card;
 
 		/// <summary>
 		/// Gets the wrong card.

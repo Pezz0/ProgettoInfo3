@@ -65,7 +65,6 @@
     <Compile Include="Code\Enumeration\EnLocalMessageType.cs" />
     <Compile Include="Code\Enumeration\EnPackageType.cs" />
     <Compile Include="Code\BTPlayerController.cs" />
-    <Compile Include="Code\Package\Package.cs" />
     <Compile Include="Code\Package\PackageBid.cs" />
     <Compile Include="Code\Package\PackageBoard.cs" />
     <Compile Include="Code\Package\PackageCard.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Code\Package\PackageSeme.cs" />
     <Compile Include="Code\BTManager.cs" />
     <Compile Include="Code\Package\PackageTerminate.cs" />
+    <Compile Include="Code\Package\PackageBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

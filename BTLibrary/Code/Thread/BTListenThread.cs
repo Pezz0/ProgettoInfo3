@@ -14,19 +14,19 @@ namespace BTLibrary
 		/// <summary>
 		/// The BluetoothServerSocket.
 		/// </summary>
-		private BluetoothServerSocket _serverSocket;
+		private readonly BluetoothServerSocket _serverSocket;
 
 		/// <summary>
 		/// Thread that waits for connection requests.
 		/// </summary>
-		private Thread _Listener;
+		private readonly Thread _Listener;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTListenThread"/> class.
 		/// </summary>
 		/// <param name="NAME">Name.</param>
 		/// <param name="MY_UUID">My UUID.</param>
-		public BTListenThread (string NAME, UUID MY_UUID)
+		internal BTListenThread (string NAME, UUID MY_UUID)
 		{
 			BluetoothServerSocket tmp = null;
 
@@ -74,7 +74,7 @@ namespace BTLibrary
 		/// <summary>
 		/// try to close the server socket  .
 		/// </summary>
-		public void Cancel ()
+		internal void Cancel ()
 		{
 			try {
 				_serverSocket.Close ();

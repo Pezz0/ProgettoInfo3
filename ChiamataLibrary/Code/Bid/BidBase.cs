@@ -5,7 +5,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Abstract class representing a general bid.
 	/// </summary>
-	public abstract class Bid: IComparable<Bid>,IEquatable<Bid>
+	public abstract class BidBase: IComparable<BidBase>,IEquatable<BidBase>
 	{
 		/// <summary>
 		/// The bidder.
@@ -16,7 +16,7 @@ namespace ChiamataLibrary
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.Bid"/> class.
 		/// </summary>
 		/// <param name="bidder">Bidder.</param>
-		public Bid (Player bidder)
+		protected BidBase (Player bidder)
 		{
 			this.bidder = bidder;
 		}
@@ -24,7 +24,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// Initializes a new naked instance of the <see cref="ChiamataLibrary.Bid"/> class.
 		/// </summary>
-		public Bid ()
+		protected BidBase ()
 		{
 			this.bidder = null;
 		}
@@ -34,7 +34,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns>The bid.</returns>
 		/// <param name="newBidder">The new bidder.</param>
-		public abstract Bid ChangeBidder (Player newBidder);
+		public abstract BidBase ChangeBidder (Player newBidder);
 
 		#region Comparison
 
@@ -43,7 +43,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns><c>1</c> if mainBid > other, <c>-0</c> if mainBid = other,<c>-1</c> otherwise.</returns>
 		/// <param name="other">The bid to compare the main one to.</param>
-		public int CompareTo (Bid other)
+		public int CompareTo (BidBase other)
 		{
 			if (( (object) other ) == null)	 //null=null everything > null
 				return 1;
@@ -103,7 +103,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns><c>true</c> if are the same bid, <c>false</c> otherwise.</returns>
 		/// <param name="other">The <see cref="ChiamataLibrary.IBid"/> to compare with the current <see cref="ChiamataLibrary.IBid"/>.</param>
-		public bool Equals (Bid other)
+		public bool Equals (BidBase other)
 		{
 			return this.CompareTo (other) == 0;
 		}
@@ -116,16 +116,16 @@ namespace ChiamataLibrary
 		/// <param name="other">The <see cref="System.Object"/> to compare with the current <see cref="ChiamataLibrary.IBid"/>.</param>
 		public override bool Equals (object other)
 		{
-			if (!( other is Bid ))
+			if (!( other is BidBase ))
 				return false;
 
-			return Equals ((Bid) other);
+			return Equals ((BidBase) other);
 		}
 
 		/// <summary>Overrides the == operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator == (Bid b1, Bid b2)
+		public static bool operator == (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return true;
@@ -139,7 +139,7 @@ namespace ChiamataLibrary
 		/// <summary>Overrides the != operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator != (Bid b1, Bid b2)
+		public static bool operator != (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return false;
@@ -153,7 +153,7 @@ namespace ChiamataLibrary
 		/// <summary>Overrides the &gt= operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator >= (Bid b1, Bid b2)
+		public static bool operator >= (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)	//
 				return true;
@@ -167,7 +167,7 @@ namespace ChiamataLibrary
 		/// <summary>Overrides the &lt= operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator <= (Bid b1, Bid b2)
+		public static bool operator <= (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return true;
@@ -182,7 +182,7 @@ namespace ChiamataLibrary
 		/// <summary>Overrides the &gt operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator > (Bid b1, Bid b2)
+		public static bool operator > (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return false;
@@ -196,7 +196,7 @@ namespace ChiamataLibrary
 		/// <summary>Overrides the &lt operator</summary>
 		/// <param name="b1">First bid.</param>
 		/// <param name="b2">Second bid.</param>
-		public static bool operator < (Bid b1, Bid b2)
+		public static bool operator < (BidBase b1, BidBase b2)
 		{
 			if (( (object) b1 ) == null && ( (object) b2 ) == null)
 				return false;

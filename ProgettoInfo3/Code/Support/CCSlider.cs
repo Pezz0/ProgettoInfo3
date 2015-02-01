@@ -2,12 +2,12 @@
 using CocosSharp;
 using System.Collections.Generic;
 
-namespace Core
+namespace GUILayout
 {
 	/// <summary>
 	/// Basic slider.
 	/// </summary>
-	public class Slider
+	internal class CCSlider
 	{
 		/// <summary>
 		/// The sprite for the slider bar.
@@ -22,7 +22,7 @@ namespace Core
 		/// <summary>
 		/// The label indicating the current value of the slider.
 		/// </summary>
-		private CCLabel lblValue;
+		private readonly CCLabel lblValue;
 
 		/// <summary>
 		/// The size of the window.
@@ -53,7 +53,7 @@ namespace Core
 		/// Sets the minimum value for the slider.
 		/// </summary>
 		/// <value>The minimum value.</value>
-		public int min {
+		internal int min {
 			set {
 				if (_currentValue == _min) {
 					_currentValue = value;
@@ -74,8 +74,8 @@ namespace Core
 		/// Gets or sets a value indicating whether this <see cref="Core.Slider"/> is visible.
 		/// </summary>
 		/// <value><c>true</c> if visible; otherwise, <c>false</c>.</value>
-		public bool visible {
-			get{ return _visible; }
+		internal bool visible {
+			private get{ return _visible; }
 			set {
 				_visible = value;
 				if (value) {
@@ -96,7 +96,7 @@ namespace Core
 		/// <summary>
 		/// The maximum value of the slider.
 		/// </summary>
-		private int _max;
+		private readonly int _max;
 
 		/// <summary>
 		/// The current value of the slider.
@@ -106,7 +106,7 @@ namespace Core
 		/// <summary>
 		/// Resets the range of the slider (sets the minimum to 61).
 		/// </summary>
-		public void resetRange ()
+		internal void resetRange ()
 		{
 			_min = 61;
 			_currentValue = 61;
@@ -117,7 +117,7 @@ namespace Core
 		/// Gets the current value of the slider.
 		/// </summary>
 		/// <value>The current value of the slider.</value>
-		public int currentValue{ get { return _currentValue; } }
+		internal int currentValue{ get { return _currentValue; } }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Core.Slider"/> class.
@@ -132,7 +132,7 @@ namespace Core
 		/// <param name="max">Maximum value of the slider.</param>
 		/// <param name="rot">Rotation of the slider sprite (default -90).</param>
 		/// <param name="scale">Scale of the slider sprite (default 0.8f).</param>
-		public Slider (CCLayer mainLayer, TouchList tl, string textureBar, string texturePoint, CCPoint position, CCSize winSize, int min, int max, float rot = -90, float scale = 0.8f)
+		internal CCSlider (CCLayer mainLayer, TouchList tl, string textureBar, string texturePoint, CCPoint position, CCSize winSize, int min, int max, float rot = -90, float scale = 0.8f)
 		{
 			//Defining the sprite
 			spriteBar = new CCSprite (textureBar);
@@ -203,7 +203,7 @@ namespace Core
 		/// <summary>
 		/// Remove the instance of the <see cref="Core.Slider"/>.
 		/// </summary>
-		public void remove ()
+		internal void remove ()
 		{
 			touch.eventTouchBegan -= touchBegan;
 			touch.eventTouchEnded -= touchMoved;

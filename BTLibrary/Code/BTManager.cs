@@ -60,7 +60,7 @@ namespace BTLibrary
 		/// Gets the local BlueTooth adapter.
 		/// </summary>
 		/// <returns>The BT adapter.</returns>
-		public BluetoothAdapter getBTAdapter ()
+		internal BluetoothAdapter getBTAdapter ()
 		{
 			return _btAdapter;
 		}
@@ -96,7 +96,7 @@ namespace BTLibrary
 		/// Gets the local BlueTooth address.
 		/// </summary>
 		/// <returns>The local BlueTooth address.</returns>
-		public string GetLocalAddress ()
+		internal string GetLocalAddress ()
 		{
 			return _btAdapter.Address;
 		}
@@ -150,7 +150,7 @@ namespace BTLibrary
 		/// Makes the Bluetooth visible.
 		/// </summary>
 		/// <param name="amount">amount of time to make the bluetooth visible.</param>
-		public void makeVisible (int amount)
+		internal void makeVisible (int amount)
 		{
 			//creates an Intent with action ActionRequestDiscoverable
 			Intent visibleIntent = new Intent (BluetoothAdapter.ActionRequestDiscoverable);
@@ -182,7 +182,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The list of paired device addresses.
 		/// </summary>
-		private List<string> _pairedDevicesList = new List<string> ();
+		private readonly List<string> _pairedDevicesList = new List<string> ();
 
 		/// <summary>
 		/// Gets a list of paired devices address.
@@ -243,17 +243,17 @@ namespace BTLibrary
 		/// <summary>
 		/// The list of thread to perform master read with mutiple connected slave or to perform slave read from the master.
 		/// </summary>
-		private List<BTReadThread> _readThread = new List<BTReadThread> (MAX_BT_PLAYER);
+		private readonly List<BTReadThread> _readThread = new List<BTReadThread> (MAX_BT_PLAYER);
 
 		/// <summary>
 		/// The list of thread to perform master write with multiple connected slave or to perform slave read the the master.
 		/// </summary>
-		private List<BTWriteThread> _writeThread = new List<BTWriteThread> (MAX_BT_PLAYER);
+		private readonly List<BTWriteThread> _writeThread = new List<BTWriteThread> (MAX_BT_PLAYER);
 
 		/// <summary>
 		/// The UUID to perform connection.
 		/// </summary>
-		internal static readonly UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
+		private static readonly UUID MY_UUID = UUID.FromString ("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
 		/// <summary>
 		/// The name to perform connection.
@@ -282,7 +282,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <returns>The state.</returns>
 		[MethodImpl (MethodImplOptions.Synchronized)]
-		public EnConnectionState GetState ()
+		internal EnConnectionState GetState ()
 		{
 			return _state;
 		}
@@ -530,7 +530,7 @@ namespace BTLibrary
 		/// <summary>
 		/// Delegate or the event that occours when a playtime message is received.
 		/// </summary>
-		public delegate void eventHandlerPackageRecieved (Package pkg);
+		public delegate void eventHandlerPackageRecieved (PackageBase pkg);
 
 		/// <summary>
 		/// Occurs when a playtime message is received.
@@ -552,12 +552,12 @@ namespace BTLibrary
 						
 					if (isSlave ()) {
 						//if i am a slave i remove the message from the list of the message to send
-						_writeThread [0].Remove (Package.getMessageFromAck (data));
+						_writeThread [0].Remove (PackageBase.getMessageFromAck (data));
 					} else {
 						//otherwise i am the master so i remove the message only from the list of the sender
 						_writeThread.ForEach (delegate(BTWriteThread thred) {
-							if (thred.Connected == Package.getAddressFromAck (data))
-								thred.Remove (Package.getMessageFromAck (data));
+							if (thred.Connected == PackageBase.getAddressFromAck (data))
+								thred.Remove (PackageBase.getMessageFromAck (data));
 						});
 
 					}
@@ -565,7 +565,7 @@ namespace BTLibrary
 
 				} else if (type != EnPackageType.NONE) {
 
-					Package pkg = Package.createPackage (data);	
+					PackageBase pkg = PackageBase.createPackage (data);	
 
 
 					if (eventPackageReceived != null)
@@ -594,7 +594,7 @@ namespace BTLibrary
 		/// Writes to master.
 		/// </summary>
 		/// <param name="pkg">Package to send to master.</param>
-		public void WriteToMaster (Package pkg)
+		public void WriteToMaster (PackageBase pkg)
 		{
 			if (_writeThread.Count == 0)
 				return;
@@ -607,7 +607,7 @@ namespace BTLibrary
 		/// Writes to all slaves.
 		/// </summary>
 		/// <param name="pkg">Pakage to send to all slaves.</param>
-		public void WriteToAllSlave (Package pkg)
+		public void WriteToAllSlave (PackageBase pkg)
 		{
 			byte [] message = pkg.getMessage ();
 			for (int i = 0; i < _writeThread.Count; i++) {
@@ -635,7 +635,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <remarks>See <see cref="BTLibrary.PackageBid"/> for further informations about the message contents.</remarks>
 		/// <param name="bid">The bid to send.</param>
-		private void bidPlaced (Bid bid)
+		private void bidPlaced (BidBase bid)
 		{
 			//When the Board event eventIPlaceABid or eventSomeonePlaceABid occours, write to master (if i'm slave) or to all slave (if i'm master) the message.
 

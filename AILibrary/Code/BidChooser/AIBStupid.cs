@@ -24,7 +24,7 @@ namespace AILibrary
 		/// <returns>The bid.</returns>
 		/// <param name="me">Me.</param>
 		/// <param name="seme">Seme.</param>
-		public Bid ChooseABid ()
+		public BidBase ChooseABid ()
 		{
 			return new PassBid ();
 		}

@@ -40,7 +40,7 @@ namespace BTLibrary
 	/// <item><term>Seme</term><description>The index of the seme (0 is ORI, 1 si COPPE, 2 is BASTONI, 3 is SPADE).</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageSeme:Package
+	public class PackageSeme:PackageBase
 	{
 		/// <summary>
 		/// The player that choose the seme.

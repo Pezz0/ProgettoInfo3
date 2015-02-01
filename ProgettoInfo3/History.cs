@@ -14,7 +14,7 @@ using ChiamataLibrary;
 using Android.Content.PM;
 using Android.Util;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	/// <summary>
 	/// History of stats and past games.
@@ -25,15 +25,15 @@ namespace MenuLayout
 		/// <summary>
 		/// Buttons to exit the activity and to delete the game data.
 		/// </summary>
-		Button back, delete;
+		private Button back, delete;
 
 		/// <summary>
 		/// Tab width.
 		/// </summary>
 		private const float TAB_WIDTH = 0.7f;
 
-		TabHost tabH;
-		TabWidget tabW;
+		private TabHost tabH;
+		private TabWidget tabW;
 
 		/// <summary>
 		/// Called on activity creation.
@@ -87,7 +87,7 @@ namespace MenuLayout
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public void Back (object sender, EventArgs e)
+		private void Back (object sender, EventArgs e)
 		{
 			Finish ();
 		}
@@ -107,7 +107,7 @@ namespace MenuLayout
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public void Delete (object sender, EventArgs e)
+		private void Delete (object sender, EventArgs e)
 		{
 			Archive.Instance.DeleteAll ();
 			if (eventDelete != null)

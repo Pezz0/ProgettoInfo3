@@ -42,7 +42,7 @@ namespace BTLibrary
 	/// <item><term>Number of bid</term><description>The number of the bid.</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageBid:Package
+	public class PackageBid:PackageBase
 	{
 		/// <summary>
 		/// The current index of the bid.
@@ -51,13 +51,13 @@ namespace BTLibrary
 		/// <summary>
 		/// The bid.
 		/// </summary>
-		public readonly Bid bid;
+		public readonly BidBase bid;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.PackageBid"/> class.
 		/// </summary>
 		/// <param name="bid">The bid that will be inserted in the message.</param>
-		public PackageBid (Bid bid) : base (EnPackageType.BID)
+		public PackageBid (BidBase bid) : base (EnPackageType.BID)
 		{
 			this.bid = bid;
 			nOfBid = Board.Instance.NumberOfBid;
@@ -96,8 +96,8 @@ namespace BTLibrary
 			msg.Add ((byte) type);	//0
 			msg.Add ((byte) bid.bidder.order);	//1
 
-			if (bid is NotPassBid)	//2
-				msg.Add ((byte) ( (NotPassBid) bid ).point);
+			if (bid is NotPassBidBase)	//2
+				msg.Add ((byte) ( (NotPassBidBase) bid ).point);
 			else
 				msg.Add (255);
 

@@ -15,28 +15,28 @@ namespace BTLibrary
 		/// <summary>
 		/// The BluetoothSocket.
 		/// </summary>
-		public BluetoothSocket _socket;
+		internal BluetoothSocket _socket;
 
 		/// <summary>
 		/// The input stream.
 		/// </summary>
-		private Stream _inStream;
+		private readonly Stream _inStream;
 
 		/// <summary>
 		/// The connected device address.
 		/// </summary>
-		private string _connected;
+		private readonly string _connected;
 
 		/// <summary>
 		/// The reader Thread.
 		/// </summary>
-		private Thread _reader;
+		private readonly Thread _reader;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTReadThread"/> class.
 		/// </summary>
 		/// <param name="socket">Bluetooth socket.</param>
-		public BTReadThread (BluetoothSocket socket)
+		internal BTReadThread (BluetoothSocket socket)
 		{
 			_socket = socket;
 			Stream tmpIn = null;
@@ -87,7 +87,7 @@ namespace BTLibrary
 		/// Try to close the socket
 		/// </summary>
 		/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
-		public void Cancel ()
+		internal void Cancel ()
 		{
 			try {
 				_inStream.Close ();

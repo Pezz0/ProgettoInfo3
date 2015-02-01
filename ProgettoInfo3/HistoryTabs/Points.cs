@@ -12,10 +12,10 @@ using Android.Views;
 using Android.Widget;
 using ChiamataLibrary;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	[Activity (Label = "Points")]			
-	public class Points : Activity
+	internal class Points : Activity
 	{
 		ArrayAdapter<string> play;
 
@@ -63,7 +63,7 @@ namespace MenuLayout
 				play.Add ("No match found");
 		}
 
-		public void sort (string [][] matrix, int left, int right)
+		private void sort (string [][] matrix, int left, int right)
 		{
 			int i = left, j = right;
 			int pivot = Convert.ToInt32 (matrix [( left + right ) / 2] [2]);
@@ -99,7 +99,7 @@ namespace MenuLayout
 		}
 
 
-		public void Delete ()
+		private void Delete ()
 		{
 			play.Clear ();
 			play.Add ("No match found");

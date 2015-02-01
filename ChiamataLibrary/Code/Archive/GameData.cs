@@ -105,7 +105,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The list of the bids put in the auction.
 		/// </summary>
-		private readonly List<Bid> _bids = new List<Bid> ();
+		private readonly List<BidBase> _bids = new List<BidBase> ();
 
 		#endregion
 
@@ -224,7 +224,7 @@ namespace ChiamataLibrary
 		/// Method that writes this <see cref="ChiamataLibrary.GameData"/> on an XML file.
 		/// </summary>
 		/// <param name="path">The path for the XML file.</param>
-		public void WriteOnXML (Stream s)
+		internal void WriteOnXML (Stream s)
 		{
 
 			XmlWriterSettings setting = new XmlWriterSettings ();
@@ -267,7 +267,7 @@ namespace ChiamataLibrary
 				writer.WriteStartElement ("BidList");
 				writer.WriteAttributeString ("Number", _bids.Count.ToString ());
 
-				foreach (Bid bid in _bids) {
+				foreach (BidBase bid in _bids) {
 					writer.WriteStartElement ("Bid");
 
 					if (bid is PassBid) {
@@ -284,7 +284,7 @@ namespace ChiamataLibrary
 						writer.WriteEndElement ();	//bidder
 
 						writer.WriteStartElement ("Point");
-						writer.WriteString (( (NotPassBid) bid ).point.ToString ());
+						writer.WriteString (( (NotPassBidBase) bid ).point.ToString ());
 						writer.WriteEndElement ();	//point
 					} else if (bid is NormalBid) {
 						writer.WriteAttributeString ("Type", "Normal");
@@ -294,7 +294,7 @@ namespace ChiamataLibrary
 						writer.WriteEndElement ();	//bidder
 
 						writer.WriteStartElement ("Point");
-						writer.WriteString (( (NotPassBid) bid ).point.ToString ());
+						writer.WriteString (( (NotPassBidBase) bid ).point.ToString ());
 						writer.WriteEndElement ();	//point
 
 						writer.WriteStartElement ("Number");
@@ -348,12 +348,12 @@ namespace ChiamataLibrary
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.GameData"/> class.
 		/// </summary>
 		/// <param name="path">The path of the XML file from which will be reading the <see cref="ChiamataLibrary.GameData"/>.</param>
-		public GameData (Stream s)
+		internal GameData (Stream s)
 		{
-			Board.Instance.reset ();
+			Board.Instance.Reset ();
 			_players = new Player[Board.PLAYER_NUMBER];
 			_cards = new Card[Board.Instance.nSemi, Board.Instance.nNumber];
-			_bids = new List<Bid> ();
+			_bids = new List<BidBase> ();
 
 			//create the xml reader
 			XmlReaderSettings setting = new XmlReaderSettings ();
@@ -472,7 +472,7 @@ namespace ChiamataLibrary
 		/// <param name="type">The type of game.</param>
 		/// <param name="calledCard">The called <see cref="ChiamataLibrary.Card"/>.</param>
 		/// <param name="winningPoint">The points that the team composed of CHIAMANTE and SOCIO had to do in order to win the game.</param>
-		public GameData (DateTime time, Card [,] cards, Player [] players, List<Bid> bids, EnGameType type, Card calledCard, int winningPoint)
+		internal GameData (DateTime time, Card [,] cards, Player [] players, List<BidBase> bids, EnGameType type, Card calledCard, int winningPoint)
 		{
 			this.time = time;
 
@@ -483,7 +483,7 @@ namespace ChiamataLibrary
 			for (int i = 0; i < Board.PLAYER_NUMBER; ++i)
 				this._players [i] = players [i];
 
-			this._bids = new List<Bid> (bids);
+			this._bids = new List<BidBase> (bids);
 
 			this.gameType = type;
 			this.calledCard = calledCard;

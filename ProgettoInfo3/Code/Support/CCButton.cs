@@ -2,12 +2,12 @@
 using CocosSharp;
 using System.Collections.Generic;
 
-namespace Core
+namespace GUILayout
 {
 	/// <summary>
 	/// Basic button.
 	/// </summary>
-	public class Button
+	internal class CCButton
 	{
 		/// <summary>
 		/// Boolean value that indicates if the button has been pressed.
@@ -32,7 +32,7 @@ namespace Core
 		/// <summary>
 		/// The method which will be called when the button is pressed. Must be coherent with the delegate <see cref="Core.touchList.eventHandlerTouch"/>.
 		/// </summary>
-		private TouchList.eventHandlerTouch _onButtonPressed;
+		private readonly TouchList.eventHandlerTouch _onButtonPressed;
 
 		/// <summary>
 		/// Touch listener.
@@ -53,7 +53,7 @@ namespace Core
 		/// Gets or sets a value indicating whether this <see cref="Core.Button"/> is enabled.
 		/// </summary>
 		/// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
-		public bool Enabled {
+		internal bool Enabled {
 			get{ return _Enabled; }
 			set {
 				if (value == true) {
@@ -83,7 +83,7 @@ namespace Core
 		/// <param name="rot">Rotation of the button.</param>
 		/// <param name="scale">Scale of the button.</param>
 		/// <param name="order">ZOrder (depth).</param>
-		public Button (CCNode father, TouchList tl, TouchList.eventHandlerTouch method, string textureDefault, string texturePressed, CCPoint position, CCSize winSize, float rot = -90, float scale = 0.55f, int order = 0)
+		internal CCButton (CCNode father, TouchList tl, TouchList.eventHandlerTouch method, string textureDefault, string texturePressed, CCPoint position, CCSize winSize, float rot = -90, float scale = 0.55f, int order = 0)
 		{
 
 			//Defining the sprite
@@ -146,7 +146,7 @@ namespace Core
 		/// <summary>
 		/// Remove the instance of the <see cref="Core.Button"/>.
 		/// </summary>
-		public void remove ()
+		internal void remove ()
 		{
 			_touch.eventTouchBegan -= touchBegan;
 			_touch.eventTouchEnded -= touchEnded;

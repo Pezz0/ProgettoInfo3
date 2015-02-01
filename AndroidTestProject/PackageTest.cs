@@ -9,7 +9,7 @@ namespace TestProject
 	/// Test for the <see cref="BTLibrary.Package"/> class.
 	/// </summary>
 	[TestFixture ()]
-	public class PackageTest
+	internal class PackageTest
 	{
 		/// <summary>
 		/// Setup for this tests.
@@ -17,7 +17,7 @@ namespace TestProject
 		[SetUp ()]
 		public void setup ()
 		{
-			Board.Instance.reset ();
+			Board.Instance.Reset ();
 			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new TestRandom ());//il mazziere è C
 		}
 
@@ -31,7 +31,7 @@ namespace TestProject
 		[Test ()]
 		public void packageBidPassTest ()
 		{
-			Bid b = new PassBid (Board.Instance.Me);
+			BidBase b = new PassBid (Board.Instance.Me);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -51,12 +51,12 @@ namespace TestProject
 		[Test ()]
 		public void packageBidPassAckTest ()
 		{
-			Bid b = new PassBid (Board.Instance.Me);
+			BidBase b = new PassBid (Board.Instance.Me);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
 		
-			PackageBid pkgbRec = new PackageBid (Package.getMessageFromAck (bs));
+			PackageBid pkgbRec = new PackageBid (PackageBase.getMessageFromAck (bs));
 		
 			Assert.AreEqual (EnPackageType.BID, pkgb.type);
 			Assert.AreSame (Board.Instance.Me, pkgb.bid.bidder);
@@ -71,7 +71,7 @@ namespace TestProject
 		[Test ()]
 		public void packageBidCarichiTest ()
 		{
-			Bid b = new CarichiBid (Board.Instance.Me, 61);
+			BidBase b = new CarichiBid (Board.Instance.Me, 61);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -91,12 +91,12 @@ namespace TestProject
 		[Test ()]
 		public void packageBidCarichiAckTest ()
 		{
-			Bid b = new CarichiBid (Board.Instance.Me, 61);
+			BidBase b = new CarichiBid (Board.Instance.Me, 61);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
 		
-			PackageBid pkgbRec = new PackageBid (Package.getMessageFromAck (bs));
+			PackageBid pkgbRec = new PackageBid (PackageBase.getMessageFromAck (bs));
 		
 			Assert.AreEqual (EnPackageType.BID, pkgb.type);
 			Assert.AreSame (Board.Instance.Me, pkgb.bid.bidder);
@@ -111,7 +111,7 @@ namespace TestProject
 		[Test ()]
 		public void packageBidNormalTest ()
 		{
-			Bid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
+			BidBase b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
 			PackageBid pkgb = new PackageBid (b);
 
 			byte [] bs = pkgb.getMessage ();
@@ -131,12 +131,12 @@ namespace TestProject
 		[Test ()]
 		public void packageBidNormalAckTest ()
 		{
-			Bid b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
+			BidBase b = new NormalBid (Board.Instance.Me, EnNumbers.CAVALLO, 61);
 			PackageBid pkgb = new PackageBid (b);
 		
 			byte [] bs = pkgb.getAckMessage ();
 		
-			PackageBid pkgbRec = new PackageBid (Package.getMessageFromAck (bs));
+			PackageBid pkgbRec = new PackageBid (PackageBase.getMessageFromAck (bs));
 		
 			Assert.AreEqual (EnPackageType.BID, pkgb.type);
 			Assert.AreSame (Board.Instance.Me, pkgb.bid.bidder);
@@ -183,7 +183,7 @@ namespace TestProject
 
 			byte [] bs = pkgc.getAckMessage ();
 
-			PackageCard pkgcRec = new PackageCard (Package.getMessageFromAck (bs));
+			PackageCard pkgcRec = new PackageCard (PackageBase.getMessageFromAck (bs));
 
 			Assert.AreEqual (EnPackageType.MOVE, pkgcRec.type);
 			Assert.AreSame (p, pkgcRec.player);
@@ -226,7 +226,7 @@ namespace TestProject
 
 			byte [] bs = pkgn.getAckMessage ();
 
-			PackageName pkgnRec = new PackageName (Package.getMessageFromAck (bs));
+			PackageName pkgnRec = new PackageName (PackageBase.getMessageFromAck (bs));
 
 			Assert.AreEqual (EnPackageType.NAME, pkgnRec.type);
 			Assert.AreEqual (name, pkgnRec.name);
@@ -270,7 +270,7 @@ namespace TestProject
 
 			byte [] bs = pkgs.getAckMessage ();
 
-			PackageSeme pkgsRec = new PackageSeme (Package.getMessageFromAck (bs));
+			PackageSeme pkgsRec = new PackageSeme (PackageBase.getMessageFromAck (bs));
 
 			Assert.AreEqual (EnPackageType.SEME, pkgsRec.type);
 			Assert.AreSame (Board.Instance.Me, pkgsRec.player);
@@ -312,7 +312,7 @@ namespace TestProject
 
 			byte [] bs = pkgt.getAckMessage ();
 
-			PackageTerminate pkgtRec = new PackageTerminate (Package.getMessageFromAck (bs));
+			PackageTerminate pkgtRec = new PackageTerminate (PackageBase.getMessageFromAck (bs));
 
 			Assert.AreEqual (EnPackageType.TERMINATE, pkgtRec.type);
 			Assert.AreEqual (0, pkgtRec.terminateSignal);

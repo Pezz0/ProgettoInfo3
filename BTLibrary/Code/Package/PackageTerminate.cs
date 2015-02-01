@@ -38,7 +38,7 @@ namespace BTLibrary
 	/// <item><term>Terminate signal</term><description>An integer indicating if the new game should be started or not (0 means abort and 1 start next game).</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageTerminate:Package
+	public class PackageTerminate:PackageBase
 	{
 		/// <summary>
 		/// Code for the terminate signal.

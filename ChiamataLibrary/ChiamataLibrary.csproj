@@ -38,15 +38,15 @@
     <Compile Include="Code\Player.cs" />
     <Compile Include="Code\Archive\Archive.cs" />
     <Compile Include="Code\Archive\GameData.cs" />
-    <Compile Include="Code\Bid\Bid.cs" />
     <Compile Include="Code\Bid\CarichiBid.cs" />
     <Compile Include="Code\Bid\NormalBid.cs" />
-    <Compile Include="Code\Bid\NotPassBid.cs" />
     <Compile Include="Code\Bid\PassBid.cs" />
     <Compile Include="Code\Enumeration\EnCard.cs" />
     <Compile Include="Code\Enumeration\EnGameType.cs" />
     <Compile Include="Code\Enumeration\EnRole.cs" />
     <Compile Include="Code\Random\IRandomGenerator.cs" />
+    <Compile Include="Code\Bid\BidBase.cs" />
+    <Compile Include="Code\Bid\NotPassBidBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

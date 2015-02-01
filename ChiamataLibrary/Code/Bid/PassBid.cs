@@ -5,14 +5,14 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Class representing a pass bid.
 	/// </summary>
-	public class PassBid:Bid
+	public class PassBid:BidBase
 	{
 		/// <summary>
 		/// Changes the bidder of a specified bid.
 		/// </summary>
 		/// <returns>The bid.</returns>
 		/// <param name="newBidder">The new bidder.</param>
-		public override Bid ChangeBidder (Player newBidder)
+		public override BidBase ChangeBidder (Player newBidder)
 		{
 			return new PassBid (newBidder);
 		}

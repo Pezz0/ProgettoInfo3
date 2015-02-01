@@ -40,7 +40,7 @@ namespace BTLibrary
 	/// <item><term>Name</term><description>The new name.</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageName:Package
+	public class PackageName:PackageBase
 	{
 		/// <summary>
 		/// Const representing the max character length for the name.

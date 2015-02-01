@@ -5,13 +5,13 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Class representing a carichi bid.
 	/// </summary>
-	public class CarichiBid:NotPassBid
+	public class CarichiBid:NotPassBidBase
 	{
 		/// <summary>
 		/// Gets the next avaiable bid.
 		/// </summary>
 		/// <returns>The next avaiable bid.</returns>
-		public override NotPassBid GetNext ()
+		public override NotPassBidBase GetNext ()
 		{
 			return new CarichiBid (bidder, point + 1);
 		}
@@ -21,7 +21,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns>The bid.</returns>
 		/// <param name="newBidder">The new bidder.</param>
-		public override Bid ChangeBidder (Player newBidder)
+		public override BidBase ChangeBidder (Player newBidder)
 		{
 			return new CarichiBid (newBidder, this.point);
 		}

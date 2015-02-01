@@ -9,16 +9,16 @@ namespace TestProject
 	/// Test for the <see cref="ChiamatLibrary.Bid"/> class.
 	/// </summary>
 	[TestFixture ()]
-	public class BidTest
+	internal class BidTest
 	{
 		/// <summary>
 		/// A null bid.
 		/// </summary>
-		private Bid _null1;
+		private BidBase _null1;
 		/// <summary>
 		/// A null bid.
 		/// </summary>
-		private Bid _null2;
+		private BidBase _null2;
 
 		/// <summary>
 		/// A pass bid.
@@ -65,7 +65,7 @@ namespace TestProject
 		[SetUp ()]
 		public void setup ()
 		{
-			Board.Instance.reset ();
+			Board.Instance.Reset ();
 			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new TestRandom ());//il mazziere è C
 
 			_null1 = null;

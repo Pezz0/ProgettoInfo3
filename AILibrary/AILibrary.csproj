@@ -32,7 +32,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Code\AIPlayerController.cs" />
-    <Compile Include="Code\BidChooser\AIBCallEverything.cs" />
     <Compile Include="Code\BidChooser\AIBFixedJump.cs" />
     <Compile Include="Code\BidChooser\AIBMobileJump.cs" />
     <Compile Include="Code\BidChooser\AIBStupid.cs" />
@@ -44,6 +43,7 @@
     <Compile Include="Code\SemeChooser\AISQuality.cs" />
     <Compile Include="Code\SemeChooser\AISQuantity.cs" />
     <Compile Include="Code\SemeChooser\AISStupid.cs" />
+    <Compile Include="Code\BidChooser\AIBCallEverythingBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

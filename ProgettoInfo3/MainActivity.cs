@@ -9,7 +9,7 @@ using BTLibrary;
 using Android.Views;
 using ChiamataLibrary;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	/// <summary>
 	/// Title screen activity.
@@ -18,7 +18,7 @@ namespace MenuLayout
 		Label = "ProgettoInfo3",
 		ScreenOrientation = ScreenOrientation.ReverseLandscape)
 	]
-	public class MainActivity : Activity
+	internal class MainActivity : Activity
 	{
 		/// <summary>
 		/// Width and height of the columns.

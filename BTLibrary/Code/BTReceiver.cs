@@ -5,7 +5,7 @@ using Android.Bluetooth;
 
 namespace BTLibrary
 {
-	public class BTReceiver : BroadcastReceiver
+	internal class BTReceiver : BroadcastReceiver
 	{
 
 		/// <summary>

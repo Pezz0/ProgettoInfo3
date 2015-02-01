@@ -13,24 +13,24 @@ namespace BTLibrary
 		/// <summary>
 		/// The BluetoothSocket.
 		/// </summary>
-		private BluetoothSocket _socket;
+		private readonly BluetoothSocket _socket;
 
 		/// <summary>
 		/// The BluetoothDevice we want to connect.
 		/// </summary>
-		private BluetoothDevice _device;
+		private readonly BluetoothDevice _device;
 
 		/// <summary>
 		/// Thread that attempts to connect to the master.
 		/// </summary>
-		private Thread _connecter;
+		private readonly Thread _connecter;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTConnectThread"/> class.
 		/// </summary>
 		/// <param name="device">The device of the master we want to connect to.</param>
 		/// <param name="MY_UUID">My UUID.</param>
-		public BTConnectThread (BluetoothDevice device, UUID MY_UUID)
+		internal BTConnectThread (BluetoothDevice device, UUID MY_UUID)
 		{
 			_device = device;
 			BluetoothSocket tmp = null;
@@ -74,7 +74,7 @@ namespace BTLibrary
 		/// <summary>
 		/// Try to close the socket
 		/// </summary>
-		public void Cancel ()
+		internal void Cancel ()
 		{
 			try {
 				_socket.Close ();

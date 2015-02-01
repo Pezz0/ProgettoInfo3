@@ -2,17 +2,17 @@
 using System.Security.Cryptography;
 using ChiamataLibrary;
 
-namespace MyRandom
+namespace GUILayout
 {
 	/// <summary>
 	/// Class used for a normal random.
 	/// </summary>
-	public class CriptoRandom:IRandomGenerator
+	internal class CriptoRandom:IRandomGenerator
 	{
 		/// <summary>
 		/// The random number generator.
 		/// </summary>
-		private RNGCryptoServiceProvider _rnd;
+		private readonly RNGCryptoServiceProvider _rnd;
 
 		/// <summary>
 		/// Return a random integer number lesser or equal to MaxValue

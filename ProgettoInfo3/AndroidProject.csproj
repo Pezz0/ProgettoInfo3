@@ -6,7 +6,7 @@
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{27AB8DF4-1E2F-4442-8CC5-7D7432AE6B0E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MenuLayout</RootNamespace>
+    <RootNamespace>GUILayout</RootNamespace>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
@@ -76,12 +76,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Code\Core\GameAppDelegate.cs" />
     <Compile Include="Code\Core\GameScene.cs" />
-    <Compile Include="Code\Support\Button.cs" />
     <Compile Include="Code\Support\touchList.cs" />
     <Compile Include="Code\Support\cardData.cs" />
-    <Compile Include="Code\Support\Slider.cs" />
     <Compile Include="JoinTableActivity.cs" />
-    <Compile Include="startingActivity.cs" />
     <Compile Include="GameProfile.cs" />
     <Compile Include="CreateTabActivity.cs" />
     <Compile Include="History.cs" />
@@ -89,6 +86,9 @@
     <Compile Include="HistoryTabs\AllGames.cs" />
     <Compile Include="HistoryTabs\Points.cs" />
     <Compile Include="CriptoRandom.cs" />
+    <Compile Include="Code\Support\CCButton.cs" />
+    <Compile Include="Code\Support\CCSlider.cs" />
+    <Compile Include="StartingGameActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

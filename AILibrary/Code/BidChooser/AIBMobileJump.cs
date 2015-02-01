@@ -7,7 +7,7 @@ namespace AILibrary
 	/// AI for auction, Mobile Jump algorithm.
 	/// See the documentation for more informations about this AI.
 	/// </summary>
-	public class AIBMobileJump:AIBCallEverything
+	public class AIBMobileJump:AIBCallEverythingBase
 	{
 		/// <summary>
 		/// Maximum jump.
@@ -27,7 +27,7 @@ namespace AILibrary
 		/// </summary>
 		private readonly int _incr;
 
-		protected override NotPassBid SetLastBid ()
+		protected override NotPassBidBase SetLastBid ()
 		{
 			int currentMaxJump = _startMaxJump;
 			int cj = 0;

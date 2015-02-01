@@ -18,7 +18,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The current bid made by the player.
 		/// </summary>
-		private Bid _bid;
+		private BidBase _bid;
 		/// <summary>
 		/// Boolean value indicating wheter or not the player has bidded.
 		/// </summary>
@@ -58,7 +58,7 @@ namespace BTLibrary
 		/// Handles the bluetooth messages recived (only <see cref="BTLibrary.PackageBid"/>, <see cref="BTLibrary.PackageSeme"/> and <see cref="BTLibrary.PackageCard"/> packages will be accepted).
 		/// </summary>
 		/// <param name="pkg">Package.</param>
-		private void handleMessage (Package pkg)
+		private void handleMessage (PackageBase pkg)
 		{
 			if (pkg == EnPackageType.BID) {
 				PackageBid pkgb = (PackageBid) pkg;
@@ -89,7 +89,7 @@ namespace BTLibrary
 		/// Retuns null if no bid has been placed yet.
 		/// </summary>
 		/// <returns><c>The bid</c> if the message containing the bid has already arrived, <c>null</c> otherwise.</returns>
-		public Bid ChooseBid ()
+		public BidBase ChooseBid ()
 		{
 			if (_readyBid) {
 				_readyBid = false;

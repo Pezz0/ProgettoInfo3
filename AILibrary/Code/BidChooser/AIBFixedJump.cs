@@ -7,7 +7,7 @@ namespace AILibrary
 	/// AI for auction, Fixed Jump algorithm.
 	/// See the documentation for more informations about this AI.
 	/// </summary>
-	public class AIBFixedJump:AIBCallEverything
+	public class AIBFixedJump:AIBCallEverythingBase
 	{
 		/// <summary>
 		/// Maximum jump.
@@ -19,7 +19,7 @@ namespace AILibrary
 		/// </remarks>
 		private readonly int _maxJump;
 
-		protected override NotPassBid SetLastBid ()
+		protected override NotPassBidBase SetLastBid ()
 		{
 			int cj = 0;
 			for (int i = Board.Instance.nNumber - 1; i > 0; --i) {

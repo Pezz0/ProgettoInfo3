@@ -5,7 +5,7 @@ namespace ChiamataLibrary
 	/// <summary>
 	/// Class representing a normal bid.
 	/// </summary>
-	public class NormalBid:NotPassBid
+	public class NormalBid:NotPassBidBase
 	{
 		#region Information
 
@@ -21,7 +21,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns>The bid.</returns>
 		/// <param name="newBidder">The new bidder.</param>
-		public override Bid ChangeBidder (Player newBidder)
+		public override BidBase ChangeBidder (Player newBidder)
 		{
 			return new NormalBid (newBidder, this.number, this.point);
 		}
@@ -30,7 +30,7 @@ namespace ChiamataLibrary
 		/// Gets the next avaiable bid.
 		/// </summary>
 		/// <returns>The next avaiable bid.</returns>
-		public override NotPassBid GetNext ()
+		public override NotPassBidBase GetNext ()
 		{
 			if (this.number == EnNumbers.DUE)
 				return new NormalBid (bidder, EnNumbers.DUE, this.point + 1);

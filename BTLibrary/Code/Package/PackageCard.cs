@@ -41,7 +41,7 @@ namespace BTLibrary
 	/// <item><term>Time</term><description>The value of the time variable in the <see cref="Chiamatalibrary.Board"/>, used to ignore messages that have already been recieved.</description></item>
 	/// </list> 
 	/// </summary>
-	public class PackageCard:Package
+	public class PackageCard:PackageBase
 	{
 		/// <summary>
 		/// The time of the play. The global time is stored in <see cref="ChiamataLibrary.Board"/>.

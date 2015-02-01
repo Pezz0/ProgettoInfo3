@@ -12,10 +12,10 @@ using Android.Views;
 using Android.Widget;
 using ChiamataLibrary;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	[Activity (Label = "AllGames")]			
-	public class AllGames : Activity
+	internal class AllGames : Activity
 	{
 		ArrayAdapter<string> play;
 

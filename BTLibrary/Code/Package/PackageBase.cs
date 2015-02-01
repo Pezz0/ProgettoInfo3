@@ -32,7 +32,7 @@ namespace BTLibrary
 	/// <item><term>MESSAGE</term></item>
 	/// </list>
 	/// </summary>
-	public abstract class Package : IEquatable<EnPackageType>
+	public abstract class PackageBase : IEquatable<EnPackageType>
 	{
 		/// <summary>
 		/// <see cref="Enumeration.EnPackageType"/> representing the type of the package.
@@ -43,7 +43,7 @@ namespace BTLibrary
 		/// Initializes a new instance of the <see cref="BTLibrary.Package"/> class.
 		/// </summary>
 		/// <param name="type">The Type of the package.</param>
-		public Package (EnPackageType type)
+		protected PackageBase (EnPackageType type)
 		{
 			this.type = type;
 		}
@@ -54,7 +54,7 @@ namespace BTLibrary
 		/// <returns>The complete package.</returns>
 		/// <param name="b">The bytes array containing the message.</param>
 		/// <exception cref="System.Exception">Thrown when the byte sequence doesen't represent a bid, board, move, name, seme or terminate.</exception>
-		public static Package createPackage (byte [] b)
+		internal static PackageBase createPackage (byte [] b)
 		{
 			EnPackageType t = (EnPackageType) b [0];
 			switch (t) {
@@ -81,7 +81,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <param name="package">Package.</param>
 		/// <param name="type">Type of package.</param>
-		public static bool operator == (Package package, EnPackageType type)
+		public static bool operator == (PackageBase package, EnPackageType type)
 		{
 			return package.type == type;
 		}
@@ -91,7 +91,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <param name="package">Package.</param>
 		/// <param name="type">Type of package.</param>
-		public static bool operator != (Package package, EnPackageType type)
+		public static bool operator != (PackageBase package, EnPackageType type)
 		{
 			return package.type != type;
 		}
@@ -177,7 +177,7 @@ namespace BTLibrary
 		/// </summary>
 		/// <returns>The address from which came the package.</returns>
 		/// <param name="bs">The bytes array representing the package.</param>
-		public static string getAddressFromAck (byte [] bs)
+		internal static string getAddressFromAck (byte [] bs)
 		{
 			char [] adr = new char[17];
 

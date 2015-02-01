@@ -54,13 +54,13 @@ namespace ChiamataLibrary
 		{
 			_cardGrid = new Card[nSemi, nNumber];
 
-			reset ();
+			Reset ();
 		}
 
 		/// <summary>
 		/// Reset this instance, preparing for a new game.
 		/// </summary>
-		public void reset ()
+		public void Reset ()
 		{
 			eventSomeonePlaceABid = null;
 			eventSomeonePlayACard = null;
@@ -146,7 +146,7 @@ namespace ChiamataLibrary
 		/// <param name="me">The name of the player on this device.</param>
 		public void InitializeSlave (byte [] bytes, string me)
 		{
-			reset ();
+			Reset ();
 
 			_bytes.Clear ();
 			_bytes.AddRange (bytes);
@@ -464,7 +464,7 @@ namespace ChiamataLibrary
 		/// </summary>
 		/// <returns><c>true</c>, if the card provided as argument is briscola, <c>false</c> otherwise.</returns>
 		/// <param name="c">The card to check.</param>
-		public bool isBriscola (Card c)
+		public bool IsBriscola (Card c)
 		{
 			if (_gameType != EnGameType.STANDARD)
 				throw new Exception ("In this game there isn't a briscola");
@@ -481,7 +481,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The list of bids in the auction.
 		/// </summary>
-		private readonly List<Bid> _listBid = new List<Bid> ();
+		private readonly List<BidBase> _listBid = new List<BidBase> ();
 
 		/// <summary>
 		/// Gets the number of bids currently in the auction.
@@ -499,13 +499,13 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The current winning bid.
 		/// </summary>
-		private NotPassBid _currentWinningBid;
+		private NotPassBidBase _currentWinningBid;
 
 		/// <summary>
 		/// Gets the current auction winning bid.
 		/// </summary>
 		/// <value>The current auction winning bid.</value>
-		public NotPassBid currentAuctionWinningBid {
+		public NotPassBidBase currentAuctionWinningBid {
 			get {
 				if (!( IsAuctionPhase || IsFinalizePhase ))
 					throw new WrongPhaseException ("This information isn't relevant outside the auction", "Open/closed auction");
@@ -575,7 +575,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// Delegate for the event that occours when a bid is placed.
 		/// </summary>
-		public delegate void eventHandlerPlaceABid (Bid bid);
+		public delegate void eventHandlerPlaceABid (BidBase bid);
 
 		/// <summary>
 		/// Occurs when i place a bid.
@@ -662,18 +662,18 @@ namespace ChiamataLibrary
 		{
 
 			if (IsAuctionPhase) {	//auction
-				Bid bid = _activeAuctionPlayer.InvokeChooseBid ();
+				BidBase bid = _activeAuctionPlayer.InvokeChooseBid ();
 
 				if (bid != null) {
 					//place a bid
 					_listBid.Add (bid);
 
-					if (bid is NotPassBid)
-						_currentWinningBid = (NotPassBid) bid;
+					if (bid is NotPassBidBase)
+						_currentWinningBid = (NotPassBidBase) bid;
 
 					List<Player> pass = new List<Player> ();
 
-					foreach (Bid b in _listBid)
+					foreach (BidBase b in _listBid)
 						if (b is PassBid)
 							pass.Add (b.bidder);
 						

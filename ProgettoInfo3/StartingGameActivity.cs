@@ -17,9 +17,8 @@ using ChiamataLibrary;
 using BTLibrary;
 using System.Threading;
 using AILibrary;
-using MyRandom;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	/// <summary>
 	/// First activity to be created on the app launch.
@@ -34,7 +33,7 @@ namespace MenuLayout
 		ConfigurationChanges = ConfigChanges.Keyboard |
 		ConfigChanges.KeyboardHidden)]	
 
-	public class startingActivity : AndroidGameActivity
+	internal class StartingGameActivity : AndroidGameActivity
 	{
 		/// <summary>
 		/// Contains the data of the game.
@@ -83,7 +82,7 @@ namespace MenuLayout
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
 				if (!BTManager.Instance.isSlave ()) {
-	
+
 					_gameProfile = new GameProfile (data);
 
 					Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, new CriptoRandom ());
@@ -105,11 +104,11 @@ namespace MenuLayout
 						}
 					}
 				}
-					
+
 
 				if (primo) {
 					var application = new CCApplication ();
-					application.ApplicationDelegate = new Core.GameAppDelegate (_terminateMsg);
+					application.ApplicationDelegate = new GUILayout.GameAppDelegate (_terminateMsg);
 
 					SetContentView (application.AndroidContentView);
 
@@ -136,16 +135,16 @@ namespace MenuLayout
 		/// </summary>
 		private void finisher ()
 		{
-		
+
 			lock (_terminateMsg) {
 				Monitor.Wait (_terminateMsg);
 			}
-		
+
 			Archive.Instance.SaveLastGame ();
 			BTManager.Instance.eventPackageReceived -= terminateHandle;
 			switch (_terminateMsg.Signal) {
 				case 0:
-					Board.Instance.reset ();
+					Board.Instance.Reset ();
 					List<string> addresses = new List<string> (_gameProfile.PlayerAddress);
 					if (addresses.Exists (pla => pla != Resources.GetText (Resource.String.none_add))) {
 						BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
@@ -158,14 +157,14 @@ namespace MenuLayout
 					}
 				break;
 				case 1:
-		
+
 					//string [] address = new string[4];
 					//for (int i = 0; i < 4; ++i)
-						//address [i] = Resources.GetText (Resource.String.none_add);
+					//address [i] = Resources.GetText (Resource.String.none_add);
 					Intent inte = new Intent (this, typeof (CreateTabActivity));
 					_gameProfile.nextGame ().setIntent (inte);
 
-					Board.Instance.reset ();
+					Board.Instance.Reset ();
 
 					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
 
@@ -174,23 +173,23 @@ namespace MenuLayout
 				break;
 			}
 
-		
+
 		}
 
 		/// <summary>
 		///  Handles the bluetooth messages recived (only terminate packages will be accepted) [only slaves].
 		/// </summary>
 		/// <param name="pkg">Package.</param>
-		private void terminateHandle (Package pkg)
+		private void terminateHandle (PackageBase pkg)
 		{
 			if (pkg == EnPackageType.TERMINATE) {
 				PackageTerminate pkgt = (PackageTerminate) pkg;
 				if (pkgt.terminateSignal == 0) {
-					Board.Instance.reset ();
+					Board.Instance.Reset ();
 					var serverIntent = new Intent (this, typeof (MainActivity));
 					StartActivityForResult (serverIntent, 2);
 				} else if (pkgt.terminateSignal == 1) {
-					Board.Instance.reset ();
+					Board.Instance.Reset ();
 					var serverIntent = new Intent (this, typeof (JoinTableActivity));
 					StartActivityForResult (serverIntent, 2);
 				}
@@ -207,19 +206,19 @@ namespace MenuLayout
 	{
 		private int _signal;
 
-		public int Signal { get { return _signal; } }
+		internal int Signal { get { return _signal; } }
 
-		public void setAbort ()
+		internal void setAbort ()
 		{
 			_signal = 0;
 		}
 
-		public void setRestart ()
+		internal void setRestart ()
 		{
 			_signal = 1;
 		}
 
-		public TerminateMessage (int signal)
+		internal TerminateMessage (int signal)
 		{
 			this._signal = signal;
 		}

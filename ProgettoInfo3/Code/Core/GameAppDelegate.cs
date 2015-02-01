@@ -1,28 +1,27 @@
 ﻿using System;
 using CocosSharp;
-using MenuLayout;
+using GUILayout;
 
 
-namespace Core
+namespace GUILayout
 {
 	/// <summary>
 	/// Game app delegate.
 	/// </summary>
-	public class GameAppDelegate : CCApplicationDelegate
+	internal class GameAppDelegate : CCApplicationDelegate
 	{
 		/// <summary>
 		/// The message used to decide whether or not the game should continue.
 		/// </summary>
-		private TerminateMessage _terminateMsg;
+		private readonly TerminateMessage _terminateMsg;
 
 	
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Core.GameAppDelegate"/> class.
 		/// </summary>
 		/// <param name="terminateMsg">The message used to decide whether or not the game should continue.</param>
-		public GameAppDelegate (TerminateMessage terminateMsg)
+		internal GameAppDelegate (TerminateMessage terminateMsg)
 		{
-
 			this._terminateMsg = terminateMsg;
 		}
 

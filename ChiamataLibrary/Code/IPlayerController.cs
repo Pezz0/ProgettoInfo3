@@ -11,7 +11,7 @@ namespace ChiamataLibrary
 		/// Method to choose the bid.
 		/// </summary>
 		/// <returns>The bid.</returns>
-		Bid ChooseBid ();
+		BidBase ChooseBid ();
 
 		/// <summary>
 		/// Method to choose the seme.

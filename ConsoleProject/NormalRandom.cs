@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 
 namespace ConsoleProject
 {
-	public class NormalRandom:IRandomGenerator
+	internal class NormalRandom:IRandomGenerator
 	{
 		/// <summary>
 		/// The random number generator.
 		/// </summary>
-		private RNGCryptoServiceProvider _rnd;
+		private readonly RNGCryptoServiceProvider _rnd;
 
 		/// <summary>
 		/// Return a random integer number lesser or equal to MaxValue

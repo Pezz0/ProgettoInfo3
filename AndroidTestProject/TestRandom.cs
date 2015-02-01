@@ -4,12 +4,12 @@ using ChiamataLibrary;
 
 namespace TestProject
 {
-	public class TestRandom:IRandomGenerator
+	internal class TestRandom:IRandomGenerator
 	{
 		/// <summary>
 		/// The random number generator.
 		/// </summary>
-		private RNGCryptoServiceProvider _rnd;
+		private readonly RNGCryptoServiceProvider _rnd;
 
 		/// <summary>
 		/// Return a random integer number lesser or equal to MaxValue

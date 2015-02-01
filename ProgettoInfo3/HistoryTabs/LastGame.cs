@@ -14,10 +14,10 @@ using ChiamataLibrary;
 using Android.Util;
 using Android.Content.PM;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	[Activity (Label = "LastGame", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
-	public class LastGame : Activity
+	internal class LastGame : Activity
 	{
 		ArrayAdapter<string> play;
 

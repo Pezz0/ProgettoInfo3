@@ -7,7 +7,7 @@ namespace AILibrary
 	/// Template for every AI that will call every time the bid is superior to his _lastBid
 	/// See the documentation for major informations.
 	/// </summary>
-	public abstract class AIBCallEverything:IAIBidChooser
+	public abstract class AIBCallEverythingBase:IAIBidChooser
 	{
 		/// <summary>
 		/// Boolean value that indicates wheter or not the AI can place a bid for a card that he has in its hand.
@@ -16,7 +16,7 @@ namespace AILibrary
 		/// <summary>
 		/// The lowest bid the AI will do in the auction. If the auction goes below this, the AI will do a <see cref="ChiamataLibrary.PassBid"/>.
 		/// </summary>
-		private Bid _lastBid;
+		private BidBase _lastBid;
 
 		/// <summary>
 		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
@@ -31,15 +31,15 @@ namespace AILibrary
 		/// Method that returns which bid the AI wants to place in the auction.
 		/// </summary>
 		/// <returns>The bid.</returns>
-		public Bid ChooseABid ()
+		public BidBase ChooseABid ()
 		{
-			NotPassBid bid = new NormalBid (EnNumbers.ASSE, 61);
+			NotPassBidBase bid = new NormalBid (EnNumbers.ASSE, 61);
 
 			if (Board.Instance.currentAuctionWinningBid != null)
 				bid = Board.Instance.currentAuctionWinningBid.GetNext ();
 
 			if (!_allowChiamataInMano)
-				bid = lowerTheBidUntilNotCIM (bid);
+				bid = LowerTheBidUntilNotCIM (bid);
 
 			if (_lastBid >= bid)
 				return bid.ChangeBidder (_me);
@@ -59,14 +59,14 @@ namespace AILibrary
 			_lastBid = SetLastBid ();
 		}
 
-		protected abstract NotPassBid SetLastBid ();
+		protected abstract NotPassBidBase SetLastBid ();
 
 		/// <summary>
 		/// Lowers the bid without calling a card that this player has in its hand.
 		/// </summary>
 		/// <returns>The lowered bid.</returns>
 		/// <param name="bid">The current bid.</param>
-		private NotPassBid lowerTheBidUntilNotCIM (NotPassBid bid)
+		private NotPassBidBase LowerTheBidUntilNotCIM (NotPassBidBase bid)
 		{
 			if (bid is CarichiBid)
 				return bid;
@@ -82,7 +82,7 @@ namespace AILibrary
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.IAIBCallEverything"/> class.
 		/// </summary>
-		public AIBCallEverything ()
+		protected AIBCallEverythingBase ()
 		{
 		}
 	}

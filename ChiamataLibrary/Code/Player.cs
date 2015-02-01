@@ -322,14 +322,14 @@ namespace ChiamataLibrary
 		/// Invokes the method that chooses the bid.
 		/// </summary>
 		/// <returns>The bid chosen.</returns>
-		internal Bid InvokeChooseBid ()
+		internal BidBase InvokeChooseBid ()
 		{
 			if (!Board.Instance.IsAuctionPhase)
 				throw new WrongPhaseException ("A player can place a bid only during the auction phase", "Auction");
 				
-			Bid bid = _controller.ChooseBid ();
+			BidBase bid = _controller.ChooseBid ();
 
-			if (bid != null && bid < Board.Instance.currentAuctionWinningBid && bid is NotPassBid)
+			if (bid != null && bid < Board.Instance.currentAuctionWinningBid && bid is NotPassBidBase)
 				throw new BidNotEnoughException ("The new bid is not enough to beat the winning one", bid);
 
 			if (bid == null)

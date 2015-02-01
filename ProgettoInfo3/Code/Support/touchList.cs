@@ -2,12 +2,12 @@
 using CocosSharp;
 using System.Collections.Generic;
 
-namespace Core
+namespace GUILayout
 {
 	/// <summary>
 	/// Touch listener. Wrapper for <see cref="CCEventListenerTouchAllAtOnce"/>
 	/// </summary>
-	public class TouchList
+	internal class TouchList
 	{
 		/// <summary>
 		/// The touch listener.
@@ -38,7 +38,7 @@ namespace Core
 		/// Initializes a new instance of the <see cref="Core.TouchList"/> class.
 		/// </summary>
 		/// <param name="gScene">Game scene.</param>
-		public TouchList (CCScene gScene)
+		internal TouchList (CCScene gScene)
 		{
 			touchListener = new CCEventListenerTouchAllAtOnce ();
 			touchListener.OnTouchesBegan = touchBegan;

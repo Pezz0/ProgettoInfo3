@@ -7,11 +7,11 @@ namespace ConsoleProject
 {
 	class ConsoleController:IPlayerController
 	{
-		public Bid ChooseBid ()
+		public BidBase ChooseBid ()
 		{
 			Console.WriteLine ("******************************");
 
-			Bid wb = Board.Instance.currentAuctionWinningBid;
+			BidBase wb = Board.Instance.currentAuctionWinningBid;
 
 			if (wb == null)
 				Console.WriteLine ("Non c'è nessuna bid");
@@ -73,7 +73,7 @@ namespace ConsoleProject
 
 			Archive.Instance.AddFromFolder ();
 
-			Board.Instance.reset ();
+			Board.Instance.Reset ();
 			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new NormalRandom ());	//il mazziere è C
 
 			foreach (Player p in Board.Instance.AllPlayers) {
@@ -109,7 +109,7 @@ namespace ConsoleProject
 
 		}
 
-		public static void someonePlaceABid (Bid bid)
+		public static void someonePlaceABid (BidBase bid)
 		{
 			Console.WriteLine ("Nuova bid:" + bid.ToString ());
 		}

@@ -12,13 +12,13 @@ using Android.Content.PM;
 using System.Runtime.CompilerServices;
 using Android.Util;
 
-namespace MenuLayout
+namespace GUILayout
 {
 	/// <summary>
 	/// Activity to join an existing table.
 	/// </summary>
 	[Activity (Label = "JoinTableActivity", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
-	public class JoinTableActivity : Activity
+	internal class JoinTableActivity : Activity
 	{
 		/// <summary>
 		/// The device address length.
@@ -331,7 +331,7 @@ namespace MenuLayout
 		/// Handles the bluetooth messages recived (only board packages will be accepted).
 		/// </summary>
 		/// <param name="pkg">Package containing the message.</param>
-		private void handlePackage (Package pkg)
+		private void handlePackage (PackageBase pkg)
 		{
 			if (pkg == EnPackageType.BOARD) {
 				this.SetTitle (Resource.String.starting);
