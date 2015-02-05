@@ -2,6 +2,7 @@
 using Android.OS;
 using Android.Content;
 using Android.Bluetooth;
+using Android.Widget;
 
 namespace BTLibrary
 {
@@ -49,6 +50,18 @@ namespace BTLibrary
 				if (count == 0)
 					//send to the activity a message that no Device are found
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.NONE_FOUND, -1, -1).SendToTarget ();
+			} else if (action == BluetoothDevice.ActionBondStateChanged) {
+				int state = intent.GetIntExtra (BluetoothDevice.ExtraBondState, BluetoothDevice.Error);
+				int prevState = intent.GetIntExtra (BluetoothDevice.ExtraPreviousBondState, BluetoothDevice.Error);
+				BluetoothDevice extradev = (BluetoothDevice) intent.GetParcelableExtra (BluetoothDevice.ExtraDevice);
+
+				if (state == (int) Bond.Bonded && prevState == (int) Bond.Bonding) {
+					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.PAIRING_SUCCESS, extradev.Address).SendToTarget ();
+				} 
+			} else if (action == BluetoothDevice.ActionPairingRequest) {
+				Intent inten = new Intent (action);
+				context.StartActivity (intent);
+				//BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.PAIRING_REQUEST, inten).SendToTarget ();
 			}
 		}
 	}

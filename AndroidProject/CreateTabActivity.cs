@@ -139,6 +139,7 @@ namespace GUILayout
 
 			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 			BTManager.Instance.eventPackageReceived += handlePackage;
+			BTManager.Instance.RegisterReceiverPairing ();
 		}
 
 		/// <summary>
@@ -325,6 +326,7 @@ namespace GUILayout
 
 					Toast.MakeText (Application.Context, "Device connection lost", ToastLength.Short).Show ();
 				break;
+			
 			}
 			if (msg.What != (int) EnLocalMessageType.MESSAGE_STATE_CHANGE) {
 				if (getBTNumber () - BTManager.Instance.getNumConnected () > 0)

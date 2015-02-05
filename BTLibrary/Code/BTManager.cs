@@ -140,6 +140,17 @@ namespace BTLibrary
 			// Register for broadcasts when discovery has finished
 			filter = new IntentFilter (BluetoothAdapter.ActionDiscoveryFinished);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+
+			filter = new IntentFilter (BluetoothDevice.ActionBondStateChanged);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+		}
+
+		public void RegisterReceiverPairing ()
+		{
+			_receiver = new BTReceiver ();
+			IntentFilter filter = new IntentFilter (BluetoothDevice.ActionPairingRequest);
+			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
+
 		}
 
 		#endregion

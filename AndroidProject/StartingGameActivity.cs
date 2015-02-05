@@ -23,7 +23,7 @@ namespace GUILayout
 	/// <summary>
 	/// First activity to be created on the app launch.
 	/// </summary>
-	[Activity (Label = "ProgettoInfo3",
+	[Activity (Label = "Briscola Chiamata",
 		AlwaysRetainTaskState = true,
 		Icon = "@drawable/icon",
 		Theme = "@android:style/Theme.NoTitleBar",
@@ -33,7 +33,7 @@ namespace GUILayout
 		ConfigurationChanges = ConfigChanges.Keyboard |
 		ConfigChanges.KeyboardHidden)]	
 
-	internal class StartingGameActivity : AndroidGameActivity
+	public class startingActivity : AndroidGameActivity
 	{
 		/// <summary>
 		/// Contains the data of the game.
@@ -82,7 +82,7 @@ namespace GUILayout
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
 				if (!BTManager.Instance.isSlave ()) {
-
+	
 					_gameProfile = new GameProfile (data);
 
 					Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, new CriptoRandom ());
@@ -104,11 +104,11 @@ namespace GUILayout
 						}
 					}
 				}
-
+					
 
 				if (primo) {
 					var application = new CCApplication ();
-					application.ApplicationDelegate = new GUILayout.GameAppDelegate (_terminateMsg);
+					application.ApplicationDelegate = new GameAppDelegate (_terminateMsg);
 
 					SetContentView (application.AndroidContentView);
 
@@ -135,12 +135,11 @@ namespace GUILayout
 		/// </summary>
 		private void finisher ()
 		{
-
+		
 			lock (_terminateMsg) {
 				Monitor.Wait (_terminateMsg);
 			}
-
-			Archive.Instance.SaveLastGame ();
+		
 			BTManager.Instance.eventPackageReceived -= terminateHandle;
 			switch (_terminateMsg.Signal) {
 				case 0:
@@ -157,10 +156,10 @@ namespace GUILayout
 					}
 				break;
 				case 1:
-
+		
 					//string [] address = new string[4];
 					//for (int i = 0; i < 4; ++i)
-					//address [i] = Resources.GetText (Resource.String.none_add);
+						//address [i] = Resources.GetText (Resource.String.none_add);
 					Intent inte = new Intent (this, typeof (CreateTabActivity));
 					_gameProfile.nextGame ().setIntent (inte);
 
@@ -173,7 +172,7 @@ namespace GUILayout
 				break;
 			}
 
-
+		
 		}
 
 		/// <summary>
@@ -206,19 +205,19 @@ namespace GUILayout
 	{
 		private int _signal;
 
-		internal int Signal { get { return _signal; } }
+		public int Signal { get { return _signal; } }
 
-		internal void setAbort ()
+		public void setAbort ()
 		{
 			_signal = 0;
 		}
 
-		internal void setRestart ()
+		public void setRestart ()
 		{
 			_signal = 1;
 		}
 
-		internal TerminateMessage (int signal)
+		public TerminateMessage (int signal)
 		{
 			this._signal = signal;
 		}
@@ -226,4 +225,3 @@ namespace GUILayout
 
 	}
 }
-

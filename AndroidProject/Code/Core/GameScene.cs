@@ -500,6 +500,15 @@ namespace GUILayout
 			_bidded = true;
 		}
 
+		void BackExit ()
+		{
+			lock (_terminateMsg) {
+				_terminateMsg.setAbort ();
+				Monitor.Pulse (_terminateMsg);
+			}
+			new Thread (restart).Start ();
+		}
+
 		/// <summary>
 		/// Action for the button exit.
 		/// </summary>
@@ -507,12 +516,8 @@ namespace GUILayout
 		/// <param name="touchEvent">Touch event.</param>
 		private void actExit (List<CCTouch> touches, CCEvent touchEvent)
 		{
-			lock (_terminateMsg) {
-				_terminateMsg.setAbort ();
-				Monitor.Pulse (_terminateMsg);
-			}
+			BackExit ();
 
-			new Thread (restart).Start ();
 		}
 
 		/// <summary>
@@ -965,6 +970,15 @@ namespace GUILayout
 
 
 			Board.Instance.Me.Controller = this;	//Set the controller for my player.
+			CCEventListenerKeyboard lk = new CCEventListenerKeyboard ();
+			lk.OnKeyPressed = KeyPressed;
+			AddEventListener (lk, this);
+		}
+
+		private void KeyPressed (CCEventKeyboard ek)
+		{
+			if (ek.Keys == CCKeys.Back)
+				BackExit ();
 		}
 
 		#region Initialization

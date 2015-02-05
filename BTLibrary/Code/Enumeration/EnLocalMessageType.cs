@@ -17,6 +17,8 @@ namespace BTLibrary
 		NEW_DEVICE,
 		END_SCANNING,
 		NONE_FOUND,
+		PAIRING_SUCCESS,
+		PAIRING_REQUEST
 	}
 }
 
