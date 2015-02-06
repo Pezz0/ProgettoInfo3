@@ -187,7 +187,6 @@ namespace GUILayout
 					serverIntent.PutExtra ("NewGame", 1);
 				}
 				BTManager.Instance.eventPackageReceived -= terminateHandle;
-				primo = false;
 				StartActivityForResult (serverIntent, 2);
 			}
 		}

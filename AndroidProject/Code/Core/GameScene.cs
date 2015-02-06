@@ -874,6 +874,7 @@ namespace GUILayout
 		/// </summary>
 		private readonly TerminateMessage _terminateMsg;
 
+		private Thread _restartSlave = null;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Core.GameScene"/> class.
@@ -884,6 +885,12 @@ namespace GUILayout
 		{
 			this._terminateMsg = terminateMsg;
 
+			if (_restartSlave != null)
+				_restartSlave.Abort ();
+			if (Board.Instance.Me.order != 0) {
+				_restartSlave = new Thread (restart);
+				_restartSlave.Start ();
+			}
 			//Instancing the layer and setting him as a child of the mainWindow.
 			_mainLayer = new CCLayerColor ();
 			AddChild (_mainLayer);
