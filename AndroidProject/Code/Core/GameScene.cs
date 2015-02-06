@@ -252,6 +252,10 @@ namespace GUILayout
 			//TODO : mettere anche la logica per i carichi
 			//Reset all the buttons.
 			disableAllButtons ();
+			//If everyone pass
+			if (Board.Instance.currentAuctionWinningBid == null)
+				for (int i = 0; i < 12; ++i)
+					_buttons [i].Enabled = true;
 			//If the winning bid is a normal bid, the avaiable buttons will be all the ones with number < winningNumber.
 			if (Board.Instance.currentAuctionWinningBid is NormalBid) {
 				NormalBid b = (NormalBid) ( Board.Instance.currentAuctionWinningBid );

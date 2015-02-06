@@ -348,7 +348,7 @@ namespace BTLibrary
 			_readThread.Add (new BTReadThread (socket));
 
 			// Start the thread to perform write service
-			_writeThread.Add (new BTWriteThread (socket));
+			_writeThread.Add (new BTWriteThread (socket, _monitorSlave));
 
 			//sends a message to the indicate the slave connection to a device
 			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_DEVICE_ADDR, (int) EnConnectionState.STATE_CONNECTED_SLAVE, -1, device.Address).SendToTarget ();
@@ -474,7 +474,7 @@ namespace BTLibrary
 
 			_writeThread [0].Cancel ();
 			_writeThread.Clear ();
-		
+
 		}
 
 		/// <summary>
@@ -509,6 +509,8 @@ namespace BTLibrary
 		/// </summary>
 		public const int MAX_BT_PLAYER = 4;
 
+		private object _monitorMaster, _monitorSlave;
+
 		/// <summary>
 		/// Initialize the specified the Play Service.
 		/// </summary>
@@ -520,6 +522,10 @@ namespace BTLibrary
 
 			//sets the state to STATE_NONE
 			_state = EnConnectionState.STATE_NONE;
+
+			_monitorMaster = new object ();
+
+			_monitorSlave = new object ();
 
 			Stop ();
 		}
@@ -560,36 +566,51 @@ namespace BTLibrary
 				EnPackageType type = (EnPackageType) data [0];
 
 				if (type == EnPackageType.ACK) {
-						
+
 					if (isSlave ()) {
 						//if i am a slave i remove the message from the list of the message to send
 						_writeThread [0].Remove (PackageBase.getMessageFromAck (data));
 					} else {
 						//otherwise i am the master so i remove the message only from the list of the sender
+						byte [] mess = PackageBase.getMessageFromAck (data);
 						_writeThread.ForEach (delegate(BTWriteThread thred) {
 							if (thred.Connected == PackageBase.getAddressFromAck (data))
-								thred.Remove (PackageBase.getMessageFromAck (data));
+								thred.Remove (mess);
 						});
+						if (mess [0] == (byte) EnPackageType.TERMINATE) {
+							bool end = true;
+							_writeThread.ForEach (delegate(BTWriteThread Thread) {
+								end = Thread.NothingToSend () && end;
+							});
+							if (end)
+								lock (_monitorMaster) {
+									Monitor.Pulse (_monitorMaster);
+								}
+						}
 
 					}
-						
+
 
 				} else if (type != EnPackageType.NONE) {
 
 					PackageBase pkg = PackageBase.createPackage (data);	
 
-
-					if (eventPackageReceived != null)
-						eventPackageReceived (pkg);
-						
 					//ACK consists of the type ACK followed by the message received 
-					if (BTManager.Instance.isSlave ())
+					if (BTManager.Instance.isSlave ()) {
 						_writeThread [0].Add (pkg.getAckMessage ());
-					else
+						if (pkg == EnPackageType.TERMINATE) {
+							lock (_monitorSlave) {
+								Monitor.Wait (_monitorSlave);
+							}
+						}
+					} else
 						for (int i = 0; i < _writeThread.Count; i++)
 							if (_writeThread [i] != null)
 								_writeThread [i].Add (pkg.getAckMessage ());
-						
+					if (eventPackageReceived != null)
+						eventPackageReceived (pkg);
+
+
 				}
 				// all other messages that are not message_read (STATE_CHANGE, DEVICE_ADDRESS ecc) are initializing events
 			} else if (eventLocalMessageReceived != null)	//local message
@@ -625,6 +646,10 @@ namespace BTLibrary
 				if (_writeThread [i] != null)
 					_writeThread [i].Add (message);
 			}
+			if (pkg == EnPackageType.TERMINATE)
+				lock (_monitorMaster) {
+					Monitor.Wait (_monitorMaster);
+				}
 		}
 
 		/// <summary>

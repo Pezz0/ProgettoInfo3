@@ -54,10 +54,34 @@ namespace BTLibrary
 		/// </summary>
 		private readonly Thread _writer;
 
+		private readonly object _monitor;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BTLibrary.BTWriteThread"/> class.
 		/// </summary>
 		/// <param name="socket">Bluetooth socket.</param>
+		internal BTWriteThread (BluetoothSocket socket, object monitor)
+		{
+			_Socket = socket;
+			Stream tmpOut = null;
+
+			// Get the BluetoothSocket input and output streams
+			try {
+				tmpOut = _Socket.OutputStream;
+			} catch {
+			}
+
+			_OutStream = tmpOut;
+
+			_monitor = monitor;
+			//start the thread
+			_connected = _Socket.RemoteDevice.Address;
+			_writer = new Thread (Write);
+			_writer.Name = "Writer";
+			_writer.Start ();
+
+		}
+
 		internal BTWriteThread (BluetoothSocket socket)
 		{
 			_Socket = socket;
@@ -71,11 +95,13 @@ namespace BTLibrary
 
 			_OutStream = tmpOut;
 
+			_monitor = null;
 			//start the thread
 			_connected = _Socket.RemoteDevice.Address;
 			_writer = new Thread (Write);
 			_writer.Name = "Writer";
 			_writer.Start ();
+
 		}
 
 		/// <summary>
@@ -92,14 +118,18 @@ namespace BTLibrary
 							_OutStream.Write (msg, 0, msg.Length);
 							// Share the sent message back 
 							BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_WRITE, -1, -1, msg).SendToTarget ();
-						
+
 						} catch {
 							BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.MESSAGE_CONNECTION_LOST, _connected).SendToTarget ();
 						}
 
-						if (msg [0] == (int) EnPackageType.ACK)
+						if (msg [0] == (int) EnPackageType.ACK) {
 							_buffer.Remove (msg);
-
+							if (msg [18] == (int) EnPackageType.TERMINATE && _monitor != null)
+								lock (_monitor) {
+									Monitor.Pulse (_monitor);
+								}
+						}
 					} else
 						Monitor.Wait (_buffer);
 				}
@@ -129,6 +159,13 @@ namespace BTLibrary
 			lock (_buffer) {
 				_buffer.Remove (elem);
 			}
+		}
+
+
+		internal bool NothingToSend ()
+		{
+
+			return _buffer.isEmpty;
 		}
 
 		/// <summary>

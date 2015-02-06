@@ -46,6 +46,21 @@ namespace GUILayout
 		{
 			base.OnCreate (bundle);
 
+			int res = Intent.GetIntExtra ("NewGame", 0);
+			if (res == 1) {
+				if (BTManager.Instance.isSlave ()) {
+					Intent serverIntent = new Intent (this, typeof (JoinTableActivity));
+					StartActivityForResult (serverIntent, 1);
+				} else {
+					Intent inte = new Intent (this, typeof (CreateTabActivity));
+					GameProfile gp = new GameProfile (Intent);
+					gp.setIntent (inte);
+
+					StartActivityForResult (inte, 1);
+				}
+			} else
+				BTManager.Instance.Stop ();
+
 			RequestWindowFeature (WindowFeatures.NoTitle);
 			SetContentView (Resource.Layout.Main);
 			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
@@ -76,8 +91,6 @@ namespace GUILayout
 			_create.Click += createClick;
 			_join.Click += joinClick;
 			_history.Click += historyClick;
-
-			BTManager.Instance.Initialize (this);
 
 		}
 
@@ -135,6 +148,24 @@ namespace GUILayout
 		{
 			var serverIntent = new Intent (this, typeof (History));
 			StartActivity (serverIntent);
+
+		}
+
+		public override void OnBackPressed ()
+		{
+			AlertDialog.Builder finish = new AlertDialog.Builder (this);
+			finish.SetTitle ("Terminate");
+			finish.SetMessage ("Do you really want to terminate app?");
+			finish.SetPositiveButton ("YES", delegate {
+				Intent intent = new Intent (Intent.ActionMain);
+				intent.AddCategory (Intent.CategoryHome);
+				intent.SetFlags (ActivityFlags.NewTask);
+				StartActivity (intent);
+			});
+			finish.SetNegativeButton ("NO", delegate {
+
+			});
+			finish.Show ();
 
 		}
 

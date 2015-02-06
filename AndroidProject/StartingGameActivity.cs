@@ -47,7 +47,9 @@ namespace GUILayout
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+			BTManager.Instance.Initialize (this);
 			var serverIntent = new Intent (this, typeof (MainActivity));
+			serverIntent.PutExtra ("NewGame", 0);
 			StartActivityForResult (serverIntent, 2);
 
 		}
@@ -81,7 +83,7 @@ namespace GUILayout
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
 				if (!BTManager.Instance.isSlave ()) {
-	
+
 					_gameProfile = new GameProfile (data);
 
 					Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, new CriptoRandom ());
@@ -103,7 +105,7 @@ namespace GUILayout
 						}
 					}
 				}
-					
+
 
 				if (primo) {
 					var application = new CCApplication ();
@@ -134,44 +136,35 @@ namespace GUILayout
 		/// </summary>
 		private void finisher ()
 		{
-		
+
 			lock (_terminateMsg) {
 				Monitor.Wait (_terminateMsg);
 			}
-		
+
 			BTManager.Instance.eventPackageReceived -= terminateHandle;
+			List<string> addresses = new List<string> (_gameProfile.PlayerAddress);
+			Board.Instance.Reset ();
+			var serverIntent = new Intent (this, typeof (MainActivity));
+
+			if (addresses.Exists (pla => pla != Resources.GetText (Resource.String.none_add))) {
+				BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
+
+			} 
+
+
 			switch (_terminateMsg.Signal) {
 				case 0:
-					Board.Instance.Reset ();
-					List<string> addresses = new List<string> (_gameProfile.PlayerAddress);
-					if (addresses.Exists (pla => pla != Resources.GetText (Resource.String.none_add))) {
-						BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
-						var serverIntent = new Intent (this, typeof (MainActivity));
-						StartActivityForResult (serverIntent, 2);
-
-					} else {
-						var serverIntent = new Intent (this, typeof (MainActivity));
-						StartActivityForResult (serverIntent, 2);
-					}
+					serverIntent.PutExtra ("NewGame", 0);
 				break;
 				case 1:
-		
-					//string [] address = new string[4];
-					//for (int i = 0; i < 4; ++i)
-						//address [i] = Resources.GetText (Resource.String.none_add);
-					Intent inte = new Intent (this, typeof (CreateTabActivity));
-					_gameProfile.nextGame ().setIntent (inte);
-
-					Board.Instance.Reset ();
-
-					BTManager.Instance.WriteToAllSlave (new PackageTerminate (_terminateMsg.Signal));
-
-					StartActivityForResult (inte, 2);
-
+					serverIntent.PutExtra ("NewGame", 1);
+					_gameProfile.nextGame ().setIntent (serverIntent);
 				break;
 			}
 
-		
+			StartActivityForResult (serverIntent, 2);
+
+
 		}
 
 		/// <summary>
@@ -181,18 +174,21 @@ namespace GUILayout
 		private void terminateHandle (PackageBase pkg)
 		{
 			if (pkg == EnPackageType.TERMINATE) {
-				PackageTerminate pkgt = (PackageTerminate) pkg;
-				if (pkgt.terminateSignal == 0) {
-					Board.Instance.Reset ();
-					var serverIntent = new Intent (this, typeof (MainActivity));
-					StartActivityForResult (serverIntent, 2);
-				} else if (pkgt.terminateSignal == 1) {
-					Board.Instance.Reset ();
-					var serverIntent = new Intent (this, typeof (JoinTableActivity));
-					StartActivityForResult (serverIntent, 2);
-				}
 
+				PackageTerminate pkgt = (PackageTerminate) pkg;
+				Board.Instance.Reset ();
+				Intent serverIntent = new Intent (this, typeof (MainActivity));
+				if (pkgt.terminateSignal == 0) {
+
+					serverIntent.PutExtra ("NewGame", 0);
+
+
+				} else if (pkgt.terminateSignal == 1) {
+					serverIntent.PutExtra ("NewGame", 1);
+				}
 				BTManager.Instance.eventPackageReceived -= terminateHandle;
+				primo = false;
+				StartActivityForResult (serverIntent, 2);
 			}
 		}
 	}
