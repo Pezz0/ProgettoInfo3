@@ -102,12 +102,12 @@ namespace ChiamataLibrary
 
 			ExistenceCheckResult exist = folder.CheckExistsAsync (GetFileName (c)).Result;
 
-			if (exist == ExistenceCheckResult.FileExists) {
+			while (exist == ExistenceCheckResult.FileExists) {
 
 				IFile file = folder.GetFileAsync (GetFileName (c)).Result;
-				Stream s = file.OpenAsync (FileAccess.Read).Result;
+				using (Stream s = file.OpenAsync (FileAccess.Read).Result)
+					Add (new GameData (s));
 
-				Add (new GameData (s));
 				++c;
 				exist = folder.CheckExistsAsync (GetFileName (c)).Result;
 			}
@@ -123,8 +123,10 @@ namespace ChiamataLibrary
 
 			for (int i = 0; i < _listGames.Count; ++i) {
 				IFile file = folder.CreateFileAsync (GetFileName (i), CreationCollisionOption.ReplaceExisting).Result;
-				Stream s = file.OpenAsync (FileAccess.ReadAndWrite).Result;
-				_listGames [i].WriteOnXML (s);
+
+				using (Stream s = file.OpenAsync (FileAccess.ReadAndWrite).Result)
+					_listGames [i].WriteOnXML (s);
+
 			}
 
 		}
@@ -138,8 +140,9 @@ namespace ChiamataLibrary
 			IFolder folder = GetFolder ();
 
 			IFile file = folder.CreateFileAsync (GetFileName (_listGames.Count - 1), CreationCollisionOption.ReplaceExisting).Result;
-			Stream s = file.OpenAsync (FileAccess.ReadAndWrite).Result;
-			_listGames [_listGames.Count - 1].WriteOnXML (s);
+
+			using (Stream s = file.OpenAsync (FileAccess.ReadAndWrite).Result)
+				_listGames [_listGames.Count - 1].WriteOnXML (s);
 		
 		}
 

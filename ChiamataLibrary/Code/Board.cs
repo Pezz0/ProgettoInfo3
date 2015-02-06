@@ -760,7 +760,10 @@ namespace ChiamataLibrary
 						if (eventPlaytimeEnd != null)
 							eventPlaytimeEnd ();
 
-						AddToArchive ();
+						//save last game in the archive
+						Archive.Instance.Add (new GameData (DateTime.Now, _cardGrid, _players, _listBid, _gameType, _calledCard, _winningPoint));
+						Archive.Instance.SaveLastGame ();
+
 						_t = 41;
 					}
 
@@ -786,14 +789,6 @@ namespace ChiamataLibrary
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Adds this game to the archive.
-		/// </summary>
-		private void AddToArchive ()
-		{
-			Archive.Instance.Add (new GameData (DateTime.Now, _cardGrid, _players, _listBid, _gameType, _calledCard, _winningPoint));
-		}
 
 		#endregion
 
