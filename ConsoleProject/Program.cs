@@ -70,9 +70,7 @@ namespace ConsoleProject
 
 		public static void Main (string [] args)
 		{
-
-			Archive.Instance.AddFromFolder ();
-
+		
 			Board.Instance.Reset ();
 			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new NormalRandom ());	//il mazziere è C
 
@@ -101,8 +99,6 @@ namespace ConsoleProject
 
 			while (Board.Instance.Time < 41)
 				Board.Instance.Update ();
-
-			Archive.Instance.SaveLastGame ();
 
 			Console.WriteLine ("premere per finire...");
 			Console.ReadLine ();

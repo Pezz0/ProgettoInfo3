@@ -144,7 +144,7 @@ namespace ChiamataLibrary
 		{
 			int count = 0;
 			foreach (Card c in _cards)
-				if (( c.FinalPlayer.Role == EnRole.CHIAMANTE || c.FinalPlayer.Role == EnRole.SOCIO ) && !c.IsPlayable)
+				if (( c.FinalPlayer.Role == EnRole.CHIAMANTE || c.FinalPlayer.Role == EnRole.SOCIO ))
 					count = count + c.GetPoint ();
 
 			return count;
@@ -158,7 +158,7 @@ namespace ChiamataLibrary
 		{
 			int count = 0;
 			foreach (Card c in _cards)
-				if (c.FinalPlayer.Role == EnRole.ALTRO && !c.IsPlayable)
+				if (c.FinalPlayer.Role == EnRole.ALTRO)
 					count = count + c.GetPoint ();
 
 			return count;
@@ -190,16 +190,16 @@ namespace ChiamataLibrary
 		{
 			List<Player> w = GetWinners ();
 			int award = 0;
-			if (w.Count == 1 || ( IsChiamataInMano && player.Role == EnRole.CHIAMANTE ))
+
+			if (w.Count == 1 && player.Role == EnRole.CHIAMANTE)
 				award = 4;
 			else if (player.Role == EnRole.CHIAMANTE)
 				award = 2;
 			else
 				award = 1;
 
-			if (!w.Contains (player)) {
+			if (!w.Contains (player))
 				award = -award;
-			}
 				
 			award = award * ( 1 + ( ( winningPoint - 60 ) / 10 ) + ( IsCapotto ? 1 : 0 ) );
 

@@ -1100,10 +1100,10 @@ namespace GUILayout
 			for (int i = 0; i < 8; i++) {
 				if (i == 0)
 					//First card.
-					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _winSize.Height / 4);
+					posBase = new CCPoint (_winSize.Width - 50 + 9 * ( i * i - 7 * i + 12 ), _winSize.Height / 4);
 				else
 					//All the other cards (Positioning the cards in an arc shape, using a parabola constructed with the for index).
-					posBase = new CCPoint (_winSize.Width - 50 + 3 * ( i * i - 7 * i + 12 ), _carte [i - 1].posBase.Y + ( _winSize.Height / _carte [0].sprite.Texture.PixelsWide ) * 21f);
+					posBase = new CCPoint (_winSize.Width - 50 + 9 * ( i * i - 7 * i + 12 ), _carte [i - 1].posBase.Y + ( _winSize.Height / _carte [0].sprite.Texture.PixelsWide ) * 21f);
 				rotation = -90 - 4 * ( i > 3 ? 4 - i - 1 : 4 - i );
 				_carte.Add (new CardData (new CCSprite (list [i].number.ToString () + "_" + list [i].seme.ToString ()), posBase, rotation, i));
 				_carte [i].sprite.Position = _carte [i].posBase;
@@ -1113,8 +1113,9 @@ namespace GUILayout
 				_cardScale = ( _winSize.Height / _carte [i].sprite.Texture.PixelsWide ) * 0.12f;
 				//Set the scale.
 				_carte [i].sprite.Scale = _cardScale;
-				_mainLayer.AddChild (_carte [i].sprite, i);
 				//Add the sprite as a child of the mainlayer.
+				_mainLayer.AddChild (_carte [i].sprite, i);
+
 			}
 		}
 

@@ -14,23 +14,21 @@ namespace ChiamataLibrary
 		#region Singleton implementation
 
 		/// <summary>
-		/// Instance of the <see cref="ChiamataLibrary.Archive"/> singleton
+		/// The lazy instance of the singleton object.
 		/// </summary>
-		private static readonly Archive _instance = new Archive ();
+		private static readonly Lazy<Archive> _instance = new Lazy<Archive> (() => new Archive ());
 
 		/// <summary>
-		/// Gets the instance.
+		/// Gets the instance of the object.
 		/// </summary>
-		/// <value>The instance of the <see cref="ChiamataLibrary.Archive"/>.</value>
-		public static Archive Instance{ get { return _instance; } }
+		public static Archive Instance { get { return _instance.Value; } }
 
-		static Archive ()
-		{
-		}
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChiamataLibrary.Archive"/> class.
+		/// </summary>
 		private Archive ()
 		{
-
+			AddFromFolder ();
 		}
 
 		#endregion
@@ -72,13 +70,21 @@ namespace ChiamataLibrary
 			_listGames.Add (gm);
 		}
 
-
+		/// <summary>
+		/// Gets the default folder for saving the games
+		/// </summary>
+		/// <returns>The folder.</returns>
 		private IFolder GetFolder ()
 		{
 			IFolder rootFolder = FileSystem.Current.LocalStorage;
 			return  rootFolder.CreateFolderAsync ("Games", CreationCollisionOption.OpenIfExists).Result;
 		}
 
+		/// <summary>
+		/// Gets the name of the file.
+		/// </summary>
+		/// <returns>The file's name.</returns>
+		/// <param name="i">The index of the game.</param>
 		private string GetFileName (int i)
 		{
 			return "Partita" + i.ToString () + ".xml";
@@ -88,7 +94,7 @@ namespace ChiamataLibrary
 		/// Adds <see cref="ChiamataLibrary.GameData"/> to the archive from the XML files found in the specified folder.
 		/// </summary>
 		/// <param name="path">The path of the XML files.</param>
-		public void AddFromFolder ()
+		private void AddFromFolder ()
 		{
 			int c = 0;
 
@@ -111,7 +117,7 @@ namespace ChiamataLibrary
 		/// Saves the <see cref="ChiamataLibrary.GameData"/> in XML files and puts them in the specified folder.
 		/// </summary>
 		/// <param name="path">The path of the XML files.</param>
-		public void SaveAllInFolder ()
+		internal void SaveAllInFolder ()
 		{
 			IFolder folder = GetFolder ();
 
@@ -127,7 +133,7 @@ namespace ChiamataLibrary
 		/// saves only the last game on XML.
 		/// </summary>
 		/// <param name="path">The path of the XML file.</param>
-		public void SaveLastGame ()
+		internal void SaveLastGame ()
 		{
 			IFolder folder = GetFolder ();
 
@@ -154,7 +160,6 @@ namespace ChiamataLibrary
 		/// Returns the last <see cref="ChiamataLibrary.GameData"/> saved.
 		/// </summary>
 		/// <returns>The last <see cref="ChiamataLibrary.GameData"/> saved.</returns>
-
 		public GameData LastGame {
 			get {
 				if (_listGames.Count > 0)

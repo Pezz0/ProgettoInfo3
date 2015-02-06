@@ -47,7 +47,6 @@ namespace GUILayout
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-			Archive.Instance.AddFromFolder ();
 			var serverIntent = new Intent (this, typeof (MainActivity));
 			StartActivityForResult (serverIntent, 2);
 
