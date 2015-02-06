@@ -59,7 +59,7 @@ namespace BTLibrary
 					BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.PAIRING_SUCCESS, extradev.Address).SendToTarget ();
 				} 
 			} else if (action == BluetoothDevice.ActionPairingRequest) {
-				Intent inten = new Intent (action);
+				intent.SetFlags (ActivityFlags.NewTask);
 				context.StartActivity (intent);
 				//BTManager.Instance.ObtainMessage ((int) EnLocalMessageType.PAIRING_REQUEST, inten).SendToTarget ();
 			}

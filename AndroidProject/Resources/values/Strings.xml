@@ -12,6 +12,7 @@
 	<string name="select"> Select a Device to Connect </string>
 	<string name="scanning"> Scanning for new device...</string>
 	<string name="connecting"> Connecting...</string>
+	<string name="pairing"> Pairing...</string>
 	<string name="create_title"> Select player types, change names or start game</string>
 	<string name="change_name">Change your name or wait for start game </string>
 	<string name="starting">Starting Game...</string>

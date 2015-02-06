@@ -265,6 +265,20 @@ namespace GUILayout
 			}
 		}
 
+		private void newDevicelistClick (object sender, AdapterView.ItemClickEventArgs e)
+		{
+			_connecting = true;
+			var info = ( e.View as TextView ).Text.ToString ();
+			_address = info.Substring (info.Length - _DEVICE_ADDRESS_LENGHT);
+
+			if (BTManager.Instance.isDiscovering ()) {
+				BTManager.Instance.CancelDiscovery ();
+				_normalEnd = false;
+			}
+			SetTitle (Resource.String.pairing);
+			BTManager.Instance.CreateBond (_address);
+		}
+
 		/// <summary>
 		/// Connects with the selected bluetooth device.
 		/// </summary>
@@ -383,11 +397,12 @@ namespace GUILayout
 						connect.SetNeutralButton ("OK", delegate {
 						});
 						connect.Show ();
+						this.SetTitle (Resource.String.select);
 
 					}
 					_scan.Enabled = true;
 					_pb.Visibility = ViewStates.Invisible;
-					this.SetTitle (Resource.String.select);
+
 				break;
 				case (int)EnLocalMessageType.NONE_FOUND:
 					if (_normalEnd) {
@@ -425,6 +440,17 @@ namespace GUILayout
 						Toast.MakeText (Application.Context, "Connected to " + _conn, ToastLength.Short).Show ();
 						this.SetTitle (Resource.String.change_name);
 					}
+
+				break;
+				case (int) EnLocalMessageType.PAIRING_SUCCESS:
+					string addr = (string) msg.Obj;
+					string device = BTManager.Instance.getRemoteDevice (addr).Name + "\n" + addr;
+					_newArrayList.Remove (device);
+					_pairedArrayList.Add (device);
+					SetTitle (Resource.String.connecting);
+					_pb.Visibility = ViewStates.Visible;
+					BTManager.Instance.ConnectAsSlave (BTManager.Instance.getRemoteDevice (addr));
+					_connecting = false;
 
 				break;
 

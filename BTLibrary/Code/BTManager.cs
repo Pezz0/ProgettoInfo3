@@ -237,6 +237,15 @@ namespace BTLibrary
 			_btAdapter.CancelDiscovery ();
 		}
 
+		public void CreateBond (string address)
+		{
+			BluetoothDevice device = _btAdapter.GetRemoteDevice (address);
+			try {
+				device.CreateBond ();
+			} catch {
+			}
+		}
+
 		#endregion
 
 		#region Connection Management
@@ -469,11 +478,15 @@ namespace BTLibrary
 		[MethodImpl (MethodImplOptions.Synchronized)]
 		public void RemoveMaster ()
 		{
-			_readThread [0].Cancel ();
-			_readThread.Clear ();
 
-			_writeThread [0].Cancel ();
-			_writeThread.Clear ();
+			if (_readThread.Count > 0) {
+				_readThread [0].Cancel ();
+				_readThread.Clear ();
+			}
+			if (_writeThread.Count > 0) {
+				_writeThread [0].Cancel ();
+				_writeThread.Clear ();
+			}
 
 		}
 
