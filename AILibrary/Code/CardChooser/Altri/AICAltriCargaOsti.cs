@@ -50,7 +50,7 @@ namespace AILibrary
 					if (TakeableFromNoBrisc && !_lowNoBrisc.IsCarico)
 						return _lowNoBrisc;
 
-					if (!_winnerOnBoard.IsBiscrola && TakeableFromBrisc)
+					if (!isWinnerOnBoardBrisc && TakeableFromBrisc)
 						return _lowBrisc;
 
 					if (_valueOnBoard > _thresholdL && TakeableFromBrisc)
@@ -64,7 +64,7 @@ namespace AILibrary
 					if (TakeableFromNoBrisc)
 						return _highNoBrisc;
 
-					if (( _winnerOnBoard.IsBiscrola && wf ) || !_winnerOnBoard.IsBiscrola)
+					if (( isWinnerOnBoardBrisc && wf ) || isWinnerOnBoardBrisc)
 						return _lostCarico;
 
 					return null;

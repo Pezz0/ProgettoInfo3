@@ -31,7 +31,12 @@ namespace AILibrary
 					return new NormalBid (_me, (EnNumbers) i, 61);
 			}
 
-			return new NormalBid (_me, EnNumbers.DUE, 61);
+			NormalBid bid = new NormalBid (_me, EnNumbers.DUE, 61);
+
+			while (Board.Instance.GetCard (_seme, bid.number).initialPlayer == _me)
+				bid = new NormalBid (_me, bid.number + 1, 61);
+
+			return  bid;
 		}
 
 		/// <summary>

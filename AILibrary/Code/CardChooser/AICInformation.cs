@@ -56,6 +56,8 @@ namespace AILibrary
 
 		protected bool TakeableFromNoBrisc{ get { return _lowNoBrisc != null; } }
 
+		protected bool isWinnerOnBoardBrisc{ get { return _winnerOnBoard != null && !_winnerOnBoard.IsBiscrola; } }
+
 		#endregion
 
 		#region Positinal information
@@ -84,7 +86,7 @@ namespace AILibrary
 			if (!TakeableFromNoBrisc)
 				lowPoint = _scartino;
 
-			if (_valueOnBoard > _thresholdH || _lowNoBrisc.IsCarico)
+			if (_valueOnBoard > _thresholdH || lowPoint.IsCarico)
 				return lowPoint;
 
 			return _lowNoBrisc;
@@ -124,7 +126,7 @@ namespace AILibrary
 					_lostCarico = c;
 
 				if (_scartino == null || ( !c.IsBiscrola && c.GetPoint () < _lostCarico.GetPoint () ))
-					_lostCarico = c;
+					_scartino = c;
 
 				if (_punticini == null && !c.IsBiscrola && c.IsVestita)
 					_punticini = c;
@@ -163,7 +165,7 @@ namespace AILibrary
 		}
 
 
-		public AICInformation (int thresholdH, int thresholdL, int pointsAfter)
+		protected AICInformation (int thresholdH, int thresholdL, int pointsAfter)
 		{
 			this._thresholdH = thresholdH;
 			this._thresholdL = thresholdL;
