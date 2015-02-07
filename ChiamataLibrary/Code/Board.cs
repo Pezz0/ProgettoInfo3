@@ -14,7 +14,9 @@ namespace ChiamataLibrary
 		/// </summary>
 		public const int PLAYER_NUMBER = 5;
 
-
+		/// <summary>
+		/// The minimum quantity a player must have to play
+		/// </summary>
 		public const int MIN_POINT = 2;
 
 		/// <summary>

@@ -33,7 +33,7 @@ namespace GUILayout
 		ConfigurationChanges = ConfigChanges.Keyboard |
 		ConfigChanges.KeyboardHidden)]	
 
-	public class startingActivity : AndroidGameActivity
+	public class StartingGameActivity : AndroidGameActivity
 	{
 		/// <summary>
 		/// Contains the data of the game.

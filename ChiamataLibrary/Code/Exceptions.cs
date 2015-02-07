@@ -64,66 +64,6 @@ namespace ChiamataLibrary
 
 	#endregion
 
-	#region WrongBiddingPlayerException
-	/// <summary>
-	/// Thrown when an unexpected bid is presented in the auction.
-	/// </summary>
-	internal class WrongBiddingPlayerException:Exception
-	{
-		/// <summary>
-		/// The player making the bid.
-		/// </summary>
-		private readonly Player _player;
-
-		/// <summary>
-		/// Gets the player.
-		/// </summary>
-		/// <value>The player.</value>
-		public Player Player { get { return _player; } }
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
-		/// </summary>
-		/// <param name="player">The player who placed the wrong bid</param>
-		public WrongBiddingPlayerException (Player player) : base ()
-		{
-			_player = player;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
-		/// </summary>
-		/// <param name="message">Exception description</param>
-		/// <param name="player">The player who placed the wrong bid</param>
-		public WrongBiddingPlayerException (string message, Player player) : base (message)
-		{
-			_player = player;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ChiamataLibrary.WrongBiddingPlayerException"/> class.
-		/// </summary>
-		/// <param name="message">Exception description</param>
-		/// <param name="inner">Exception inner cause</param>
-		/// <param name="player">The player who placed the wrong bid</param>
-		public WrongBiddingPlayerException (string message, Exception inner, Player player) : base (message, inner)
-		{
-			_player = player;
-		}
-
-		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongBiddingPlayerException"/>.
-		/// </summary>
-		/// <returns>A <see cref="System.String"/> that represents the current <see cref="ChiamataLibrary.WrongBiddingPlayerException"/>.</returns>
-		public override string ToString ()
-		{
-			return string.Format ("[WrongBiddingPlayerException(" + Message + "): Player={0}]", Player);
-		}
-
-	}
-
-	#endregion
-
 	#region BidNotEnoughException
 	/// <summary>
 	/// Thrown when the bid is superior to the currently winning one.
