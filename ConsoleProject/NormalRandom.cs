@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace ConsoleProject
 {
-	internal class NormalRandom:IRandomGenerator
+	internal class NormalRandom:IRandomGenerator,IDisposable
 	{
 		/// <summary>
 		/// The random number generator.
@@ -33,6 +33,34 @@ namespace ConsoleProject
 		{
 			_rnd = new RNGCryptoServiceProvider ();
 		}
+
+		#region IDisposable implementation
+
+		bool _disposed;
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~NormalRandom ()
+		{
+			Dispose (false);
+		}
+
+		private void Dispose (bool disposing)
+		{
+			if (_disposed)
+				return;
+
+			if (disposing)
+				_rnd.Dispose ();
+
+			_disposed = true;
+		}
+
+		#endregion
 	}
 }
 

@@ -44,9 +44,9 @@ namespace AILibrary
 			if (me.Role == EnRole.CHIAMANTE)
 				_cardChooser = new AICChiamanteTakeAll (10, 25, 3);
 			else if (me.Role == EnRole.SOCIO)
-				_cardChooser = new AICSocioNascosto ();
+				_cardChooser = new AICSocioNascosto (10, 25, 3);
 			else
-				_cardChooser = new AICAltriCargaOsti (10, 20);
+				_cardChooser = new AICAltriCargaOsti (10, 20, 3);
 
 			_cardChooser.Setup (me);
 

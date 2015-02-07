@@ -37,7 +37,8 @@ namespace TestProject
 		{
 
 			Board.Instance.Reset ();
-			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new TestRandom ());//il mazziere è C
+			using (TestRandom rnd = new TestRandom ())
+				Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, rnd);//il mazziere è C
 
 			AIPlayerController AI0 = new AIPlayerController ((Player) 0, new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
 			AIPlayerController AI1 = new AIPlayerController ((Player) 1, new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());

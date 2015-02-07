@@ -4,7 +4,7 @@ using ChiamataLibrary;
 
 namespace TestProject
 {
-	internal class TestRandom:IRandomGenerator
+	internal class TestRandom:IRandomGenerator, IDisposable
 	{
 		/// <summary>
 		/// The random number generator.
@@ -33,6 +33,34 @@ namespace TestProject
 		{
 			_rnd = new RNGCryptoServiceProvider ();
 		}
+
+		#region IDisposable implementation
+
+		bool _disposed;
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~TestRandom ()
+		{
+			Dispose (false);
+		}
+
+		private void Dispose (bool disposing)
+		{
+			if (_disposed)
+				return;
+
+			if (disposing)
+				_rnd.Dispose ();
+
+			_disposed = true;
+		}
+
+		#endregion
 	}
 }
 

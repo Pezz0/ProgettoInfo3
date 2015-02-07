@@ -7,61 +7,34 @@ namespace AILibrary
 	/// <summary>
 	/// AI for play time, for players that are in the CHIAMANTE role.
 	/// </summary>
-	public class AICChiamanteTakeAll:IAICardChooser
+	public class AICChiamanteTakeAll:AICInformation
 	{
-		/// <summary>
-		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
-		/// </summary>
-		private Player _me;
-		/// <summary>
-		/// The higher threshold of points. If the points on the field are above this threshold, the AI will try its best to win the hand.
-		/// </summary>
-		private readonly int _thresholdH;
-		/// <summary>
-		/// The lower threshold of points. If the points on the field are below this threshold, the AI won't even attempt to win the hand.
-		/// </summary>
-		private readonly int _thresholdL;
-		/// <summary>
-		/// An estimate of the points that players playing after this AI can add to the current hand.
-		/// This is used to estimate the desirability of the current hand. If the current points are below the lower threshold but we think
-		/// that the players playing after this AI will add more points to the hand, it is worthwhile to try and win the hand.
-		/// </summary>
-		private readonly int _pointsAfter;
-
-		/// <summary>
-		/// Method that returns which card the AI wants to play.
-		/// </summary>
-		/// <returns>The card.</returns>
-		public Card ChooseCard ()
+		protected override Card ChooseCardPrivate ()
 		{
-			int nCardOnBoard = Board.Instance.numberOfCardOnBoard;
-			int valueOnBoard = Board.Instance.ValueOnBoard + _pointsAfter * ( Board.PLAYER_NUMBER - nCardOnBoard - 1 );
-			int turn = Board.Instance.Turn;
+			// is this player last in this cycle?
+			bool last = _nCardOnBoard == ( Board.PLAYER_NUMBER - 1 );
+			// if the next player is the socio than is like to be last
+			last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 2 ) && Board.Instance.isSocioReveal && ( _me + 1 ).Role == EnRole.SOCIO );
 
-			List<Card> briscole = _me.GetBriscole ();
+			if (last) {
 
-			if (valueOnBoard < _thresholdL)
-				return _me.GetScartino ();
-			else if (valueOnBoard < _thresholdH) {
-				if (briscole.Count == 0)
-					return _me.GetScartino ();
+				if (Board.Instance.isSocioReveal && _winnerOnBoard.initialPlayer.Role == EnRole.SOCIO)
+					return _lostCarico;
 
-				return briscole [( ( valueOnBoard - _thresholdL ) / ( _thresholdH - _thresholdL ) ) * briscole.Count];
+				//if I can pick up without using a briscola do it
+				if (TakeableFromNoBrisc)
+					return _highNoBrisc;
+
+				//if there are enough point on the board pick up
+				if (_valueOnBoard > _thresholdL && TakeableFromBrisc)
+					return _lowBrisc;
+
+				//scartino
+				return null;
 			}
 
-			if (briscole.Count == 0)
-				return null;
+			return TakeIfPossibile ();
 
-			return briscole [briscole.Count - 1];
-		}
-
-		/// <summary>
-		/// Initializes this instance.
-		/// </summary>
-		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
-		public void Setup (Player me)
-		{
-			this._me = me;
 		}
 
 		/// <summary>
@@ -70,11 +43,8 @@ namespace AILibrary
 		/// <param name="thresholdL">The lower points threshold. See <see cref="ChiamataLibrary.AICChiamanteTakeAll._thresholdL"/> for more informations.</param>
 		/// <param name="thresholdH">The higher points threshold. See <see cref="ChiamataLibrary.AICChiamanteTakeAll._thresholdH"/> for more informations.</param>
 		/// <param name="pointsAfter">An estimate of the points that can be added to the hand after this AI has already played. See <see cref="ChiamataLibrary.AICChiamanteTakeAll._pointsAfter"/> for more informations.</param>
-		public AICChiamanteTakeAll (int thresholdH, int thresholdL, int pointsAfter)
+		public AICChiamanteTakeAll (int thresholdH, int thresholdL, int pointsAfter) : base (thresholdH, thresholdL, pointsAfter)
 		{
-			this._thresholdH = thresholdH;
-			this._thresholdL = thresholdL;
-			this._pointsAfter = pointsAfter;
 		}
 	}
 }

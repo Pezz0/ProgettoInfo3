@@ -148,11 +148,7 @@ namespace AILibrary
 		/// <returns>The card.</returns>
 		public Card ChooseCard ()
 		{
-			Card card = _cardChooser.ChooseCard ();
-			if (card == null)
-				return me.GetScartino ();
-
-			return card;
+			return _cardChooser.ChooseCard ();
 		}
 	}
 	#endregion

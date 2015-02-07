@@ -7,111 +7,81 @@ namespace AILibrary
 	/// AI for play time, for players that are not in the SOCIO role or CHIAMANTE role.
 	/// See the documentation for more informations about this AI.
 	/// </summary>
-	public class AICAltriCargaOsti:IAICardChooser
+	public class AICAltriCargaOsti:AICInformation
 	{
-		/// <summary>
-		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
-		/// </summary>
-		private Player _me;
-		/// <summary>
-		/// Integer representing the distance between this player and the player in the CHIAMANTE role.
-		/// </summary>
-		private int _deltaChiamante;
-		/// <summary>
-		/// The lower threshold of points. If the points on the field are below this threshold, the AI won't even attempt to win the hand.
-		/// </summary>
-		private readonly int _thresholdL;
-		/// <summary>
-		/// The higher threshold of points. If the points on the field are above this threshold, the AI will try its best to win the hand.
-		/// </summary>
-		private readonly int _thresholdH;
-
-		/// <summary>
-		/// Method that returns which card the AI wants to play.
-		/// </summary>
-		/// <returns>The card.</returns>
-		public Card ChooseCard ()
+		protected override Card ChooseCardPrivate ()
 		{
-			Card temp;
-			int boardValue = Board.Instance.ValueOnBoard;
-			int o = _deltaChiamante + ( Board.Instance.GetChiamante ().GetHand ().Count == _me.GetHand ().Count ? -5 : 0 );
-			switch (o) {
+
+			bool last = _nCardOnBoard == Board.PLAYER_NUMBER - 1;
+
+			if (Board.Instance.isSocioReveal) {
+				last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 2 ) && ( _me + 1 ).Role == EnRole.ALTRO );
+				last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 3 ) && ( _me + 1 ).Role == EnRole.ALTRO && ( _me + 2 ).Role == EnRole.ALTRO );
+			}
+
+
+			bool wf = false;
+			if (_winnerOnBoard != null) {
+				wf = _winnerOnBoard.initialPlayer.Role != EnRole.CHIAMANTE;
+
+				if (Board.Instance.isSocioReveal)
+					wf = _winnerOnBoard.initialPlayer.Role == EnRole.ALTRO;
+			}
+
+			if (last) {
+				//if I can pick up without using a briscola do it
+				if (TakeableFromNoBrisc)
+					return _highNoBrisc;
+					
+				//if there are enough point on the board pick up
+				if (_valueOnBoard > _thresholdL && TakeableFromBrisc)
+					return _lowBrisc;
+
+				//scartino
+				return _scartino;
+			}
+
+			switch (_currentDeltaChiamante) {
 				case -4:
 				case -3:
 					return null;
 				case -2:
 				case -1:
-					foreach (Card c in Board.Instance.CardOnTheBoard)
-						if (c.IsBiscrola)
-							return null;
-					return _me.GetStrozzoBasso ();
+					if (TakeableFromNoBrisc && !_lowNoBrisc.IsCarico)
+						return _lowNoBrisc;
+
+					if (!_winnerOnBoard.IsBiscrola && TakeableFromBrisc)
+						return _lowBrisc;
+
+					if (_valueOnBoard > _thresholdL && TakeableFromBrisc)
+						return _lowBrisc;
+
+					return null;
 
 				case 1:
 				case 2:
-					return _me.GetCarico ();
-				
 				case 3:
-					if (boardValue < _thresholdL)
-						temp = _me.GetStrozzoBasso ();
-					else if (boardValue < _thresholdH) {
-						temp = _me.GetBriscolaNotCarico ();
-					} else
-						temp = _me.GetBriscolaCarico ();
+					if (TakeableFromNoBrisc)
+						return _highNoBrisc;
 
-					foreach (Card c in Board.Instance.CardOnTheBoard)
-						if (c.IsBiscrola && c > temp)
-							return null;
+					if (( _winnerOnBoard.IsBiscrola && wf ) || !_winnerOnBoard.IsBiscrola)
+						return _lostCarico;
 
-					return temp;
-
-				case 4:
-
-					Card onBoard = null;
-
-					foreach (Card c in Board.Instance.CardOnTheBoard)
-						if (c > onBoard)
-							onBoard = c;
-
-					if (onBoard.IsBiscrola) {
-						if (boardValue < _thresholdL)
-							temp = _me.GetStrozzoBasso ();
-						else if (boardValue < _thresholdH) {
-							temp = _me.GetBriscolaNotCarico ();
-						} else
-							temp = _me.GetBriscolaCarico ();
-
-						if (temp > onBoard)
-							return temp;
-						else
-							return null;
-					} else
-						return  _me.GetStrozzoAlto (false);
-
+					return null;
 
 			}
 
 			throw new Exception ("some errore occur");
 		}
 
-		/// <summary>
-		/// Initializes this instance.
-		/// </summary>
-		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
-		public void Setup (Player me)
-		{
-			this._me = me;
-			_deltaChiamante = ( me.order - Board.Instance.GetChiamante ().order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
-		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.AICAltriCargaOsti"/> class.
 		/// </summary>
 		/// <param name="thresholdL">The lower points threshold. See <see cref="ChiamataLibrary.AICAltriCargaOsti._thresholdL"/> for more informations.</param>
 		/// <param name="thresholdH">The higher points threshold. See <see cref="ChiamataLibrary.AICAltriCargaOsti._thresholdH"/> for more informations.</param>
-		public AICAltriCargaOsti (int thresholdL, int thresholdH)
+		public AICAltriCargaOsti (int thresholdH, int thresholdL, int pointsAfter) : base (thresholdH, thresholdL, pointsAfter)
 		{
-			this._thresholdL = thresholdL;
-			this._thresholdH = thresholdH;
 		}
 	}
 }

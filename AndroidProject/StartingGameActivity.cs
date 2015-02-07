@@ -86,7 +86,8 @@ namespace GUILayout
 
 					_gameProfile = new GameProfile (data);
 
-					Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, new CriptoRandom ());
+					using (CriptoRandom rnd = new CriptoRandom ())
+						Board.Instance.InitializeMaster (_gameProfile.PlayerNames, _gameProfile.Dealer, rnd);
 
 					BTManager.Instance.initializeCommunication ();
 
@@ -97,7 +98,7 @@ namespace GUILayout
 
 					for (int i = 1; i < Board.PLAYER_NUMBER; i++) {
 						if (_gameProfile.getPlayerAddress (i - 1) == Resources.GetString (Resource.String.none_add))
-							_playerControllerList.Add (new AIPlayerController ((Player) i, new AIBMobileJump (10, 1, 2), new AISQuality (), new AICProva ()));
+							_playerControllerList.Add (new AIPlayerController ((Player) i, new AIBMobileJump (3, 1, 1), new AISQuality (), new AICProva ()));
 						else {
 							BTPlayerController bt = new BTPlayerController (i);
 							_playerControllerList.Add (bt);

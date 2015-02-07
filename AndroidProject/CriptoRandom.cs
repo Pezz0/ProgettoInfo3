@@ -7,7 +7,7 @@ namespace GUILayout
 	/// <summary>
 	/// Class used for a normal random.
 	/// </summary>
-	internal class CriptoRandom:IRandomGenerator
+	internal class CriptoRandom:IRandomGenerator,IDisposable
 	{
 		/// <summary>
 		/// The random number generator.
@@ -36,6 +36,35 @@ namespace GUILayout
 		{
 			_rnd = new RNGCryptoServiceProvider ();
 		}
+
+
+		#region IDisposable implementation
+
+		bool _disposed;
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		~CriptoRandom ()
+		{
+			Dispose (false);
+		}
+
+		private void Dispose (bool disposing)
+		{
+			if (_disposed)
+				return;
+
+			if (disposing)
+				_rnd.Dispose ();
+
+			_disposed = true;
+		}
+
+		#endregion
 	}
 }
 

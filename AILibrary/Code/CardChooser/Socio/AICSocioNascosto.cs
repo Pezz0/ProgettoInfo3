@@ -1,81 +1,82 @@
 ﻿using System;
 using ChiamataLibrary;
+using System.Collections.Generic;
 
 namespace AILibrary
 {
 	/// <summary>
 	/// AI for play time, for players that are in the SOCIO role.
 	/// </summary>
-	public class AICSocioNascosto:IAICardChooser
+	public class AICSocioNascosto:AICInformation
 	{
-
-		/// <summary>
-		/// The <see cref="ChiamataLibrary.Player"/> instance representing the AI.
-		/// </summary>
-		private Player _me;
-		/// <summary>
-		/// Integer representing the distance between this player and the player in the CHIAMANTE role.
-		/// </summary>
-		private int _deltaChiamante;
-
-		/// <summary>
-		/// Method that returns which card the AI wants to play.
-		/// </summary>
-		/// <returns>The card.</returns>
-		public Card ChooseCard ()
+		protected override Card ChooseCardPrivate ()
 		{
-			int o = _deltaChiamante + ( Board.Instance.GetChiamante ().GetHand ().Count == _me.GetHand ().Count ? -5 : 0 );
-			switch (o) {
+			// is this player last in this cycle?
+			bool last = _nCardOnBoard == ( Board.PLAYER_NUMBER - 1 );
+
+			last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 2 ) && Board.Instance.isSocioReveal && ( _me + 1 ).Role == EnRole.CHIAMANTE );
+
+
+			bool wf = false;
+			if (_winnerOnBoard != null)
+				wf = _winnerOnBoard.initialPlayer.Role == EnRole.CHIAMANTE;
+
+			if (last) {
+				//if I can pick up without using a briscola do it
+				if (TakeableFromNoBrisc)
+					return _highNoBrisc;
+
+				if (_winnerOnBoard.initialPlayer.Role == EnRole.CHIAMANTE) {
+					if (Board.Instance.isSocioReveal)
+						return _lostCarico;
+					else
+						return _punticini;
+				}
+
+				//scartino
+				return null;
+			}
+
+
+			switch (_currentDeltaChiamante) {
 				case -4:
-					return _me.GetVestita ();
+					return _punticini;
 
 				case -3:
 				case -2:
-					Card strozzo = _me.GetStrozzoBasso (false);
-					if (strozzo == null)
-						return _me.GetVestita ();
-					else
-						return strozzo;
+					if (TakeableFromNoBrisc && Board.Instance.isSocioReveal)
+						return _highNoBrisc;
+
+					if (TakeableFromNoBrisc)
+						return _lowNoBrisc;
+
+					return null;
 
 				case -1:
 					return null;
 				
 				case 1:
-					return _me.GetStrozzoBasso (false);
+					if (TakeableFromBrisc)
+						return _lowBrisc;
+					return null;
 				
 				case 2:
 					return null;
 				
 				case 3:
-					return _me.GetStrozzoBasso (false);
-				
-				case 4:
-
-					foreach (Card c in Board.Instance.CardOnTheBoard)
-						if (c.IsBiscrola)
-							return  _me.GetVestita ();
-
-					return _me.GetStrozzoAlto ();
+					return _punticini;
 
 			}
 
 			throw new Exception ("some errore occur");
 		}
 
-		/// <summary>
-		/// Initializes this instance.
-		/// </summary>
-		/// <param name="me">The <see cref="ChiamataLibrary.Player"/> instance representing the AI.</param>
-		public void Setup (Player me)
-		{
-			this._me = me;
-			_deltaChiamante = ( me.order - Board.Instance.GetChiamante ().order + Board.PLAYER_NUMBER ) % Board.PLAYER_NUMBER;
-		}
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChiamataLibrary.AICSocioNascosto"/> class.
 		/// </summary>
-		public AICSocioNascosto ()
+		public AICSocioNascosto (int thresholdH, int thresholdL, int pointsAfter) : base (thresholdH, thresholdL, pointsAfter)
 		{
 		}
 	}

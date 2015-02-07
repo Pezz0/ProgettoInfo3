@@ -72,8 +72,10 @@ namespace ConsoleProject
 		{
 		
 			Board.Instance.Reset ();
-			Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, new NormalRandom ());	//il mazziere è C
 
+			using (NormalRandom rnd = new NormalRandom ())
+				Board.Instance.InitializeMaster (new string[]{ "A", "B", "C", "D", "E" }, 2, rnd);//il mazziere è C
+				
 			foreach (Player p in Board.Instance.AllPlayers) {
 				new AIPlayerController (p, new AIBMobileJump (10, 1, 1), new AISQuality (), new AICProva ());
 				Console.WriteLine (p.ToString () + " possiede:");
@@ -86,7 +88,9 @@ namespace ConsoleProject
 
 			//setto gli eventi
 			Board.Instance.eventSomeonePlaceABid += someonePlaceABid;
+			Board.Instance.eventIPlaceABid += someonePlaceABid;
 			Board.Instance.eventSomeonePlayACard += someonePlayACard;
+			Board.Instance.eventIPlayACard += someonePlayACard;
 			Board.Instance.eventPickTheBoard += someonePickUp;
 			Board.Instance.eventAuctionStart += auctionStarting;
 			Board.Instance.eventPlaytimeStart += gameStarting;
@@ -137,6 +141,7 @@ namespace ConsoleProject
 				Console.WriteLine ("Partita a carichi, chiamante:" + Board.Instance.GetChiamante ().ToString ());
 			else if (Board.Instance.GameType == EnGameType.STANDARD) {
 				Console.WriteLine ("Partita standard");
+				Console.WriteLine ("Carta chiamata: " + Board.Instance.CalledCard.ToString ());
 				Console.WriteLine ("Chiamante: " + Board.Instance.GetChiamante ().ToString ());
 				if (Board.Instance.isChiamataInMano)
 					Console.WriteLine ("Chiamata in mano");
@@ -146,6 +151,7 @@ namespace ConsoleProject
 				foreach (Player p in Board.Instance.GetAltri())
 					Console.WriteLine ("Altro: " + p.ToString ());
 			}
+			Console.WriteLine ("**********************");
 		}
 
 		public static void gameFinish ()
