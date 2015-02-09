@@ -130,6 +130,9 @@ namespace GUILayout
 			}
 		}
 
+		/// <summary>
+		/// The terminate message.
+		/// </summary>
 		private readonly TerminateMessage _terminateMsg = new TerminateMessage (0);
 
 		/// <summary>

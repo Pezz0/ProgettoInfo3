@@ -20,7 +20,7 @@ namespace GUILayout
 	/// History of stats and past games.
 	/// </summary>
 	[Activity (Label = "History", ScreenOrientation = ScreenOrientation.ReverseLandscape)]			
-	public class History : TabActivity
+	public class HistoryActivity : TabActivity
 	{
 		/// <summary>
 		/// Buttons to exit the activity and to delete the game data.
@@ -32,7 +32,14 @@ namespace GUILayout
 		/// </summary>
 		private const float TAB_WIDTH = 0.7f;
 
+		/// <summary>
+		/// The tab host.
+		/// </summary>
 		private TabHost tabH;
+
+		/// <summary>
+		/// The widgets in tab host.
+		/// </summary>
 		private TabWidget tabW;
 
 		/// <summary>
@@ -44,6 +51,7 @@ namespace GUILayout
 			base.OnCreate (bundle);
 			RequestWindowFeature (WindowFeatures.NoTitle);
 			SetContentView (Resource.Layout.History);
+			Window.SetFlags (WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
 
 			DisplayMetrics metrics = Resources.DisplayMetrics;
 			int widthInDp = metrics.WidthPixels;

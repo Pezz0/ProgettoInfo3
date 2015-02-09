@@ -15,8 +15,7 @@ namespace GUILayout
 	/// Title screen activity.
 	/// </summary>
 	[Activity (
-		Label = "ProgettoInfo3",
-		ScreenOrientation = ScreenOrientation.ReverseLandscape)
+		Label = "ProgettoInfo3", ScreenOrientation = ScreenOrientation.ReverseLandscape)
 	]
 	internal class MainActivity : Activity
 	{
@@ -59,7 +58,7 @@ namespace GUILayout
 					StartActivityForResult (inte, 1);
 				}
 			} else
-				BTManager.Instance.Stop ();
+				BTManager.Instance.Reset ();
 
 			RequestWindowFeature (WindowFeatures.NoTitle);
 			SetContentView (Resource.Layout.Main);
@@ -146,11 +145,15 @@ namespace GUILayout
 		/// <param name="e">E.</param>
 		void historyClick (object sender, EventArgs e)
 		{
-			var serverIntent = new Intent (this, typeof (History));
+			var serverIntent = new Intent (this, typeof (HistoryActivity));
 			StartActivity (serverIntent);
 
 		}
 
+		/// <summary>
+		/// Called when the activity has detected the user's press of the back
+		///  key.
+		/// </summary>
 		public override void OnBackPressed ()
 		{
 			AlertDialog.Builder finish = new AlertDialog.Builder (this);
@@ -188,9 +191,8 @@ namespace GUILayout
 			_history.Enabled = true;
 
 			if (requestCode == 1 && resultCode == Result.Ok) {
-
-				Intent returnIntent = data;
-				SetResult (Result.Ok, returnIntent);
+			
+				SetResult (Result.Ok, data);
 				Finish ();
 
 			}

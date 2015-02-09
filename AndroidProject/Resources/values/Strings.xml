@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="Type">
-		<item> AI</item>
+		<item> Computer</item>
 		<item>BlueTooth</item>
 	</string-array>
 	<string name="Default1"> Brasi</string>

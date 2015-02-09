@@ -125,12 +125,12 @@ namespace BTLibrary
 		/// <summary>
 		/// The receiver to register intents.
 		/// </summary>
-		private BTReceiver _receiver;
+		private BTReceiver _receiver = null;
 
 		/// <summary>
-		/// Registers the receiver for device discovery and the finishing of device discovery.
+		/// Registers the receiver for scanning operations.
 		/// </summary>
-		public void RegisterReceiver ()
+		public void RegisterReceiverScanning ()
 		{
 			// Register for broadcasts when a device is discovered
 			_receiver = new BTReceiver ();
@@ -145,12 +145,26 @@ namespace BTLibrary
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 		}
 
+		/// <summary>
+		/// Registers the receiver for pairing requests.
+		/// </summary>
 		public void RegisterReceiverPairing ()
 		{
 			_receiver = new BTReceiver ();
 			IntentFilter filter = new IntentFilter (BluetoothDevice.ActionPairingRequest);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
 
+		}
+
+		/// <summary>
+		/// Unregisters the receiver.
+		/// </summary>
+		public void UnregisterReceiver ()
+		{
+			if (_receiver != null) {
+				_activity.ApplicationContext.UnregisterReceiver (_receiver);
+				_receiver = null;
+			}
 		}
 
 		#endregion
@@ -161,12 +175,12 @@ namespace BTLibrary
 		/// Makes the Bluetooth visible.
 		/// </summary>
 		/// <param name="amount">amount of time to make the bluetooth visible.</param>
-		internal void makeVisible (int amount)
+		internal void makeVisible ()
 		{
 			//creates an Intent with action ActionRequestDiscoverable
 			Intent visibleIntent = new Intent (BluetoothAdapter.ActionRequestDiscoverable);
 			//insert in the intent the duration of visibility
-			visibleIntent.PutExtra (BluetoothAdapter.ExtraDiscoverableDuration, amount);
+			visibleIntent.PutExtra (BluetoothAdapter.ExtraDiscoverableDuration, 0);
 			//Start the VisibilityRequest activity
 			_activity.StartActivityForResult (visibleIntent, (int) EnActivityResultCode.VISIBILITY_REQUEST);
 		}
@@ -180,10 +194,10 @@ namespace BTLibrary
 			//if bluetooth is already enabled returns
 			if (_btAdapter.IsEnabled)
 				return;
-			//else creates an Intent with action ActionRequestEnable
-			Intent enableIntent = new Intent (BluetoothAdapter.ActionRequestEnable);
-			//Starts the EnableRequest activity
-			_activity.StartActivityForResult (enableIntent, (int) EnActivityResultCode.REQUEST_ENABLE_BT);
+			//else enable bluetooth
+			_btAdapter.Enable ();
+			//make it visible
+			makeVisible ();
 		}
 
 		#endregion
@@ -237,6 +251,10 @@ namespace BTLibrary
 			_btAdapter.CancelDiscovery ();
 		}
 
+		/// <summary>
+		/// Creates the bond with the device specified in address.
+		/// </summary>
+		/// <param name="address">Address of the device to create bond.</param>
 		public void CreateBond (string address)
 		{
 			BluetoothDevice device = _btAdapter.GetRemoteDevice (address);
@@ -286,18 +304,6 @@ namespace BTLibrary
 		private EnConnectionState _state;
 
 		/// <summary>
-		/// Sets the state.
-		/// </summary>
-		/// <param name="state">State.</param>
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		private void SetState (EnConnectionState state)
-		{
-			//sets the state
-			_state = state;
-
-		}
-
-		/// <summary>
 		/// Gets the state.
 		/// </summary>
 		/// <returns>The state.</returns>
@@ -320,7 +326,7 @@ namespace BTLibrary
 			_listenThread = new BTListenThread (NAME, MY_UUID);
 
 			//sets the state on STATE_LISTEN and send message to indicate this change
-			SetState (EnConnectionState.STATE_LISTEN);
+			_state = EnConnectionState.STATE_LISTEN;
 			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_LISTEN, -1).SendToTarget ();
 		}
 
@@ -332,10 +338,10 @@ namespace BTLibrary
 		public void ConnectAsSlave (BluetoothDevice device)
 		{	
 			//stops all existing thread
-			Stop ();
+			Reset ();
 
 			//sets the state to CONNECTING and send message to indicate this change
-			SetState (EnConnectionState.STATE_CONNECTING);
+			_state = EnConnectionState.STATE_CONNECTING;
 			this.ObtainMessage ((int) EnLocalMessageType.MESSAGE_STATE_CHANGE, (int) EnConnectionState.STATE_CONNECTING, -1).SendToTarget ();
 
 			// Start the thread to connect with the given device
@@ -351,7 +357,7 @@ namespace BTLibrary
 		internal void ConnectedToMaster (BluetoothSocket socket, BluetoothDevice device)
 		{
 			//sets the state to CONNECTED_SLAVE
-			SetState (EnConnectionState.STATE_CONNECTED_SLAVE);
+			_state = EnConnectionState.STATE_CONNECTED_SLAVE;
 
 			// Start the thread to perform read service
 			_readThread.Add (new BTReadThread (socket));
@@ -385,7 +391,7 @@ namespace BTLibrary
 		internal void ConnectedToSlave (BluetoothSocket socket, BluetoothDevice device)
 		{	
 			//sets the state to CONNECTED_MASTER
-			SetState (EnConnectionState.STATE_CONNECTED_MASTER);
+			_state = EnConnectionState.STATE_CONNECTED_MASTER;
 
 			// Start the thread to perform read service
 			_readThread.Add (new BTReadThread (socket));
@@ -408,33 +414,6 @@ namespace BTLibrary
 		public int getNumConnected ()
 		{
 			return _readThread.Count;
-		}
-
-		/// <summary>
-		/// Stop all threads.
-		/// </summary>
-		[MethodImpl (MethodImplOptions.Synchronized)]
-		public void Stop ()
-		{
-			if (_connectThread != null) {
-				_connectThread.Cancel ();
-				_connectThread = null;
-			}
-
-			for (int i = 0; i < _writeThread.Count; i++) {
-				_writeThread [i].Cancel ();
-				_writeThread.RemoveAt (i);
-			}
-
-			for (int i = 0; i < _readThread.Count; i++) {
-				_readThread [i].Cancel ();
-				_readThread.RemoveAt (i);
-			}
-
-			if (_listenThread != null) {
-				_listenThread.Cancel ();
-				_listenThread = null;
-			}
 		}
 
 		/// <summary>
@@ -496,7 +475,7 @@ namespace BTLibrary
 		internal void ConnectionFailed ()
 		{	
 			//stops all existing thread
-			Stop ();
+			Reset ();
 
 		}
 
@@ -522,6 +501,9 @@ namespace BTLibrary
 		/// </summary>
 		public const int MAX_BT_PLAYER = 4;
 
+		/// <summary>
+		/// The monitor used to listen when all terminate ACK are received.
+		/// </summary>
 		private object _monitorMaster, _monitorSlave;
 
 		/// <summary>
@@ -533,14 +515,40 @@ namespace BTLibrary
 			//activity to register the receiver
 			_activity = activity;
 
-			//sets the state to STATE_NONE
-			_state = EnConnectionState.STATE_NONE;
-
 			_monitorMaster = new object ();
 
 			_monitorSlave = new object ();
 
-			Stop ();
+			Reset ();
+		}
+
+		/// <summary>
+		/// Reset managet to initial state.
+		/// </summary>
+		[MethodImpl (MethodImplOptions.Synchronized)]
+		public void Reset ()
+		{
+			if (_connectThread != null) {
+				_connectThread.Cancel ();
+				_connectThread = null;
+			}
+
+			for (int i = 0; i < _writeThread.Count; i++) {
+				_writeThread [i].Cancel ();
+				_writeThread.RemoveAt (i);
+			}
+
+			for (int i = 0; i < _readThread.Count; i++) {
+				_readThread [i].Cancel ();
+				_readThread.RemoveAt (i);
+			}
+
+			if (_listenThread != null) {
+				_listenThread.Cancel ();
+				_listenThread = null;
+			}
+
+			_state = EnConnectionState.STATE_NONE;
 		}
 
 		#endregion

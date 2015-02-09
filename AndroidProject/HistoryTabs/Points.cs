@@ -32,7 +32,7 @@ namespace GUILayout
 			grid = FindViewById<GridView> (Resource.Id.gridView1);
 			grid.Adapter = play;
 
-			History.eventDelete += Delete;
+			HistoryActivity.eventDelete += Delete;
 
 			List<string> players = Archive.Instance.GetAllPlayer ();
 
@@ -56,7 +56,10 @@ namespace GUILayout
 				sort (values, 0, players.Count - 1);
 				for (int j = 0; j < players.Count; j++) {
 					for (int k = 0; k < 3; k++) {
-						play.Add (values [j] [k]);
+						string val = values [j] [k];
+						if (k == 2 && Convert.ToInt32 (val) > 0)
+							val = "+" + val;
+						play.Add (val);	
 					}
 				}
 			} else

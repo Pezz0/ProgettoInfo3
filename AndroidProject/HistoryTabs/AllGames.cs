@@ -26,7 +26,7 @@ namespace GUILayout
 			base.OnCreate (bundle);
 			SetContentView (Resource.Layout.Grid);
 
-			History.eventDelete += Delete;
+			HistoryActivity.eventDelete += Delete;
 
 			play = new ArrayAdapter<string> (this, Resource.Layout.Grid_elem);
 			grid = FindViewById<GridView> (Resource.Id.gridView1);

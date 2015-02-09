@@ -53,7 +53,9 @@ namespace GUILayout
 		/// </summary>
 		private Button _start, _back;
 
-
+		/// <summary>
+		/// The adapter used for spinners.
+		/// </summary>
 		private ArrayAdapter adapter;
 
 		/// <summary>
@@ -231,10 +233,29 @@ namespace GUILayout
 		/// <param name="e">E.</param>
 		void Back (object sender, EventArgs e)
 		{
+			Back ();
+		}
+
+		/// <summary>
+		/// Performs back operations.
+		/// </summary>
+		private void Back ()
+		{
 			Intent returnIntent = new Intent ();
 			SetResult (Result.Canceled, returnIntent);
-			BTManager.Instance.Stop ();
+			BTManager.Instance.Reset ();
+			BTManager.Instance.UnregisterReceiver ();
 			Finish ();
+		}
+
+		/// <summary>
+		/// Called when the activity has detected the user's press of the back
+		///  key.
+		/// </summary>
+		public override void OnBackPressed ()
+		{
+			base.OnBackPressed ();
+			Back ();
 		}
 
 		/// <param name="requestCode">The integer request code originally supplied to
@@ -253,9 +274,9 @@ namespace GUILayout
 		{
 			switch (requestCode) {
 
-				case (int)EnActivityResultCode.REQUEST_ENABLE_BT:
+				case (int)EnActivityResultCode.VISIBILITY_REQUEST:
 					// When the request to enable Bluetooth returns
-					if (resultCode == Result.Ok)
+					if (resultCode == Result.FirstUser)
 						// Bluetooth is now enabled, so set up a chat session
 						BTManager.Instance.ConnectAsMaster ();
 					else
@@ -287,7 +308,7 @@ namespace GUILayout
 		}
 
 		/// <summary>
-		/// HHandles the local messages.
+		/// Handles the local messages.
 		/// </summary>
 		/// <param name="msg">Message.</param>
 		private void handleLocalMessage (Message msg)

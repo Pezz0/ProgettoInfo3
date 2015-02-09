@@ -84,11 +84,11 @@
     <Compile Include="StartingGameActivity.cs" />
     <Compile Include="GameProfile.cs" />
     <Compile Include="CreateTabActivity.cs" />
-    <Compile Include="History.cs" />
     <Compile Include="HistoryTabs\LastGame.cs" />
     <Compile Include="HistoryTabs\AllGames.cs" />
     <Compile Include="HistoryTabs\Points.cs" />
     <Compile Include="CriptoRandom.cs" />
+    <Compile Include="HistoryActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

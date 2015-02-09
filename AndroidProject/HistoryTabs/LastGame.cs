@@ -35,7 +35,7 @@ namespace GUILayout
 			grid = FindViewById<GridView> (Resource.Id.gridView1);
 			grid.Adapter = play;
 
-			History.eventDelete += Delete;
+			HistoryActivity.eventDelete += Delete;
 
 			GameData gd = Archive.Instance.LastGame;
 

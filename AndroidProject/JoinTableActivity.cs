@@ -62,6 +62,8 @@ namespace GUILayout
 		/// </summary>
 		private RelativeLayout _newDeviceLayout;
 
+		private AlertDialog.Builder _connect = null;
+
 		/// <summary>
 		/// Called on activity creation.
 		/// </summary>
@@ -73,7 +75,7 @@ namespace GUILayout
 			_start = _normalEnd = true;
 			_connecting = false;
 
-			BTManager.Instance.RegisterReceiver ();
+			BTManager.Instance.RegisterReceiverScanning ();
 
 			BTManager.Instance.setActivity (this);
 
@@ -90,14 +92,14 @@ namespace GUILayout
 			_pairedArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 			_pairedArrayList.Clear ();
 			_paired.Adapter = _pairedArrayList; 
-			_paired.ItemClick += devicelistClick;
+			_paired.ItemClick += pairedDevicelistClick;
 			_paired.LayoutParameters.Width = (int) ( widthInDp * _FRACTION_WIDTH );
 			_paired.Enabled = true;
 
 			_newdev = FindViewById<ListView> (Resource.Id.newdev);
 			_newArrayList = new ArrayAdapter<string> (this, Resource.Layout.device_name);
 			_newdev.Adapter = _newArrayList;
-			_newdev.ItemClick += devicelistClick;
+			_newdev.ItemClick += newDevicelistClick;
 			_newDeviceLayout = FindViewById<RelativeLayout> (Resource.Id.Layout);
 			_newDeviceLayout.LayoutParameters.Width = (int) ( widthInDp * _FRACTION_WIDTH );
 			_newdev.Enabled = false;
@@ -150,7 +152,16 @@ namespace GUILayout
 
 			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 			BTManager.Instance.eventPackageReceived += handlePackage;
+
+			if (_connect != null)
+				_connect.Dispose ();
+
+			_connect = new AlertDialog.Builder (this);
+
+
 		}
+
+
 
 		/// <summary>
 		/// Called when the activity has detected the user's press of the back
@@ -159,8 +170,7 @@ namespace GUILayout
 		public override void OnBackPressed ()
 		{
 			base.OnBackPressed ();
-			BTManager.Instance.Stop ();
-			Finish ();
+			Back ();
 		}
 
 		/// <summary>
@@ -221,7 +231,7 @@ namespace GUILayout
 		/// <param name="e">E.</param>
 		private void Disconnect (object sender, EventArgs e)
 		{
-			BTManager.Instance.Stop ();
+			BTManager.Instance.Reset ();
 			_send.Enabled = false;
 			_name.Enabled = false;
 			_paired.Enabled = true;
@@ -237,17 +247,28 @@ namespace GUILayout
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		private void Back (object sender, EventArgs e)
+		{	
+			Back ();
+		}
+
+		/// <summary>
+		/// Performs back operations.
+		/// </summary>
+		private void Back ()
 		{
-			BTManager.Instance.Stop ();
+			Intent returnIntent = new Intent ();
+			SetResult (Result.Canceled, returnIntent);
+			BTManager.Instance.Reset ();
+			BTManager.Instance.UnregisterReceiver ();
 			Finish ();
 		}
 
 		/// <summary>
-		/// Method called when an item on the device list is pressed.
+		/// Method called when an item on the paired devices list is pressed.
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		private void devicelistClick (object sender, AdapterView.ItemClickEventArgs e)
+		private void pairedDevicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			_connecting = true;
 			var info = ( e.View as TextView ).Text.ToString ();
@@ -265,6 +286,11 @@ namespace GUILayout
 			}
 		}
 
+		/// <summary>
+		/// Method called when an item on the new devices list is pressed.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void newDevicelistClick (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			_connecting = true;
@@ -284,16 +310,17 @@ namespace GUILayout
 		/// </summary>
 		private void connection ()
 		{
-
 			AlertDialog.Builder connect = new AlertDialog.Builder (this);
 			connect.SetTitle ("Connection");
 			connect.SetMessage ("Do you really want to connect with " + BTManager.Instance.getRemoteDevice (_address).Name + "?");
+			connect.SetCancelable (true);
 			connect.SetPositiveButton ("YES", delegate {
 				SetTitle (Resource.String.connecting);
 				_pb.Visibility = ViewStates.Visible;
 				BTManager.Instance.ConnectAsSlave (BTManager.Instance.getRemoteDevice (_address));
 				_address = "";
 				_connecting = false;
+
 			});
 			connect.SetNegativeButton ("NO", delegate {
 				_address = "";
@@ -318,9 +345,9 @@ namespace GUILayout
 		{
 			switch (requestCode) {
 
-				case (int)EnActivityResultCode.REQUEST_ENABLE_BT:
+				case (int)EnActivityResultCode.VISIBILITY_REQUEST:
 					// When the request to enable Bluetooth returns
-					if (resultCode == Result.Ok) {
+					if (resultCode == Result.FirstUser) {
 						// Bluetooth is now enabled, so set up a chat session
 						List<string> address = BTManager.Instance.GetPaired ();
 						foreach (string addr in address)
@@ -391,13 +418,15 @@ namespace GUILayout
 
 				case (int) EnLocalMessageType.END_SCANNING:
 					if (_normalEnd) {
-						AlertDialog.Builder connect = new AlertDialog.Builder (this);
-						connect.SetTitle ("End Scanning");
-						connect.SetMessage ("Scanning For New Device Finished");
-						connect.SetNeutralButton ("OK", delegate {
-						});
-						connect.Show ();
-						this.SetTitle (Resource.String.select);
+
+						if (!IsFinishing) {
+							_connect.SetTitle ("End Scanning");
+							_connect.SetMessage ("Scanning For New Device Finished");
+							_connect.SetNeutralButton ("OK", delegate {
+							});
+							_connect.Show ();
+							this.SetTitle (Resource.String.select);
+						}
 
 					}
 					_scan.Enabled = true;
@@ -455,8 +484,10 @@ namespace GUILayout
 				break;
 
 			}
+
 		}
 
 	}
+		
 }
 
