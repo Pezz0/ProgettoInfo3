@@ -82,6 +82,7 @@ namespace GUILayout
 
 			if (requestCode == 2 && resultCode == Result.Ok) {
 
+				BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 				if (!BTManager.Instance.isSlave ()) {
 
 					_gameProfile = new GameProfile (data);
@@ -191,7 +192,31 @@ namespace GUILayout
 					serverIntent.PutExtra ("NewGame", 1);
 				}
 				BTManager.Instance.eventPackageReceived -= terminateHandle;
+				BTManager.Instance.eventLocalMessageReceived -= handleLocalMessage;
 				StartActivityForResult (serverIntent, 2);
+			}
+		}
+
+		private void handleLocalMessage (Message msg)
+		{
+			switch (msg.What) {
+				case (int) EnLocalMessageType.MESSAGE_CONNECTION_LOST:
+					BTManager.Instance.eventLocalMessageReceived -= handleLocalMessage;
+					if (BTManager.Instance.isSlave ()) {
+						BTManager.Instance.eventPackageReceived -= terminateHandle;
+						Board.Instance.Reset ();
+						Intent serverIntent = new Intent (this, typeof (MainActivity));
+						serverIntent.PutExtra ("NewGame", 0);
+						StartActivityForResult (serverIntent, 2);
+
+					} else {
+						lock (_terminateMsg) {
+							BTManager.Instance.RemoveSlave ((string) msg.Obj);
+							_terminateMsg.setAbort ();
+							Monitor.Pulse (_terminateMsg);
+						}
+					}
+				break;
 			}
 		}
 	}

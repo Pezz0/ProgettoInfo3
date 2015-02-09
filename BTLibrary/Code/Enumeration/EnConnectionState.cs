@@ -3,7 +3,7 @@
 namespace BTLibrary
 {
 	/// <summary>
-	/// Enumerable for the connection state.
+	/// Enumeration for the connection state.
 	/// </summary>
 	public enum EnConnectionState
 	{

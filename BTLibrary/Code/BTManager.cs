@@ -128,9 +128,9 @@ namespace BTLibrary
 		private BTReceiver _receiver = null;
 
 		/// <summary>
-		/// Registers the receiver for scanning operations.
+		/// Registers the receiver for scanning and pairing operations.
 		/// </summary>
-		public void RegisterReceiverScanning ()
+		public void RegisterReceivers ()
 		{
 			// Register for broadcasts when a device is discovered
 			_receiver = new BTReceiver ();
@@ -143,17 +143,9 @@ namespace BTLibrary
 
 			filter = new IntentFilter (BluetoothDevice.ActionBondStateChanged);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
-		}
 
-		/// <summary>
-		/// Registers the receiver for pairing requests.
-		/// </summary>
-		public void RegisterReceiverPairing ()
-		{
-			_receiver = new BTReceiver ();
-			IntentFilter filter = new IntentFilter (BluetoothDevice.ActionPairingRequest);
+			filter = new IntentFilter (BluetoothDevice.ActionPairingRequest);
 			_activity.ApplicationContext.RegisterReceiver (_receiver, filter);
-
 		}
 
 		/// <summary>
@@ -667,7 +659,7 @@ namespace BTLibrary
 				if (_writeThread [i] != null)
 					_writeThread [i].Add (message);
 			}
-			if (pkg == EnPackageType.TERMINATE)
+			if (pkg == EnPackageType.TERMINATE && _writeThread.Count > 0)
 				lock (_monitorMaster) {
 					Monitor.Wait (_monitorMaster);
 				}

@@ -75,7 +75,7 @@ namespace GUILayout
 			_start = _normalEnd = true;
 			_connecting = false;
 
-			BTManager.Instance.RegisterReceiverScanning ();
+			BTManager.Instance.RegisterReceivers ();
 
 			BTManager.Instance.setActivity (this);
 

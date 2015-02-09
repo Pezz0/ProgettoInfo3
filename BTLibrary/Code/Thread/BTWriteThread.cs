@@ -42,7 +42,7 @@ namespace BTLibrary
 		/// <summary>
 		/// The sleep time of the thread.
 		/// </summary>
-		private const int _SLEEP_TIME = 200;
+		private const int _SLEEP_TIME = 50;
 
 		/// <summary>
 		/// The buffer to store out messages.
@@ -54,6 +54,9 @@ namespace BTLibrary
 		/// </summary>
 		private readonly Thread _writer;
 
+		/// <summary>
+		/// The monitor to signal that the terminate ACK is send.
+		/// </summary>
 		private readonly object _monitor;
 
 		/// <summary>
@@ -161,7 +164,10 @@ namespace BTLibrary
 			}
 		}
 
-
+		/// <summary>
+		/// Nothings to send.
+		/// </summary>
+		/// <returns><c>true</c>, if there aren't message to send, <c>false</c> otherwise.</returns>
 		internal bool NothingToSend ()
 		{
 

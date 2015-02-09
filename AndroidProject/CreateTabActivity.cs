@@ -116,7 +116,7 @@ namespace GUILayout
 
 			for (int i = 0; i < 5; ++i) {
 				_pl [i].Text = gp.getPlayerName (i);
-
+				_radioDealer [i].Enabled = gp.DealerEnabled;
 				if (i < 4) {
 					_addr [i] = gp.getPlayerAddress (i);
 					_spinner [i].ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_Itemselected);
@@ -141,7 +141,7 @@ namespace GUILayout
 
 			BTManager.Instance.eventLocalMessageReceived += handleLocalMessage;
 			BTManager.Instance.eventPackageReceived += handlePackage;
-			BTManager.Instance.RegisterReceiverPairing ();
+			BTManager.Instance.RegisterReceivers ();
 		}
 
 		/// <summary>

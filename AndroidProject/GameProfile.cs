@@ -38,6 +38,8 @@ namespace GUILayout
 		/// <value>The player address.</value>
 		internal string[] PlayerAddress { get { return _playerAddress; } }
 
+		private bool _dealerEnable;
+
 		/// <summary>
 		/// Gets the name of the player by index.
 		/// </summary>
@@ -64,13 +66,21 @@ namespace GUILayout
 		/// <value>The index of the dealer.</value>
 		internal int Dealer{ get { return _dealer; } }
 
+		internal bool DealerEnabled{ get { return _dealerEnable; } }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MenuLayout.GameProfile"/> class.
 		/// </summary>
 		/// <param name="playerName">Array of player names.</param>
 		/// <param name="playerAddress">Array of player addresses.</param>
 		/// <param name="dealer">Index of the dealer.</param>
-		internal GameProfile (string [] playerName, string [] playerAddress, int dealer)
+		internal GameProfile (string [] playerName, string [] playerAddress, int dealer) : this (playerName, playerAddress, dealer, true)
+		{
+		
+
+		}
+
+		private GameProfile (string [] playerName, string [] playerAddress, int dealer, bool dealerEnable)
 		{
 			for (int i = 0; i < Board.PLAYER_NUMBER; ++i) {
 				_playerName [i] = playerName [i];
@@ -78,6 +88,7 @@ namespace GUILayout
 					_playerAddress [i] = playerAddress [i];
 			}
 			_dealer = dealer;
+			_dealerEnable = dealerEnable;
 		}
 
 		/// <summary>
@@ -89,6 +100,7 @@ namespace GUILayout
 			_playerName = intent.GetStringArrayExtra ("Names");
 			_playerAddress = intent.GetStringArrayExtra ("Address");
 			_dealer = intent.GetIntExtra ("Dealer", 0);
+			_dealerEnable = intent.GetBooleanExtra ("DealerEnable", true);
 
 		}
 
@@ -101,6 +113,7 @@ namespace GUILayout
 			intent.PutExtra ("Names", _playerName);
 			intent.PutExtra ("Address", _playerAddress);
 			intent.PutExtra ("Dealer", _dealer);
+			intent.PutExtra ("DealerEnable", _dealerEnable);
 		}
 
 		/// <summary>
@@ -109,7 +122,7 @@ namespace GUILayout
 		/// <returns>Game profile of the next game.</returns>
 		internal GameProfile nextGame ()
 		{
-			return new GameProfile (_playerName, _playerAddress, ( _dealer + 1 ) % Board.PLAYER_NUMBER);
+			return new GameProfile (_playerName, _playerAddress, ( _dealer + 1 ) % Board.PLAYER_NUMBER, false);
 		}
 
 	}
