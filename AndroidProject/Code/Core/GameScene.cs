@@ -826,31 +826,21 @@ namespace GUILayout
 			if (_selected >= 0) {
 				if (!_touchAsta) {
 					if (_dropField.ContainsPoint (pos)) {
-
-						if (_selected < _inHand / 2 && _selected > 0) {
-							for (int i = 0; i <= _selected - 1; i++) {
-								_carte [i].posBase = _carte [i + 1].posBase;
-								_carte [i].rotation = _carte [i + 1].rotation;
-								_carte [i].sprite.ZOrder++;
-								moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
-							}
-						} else if (_selected >= _inHand / 2 && _selected < _inHand - 1) {
-							for (int i = _inHand - 1; i >= _selected + 1; i--) {
-								_carte [i].posBase = _carte [i - 1].posBase;
-								_carte [i].rotation = _carte [i - 1].rotation;
-								_carte [i].sprite.ZOrder--;
-								moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
-							}
-						}
-						_carte [_selected].sprite.Scale = _cardScale * 0.75f;
-						_carte [_selected].posBase = new CCPoint (_dropField.MaxX, _winSize.Height - _dropField.Center.Y);
-						moveSprite (new CCPoint (_carte [_selected].posBase.X, _carte [_selected].posBase.Y), _carte [_selected].sprite);
 						_droppedCards.Add (_carte [_selected]);
+						rearrangeCards ();
+
+
+						_carte [_selected].sprite.Scale = _cardScale * 0.75f;
+						_carte [_selected].rotation = -90;
+						_carte [_selected].posBase = new CCPoint (_dropField.MaxX, _winSize.Height - _dropField.Center.Y);
+						moveSprite (new CCPoint (_carte [_selected].posBase.X, _carte [_selected].posBase.Y), _carte [_selected].sprite, 0.3f, _carte [_selected].rotation);
 						_played = true;
+
+
 
 						_carte.RemoveAt (_selected);
 						_inHand--;
-					
+
 
 
 					} else {
@@ -863,6 +853,54 @@ namespace GUILayout
 
 
 
+		}
+
+		void rearrangeCards ()
+		{
+			foreach (CardData c in _carte) {
+				if (_droppedCards.Contains (c)) {
+					int index = _carte.IndexOf (c);
+					if (_inHand % 2 != 0) {
+						if (index >= _carte.Count / 2) {
+							for (int i = 0; i < _carte.Count - 1; i++) {
+								_carte [i].posBase = _carte [i + 1].posBase;
+								_carte [i].rotation = _carte [i + 1].rotation;
+								_carte [i].sprite.ZOrder++;
+								moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
+							}
+							_carte [_carte.Count - 1].sprite.ZOrder++;
+						} else {
+							for (int i = _carte.Count - 1; i > 0; i--) {
+								_carte [i].posBase = _carte [i - 1].posBase;
+								_carte [i].rotation = _carte [i - 1].rotation;
+								_carte [i].sprite.ZOrder--;
+								moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
+							}
+							_carte [0].sprite.ZOrder--;
+						}
+
+					}
+
+					if (index >= _carte.Count / 2)
+						for (int i = _carte.Count - 1; i > index; i--) {
+							_carte [i].posBase = _carte [i - 1].posBase;
+							_carte [i].rotation = _carte [i - 1].rotation;
+							_carte [i].sprite.ZOrder--;
+							moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
+						}
+					else
+						for (int i = 0; i < index; i++) {
+							_carte [i].posBase = _carte [i + 1].posBase;
+							_carte [i].rotation = _carte [i + 1].rotation;
+							_carte [i].sprite.ZOrder++;
+							moveSprite (_carte [i].posBase, _carte [i].sprite, 0.3f, _carte [i].rotation);
+						}
+
+
+
+
+				}
+			}
 		}
 
 		#endregion
