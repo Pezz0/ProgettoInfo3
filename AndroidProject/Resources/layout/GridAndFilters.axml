@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:orientation="horizontal"
+    p1:layout_width="match_parent"
+    p1:layout_height="match_parent"
+    p1:id="@+id/linearLayout1">
+    <GridView
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="match_parent"
+        p1:layout_height="266.7dp"
+        p1:id="@+id/gridView1"
+        p1:numColumns="3"
+        p1:layout_alignParentBottom="true" />
+    <Spinner
+        p1:layout_width="200dp"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/Spinner"
+        p1:layout_alignParentTop="true"
+        p1:layout_toRightOf="@id/textView1"
+        p1:layout_alignTop="@id/textView1"
+        p1:layout_alignBottom="@id/textView1"
+        p1:layout_alignParentRight="true" />
+    <TextView
+        p1:text="Filter: "
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/label"
+        p1:layout_alignParentLeft="true"
+        p1:layout_alignParentTop="true"
+        p1:layout_above="@id/gridView1" />
+</RelativeLayout>

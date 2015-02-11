@@ -11,80 +11,224 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using ChiamataLibrary;
+using Android.Util;
 
 namespace GUILayout
 {
 	[Activity (Label = "Points")]			
 	internal class Points : Activity
 	{
-		ArrayAdapter<string> play;
-
-		GridView grid;
+		ArrayAdapter<string> _play;
+		private ArrayAdapter _dateFilter;
+		private TextView _label;
+		private GridView _grid;
+		private Spinner _date;
+		private const float SLIDER_WIDTH = 0.5f;
+		private List<string> _players;
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 
-			SetContentView (Resource.Layout.Grid);
+			SetContentView (Resource.Layout.GridAndFilters);
 
-			play = new ArrayAdapter<string> (this, Resource.Layout.Grid_elem);
+			DisplayMetrics metrics = Resources.DisplayMetrics;
+			int widthInDp = metrics.WidthPixels;
 
-			grid = FindViewById<GridView> (Resource.Id.gridView1);
-			grid.Adapter = play;
+			_play = new ArrayAdapter<string> (this, Resource.Layout.Grid_elem);
+			_grid = FindViewById<GridView> (Resource.Id.gridView1);
+			_grid.Adapter = _play;
+			_label = FindViewById<TextView> (Resource.Id.label);
+			_label.Text = "Sort: ";
+			_date = FindViewById<Spinner> (Resource.Id.Spinner);
+			_dateFilter = ArrayAdapter.CreateFromResource (this, Resource.Array.Sort, Android.Resource.Layout.SimpleSpinnerItem);
+			_date.Adapter = _dateFilter;
+			_date.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_Itemselected);
+			_date.LayoutParameters.Width = (int) ( widthInDp * SLIDER_WIDTH );
 
 			HistoryActivity.eventDelete += Delete;
 
-			List<string> players = Archive.Instance.GetAllPlayer ();
+			_players = Archive.Instance.GetAllPlayer ();
 
-			if (players.Count > 0) {
-				play.Add ("Player");
-				play.Add ("Played");
-				play.Add ("Points");
-
-				string [][] values = new string[players.Count] [];
-
-				for (int h = 0; h < players.Count; h++)
-					values [h] = new string[3];
-
-				int i = 0;
-				players.ForEach (name => {
-					values [i] [0] = name;
-					values [i] [1] = Archive.Instance.GetPlayed (name).ToString ();
-					values [i] [2] = Archive.Instance.GetTotalAward (name).ToString ();
-					i++;
-				});
-				sort (values, 0, players.Count - 1);
-				for (int j = 0; j < players.Count; j++) {
-					for (int k = 0; k < 3; k++) {
-						string val = values [j] [k];
-						if (k == 2 && Convert.ToInt32 (val) > 0)
-							val = "+" + val;
-						play.Add (val);	
-					}
-				}
-			} else
-				play.Add ("No match found");
 		}
 
-		private void sort (string [][] matrix, int left, int right)
+		void spinner_Itemselected (object sender, AdapterView.ItemSelectedEventArgs e)
+		{
+			_play.Clear ();
+			if (_players.Count > 0) {
+				_play.Add ("Player");
+				_play.Add ("Played");
+				_play.Add ("Points");
+
+				//string [][] values = new string[players.Count] [];
+
+				PointsInfo [] values = new PointsInfo[_players.Count];
+
+				int i = 0;
+				_players.ForEach (name => {
+					values [i] = new PointsInfo (name, Archive.Instance.GetPlayed (name), Archive.Instance.GetTotalAward (name));
+					++i;
+				});
+			
+				switch (e.Id) {
+					case 0:
+						SortByPointDescend (values, _players.Count);
+					break;
+					case 1:
+						SortByPointAscend (values, _players.Count);
+					break;
+					case 2:
+						SortByPlayedDescend (values, _players.Count);
+					break;
+					case 3:
+						SortByPlayedAscend (values, _players.Count);
+					break;
+					case 4:
+						SortByNameDescend (values, 0, _players.Count - 1);
+					break;
+					case 5:
+						SortByNameAscend (values, 0, _players.Count - 1);
+					break;
+				}
+				for (int j = 0; j < _players.Count; j++) {
+					PointsInfo val = values [j];
+					_play.Add (val.Player);
+					_play.Add (val.Played.ToString ());
+					_play.Add (( val.Points > 0 ? "+" : "" ) + val.Points.ToString ()); 
+				}
+			} else
+				_play.Add ("No match found");
+
+		}
+
+		private void SortByPointDescend (PointsInfo [] data, int size)
+		{
+			int max = data [0].Points;
+			int min = data [0].Points;
+
+			for (int i = 1; i < size; ++i) {
+				if (data [i].Points < min)
+					min = data [i].Points;
+				if (data [i].Points > max)
+					max = data [i].Points;
+			}
+
+			Queue<PointsInfo> [] point = new Queue<PointsInfo>[( max - min ) + 1];
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				point [i] = new Queue<PointsInfo> ();
+
+			for (int i = 0; i < size; ++i)
+				point [max - data [i].Points].Enqueue (data [i]);
+
+			int j = 0;
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				while (point [i].Count > 0) {
+					data [j] = point [i].Dequeue ();
+					j++;
+				}
+		}
+
+		private void SortByPointAscend (PointsInfo [] data, int size)
+		{
+			int max = data [0].Points;
+			int min = data [0].Points;
+
+			for (int i = 1; i < size; ++i) {
+				if (data [i].Points < min)
+					min = data [i].Points;
+				if (data [i].Points > max)
+					max = data [i].Points;
+			}
+
+			Queue<PointsInfo> [] point = new Queue<PointsInfo>[( max - min ) + 1];
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				point [i] = new Queue<PointsInfo> ();
+
+			for (int i = 0; i < size; ++i)
+				point [data [i].Points - min].Enqueue (data [i]);
+
+			int j = 0;
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				while (point [i].Count > 0) {
+					data [j] = point [i].Dequeue ();
+					j++;
+				}
+		}
+
+		private void SortByPlayedDescend (PointsInfo [] data, int size)
+		{
+			int max = data [0].Played;
+			int min = data [0].Played;
+
+			for (int i = 1; i < size; ++i) {
+				if (data [i].Played < min)
+					min = data [i].Played;
+				if (data [i].Played > max)
+					max = data [i].Played;
+			}
+
+			Queue<PointsInfo> [] played = new Queue<PointsInfo>[( max - min ) + 1];
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				played [i] = new Queue<PointsInfo> ();
+
+			for (int i = 0; i < size; ++i)
+				played [max - data [i].Played].Enqueue (data [i]);
+
+			int j = 0;
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				while (played [i].Count > 0) {
+					data [j] = played [i].Dequeue ();
+					j++;
+				}
+		}
+
+		private void SortByPlayedAscend (PointsInfo [] data, int size)
+		{
+			int max = data [0].Played;
+			int min = data [0].Played;
+
+			for (int i = 1; i < size; ++i) {
+				if (data [i].Played < min)
+					min = data [i].Played;
+				if (data [i].Played > max)
+					max = data [i].Played;
+			}
+
+			Queue<PointsInfo> [] played = new Queue<PointsInfo>[( max - min ) + 1];
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				played [i] = new Queue<PointsInfo> ();
+
+			for (int i = 0; i < size; ++i)
+				played [data [i].Played - min].Enqueue (data [i]);
+
+			int j = 0;
+			for (int i = 0; i < ( max - min ) + 1; ++i)
+				while (played [i].Count > 0) {
+					data [j] = played [i].Dequeue ();
+					j++;
+				}
+		}
+
+		private void SortByNameAscend (PointsInfo [] data, int left, int right)
 		{
 			int i = left, j = right;
-			int pivot = Convert.ToInt32 (matrix [( left + right ) / 2] [2]);
+			PointsInfo pivotInfo = data [new Random ().Next (left, right)];
+			string pivotName = pivotInfo.Player;
 
 			while (i <= j) {
-				while (Convert.ToInt32 (matrix [i] [2]) > pivot) {
+				while (data [i].Player.CompareTo (pivotName) < 0) {
 					i++;
 				}
 
-				while (Convert.ToInt32 (matrix [j] [2]) < pivot) {
+				while (data [j].Player.CompareTo (pivotName) > 0) {
 					j--;
 				}
 
 				if (i <= j) {
 					// Swap
-					string [] tmp = matrix [i];
-					matrix [i] = matrix [j];
-					matrix [j] = tmp;
+					PointsInfo tmp = data [i];
+					data [i] = data [j];
+					data [j] = tmp;
 
 					i++;
 					j--;
@@ -93,19 +237,54 @@ namespace GUILayout
 
 			// Recursive calls
 			if (left < j) {
-				sort (matrix, left, j);
+				SortByNameAscend (data, left, j);
 			}
 
 			if (i < right) {
-				sort (matrix, i, right);
+				SortByNameAscend (data, i, right);
 			}
 		}
 
+		private void SortByNameDescend (PointsInfo [] data, int left, int right)
+		{
+			int i = left, j = right;
+			PointsInfo pivotInfo = data [new Random ().Next (left, right)];
+			string pivotName = pivotInfo.Player;
+
+			while (i <= j) {
+				while (data [i].Player.CompareTo (pivotName) > 0) {
+					i++;
+				}
+
+				while (data [j].Player.CompareTo (pivotName) < 0) {
+					j--;
+				}
+
+				if (i <= j) {
+					// Swap
+					PointsInfo tmp = data [i];
+					data [i] = data [j];
+					data [j] = tmp;
+
+					i++;
+					j--;
+				}
+			}
+
+			// Recursive calls
+			if (left < j) {
+				SortByNameDescend (data, left, j);
+			}
+
+			if (i < right) {
+				SortByNameDescend (data, i, right);
+			}
+		}
 
 		private void Delete ()
 		{
-			play.Clear ();
-			play.Add ("No match found");
+			_play.Clear ();
+			_play.Add ("No match found");
 		}
 	}
 }

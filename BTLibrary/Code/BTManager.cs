@@ -192,6 +192,12 @@ namespace BTLibrary
 			makeVisible ();
 		}
 
+		public void DisableBluetooth ()
+		{
+			if (_btAdapter.IsEnabled)
+				_btAdapter.Disable ();
+		}
+
 		#endregion
 
 		#region scanning and pairing

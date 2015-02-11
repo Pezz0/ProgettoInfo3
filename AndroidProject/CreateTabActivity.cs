@@ -169,7 +169,7 @@ namespace GUILayout
 				if (getBTNumber () - BTManager.Instance.getNumConnected () >= 0) {
 
 					for (int i = 0; i < 4; ++i)
-						if (sender.ToString () == _spinner [i].ToString () && _addr [i] != Resources.GetText (Resource.String.none_add)) {
+						if (sender == _spinner [i] && _addr [i] != Resources.GetText (Resource.String.none_add)) {
 							BTManager.Instance.RemoveSlave (_addr [i]);
 							_addr [i] = Resources.GetText (Resource.String.none_add);
 							_pl [i + 1].Text = Resources.GetText (Resource.String.Default1);
@@ -279,8 +279,10 @@ namespace GUILayout
 					if (resultCode == Result.FirstUser)
 						// Bluetooth is now enabled, so set up a chat session
 						BTManager.Instance.ConnectAsMaster ();
-					else
+					else if (resultCode == Result.Canceled) {
+						BTManager.Instance.DisableBluetooth ();
 						Finish ();
+					}
 					
 				break;
 					

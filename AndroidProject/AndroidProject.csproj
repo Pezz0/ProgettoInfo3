@@ -89,6 +89,7 @@
     <Compile Include="HistoryTabs\Points.cs" />
     <Compile Include="CriptoRandom.cs" />
     <Compile Include="HistoryActivity.cs" />
+    <Compile Include="HistoryTabs\PointsInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -112,6 +113,7 @@
     <AndroidResource Include="Resources\layout\Grid.axml" />
     <AndroidResource Include="Resources\layout\Grid_elem.axml" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
+    <AndroidResource Include="Resources\layout\GridAndFilters.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

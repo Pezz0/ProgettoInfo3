@@ -360,7 +360,8 @@ namespace GUILayout
 						}
 						if (_connecting)
 							connection ();
-					}
+					} else if (resultCode == Result.Canceled)
+						BTManager.Instance.DisableBluetooth ();
 				break;
 
 			}

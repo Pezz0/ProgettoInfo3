@@ -4,6 +4,20 @@
 		<item> Computer</item>
 		<item>BlueTooth</item>
 	</string-array>
+	<string-array name="Date">
+		<item> All </item>
+		<item> Last Day </item>
+		<item> Last Week </item>
+		<item> Last Mont </item>
+	</string-array>
+	<string-array name="Sort">
+		<item> By Points Descending </item>
+		<item> By Points Ascending </item>
+		<item> By Played Descending</item>
+		<item> By Played Ascending</item>
+		<item> By Name Descending (Z-A)</item>
+		<item> By Name Ascending (A-Z)</item>
+	</string-array>
 	<string name="Default1"> Brasi</string>
 	<string name="Default2"> Gyl</string>
 	<string name="Default3"> Pacca</string>
