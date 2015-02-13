@@ -12,8 +12,8 @@ namespace BTLibrary
 	/// This package will be similar to:
 	/// <list type="table">
 	/// <listheader>
-	/// <term>Type</term>
-	/// <term>Message</term>
+	/// <term>Field</term>
+	/// <term>Length</term>
 	/// </listheader>
 	/// <item><term>4</term><description>1 Byte</description></item>
 	/// <item><term>BID</term><description>4 Bytes</description></item>
@@ -23,9 +23,8 @@ namespace BTLibrary
 	/// or similar to the following if it's an ACK package:
 	/// <list type="table">
 	/// <listheader>
-	/// <term>Type</term>
-	/// <term>Address</term>
-	/// <term>Message</term>
+	/// <term>Field</term>
+	/// <term>Length</term>
 	/// </listheader>
 	/// <item><term>8</term><description>1 Byte</description></item>
 	/// <item><term>ADDRESS</term><description>17 Bytes</description></item>

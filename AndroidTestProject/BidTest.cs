@@ -181,6 +181,16 @@ namespace TestProject
 		}
 
 		/// <summary>
+		/// Fifteenth test for the Compare To method.
+		/// Comparing a normal to a carichi. Expected <c>True</c>.
+		/// </summary>
+		[Test ()]
+		public void compareToTest15 ()
+		{
+			Assert.True (_normalBid2.CompareTo (_carichi1) > 0);
+		}
+
+		/// <summary>
 		/// Tenth test for the Compare To method.
 		/// Comparing a carichi to a normal. Expected <c>True</c>.
 		/// </summary>
@@ -197,7 +207,7 @@ namespace TestProject
 		[Test ()]
 		public void compareToTest11 ()
 		{
-			Assert.True (_carichi1.CompareTo (_normalBid2) == 0);
+			Assert.True (_carichi1.CompareTo (_normalBid2) < 0);
 		}
 
 		/// <summary>

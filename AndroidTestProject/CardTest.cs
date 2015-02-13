@@ -28,6 +28,14 @@ namespace TestProject
 		/// A briscola card.
 		/// </summary>
 		private Card _brisc;
+		/// <summary>
+		/// A null Card.
+		/// </summary>
+		private Card _null1 = null;
+		/// <summary>
+		/// A null Card.
+		/// </summary>
+		private Card _null2 = null;
 
 		/// <summary>
 		/// Setup for this tests.
@@ -59,7 +67,65 @@ namespace TestProject
 
 		}
 
-		//TODO: > test
+		/// <summary>
+		///First test for the > operator
+		/// Comparing a null to a null. Expected <c>False</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr1 ()
+		{
+			Assert.False (_null1 > _null1);
+		}
+
+		/// <summary>
+		///Second  test for the > operator
+		/// Comparing a not null to a null. Expected <c>True</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr2 ()
+		{
+			Assert.True (_noBrisc1 > _null1);
+		}
+
+		/// <summary>
+		///Third test for the > operator
+		/// Comparing a null to a not null. Expected <c>False</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr3 ()
+		{
+			Assert.False (_null1 > _noBrisc1);
+		}
+
+		/// <summary>
+		/// Fourth test for the > operator
+		/// Comparing a not null to a not null with same Seme and different number. Expected <c>True</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr4 ()
+		{
+			Assert.True (_noBrisc1 > _noBrisc2);
+		}
+
+		/// <summary>
+		/// Fifth test for the > operator
+		///  Comparing a not null to a not null with same Seme and different number. Expected <c>False</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr5 ()
+		{
+			Assert.False (_noBrisc2 > _noBrisc1);
+		}
+
+		/// <summary>
+		/// Sixth test for the > operator
+		///  Comparing a not null to a not null with different Seme. Expected <c>False</c>.
+		/// </summary>
+		[Test ()]
+		public void testGr6 ()
+		{
+			Assert.False (_noBrisc2 > _noBrisc3);
+		}
 
 	}
 }

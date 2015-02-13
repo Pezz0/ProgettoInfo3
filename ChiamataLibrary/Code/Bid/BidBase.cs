@@ -53,48 +53,48 @@ namespace ChiamataLibrary
 				
 			if (other is PassBid)
 				return 1;
+
+
+			if (this is NormalBid) {
+				NormalBid b1 = (NormalBid) this;
+
+				if (other is NormalBid) {
+					NormalBid b2 = (NormalBid) other;
+
+					if (b1.number != b2.number)	//the number is more important
+						return b2.number - b1.number;	//the greater bid is the bid with the lesser number
+					else
+						return b1.point - b2.point;	//the greater bid is the with the greater amount of point
+				} else {
+					CarichiBid b2 = (CarichiBid) other;
 				
-			if (this is NormalBid && other is NormalBid) {
-				NormalBid b1 = (NormalBid) this;
-				NormalBid b2 = (NormalBid) other;
+					if (b1.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
+						return -1;
+					else if (b1.point == b2.point)	//If the points are even, the normal win is better
+						return 1;
+					else
+						return b1.point - b2.point;	//the greater bid is the with the greater amount of point
+				}
 
-				if (b1.number != b2.number)	//the number is more important
-					return b2.number - b1.number;	//the greater bid is the bid with the lesser number
-				else
-					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
-			}
-
-			if (this is NormalBid && other is CarichiBid) {
-				NormalBid b1 = (NormalBid) this;
-				CarichiBid b2 = (CarichiBid) other;
-
-				if (b1.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
-					return -1;
-				else if (b1.point == b2.point)	//If the points are even, the normal win is better
-					return 1;
-				else
-					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
-			}
-
-			if (this is CarichiBid && other is NormalBid) {
+			} else {/* if (this is CarichiBid)*/
 				CarichiBid b1 = (CarichiBid) this;
-				NormalBid b2 = (NormalBid) other;
 
-				if (b2.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
-					return 1;
-				else if (b1.point == b2.point)	//If the points are even, the normal win is better
-					return -1;
-				else
+				if (other is NormalBid) {
+					NormalBid b2 = (NormalBid) other;
+
+					if (b2.number != EnNumbers.DUE)	//a normalBid can compete with a CarichiBid only if the number is two
+						return 1;
+					else if (b1.point == b2.point)	//If the points are even, the normal win is better
+						return -1;
+					else
+						return b1.point - b2.point;	//the greater bid is the with the greater amount of point
+				} else {
+					CarichiBid b2 = (CarichiBid) other;
+
 					return b1.point - b2.point;	//the greater bid is the with the greater amount of point
+				}
 			}
-
-			if (this is CarichiBid && other is CarichiBid) {
-				CarichiBid b1 = (CarichiBid) this;
-				CarichiBid b2 = (CarichiBid) other;
-
-				return b1.point - b2.point;	//the greater bid is the with the greater amount of point
-			}
-
+		
 			throw new Exception ("Some error occur, this path shoudn't be executed");
 		}
 
