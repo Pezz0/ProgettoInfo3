@@ -15,7 +15,7 @@ namespace AILibrary
 			bool last = _nCardOnBoard == ( Board.PLAYER_NUMBER - 1 );
 
 			// if the socio is reveal an altro can consider himself last in the cycle if the player after him is the chiamante
-			last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 2 ) && Board.Instance.isSocioReveal && ( _me + 1 ).Role == EnRole.CHIAMANTE );
+			last = last || ( _nCardOnBoard == ( Board.PLAYER_NUMBER - 2 ) && ( _me + 1 ).Role == EnRole.CHIAMANTE );
 
 
 			//a boolean that indicate if the current winner is a player that can be considered friend or not
@@ -77,10 +77,6 @@ namespace AILibrary
 					//if he can take the board without using a briscola
 					//do it unless he have to use a carico
 					if (TakeableWithNoBrisc && !_lowNoBrisc.IsCarico)
-						return _lowBrisc;
-
-					//if the socio che take the board with a briscola take it
-					if (TakeableWithBrisc)
 						return _lowBrisc;
 
 					return null;
