@@ -65,10 +65,11 @@ namespace GUILayout
 				PointsInfo [] values = new PointsInfo[_players.Count];
 
 				int i = 0;
-				_players.ForEach (name => {
+
+				foreach (string name in _players) {
 					values [i] = new PointsInfo (name, Archive.Instance.GetPlayed (name), Archive.Instance.GetTotalAward (name));
 					++i;
-				});
+				}
 			
 				switch (e.Id) {
 					case 0:
@@ -92,9 +93,9 @@ namespace GUILayout
 				}
 				for (int j = 0; j < _players.Count; j++) {
 					PointsInfo val = values [j];
-					_play.Add (val.Player);
-					_play.Add (val.Played.ToString ());
-					_play.Add (( val.Points > 0 ? "+" : "" ) + val.Points.ToString ()); 
+					_play.Add (val.player);
+					_play.Add (val.played.ToString ());
+					_play.Add (( val.points > 0 ? "+" : "" ) + val.points.ToString ()); 
 				}
 			} else
 				_play.Add ("No match found");
@@ -103,14 +104,14 @@ namespace GUILayout
 
 		private void SortByPointDescend (PointsInfo [] data, int size)
 		{
-			int max = data [0].Points;
-			int min = data [0].Points;
+			int max = data [0].points;
+			int min = data [0].points;
 
 			for (int i = 1; i < size; ++i) {
-				if (data [i].Points < min)
-					min = data [i].Points;
-				if (data [i].Points > max)
-					max = data [i].Points;
+				if (data [i].points < min)
+					min = data [i].points;
+				if (data [i].points > max)
+					max = data [i].points;
 			}
 
 			Queue<PointsInfo> [] point = new Queue<PointsInfo>[( max - min ) + 1];
@@ -118,7 +119,7 @@ namespace GUILayout
 				point [i] = new Queue<PointsInfo> ();
 
 			for (int i = 0; i < size; ++i)
-				point [max - data [i].Points].Enqueue (data [i]);
+				point [max - data [i].points].Enqueue (data [i]);
 
 			int j = 0;
 			for (int i = 0; i < ( max - min ) + 1; ++i)
@@ -130,14 +131,14 @@ namespace GUILayout
 
 		private void SortByPointAscend (PointsInfo [] data, int size)
 		{
-			int max = data [0].Points;
-			int min = data [0].Points;
+			int max = data [0].points;
+			int min = data [0].points;
 
 			for (int i = 1; i < size; ++i) {
-				if (data [i].Points < min)
-					min = data [i].Points;
-				if (data [i].Points > max)
-					max = data [i].Points;
+				if (data [i].points < min)
+					min = data [i].points;
+				if (data [i].points > max)
+					max = data [i].points;
 			}
 
 			Queue<PointsInfo> [] point = new Queue<PointsInfo>[( max - min ) + 1];
@@ -145,7 +146,7 @@ namespace GUILayout
 				point [i] = new Queue<PointsInfo> ();
 
 			for (int i = 0; i < size; ++i)
-				point [data [i].Points - min].Enqueue (data [i]);
+				point [data [i].points - min].Enqueue (data [i]);
 
 			int j = 0;
 			for (int i = 0; i < ( max - min ) + 1; ++i)
@@ -157,14 +158,14 @@ namespace GUILayout
 
 		private void SortByPlayedDescend (PointsInfo [] data, int size)
 		{
-			int max = data [0].Played;
-			int min = data [0].Played;
+			int max = data [0].played;
+			int min = data [0].played;
 
 			for (int i = 1; i < size; ++i) {
-				if (data [i].Played < min)
-					min = data [i].Played;
-				if (data [i].Played > max)
-					max = data [i].Played;
+				if (data [i].played < min)
+					min = data [i].played;
+				if (data [i].played > max)
+					max = data [i].played;
 			}
 
 			Queue<PointsInfo> [] played = new Queue<PointsInfo>[( max - min ) + 1];
@@ -172,7 +173,7 @@ namespace GUILayout
 				played [i] = new Queue<PointsInfo> ();
 
 			for (int i = 0; i < size; ++i)
-				played [max - data [i].Played].Enqueue (data [i]);
+				played [max - data [i].played].Enqueue (data [i]);
 
 			int j = 0;
 			for (int i = 0; i < ( max - min ) + 1; ++i)
@@ -184,14 +185,14 @@ namespace GUILayout
 
 		private void SortByPlayedAscend (PointsInfo [] data, int size)
 		{
-			int max = data [0].Played;
-			int min = data [0].Played;
+			int max = data [0].played;
+			int min = data [0].played;
 
 			for (int i = 1; i < size; ++i) {
-				if (data [i].Played < min)
-					min = data [i].Played;
-				if (data [i].Played > max)
-					max = data [i].Played;
+				if (data [i].played < min)
+					min = data [i].played;
+				if (data [i].played > max)
+					max = data [i].played;
 			}
 
 			Queue<PointsInfo> [] played = new Queue<PointsInfo>[( max - min ) + 1];
@@ -199,7 +200,7 @@ namespace GUILayout
 				played [i] = new Queue<PointsInfo> ();
 
 			for (int i = 0; i < size; ++i)
-				played [data [i].Played - min].Enqueue (data [i]);
+				played [data [i].played - min].Enqueue (data [i]);
 
 			int j = 0;
 			for (int i = 0; i < ( max - min ) + 1; ++i)
@@ -213,14 +214,14 @@ namespace GUILayout
 		{
 			int i = left, j = right;
 			PointsInfo pivotInfo = data [new Random ().Next (left, right)];
-			string pivotName = pivotInfo.Player;
+			string pivotName = pivotInfo.player;
 
 			while (i <= j) {
-				while (data [i].Player.CompareTo (pivotName) < 0) {
+				while (data [i].player.CompareTo (pivotName) < 0) {
 					i++;
 				}
 
-				while (data [j].Player.CompareTo (pivotName) > 0) {
+				while (data [j].player.CompareTo (pivotName) > 0) {
 					j--;
 				}
 
@@ -249,14 +250,14 @@ namespace GUILayout
 		{
 			int i = left, j = right;
 			PointsInfo pivotInfo = data [new Random ().Next (left, right)];
-			string pivotName = pivotInfo.Player;
+			string pivotName = pivotInfo.player;
 
 			while (i <= j) {
-				while (data [i].Player.CompareTo (pivotName) > 0) {
+				while (data [i].player.CompareTo (pivotName) > 0) {
 					i++;
 				}
 
-				while (data [j].Player.CompareTo (pivotName) < 0) {
+				while (data [j].player.CompareTo (pivotName) < 0) {
 					j--;
 				}
 

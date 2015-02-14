@@ -74,7 +74,7 @@ namespace TestProject
 		[Test ()]
 		public void testGr1 ()
 		{
-			Assert.False (_null1 > _null1);
+			Assert.False (_null1 > _null2);
 		}
 
 		/// <summary>

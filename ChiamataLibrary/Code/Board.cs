@@ -17,7 +17,7 @@ namespace ChiamataLibrary
 		/// <summary>
 		/// The minimum quantity a player must have to play
 		/// </summary>
-		public const int MIN_POINT = 2;
+		public const int MIN_POINT = 4;
 
 		/// <summary>
 		/// The number of semi.
@@ -115,12 +115,9 @@ namespace ChiamataLibrary
 			int nCard = nSemi * nNumber;	//the numbers of card
 			int nCardForPlayer = nCard / PLAYER_NUMBER;	//the number of card for player
 
-
-
-
 			int [] enough = new int[5] { 0, 0, 0, 0, 0 };
 
-			while (enough [0] < MIN_POINT || enough [1] < MIN_POINT || enough [MIN_POINT] < MIN_POINT || enough [3] < MIN_POINT || enough [4] < MIN_POINT) {
+			while (enough [0] <= MIN_POINT || enough [1] <= MIN_POINT || enough [MIN_POINT] <= MIN_POINT || enough [3] <= MIN_POINT || enough [4] <= MIN_POINT) {
 				int [] cardAssign = new int[5] { 0, 0, 0, 0, 0 };	//counter for the card distribution
 				enough = new int[5] { 0, 0, 0, 0, 0 };
 

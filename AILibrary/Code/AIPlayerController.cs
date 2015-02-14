@@ -81,6 +81,9 @@ namespace AILibrary
 		/// </summary>
 		public readonly Player me;
 
+		/// <summary>
+		/// The seme that the AI has chooser
+		/// </summary>
 		private EnSemi _seme;
 
 		/// <summary>
@@ -148,7 +151,11 @@ namespace AILibrary
 		/// <returns>The card.</returns>
 		public Card ChooseCard ()
 		{
-			return _cardChooser.ChooseCard ();
+			Card c = _cardChooser.ChooseCard ();
+			if (c == null)
+				return me.GetHand () [0];
+
+			return c;
 		}
 	}
 	#endregion

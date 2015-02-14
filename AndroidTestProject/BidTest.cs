@@ -73,7 +73,6 @@ namespace TestProject
 			_null1 = null;
 			_null2 = null;
 
-
 			_pass1 = new PassBid (Board.Instance.AllPlayers [0]);
 			_pass2 = new PassBid (Board.Instance.AllPlayers [1]);
 

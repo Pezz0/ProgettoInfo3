@@ -38,6 +38,9 @@ namespace GUILayout
 		/// <value>The player address.</value>
 		internal string[] PlayerAddress { get { return _playerAddress; } }
 
+		/// <summary>
+		/// A boolean that represent if the dealer can be change;
+		/// </summary>
 		private bool _dealerEnable;
 
 		/// <summary>
