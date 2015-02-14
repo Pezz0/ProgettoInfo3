@@ -51,19 +51,14 @@ namespace AILibrary
 			//add the opportunity cost
 			_valueOnBoard = _valueOnBoard + _pointsAfter * ( Board.PLAYER_NUMBER - _nCardOnBoard - 1 );
 
-			// the lowpoint card is the card to play if you don't care to take the board
-			Card lowPoint = _scartino;
-
-			// if you can take the board without using a briscola change the lowpoint
-			if (TakeableWithNoBrisc)
-				lowPoint = _highNoBrisc;
-
-			// if the board is takeable with the briscola and the value on board is enough take it
-			// if the lowpoint card is a carico then sacrifice the briscola
-			if (TakeableWithBrisc && ( _valueOnBoard > _thresholdH || lowPoint.IsCarico ))
+			//if the opportunity cost is enough take the board
+			if (TakeableWithBrisc && _valueOnBoard > _thresholdH)
 				return _lowBrisc;
 				
-			return lowPoint;
+			if (_scartino.IsCarico)
+				return _lowBrisc;
+
+			return _scartino;
 
 		}
 
